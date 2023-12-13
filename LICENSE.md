@@ -1,5 +1,5 @@
 
-Copyright (c) 2023, Ally Hawkins
+Copyright (c) 2023, Alex's Lemonade Stand Foundation
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
