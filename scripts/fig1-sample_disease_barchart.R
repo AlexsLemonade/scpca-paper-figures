@@ -2,7 +2,7 @@
 # The resulting plot is faceted by the diagnoses group 
 # Individual bars have different patterns based on the disease timing 
 
-# Set up -----------------------------------------------------------------------
+# Set up 
 
 # load any libaries 
 library(ggplot2)
@@ -32,7 +32,7 @@ local_sample_metadata <- file.path(local_s3_dir, "scpca-sample-metadata.tsv")
 
 ## TODO: revisit why this isn't actually working? 
 sync_call <- paste('op run -- aws s3 cp', sample_metadata_s3, local_sample_metadata, sep = " ")
-system(sync_call)
+#system(sync_call)
 
 sample_metadata_df <- readr::read_tsv(local_sample_metadata) |> 
   dplyr::filter(scpca_project_id %in% project_whitelist)
@@ -41,7 +41,10 @@ sample_metadata_df <- readr::read_tsv(local_sample_metadata) |>
 diagnosis_plot_df <- sample_metadata_df |> 
   dplyr::select(scpca_sample_id, diagnosis, disease_timing) |> 
   dplyr::left_join(diagnosis_groupings_df, by = c("diagnosis" = "submitted_diagnosis")) |> 
-  dplyr::left_join(disease_timing_df, by = c("disease_timing" = "submitted_disease_timing"))
+  dplyr::left_join(disease_timing_df, by = c("disease_timing" = "submitted_disease_timing")) |> 
+  dplyr::filter(diagnosis_group != "Non-cancerous") |> 
+  dplyr::mutate(standardized_disease_timing = as.factor(standardized_disease_timing))
+
 
 # get list of all groups 
 diagnosis_groups <- diagnosis_plot_df |> 
@@ -53,7 +56,6 @@ diagnosis_groups <- diagnosis_plot_df |>
                        "Leukemia", 
                        "Sarcoma",
                        "Other solid tumors")
-
 # colors 
 #names(diagnosis_groups) <- c("#201158", "#005E5E", "#578B21", "#E89E6B")
 names(diagnosis_groups) <- c("#DF536B", "#61D04F", "#2297E6", "#28E2E5")
@@ -62,41 +64,55 @@ names(diagnosis_groups) <- c("#DF536B", "#61D04F", "#2297E6", "#28E2E5")
 # create plot panels
 barplot_panel <- function(diagnosis_plot_df, diagnosis_group, group_color){
   
+  # pull out the group to be included in this panel
   group_to_plot <- diagnosis_plot_df |> 
     dplyr::filter(diagnosis_group %in% {{diagnosis_group}}) 
   
+  # get a count for total diagnosis
+  # use this later to sort the diagnosis
   diagnosis_count <- group_to_plot |> 
     dplyr::count(diagnosis) 
   
+  # create dataframe with diagnosis, diagnosis count, and disease timing for plotting
   plot_df <- group_to_plot |> 
     dplyr::left_join(diagnosis_count) |>
-    dplyr::mutate(diagnosis = forcats::fct_reorder(diagnosis, -n))
-    
+    dplyr::mutate(diagnosis = forcats::fct_reorder(diagnosis, n))
+
   
   diagnosis_plot <- ggplot(plot_df, aes(y = diagnosis)) + 
+    # set pattern aesthetics 
     ggpattern::geom_bar_pattern(aes(pattern = standardized_disease_timing),
                                 pattern_density = 0.04,
                                 fill = group_color,
                                 color = "black",
                                 pattern_color = "black",
-                                pattern_angle = 0,
-                                pattern_spacing = 0.01) +
+                                pattern_spacing = 0.02,
+                                pattern_orientation = 'vertical') +
     theme_classic() + 
-    theme(axis.text.x = element_text(angle = 90),
-          text = element_text(size = 10),
+    theme(text = element_text(size = 10),
+          # make sure legend is big enough to see the patterns
           legend.key.size = unit(1, 'cm'),
-          legend.key = element_blank(),
+          # don't print out the legend for the individual panels
           legend.position = 'none') +
     labs(
       x = "",
       y = "",
       title = diagnosis_group,
+      color = "Disease timing"
     ) +
-    ggpattern::scale_pattern_manual(values = c('circle', 'stripe', 'wave', 'crosshatch', 'plain'))
-
+    # create a custom pattern scale so that we keep the patterns the same for each disease timing
+    ggpattern::scale_pattern_manual(values = c(
+      "Initial diagnosis" = 'circle', 
+      "Post-mortem" = 'stripe', 
+      "Progressive" = 'crosshatch', 
+      "Recurrence" = 'none',
+      "Unknown" = 'wave'), 
+      drop = FALSE) 
+  
   return(diagnosis_plot)
 }
 
+# Create list of plots that will be combined into one figure 
 all_panels <- diagnosis_groups |> 
   purrr::imap(\(group, group_color){
     barplot_panel(diagnosis_plot_df = diagnosis_plot_df,
@@ -104,32 +120,26 @@ all_panels <- diagnosis_groups |>
                   group_color = group_color)
   })
 
-combined_plot <- patchwork::wrap_plots(all_panels) +
-  patchwork::plot_annotation(tag_levels = 'A')
+# grab one legend from list of plots to use as the common legend
+legend_to_use <- ggpubr::get_legend(all_panels[[1]])
+
+# combine into one plot using a common legend 
+combined_plot <- ggpubr::ggarrange(plotlist = all_panels,
+                                   common.legend = TRUE, 
+                                   legend = "top",
+                                   legend.grob = legend_to_use, 
+                                   ncol = 2, 
+                                   nrow = 2, 
+                                   labels = "AUTO",
+                                   align = 'hv',
+                                   hjust = -5) +
+  ggpubr::bgcolor("white")
+
+# add x and y axis labels 
+combined_plot <- ggpubr::annotate_figure(combined_plot, 
+                                         bottom = "Number of samples",
+                                         left = "Diagnosis")
   
 
-ggsave(output_plot_file, width = 15, height = 10)
- 
-
-# combine with patchwork 
-
-facet_plot <- ggplot(diagnosis_plot_df, aes(y = diagnosis, fill = diagnosis_group)) + 
-  ggpattern::geom_bar_pattern(aes(pattern = standardized_disease_timing),
-                              pattern_density = 0.04,
-                              color = "black",
-                              pattern_color = "black",
-                              pattern_angle = 0,
-                              pattern_spacing = 0.01) +
-  theme_classic() + 
-  facet_wrap(vars(diagnosis_group)) +
-  theme(axis.text.x = element_text(angle = 90),
-        text = element_text(size = 10),
-        legend.key.size = unit(1, 'cm')) +
-  labs(
-    x = "",
-    y = ""
-  ) +
-  ggpattern::scale_pattern_manual(values = c('circle', 'stripe', 'wave', 'crosshatch', 'circle', 'weave'))
-
-ggsave("faceted_plot.png")
-
+# save plot 
+ggsave(output_plot_file, width = 15)
