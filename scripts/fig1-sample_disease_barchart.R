@@ -5,69 +5,6 @@
 # load any libaries 
 library(ggplot2)
 
-# Define functions -------------------------------------------------------------
-
-#' Create individual stacked bar plot panels with diagnosis on y-axis and patterns showing disease timing
-#'
-#' @param diagnosis_plot_df DataFrame that contains diagnosis, diagnosis_group, and standardized_disease_timing
-#'   as columns 
-#' @param diagnosis_group Which group of diagnosis to include in the plot, must be a value in diagnosis_group column
-#' @param group_color What color to use for the bar plot
-#'
-#' @return ggplot with diagnosis on y-axis, number of samples on x-axis, and bars filled in with patterns to 
-#'   designate disease timing group 
-
-barplot_panel <- function(diagnosis_plot_df, diagnosis_group, group_color){
-  
-  # pull out the group to be included in this panel
-  group_to_plot <- diagnosis_plot_df |> 
-    dplyr::filter(diagnosis_group %in% {{diagnosis_group}}) 
-  
-  # get a count for total diagnosis
-  # use this later to sort the diagnosis
-  diagnosis_count <- group_to_plot |> 
-    dplyr::count(diagnosis) 
-  
-  # create dataframe with diagnosis, diagnosis count, and disease timing for plotting
-  plot_df <- group_to_plot |> 
-    dplyr::left_join(diagnosis_count) |>
-    dplyr::mutate(diagnosis = forcats::fct_reorder(diagnosis, n))
-  
-  
-  diagnosis_plot <- ggplot(plot_df, aes(y = diagnosis)) + 
-    # set pattern aesthetics 
-    ggpattern::geom_bar_pattern(aes(pattern = standardized_disease_timing),
-                                pattern_density = 0.04,
-                                fill = group_color,
-                                color = "black",
-                                pattern_color = "black",
-                                pattern_spacing = 0.02,
-                                pattern_orientation = 'vertical') +
-    theme_classic() + 
-    theme(text = element_text(size = 10),
-          # make sure legend is big enough to see the patterns
-          legend.key.size = unit(1, 'cm'),
-          # don't print out the legend for the individual panels
-          legend.position = 'none') +
-    labs(
-      x = "",
-      y = "",
-      title = diagnosis_group,
-      color = "Disease timing"
-    ) +
-    # create a custom pattern scale so that we keep the patterns the same for each disease timing
-    ggpattern::scale_pattern_manual(values = c(
-      "Initial diagnosis" = 'circle', 
-      "Post-mortem" = 'stripe', 
-      "Progressive" = 'crosshatch', 
-      "Recurrence" = 'none',
-      "Unknown" = 'wave'), 
-      drop = FALSE) 
-  
-  return(diagnosis_plot)
-}
-
-
 # Set up -----------------------------------------------------------------------
 
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -84,6 +21,9 @@ sample_info_dir <- file.path(root_dir, "sample-info")
 project_whitelist_file <- file.path(sample_info_dir, "project-whitelist.txt")
 diagnosis_groupings_file <- file.path(sample_info_dir, "diagnosis-groupings.tsv")
 disease_timing_file <- file.path(sample_info_dir, "disease-timing.tsv")
+
+# color palette
+diagnosis_group_palette <- file.path(root_dir, "palettes", "diagnosis-group-palette.tsv")
 
 # output files 
 plots_dir <- file.path(root_dir, "figures", "pngs")
@@ -117,51 +57,65 @@ diagnosis_plot_df <- sample_metadata_df |>
   dplyr::mutate(standardized_disease_timing = as.factor(standardized_disease_timing))
 
 
-# get list of all groups 
-diagnosis_groups <- diagnosis_plot_df |> 
-  dplyr::pull(diagnosis_group) |>
-  unique() |>
-  # set desired order 
-  forcats::fct_relevel("Brain and CNS",
-                       "Leukemia", 
-                       "Sarcoma",
-                       "Other solid tumors")
-# colors 
-# TODO: move these into a separate tsv file to be read in 
-#names(diagnosis_groups) <- c("#201158", "#005E5E", "#578B21", "#E89E6B")
-names(diagnosis_groups) <- c("#DF536B", "#61D04F", "#2297E6", "#28E2E5")
+diagnosis_count <- diagnosis_plot_df |> 
+  dplyr::count(diagnosis) 
 
+# create dataframe with diagnosis, diagnosis count, and disease timing for plotting
+plot_df <- diagnosis_plot_df |> 
+  dplyr::left_join(diagnosis_count) |>
+  dplyr::mutate(diagnosis = forcats::fct_reorder(diagnosis, n),
+                # relevel so other is last
+                diagnosis_group = forcats::fct_relevel(diagnosis_group, 
+                                                       "Other solid tumors",
+                                                       after = Inf))
 # Plot -------------------------------------------------------------------------
 
-# Create list of plots that will be combined into one figure 
-all_panels <- diagnosis_groups |> 
-  purrr::imap(\(group, group_color){
-    barplot_panel(diagnosis_plot_df = diagnosis_plot_df,
-                  diagnosis_group = group, 
-                  group_color = group_color)
-  })
+# get list of colors to use 
+diagnosis_group_palette_df <- readr::read_tsv(diagnosis_group_palette)
 
-# grab one legend from list of plots to use as the common legend
-legend_to_use <- ggpubr::get_legend(all_panels[[1]])
 
-# combine into one plot using a common legend 
-combined_plot <- ggpubr::ggarrange(plotlist = all_panels,
-                                   common.legend = TRUE, 
-                                   legend = "top",
-                                   legend.grob = legend_to_use, 
-                                   ncol = 2, 
-                                   nrow = 2, 
-                                   labels = "AUTO",
-                                   align = 'hv',
-                                   hjust = -5) +
-  # make sure white background encompasses all panels and legend 
-  ggpubr::bgcolor("white")
+# get list of all groups 
+diagnosis_colors <- diagnosis_group_palette_df$color |> 
+  purrr::set_names(diagnosis_group_palette_df$diagnosis_group)
 
-# add x and y axis labels 
-combined_plot <- ggpubr::annotate_figure(combined_plot, 
-                                         bottom = "Number of samples",
-                                         left = "Diagnosis")
-  
+# create faceted plot, one panel for each diagnosis group
+# diagnosis is on the y axis and number of samples on the x axis
+# bars are patterned based on the disease timing group 
+diagnosis_plot <- ggplot(plot_df, aes(y = diagnosis,  fill = diagnosis_group)) +
+  ggpattern::geom_bar_pattern(aes(pattern = standardized_disease_timing), 
+                              color = "black",
+                              pattern_color = "black",
+                              pattern_fill = "black",
+                              pattern_density = 0.04,
+                              pattern_spacing = 0.02) +
+  facet_wrap(facets = "diagnosis_group", scales = "free") +
+  # add label for the number of samples in each diagnosis group 
+  geom_text(aes(label = after_stat(count)), stat = "count", hjust = -0.25) +
+  # manually set patterns 
+  ggpattern::scale_pattern_manual(values = c(
+    "Initial diagnosis" = 'circle', 
+    "Post-mortem" = 'stripe', 
+    "Progressive" = 'crosshatch', 
+    "Recurrence" = 'none',
+    "Unknown" = 'wave'), 
+    drop = FALSE) +
+  # set colors to use palette for diagnosis groups
+  scale_fill_manual(values = diagnosis_colors) +
+  # make legend black and white 
+  guides(fill = "none", 
+         pattern = guide_legend(override.aes = list(fill = "white"), title.position = "top", title.hjust = 0.5)) + 
+  labs(pattern = "Disease timing",
+       x = "Number of samples",
+       y = "Diagnosis") + 
+  theme_classic() + 
+  theme(text = element_text(size = 10),
+        legend.position = "top",
+        legend.key.size = unit(1, 'cm'),
+        plot.margin = margin(1, 1, 1, 1, 'cm')
+        
+  ) +
+  # make sure bar labels don't get cut off
+  coord_cartesian(clip = "off")
 
 # save plot 
-ggsave(output_plot_file, width = 15)
+ggsave(output_plot_file, plot = diagnosis_plot)
