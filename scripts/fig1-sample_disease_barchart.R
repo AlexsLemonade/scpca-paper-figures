@@ -90,7 +90,7 @@ diagnosis_plot <- ggplot(plot_df, aes(y = diagnosis,  fill = diagnosis_group)) +
                               pattern_spacing = 0.02) +
   facet_wrap(facets = "diagnosis_group", scales = "free") +
   # add label for the number of samples in each diagnosis group 
-  geom_text(aes(label = after_stat(count)), stat = "count", hjust = -0.25) +
+  geom_text(aes(label = after_stat(count)), stat = "count", hjust = -0.25, size = 3) +
   # manually set patterns 
   ggpattern::scale_pattern_manual(values = c(
     "Initial diagnosis" = 'circle', 
