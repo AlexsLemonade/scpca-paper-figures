@@ -39,7 +39,7 @@ disease_timing_df <- readr::read_tsv(disease_timing_file)
 
 # Copy sample metadata 
 local_sample_metadata <- file.path(local_s3_dir, "scpca-sample-metadata.tsv")
-sync_call <- paste('op run -- aws s3 cp', sample_metadata_s3, local_sample_metadata, '--recursive', sep = " ")
+sync_call <- paste('aws s3 cp', sample_metadata_s3, local_s3_dir, sep = " ")
 system(sync_call)
 
 # read in sample metadata and filter to only projects in whitelist
