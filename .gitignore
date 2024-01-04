@@ -3,3 +3,6 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# s3 files
+s3_files
