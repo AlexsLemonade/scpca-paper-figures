@@ -1,0 +1,21 @@
+scpca_project_id	Diagnosis group	Total number of libraries	Single-cell	Single-nucleus	Bulk RNA	With CITE-seq	Spatial transcriptomics	With cell hashing	Diagnoses
+SCPCP000001	Brain and CNS	40	22	0	18	0	0	0	Anaplastic glioma;Glioblastoma;High-grade glioma;Diffuse midline glioma;Pleomorphic xanthoastrocytoma;Anaplastic astrocytoma
+SCPCP000001	Non-cancerous	1	1	0	0	0	0	0	Non-cancerous
+SCPCP000002	Brain and CNS	46	26	0	20	0	0	0	Pilocytic astrocytoma;Ganglioglioma;Low-grade glioma;Ganglioglioma/ATRT;Ependymoma
+SCPCP000003	Leukemia	97	60	0	37	60	0	0	T-myeloid mixed phenotype acute leukemia;Early T-cell precursor T-cell acute lymphoblastic leukemia;Non-early T-cell precursor T-cell acute lymphoblastic leukemia;Acute myeloid leukemia
+SCPCP000004	Other solid tumors	25	9	16	0	0	0	0	Neuroblastoma
+SCPCP000005	Sarcoma	47	20	27	0	0	0	0	Rhabdomyosarcoma
+SCPCP000006	Other solid tumors	183	0	40	43	0	100	0	Wilms tumor
+SCPCP000007	Leukemia	28	28	0	0	28	0	0	Acute myeloid leukemia;T-myeloid mixed phenotype acute leukemia
+SCPCP000007	Non-cancerous	2	2	0	0	2	0	0	Non-cancerous
+SCPCP000008	Leukemia	107	107	0	0	6	0	0	Early T-cell precursor T-cell acute lymphoblastic leukemia;B-cell acute lymphoblastic leukemia;Mixed phenotype acute leukemia;T-cell acute lymphoblastic leukemia
+SCPCP000009	Brain and CNS	57	0	69	36	0	0	66	Medulloblastoma;Ependymoma;Pilocytic astrocytoma;Dysplastic gangliocytoma;Primitive neuroectodermal tumor;Desmoplastic ganglioglioma;Anaplastic ganglioglioma;Dysembryoplastic neuroepithelial tumor;Subependymoma;Low-grade glioma;Myxopapillary ependymoma;Glioblastoma;Anaplastic ependymoma;Pilomyxoid astrocytoma;Schwannoma;Ganglioglioma
+SCPCP000009	Non-cancerous	5	0	3	3	0	0	3	Non-cancerous
+SCPCP000010	Brain and CNS	44	0	44	0	0	0	0	Ganglioglioma;Low-grade glioma;Atypical teratoid rhabdoid tumor;Glial-neuronal tumor;Focal cortical dysplasia;High-grade glioma
+SCPCP000011	Other solid tumors	35	28	7	0	0	0	0	Retinoblastoma
+SCPCP000012	Other solid tumors	4	0	4	0	0	0	0	Adrenocortical carcinoma;Germ cell tumor
+SCPCP000013	Other solid tumors	1	0	1	0	0	0	0	Gastrointestinal stromal tumor
+SCPCP000013	Sarcoma	16	0	16	0	0	0	0	Clear cell sarcoma of the kidney;Clear cell sarcoma;Desmoplastic small round cell tumor;Spindle sarcoma;Infantile fibrosarcoma;Synovial sarcoma;Undifferentiated round cell sarcoma;Epithelioid sarcoma;Embryonal sarcoma
+SCPCP000014	Other solid tumors	8	0	8	0	0	0	0	Wilms tumor
+SCPCP000015	Sarcoma	7	0	7	0	0	0	0	Ewing sarcoma
+SCPCP000016	Other solid tumors	5	0	5	0	0	0	0	Rhabdoid tumor
