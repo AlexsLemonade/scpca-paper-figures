@@ -90,7 +90,7 @@ modality_counts_df <- demuxed_metadata_df |>
   tidyr::pivot_wider(names_from = modality, values_from = n) |> 
   dplyr::mutate(
     # replace all NA with 0
-    across(everything(), ~ tidyr::replace_na(.x,0))
+    across(everything(), ~ tidyr::replace_na(.x, 0))
   ) |> 
   dplyr::left_join(total_count) |> 
   # set desired order and do some renaming
