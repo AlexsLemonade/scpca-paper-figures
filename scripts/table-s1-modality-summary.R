@@ -93,9 +93,16 @@ modality_counts_df <- demuxed_metadata_df |>
     across(everything(), ~ tidyr::replace_na(.x,0))
   ) |> 
   dplyr::left_join(total_count) |> 
-  # set desired order 
-  dplyr::relocate("Diagnosis group" = diagnosis_group, "Total number of libraries", "Single-cell", "Single-nucleus", .after = 1) |> 
-  dplyr::relocate("Diagnoses" = diagnosis, .after = last_col())
+  # set desired order and do some renaming
+  dplyr::relocate(
+    "Diagnosis group" = diagnosis_group, 
+    "Diagnoses" = diagnosis, 
+    "Total number of libraries", 
+    "Single-cell", 
+    "Single-nucleus", 
+    .after = 1
+    ) 
+
 
 # export table 
 readr::write_tsv(modality_counts_df, output_table_file)
