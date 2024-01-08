@@ -28,11 +28,11 @@ project_whitelist <- readLines(project_whitelist_file)
 # read in groupings
 diagnosis_groupings_df <- readr::read_tsv(diagnosis_groupings_file)
 
-# read in library metadatq and filter to included projects
+# read in library metadata and filter to included projects
 library_metadata_df <- readr::read_tsv(library_metadata_file) |> 
   dplyr::filter(scpca_project_id %in% project_whitelist)
 
-# read in sample metadatq and filter to included projects
+# read in sample metadata and filter to included projects
 sample_metadata_df <- readr::read_tsv(sample_metadata_file) |> 
   dplyr::filter(scpca_project_id %in% project_whitelist) |> 
   dplyr::select(scpca_project_id, scpca_sample_id, diagnosis) |> 
@@ -66,12 +66,12 @@ modality_counts_df <- demuxed_metadata_df |>
     # options are cell, nucleus, bulk, spatial, cite, or multiplexed
     # the assigned values will eventually be the column names used in the output
     modality = dplyr::case_when(
-      seq_unit == "cell"  & !(stringr::str_detect(technology,"CITE")) & !(stringr::str_detect(technology, "cellhash")) ~ "Single-cell",
-      seq_unit == "nucleus"  & !(stringr::str_detect(technology,"CITE")) & !(stringr::str_detect(technology, "cellhash")) ~ "Single-nucleus",
       seq_unit == "bulk" ~ "Bulk RNA",
       seq_unit == "spot" ~ "Spatial transcriptomics",
       stringr::str_detect(technology,"CITE") ~ "With CITE-seq",
-      stringr::str_detect(technology,"cellhash") ~ "With cell hashing"
+      stringr::str_detect(technology,"cellhash") ~ "With cell hashing",
+      seq_unit == "cell" ~ "Single-cell",
+      seq_unit == "nucleus" ~ "Single-nucleus",
     )
   ) |> 
   # join with sample metadata to add in diagnosis groupings
@@ -106,4 +106,4 @@ modality_counts_df <- demuxed_metadata_df |>
 
 # export table 
 readr::write_tsv(modality_counts_df, output_table_file)
-  
+
