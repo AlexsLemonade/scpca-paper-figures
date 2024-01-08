@@ -124,4 +124,5 @@ ggplot(filtered_modality_df, aes(x = forcats::fct_reorder(modality, -total_per_m
   guides(fill = guide_legend(title.position = "top", title.hjust = 0.5))
 
 ggsave(output_plot_file)
+
   
