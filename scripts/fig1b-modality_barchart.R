@@ -37,14 +37,11 @@ library_metadata_df <- readr::read_tsv(library_metadata_file) |>
   # create a modality column that labels everything as single suspension, bulk, spatial, or CITE
   dplyr::mutate(
     modality = dplyr::case_when(
-      # all libraries that are either cell or nucleus but not CITE or hash
-      seq_unit %in% c("cell", "nucleus")  & 
-        (!(stringr::str_detect(technology,"CITE")) & 
-            !(stringr::str_detect(technology, "cellhash"))) ~ "Single suspension",
       seq_unit == "bulk" ~ "Bulk",
       seq_unit == "spot" ~ "Spatial transcriptomics",
       stringr::str_detect(technology,"CITE") ~ "With CITE-seq",
-      stringr::str_detect(technology, "cellhash") ~ "With cell hashing"
+      stringr::str_detect(technology, "cellhash") ~ "With cell hashing",
+      seq_unit %in% c("cell", "nucleus") ~ "Single suspension"
     )
   )
 
@@ -94,7 +91,17 @@ filtered_modality_df <- library_metadata_df |>
   # get the total for each modality to use for specifying order in plot
   dplyr::add_tally(name = "total_per_modality") |>
   # add a column to help pull out additional modalities into its own facet 
-  dplyr::mutate(additional_mods = ifelse(modality == "Single suspension", "All samples", "Samples with additional modalities"))
+  dplyr::mutate(additional_mods = ifelse(modality == "Single suspension", "All samples", "Samples with additional modalities"),
+                modality = as.factor(modality),
+                # set custom order
+                # with cite and with cell hash should be together 
+                modality = forcats::fct_relevel(modality,
+                                                "Single suspension",
+                                                "Bulk",
+                                                "Spatial transcriptomics",
+                                                "With CITE-seq",
+                                                "With cell hashing"
+                ))
 
 # Plot -------------------------------------------------------------------------
 
@@ -104,23 +111,26 @@ suspension_colors <- suspension_palette$color |>
 
 # bar chart showing the total number of samples for each modality
 # the bars are colored by what suspension type that modality is composed of
-ggplot(filtered_modality_df, aes(x = forcats::fct_reorder(modality, -total_per_modality), fill = seq_unit)) +
-  geom_bar(stat = "count") +
+ggplot(filtered_modality_df, aes(x = modality, fill = seq_unit)) +
+  geom_bar(stat = "count", color = "black") +
   # split the graph to designate all samples vs. those with additional modalities
   facet_grid(cols = vars(additional_mods),
              scales = "free",
              space = "free") +
   theme_classic() + 
+  # add label to middle of each bar 
+  geom_text(aes(label = after_stat(count)), stat = "count", position = position_stack(vjust = 0.5)) +
   labs(
     x = "",
     y = "Number of samples",
     fill = "Suspension type"
   ) + 
   scale_fill_manual(values= suspension_colors) +
-  theme(legend.position = c(.85,.9),
+  theme(legend.position = c(.8,.9),
         legend.direction = "horizontal",
         legend.box.background = element_rect(colour = "black"),
-        text = element_text(size = 14)) +
+        text = element_text(size = 14),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
   guides(fill = guide_legend(title.position = "top", title.hjust = 0.5))
 
 ggsave(output_plot_file)
