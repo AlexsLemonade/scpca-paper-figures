@@ -7,10 +7,8 @@ library(ggplot2)
 
 # Set up -----------------------------------------------------------------------
 
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-
 # all metadata files 
-sample_info_dir <- file.path(root_dir, "sample-info")
+sample_info_dir <- here::here("sample-info")
 project_whitelist_file <- file.path(sample_info_dir, "project-whitelist.txt")
 diagnosis_groupings_file <- file.path(sample_info_dir, "diagnosis-groupings.tsv")
 disease_timing_file <- file.path(sample_info_dir, "disease-timing.tsv")

@@ -8,7 +8,7 @@ sample_metadata_s3 <- 's3://ccdl-scpca-data/sample_info/scpca-sample-metadata.ts
 library_metadata_s3 <- 's3://ccdl-scpca-data/sample_info/scpca-library-metadata.tsv'
 
 # create a directory to store S3 files 
-local_s3_dir <- file.path(root_dir, "s3_files")
+local_s3_dir <- here::here("s3_files")
 fs::dir_create(local_s3_dir)
 
 # Copy sample metadata 
