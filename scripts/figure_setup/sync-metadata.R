@@ -1,8 +1,6 @@
 # This script is used to download and save metadata from S3 to a local directory
 # All files will be saved in a folder named `s3_files`
 
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-
 # path to metadata stored on S3
 sample_metadata_s3 <- 's3://ccdl-scpca-data/sample_info/scpca-sample-metadata.tsv'
 library_metadata_s3 <- 's3://ccdl-scpca-data/sample_info/scpca-library-metadata.tsv'
