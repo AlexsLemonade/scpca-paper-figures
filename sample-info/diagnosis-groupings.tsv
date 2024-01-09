@@ -19,7 +19,6 @@ MONDO:0858940	Infant-type hemispheric glioma	Infant-type hemispheric glioma	Brai
 MONDO:0021637	Low grade glioma	Low-grade glioma	Brain and CNS
 MONDO:0007959	Medulloblastoma	Medulloblastoma	Brain and CNS
 MONDO:0016699	Myxopapillary ependymoma	Myxopapillary ependymoma	Brain and CNS
-MONDO:0005072	Neuroblastoma	Neuroblastoma	Brain and CNS
 MONDO:0016691	Pilocytic astrocyoma	Pilocytic astrocytoma	Brain and CNS
 MONDO:0016692	Pilomyxoid astrocytoma	Pilomyxoid astrocytoma	Brain and CNS
 MONDO:0016690	Pleomorphic xanthoastrocytoma	Pleomorphic xanthoastrocytoma	Brain and CNS
@@ -39,6 +38,7 @@ MONDO:0005040	Germ cell tumor	Germ cell tumor	Other solid tumors
 MONDO:0008380	Retinoblastoma	Retinoblastoma	Other solid tumors
 MONDO:0002728	Rhabdoid tumor	Rhabdoid tumor	Other solid tumors
 MONDO:0006058	Wilms tumor	Wilms tumor	Other solid tumors
+MONDO:0005072	Neuroblastoma	Neuroblastoma	Other solid tumors
 MONDO:0002926	Clear cell sarcoma	Clear cell sarcoma	Sarcoma
 MONDO:0005006	Clear cell sarcoma of the kidney	Clear cell sarcoma of the kidney	Sarcoma
 MONDO:0019373	Desmoplastic small round cell tumor	Desmoplastic small round cell tumor	Sarcoma
