@@ -27,7 +27,7 @@ B. Bar chart summarizing the types of modalities found on the Portal.
 
 Summary of libraries and types of libraries found on the Portal.
 
-## Generating figures
+## Generating figures and tables
 
 The `figures` and `tables` folders contain the most up-to-date version of each of the figures and tables, respectively.
 The `scripts` directory contains all scripts used to create the figures and tables.
@@ -55,11 +55,7 @@ The `palettes` folder contains any palettes used in generating the figures.
 ## Renv
 
 Package dependencies for scripts used in this repo are managed using [`renv`](https://rstudio.github.io/renv/index.html).
-For `renv` to work as intended, you'll need to work within the `sc-data-integration.Rproj` project in RStudio.
+For `renv` to work as intended, you'll need to work within the `scpca-paper-figures.Rproj` project in RStudio.
 You may need to run `renv::restore()` upon opening the project to ensure the `renv.lock` file is synced with the project library.
 
 Each time you install or use new packages, you will want to run `renv::snapshot()` to update the `renv.lock` file with any added package and dependencies necessary to run the analyses and scripts in this repo.
-
-If there are dependencies you want to include that are not captured automatically by `renv::snapshot()`, add them to `components/dependencies.R` with a call to `library()` and an explanatory comment.
-For example, if `dplyr` were recommended but not required by a package and you wanted to make sure to include it in the lockfile, you would add `library(dplyr)` to `components/dependencies.R`.
-Then rerun `renv::snapshot()`.
