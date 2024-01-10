@@ -20,8 +20,8 @@ Below is a summary of all figures in the paper.
 
 **Figure 1**
 
-A. Bar chart summarizing the types of diagnoses found on the Portal.
-B. Bar chart summarizing the types of modalities found on the Portal.
+- A. Bar chart summarizing the types of diagnoses found on the Portal.
+- B. Bar chart summarizing the types of modalities found on the Portal.
 
 **Table S1**
 
