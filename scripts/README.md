@@ -9,13 +9,14 @@ The `figure_setup` folder contains scripts that are required to be run _prior to
 1. `sync-metadata.R`: This script is used to sync any metadata files found on S3 to a local folder.
 In particular, the `scpca-sample-metadata.tsv` and `scpca-library-metadata.tsv` will be stored to a folder within the root directory of this repo named `s3_files`.
 In order to generate some of the figures (see more on which figures require this script below), this script will be need to run first.
+The `s3_files` folder is ignored in the `.gitignore`, so the first time you go to generate figures you will need to run this script as these files are not available in the repo.
 To run the script use the following command:
 
 ```sh
 op run -- Rscript sync-metadata.R
 ```
 
-## Generating figures
+## Generating figures and tables
 
 The following scripts can be used to generate figures:
 
