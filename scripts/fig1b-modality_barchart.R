@@ -22,6 +22,14 @@ suspension_palette_file <- file.path(root_dir, "palettes", "suspension-palette.t
 plots_dir <- file.path(root_dir, "figures", "pngs")
 output_plot_file <- file.path(plots_dir, "Fig1B-modality-summary.png")
 
+# set order of modalities for final plot 
+modality_order <- c("Single suspension",
+                    "Bulk",
+                    "Spatial transcriptomics",
+                    "With CITE-seq",
+                    "With cell hashing"
+                    )
+
 # Prep metadata ------------------------------------------------------
 
 # read in project whitelist
@@ -91,17 +99,15 @@ filtered_modality_df <- library_metadata_df |>
   # get the total for each modality to use for specifying order in plot
   dplyr::add_tally(name = "total_per_modality") |>
   # add a column to help pull out additional modalities into its own facet 
-  dplyr::mutate(additional_mods = ifelse(modality == "Single suspension", "All samples", "Samples with additional modalities"),
-                modality = as.factor(modality),
-                # set custom order
-                # with cite and with cell hash should be together 
-                modality = forcats::fct_relevel(modality,
-                                                "Single suspension",
-                                                "Bulk",
-                                                "Spatial transcriptomics",
-                                                "With CITE-seq",
-                                                "With cell hashing"
-                ))
+  dplyr::mutate(
+    additional_mods = ifelse(
+      modality == "Single suspension", 
+      "All samples", 
+      "Samples with additional modalities"
+    ),
+    # set custom order
+    # with cite and with cell hash should be together 
+    modality = forcats::fct_relevel(modality, modality_order))
 
 # Plot -------------------------------------------------------------------------
 
@@ -119,7 +125,9 @@ ggplot(filtered_modality_df, aes(x = modality, fill = seq_unit)) +
              space = "free") +
   theme_classic() + 
   # add label to middle of each bar 
-  geom_text(aes(label = after_stat(count)), stat = "count", position = position_stack(vjust = 0.5)) +
+  geom_text(aes(label = after_stat(count)), 
+            stat = "count", 
+            position = position_stack(vjust = 0.5)) +
   labs(
     x = "",
     y = "Number of samples",
@@ -128,11 +136,9 @@ ggplot(filtered_modality_df, aes(x = modality, fill = seq_unit)) +
   scale_fill_manual(values= suspension_colors) +
   theme(legend.position = c(.8,.9),
         legend.direction = "horizontal",
-        legend.box.background = element_rect(colour = "black"),
+        legend.box.background = element_rect(color = "black"),
         text = element_text(size = 14),
         axis.text.x = element_text(angle = 45, hjust = 1)) +
   guides(fill = guide_legend(title.position = "top", title.hjust = 0.5))
 
-ggsave(output_plot_file)
-
-  
+ggsave(output_plot_file, width = 7, height = 7)
