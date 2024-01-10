@@ -1,19 +1,18 @@
+# scpca-paper-figures
+
+This repo contains the figures and tables included in the ScPCA manuscript.
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [scpca-paper-figures](#scpca-paper-figures)
-  - [Summary of figures](#summary-of-figures)
-  - [Generating figures](#generating-figures)
-  - [Sample info](#sample-info)
-  - [Color palettes](#color-palettes)
-  - [Renv](#renv)
+- [Summary of figures](#summary-of-figures)
+- [Generating figures](#generating-figures)
+- [Sample info](#sample-info)
+- [Color palettes](#color-palettes)
+- [Renv](#renv)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-# scpca-paper-figures
-
-This repo contains the figures and tables included in the ScPCA manuscript.
 
 ## Summary of figures
 
