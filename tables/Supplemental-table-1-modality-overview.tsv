@@ -1,4 +1,4 @@
-scpca_project_id	Diagnosis group	Diagnoses	Total number of samples	Total number of libraries	Single-cell	Single-nucleus	Bulk RNA	Spatial transcriptomics	With CITE-seq	With cell hashing
+scpca_project_id	Diagnosis group	Diagnoses	Total number of samples (S)	Total number of libraries (L)	Single-cell (L)	Single-nucleus (L)	Bulk RNA (L)	Spatial transcriptomics (L)	With CITE-seq (L)	With cell hashing (L)
 SCPCP000001	Brain and CNS	Anaplastic glioma;Glioblastoma;High-grade glioma;Diffuse midline glioma;Pleomorphic xanthoastrocytoma;Anaplastic astrocytoma	22	40	22	0	18	0	0	0
 SCPCP000001	Non-cancerous	Non-cancerous	1	1	1	0	0	0	0	0
 SCPCP000002	Brain and CNS	Pilocytic astrocytoma;Ganglioglioma;Low-grade glioma;Ganglioglioma/ATRT;Ependymoma	26	46	26	0	20	0	0	0
@@ -12,7 +12,7 @@ SCPCP000008	Leukemia	Early T-cell precursor T-cell acute lymphoblastic leukemia;
 SCPCP000009	Brain and CNS	Medulloblastoma;Ependymoma;Pilocytic astrocytoma;Dysplastic gangliocytoma;Primitive neuroectodermal tumor;Desmoplastic ganglioglioma;Anaplastic ganglioglioma;Dysembryoplastic neuroepithelial tumor;Subependymoma;Low-grade glioma;Myxopapillary ependymoma;Glioblastoma;Anaplastic ependymoma;Pilomyxoid astrocytoma;Schwannoma;Ganglioglioma	36	57	0	69	36	0	0	66
 SCPCP000009	Non-cancerous	Non-cancerous	3	5	0	3	3	0	0	3
 SCPCP000010	Brain and CNS	Ganglioglioma;Low-grade glioma;Atypical teratoid rhabdoid tumor;Glial-neuronal tumor;Focal cortical dysplasia;High-grade glioma	42	44	0	44	0	0	0	0
-SCPCP000011	Other solid tumors	Retinoblastoma	25	35	28	7	0	0	0	0
+SCPCP000011	Brain and CNS	Retinoblastoma	25	35	28	7	0	0	0	0
 SCPCP000012	Other solid tumors	Adrenocortical carcinoma;Germ cell tumor	4	4	0	4	0	0	0	0
 SCPCP000013	Other solid tumors	Gastrointestinal stromal tumor	1	1	0	1	0	0	0	0
 SCPCP000013	Sarcoma	Clear cell sarcoma of the kidney;Clear cell sarcoma;Desmoplastic small round cell tumor;Spindle sarcoma;Infantile fibrosarcoma;Synovial sarcoma;Undifferentiated round cell sarcoma;Epithelioid sarcoma;Embryonal sarcoma	16	16	0	16	0	0	0	0

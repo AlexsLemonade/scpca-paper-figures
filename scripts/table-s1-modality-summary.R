@@ -103,14 +103,14 @@ summarized_counts_df <- modality_counts_df |>
   dplyr::relocate(
     "Diagnosis group" = diagnosis_group, 
     "Diagnoses" = diagnosis, 
-    "Total number of samples",
-    "Total number of libraries", 
-    "Single-cell", 
-    "Single-nucleus", 
-    "Bulk RNA",
-    "Spatial transcriptomics", 
-    "With CITE-seq",
-    "With cell hashing",
+    "Total number of samples (S)" = "Total number of samples",
+    "Total number of libraries (L)" = "Total number of libraries", 
+    "Single-cell (L)" = "Single-cell", 
+    "Single-nucleus (L)" = "Single-nucleus", 
+    "Bulk RNA (L)" = "Bulk RNA",
+    "Spatial transcriptomics (L)" = "Spatial transcriptomics", 
+    "With CITE-seq (L)" = "With CITE-seq",
+    "With cell hashing (L)" = "With cell hashing",
     .after = 1
     ) 
 
