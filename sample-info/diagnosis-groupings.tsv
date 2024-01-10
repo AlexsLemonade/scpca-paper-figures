@@ -23,6 +23,7 @@ MONDO:0016691	Pilocytic astrocyoma	Pilocytic astrocytoma	Brain and CNS
 MONDO:0016692	Pilomyxoid astrocytoma	Pilomyxoid astrocytoma	Brain and CNS
 MONDO:0016690	Pleomorphic xanthoastrocytoma	Pleomorphic xanthoastrocytoma	Brain and CNS
 MONDO:0000640	Central nervous system primitive neuroectodermal neoplasm	Primitive neuroectodermal tumor	Brain and CNS
+MONDO:0008380	Retinoblastoma	Retinoblastoma	Brain and CNS
 MONDO:0002546	Schwannoma	Schwannoma	Brain and CNS
 MONDO:0007667	Subependymoma	Subependymoma	Brain and CNS
 MONDO:0018874	Acute myeloid leukemia	Acute myeloid leukemia	Leukemia
@@ -35,7 +36,6 @@ MONDO:0020743	Mixed phenotype acute leukemia	T-myeloid mixed phenotype acute leu
 MONDO:0006639	Adrenal cortex carcinoma	Adrenocortical carcinoma	Other solid tumors
 MONDO:0011719	Gastrointestinal stromal tumor	Gastrointestinal stromal tumor	Other solid tumors
 MONDO:0005040	Germ cell tumor	Germ cell tumor	Other solid tumors
-MONDO:0008380	Retinoblastoma	Retinoblastoma	Other solid tumors
 MONDO:0002728	Rhabdoid tumor	Rhabdoid tumor	Other solid tumors
 MONDO:0006058	Wilms tumor	Wilms tumor	Other solid tumors
 MONDO:0005072	Neuroblastoma	Neuroblastoma	Other solid tumors

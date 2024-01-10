@@ -7,22 +7,20 @@ library(ggplot2)
 
 # Set up -----------------------------------------------------------------------
 
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-
 # all metadata files 
-sample_info_dir <- file.path(root_dir, "sample-info")
+sample_info_dir <- here::here("sample-info")
 project_whitelist_file <- file.path(sample_info_dir, "project-whitelist.txt")
 diagnosis_groupings_file <- file.path(sample_info_dir, "diagnosis-groupings.tsv")
 disease_timing_file <- file.path(sample_info_dir, "disease-timing.tsv")
 
 # path to sample metadata 
-sample_metadata_file <- file.path(root_dir, "s3_files", "scpca-sample-metadata.tsv")
+sample_metadata_file <- here::here("s3_files", "scpca-sample-metadata.tsv")
 
 # color palette
-diagnosis_group_palette <- file.path(root_dir, "palettes", "diagnosis-group-palette.tsv")
+diagnosis_group_palette <- here::here("palettes", "diagnosis-group-palette.tsv")
 
 # output files 
-plots_dir <- file.path(root_dir, "figures", "pngs")
+plots_dir <- here::here("figures", "pngs")
 output_plot_file <- file.path(plots_dir, "Fig1-sample-summary.png")
 
 # Prep sample metadata ------------------------------------------------------
@@ -77,7 +75,7 @@ diagnosis_plot <- ggplot(plot_df, aes(y = diagnosis,  fill = diagnosis_group)) +
                               color = "black",
                               pattern_color = "black",
                               pattern_fill = "black",
-                              pattern_density = 0.04,
+                              pattern_density = 0.2,
                               pattern_spacing = 0.02)+
   facet_wrap(facets = "diagnosis_group", scales = "free") +
   # add label for the number of samples in each diagnosis group 
