@@ -14,7 +14,7 @@ This repo contains the figures and tables included in the ScPCA manuscript.
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Summary of figures
+## Summary of figures and tables
 
 Below is a summary of all figures in the paper.
 
@@ -29,7 +29,7 @@ Summary of libraries and types of libraries found on the Portal.
 
 ## Generating figures
 
-The `figures` and `tables` folders contain the most up-to-date version of each of the figures and tables.
+The `figures` and `tables` folders contain the most up-to-date version of each of the figures and tables, respectively.
 The `scripts` directory contains all scripts used to create the figures and tables.
 See the [`README` for the `scripts` directory](./scripts/README.md) for more information on generating figures.
 
