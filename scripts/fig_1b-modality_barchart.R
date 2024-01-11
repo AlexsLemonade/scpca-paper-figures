@@ -1,6 +1,8 @@
 # Generates a bar plot summarizing the modalities represented in all samples
 # found on the portal 
 
+renv::load()
+
 # load any libaries 
 library(ggplot2)
 
