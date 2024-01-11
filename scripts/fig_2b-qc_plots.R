@@ -1,4 +1,7 @@
-# This script is used to generate pdf versions of the plots included in the main QC report 
+# This script is used to generate simplified version of all the plots in the main QC report 
+
+# load project
+renv::load()
 
 library(SingleCellExperiment)
 library(dplyr)
@@ -8,34 +11,43 @@ library(ggplot2)
 theme_set(
   theme_classic() +
     theme(
-      plot.margin = margin(rep(20, 4)),
+      #plot.margin = margin(rep(20, 4)),
       strip.background = element_rect(fill = "transparent"),
+      # no background box for legend
       legend.background = element_blank(),
+      # no axis ticks or labels
       axis.ticks = element_blank(),
       axis.text = element_blank(),
-      panel.background = element_rect(colour = "black", size=1),
+      # add a square around each of the plots
+      panel.background = element_rect(colour = "black", linewidth=0.5),
       aspect.ratio = 1
     )
 )
 
 set.seed(2024)
 
-# Set up
-sample_dir <- here::here("s3_files", "SCPCS000001")
-unfiltered_sce_file <- file.path(sample_dir, "SCPCL000001_unfiltered.rds")
-filtered_sce_file <- file.path(sample_dir, "SCPCL000001_filtered.rds")
-processed_sce_file <- file.path(sample_dir, "SCPCL000001_processed.rds")
+# Set up -----------------------------------------------------------------------
 
+# folder where any local data lives
+local_results_dir <- here::here("s3_files", "SCPCS000001")
+
+# define file paths to downloaded files 
+unfiltered_sce_file <- file.path(local_results_dir, "SCPCL000001_unfiltered.rds")
+filtered_sce_file <- file.path(local_results_dir, "SCPCL000001_filtered.rds")
+processed_sce_file <- file.path(local_results_dir, "SCPCL000001_processed.rds")
+
+# read in sce objects 
 unfiltered_sce <- readr::read_rds(unfiltered_sce_file)
 filtered_sce <- readr::read_rds(filtered_sce_file)
 processed_sce <- readr::read_rds(processed_sce_file)
 
-# define file paths 
+# define output file paths 
 plots_dir <- here::here("figures", "pngs") 
-output_plot_file <- file.path(plots_dir, "Fig2B-mini-qc-plots.pdf")
+output_plot_file <- file.path(plots_dir, "Fig2B-mini-qc-plots.png")
 
 # Knee plot --------------------------------------------------------------------
 
+# Create a knee plot using the same code from scpca-nf 
 unfiltered_celldata <- data.frame(colData(unfiltered_sce)) |>
   mutate(
     rank = rank(-unfiltered_sce$sum, ties.method = "first"), # using full spec for clarity
@@ -84,13 +96,12 @@ knee_plot <- ggplot(grouped_celldata, aes(x = med_rank, y = med_sum, color = pct
     aspect.ratio = 1
     
   ) +
+  # remove legend labels
   guides(color = guide_colorbar(label = FALSE, barwidth = 0.5, barheight = 2))
-
-# ggsave("knee_plot.pdf", width = 4, height = 4)
-
 
 # Cell read metrics ------------------------------------------------------------
 
+# create metrics of reads/ genes detected from qc report 
 filtered_celldata <- data.frame(colData(filtered_sce))
 
 cell_metrics_plot <- ggplot(
@@ -118,6 +129,7 @@ cell_metrics_plot <- ggplot(
 
 # miQC metrics -----------------------------------------------------------------
 
+# create miQC plot 
 filtered_sce$prob_compromised <- NULL
 miQC_model <- metadata(filtered_sce)$miQC_model
 
@@ -146,8 +158,8 @@ miQC_plot$layers[[1]]$aes_params <- list(size=0.2, alpha = 0.5)
 
 # Filter low quality -----------------------------------------------------------
 
-processed_meta <- metadata(processed_sce)
 # grab cutoffs and filtering method from processed sce
+processed_meta <- metadata(processed_sce)
 min_gene_cutoff <- processed_meta$min_gene_cutoff
 filter_method <- processed_meta$scpca_filter_method
 
@@ -156,6 +168,7 @@ filtered_coldata_df <- colData(filtered_sce) |>
   as.data.frame() |>
   tibble::rownames_to_column("barcode")
 
+# plot showing low quality cells that are filtered out
 filtered_plot <- ggplot(filtered_coldata_df, aes(x = detected, y = subsets_mito_percent, color = scpca_filter)) +
   geom_point(alpha = 0.5, size = 0.2) +
   geom_vline(xintercept = min_gene_cutoff, linetype = "dashed") +
@@ -173,6 +186,7 @@ filtered_plot <- ggplot(filtered_coldata_df, aes(x = detected, y = subsets_mito_
 
 # UMAP -------------------------------------------------------------------------
 
+# umap showing total number of genes detected
 umap_plot <- scater::plotUMAP(
   processed_sce,
   point_size = 0.3,
@@ -183,7 +197,7 @@ umap_plot <- scater::plotUMAP(
   theme(legend.position = "none",
         axis.ticks = element_blank(),
         axis.text = element_blank(),
-        panel.background = element_rect(colour = "black", size=1),
+        panel.background = element_rect(colour = "black", linewidth = 0.5),
         aspect.ratio = 1)
 
 # HVGs -------------------------------------------------------------------------
@@ -238,20 +252,18 @@ coldata_df <- colData(processed_sce) |>
   # join with row data to add in gene symbols
   left_join(rowdata_df)
 
-
+# faceted plot for hvgs
 hvg_plot <- ggplot(coldata_df, aes(x = UMAP1, y = UMAP2, color = gene_expression)) +
   geom_point(alpha = 0.1, size = 0.001) +
   facet_wrap(vars(gene_symbol)) +
   scale_color_viridis_c() +
-  labs(
-    color = "Log-normalized gene expression"
-  ) +
   theme(
     legend.position = "none",
     axis.title = element_text(size = 9, color = "black"),
     strip.text = element_text(size = 8)
   ) 
 
+# Combine plots ----------------------------------------------------------------
 
 plot_list <- list(knee_plot,
                   cell_metrics_plot,
@@ -262,4 +274,5 @@ plot_list <- list(knee_plot,
 patchwork::wrap_plots(plot_list, ncol = 3) &
   theme(text = element_text(size = 10))
 
-ggsave(output_plot_file)
+# save files 
+ggsave(output_plot_file, width = 8.5, height = 5.5, units = "in")
