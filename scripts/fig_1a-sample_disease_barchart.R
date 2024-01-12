@@ -2,6 +2,8 @@
 # The resulting plot is faceted by the diagnoses group 
 # Individual bars have different patterns based on the disease timing 
 
+renv::load()
+
 # load any libaries 
 library(ggplot2)
 
