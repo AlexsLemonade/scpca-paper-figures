@@ -16,6 +16,9 @@ cellranger_log_file <- file.path(logs_dir, "cellranger-trace.txt")
 log_file_paths <- list("Alevin-fry" = af_log_file,
                       "Cell Ranger" = cellranger_log_file)
 
+# method palette
+palette_file <- here::here("palettes", "method-palette.tsv")
+
 # path to output plot
 plots_dir <- here::here("figures", "pngs")
 output_plot_file <- file.path(plots_dir, "FigS1A-time-memory-benchmarking.png")
@@ -80,10 +83,18 @@ grouped_log_df <- modified_log_df |>
 
 # Plot -------------------------------------------------------------------------
 
+# read in palette colors 
+palette <- readr::read_tsv(palette_file)
+
+# get list of all colors 
+method_colors <- palette$color |> 
+  purrr::set_names(palette$method)
+
+
 # compare run time in minutes
 time_plot <- ggplot(grouped_log_df, aes(x = method, y = total_time, fill = method)) +
   geom_boxplot(outlier.shape = NA) +
-  geom_sina(position = position_dodge(width = 0.05)) +
+  geom_sina(position = position_dodge(width = 0.05), color = "darkgrey") +
   theme_classic() +
   labs(x = "",
        y = "Total run time (minutes)") +
@@ -91,12 +102,13 @@ time_plot <- ggplot(grouped_log_df, aes(x = method, y = total_time, fill = metho
     legend.position = "none",
     aspect.ratio = 1,
     text = element_text(size=14)
-  )
+  ) +
+  scale_fill_manual(values = method_colors)
 
 # compare peak memory in GB
 memory_plot <- ggplot(grouped_log_df, aes(x = method, y = total_memory, fill = method)) +
   geom_boxplot(outlier.shape = NA) +
-  geom_sina(position = position_dodge(width = 0.05)) +
+  geom_sina(position = position_dodge(width = 0.05), color = "darkgrey") +
   theme_classic() +
   labs(x = "",
        y = "Peak memory (GB)") +
@@ -104,7 +116,8 @@ memory_plot <- ggplot(grouped_log_df, aes(x = method, y = total_memory, fill = m
     legend.position = "none",
     aspect.ratio = 1,
     text = element_text(size=14)
-  )
+  ) +
+  scale_fill_manual(values = method_colors)
 
 # combine into one side by side plot
 combined_plot <- time_plot | memory_plot
