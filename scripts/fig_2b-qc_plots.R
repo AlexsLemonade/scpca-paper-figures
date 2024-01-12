@@ -16,6 +16,7 @@ theme_set(
       # no background box for legend
       legend.background = element_blank(),
       # no axis ticks or labels
+      axis.line = element_blank(),
       axis.ticks = element_blank(),
       axis.text = element_blank(),
       # add a square around each of the plots
