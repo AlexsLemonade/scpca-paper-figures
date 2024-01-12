@@ -27,6 +27,10 @@ Below is a summary of all figures in the paper.
 
 Summary of libraries and types of libraries found on the Portal.
 
+**Figure 2**
+
+B. Simplified versions of plots in the main QC report.
+
 ## Generating figures and tables
 
 The `figures` and `tables` folders contain the most up-to-date version of each of the figures and tables, respectively.

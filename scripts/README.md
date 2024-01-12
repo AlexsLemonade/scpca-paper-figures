@@ -16,6 +16,15 @@ To run the script use the following command:
 op run -- Rscript sync-metadata.R
 ```
 
+2. `sync-data-files.R`: This script is used sync any data files for individual libraries needed to generate figures to a local folder.
+In particular, the `.rds` files for `SCPCS000001` will be stored to a folder within the root directory of this repo named `s3_files/SCPCS000001`.
+In order to generate some of the figures (see more on which figures require this script below), this script will be need to run first.
+To run the script use the following command:
+
+```sh
+op run -- Rscript sync-data-files.R
+```
+
 ## Generating figures and tables
 
 The following scripts can be used to generate figures and tables:
@@ -28,3 +37,6 @@ Before running this script, you must run `figure_setup/sync-metadata.R`.
 
 3. `table_s1-modality_summary.R`: This script is used to generate supplemental Table 1, which contains a summary of the types of libraries found in each project.
 Before running this script, you must run `figure_setup/sync-metadata.R`.
+
+4. `fig_2b-qc_plots.R`: This script is used generate Figure 2B, which includes simplified and miniature versions of the plots found in the main QC report included with each sample download.
+Before running this script, you must run `figure_setup/sync-data-files.R`.

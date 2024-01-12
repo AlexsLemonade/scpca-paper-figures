@@ -1,6 +1,8 @@
 # This script creates a table summarizing the total number of libraries and types 
 # of libraries for each project 
 
+renv::load()
+
 # load any libaries 
 library(ggplot2)
 
