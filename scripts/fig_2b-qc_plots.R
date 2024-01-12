@@ -172,7 +172,6 @@ filtered_coldata_df <- colData(filtered_sce) |>
 # plot showing low quality cells that are filtered out
 filtered_plot <- ggplot(filtered_coldata_df, aes(x = detected, y = subsets_mito_percent, color = scpca_filter)) +
   geom_point(alpha = 0.5, size = 0.2) +
-  geom_vline(xintercept = min_gene_cutoff, linetype = "dashed") +
   labs(
     x = "Number of genes detected",
     y = "Mitochondrial percentage",
@@ -196,6 +195,7 @@ umap_plot <- scater::plotUMAP(
 ) +
   scale_color_viridis_c() +
   theme(legend.position = "none",
+        axis.line = element_blank(),
         axis.ticks = element_blank(),
         axis.text = element_blank(),
         panel.background = element_rect(colour = "black", linewidth = 0.5),
