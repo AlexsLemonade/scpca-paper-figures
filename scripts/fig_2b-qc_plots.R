@@ -271,8 +271,8 @@ plot_list <- list(knee_plot,
                   filtered_plot,
                   umap_plot, 
                   hvg_plot)
-patchwork::wrap_plots(plot_list, ncol = 3) &
+combined_plot <- patchwork::wrap_plots(plot_list, ncol = 3) &
   theme(text = element_text(size = 10))
 
 # save files 
-ggsave(output_plot_file, width = 8.5, height = 5.5, units = "in")
+ggsave(output_plot_file, plot = combined_plot, width = 8.5, height = 5.5, units = "in")
