@@ -90,39 +90,51 @@ palette <- readr::read_tsv(palette_file)
 method_colors <- palette$color |> 
   purrr::set_names(palette$method)
 
+# order by time
+time_ordered_df <- grouped_log_df |> 
+  dplyr::mutate(run_id = forcats::fct_reorder(run_id, total_time))
 
 # compare run time in minutes
-time_plot <- ggplot(grouped_log_df, aes(x = method, y = total_time, fill = method)) +
-  geom_boxplot(outlier.shape = NA) +
-  geom_sina(position = position_dodge(width = 0.05), color = "darkgrey") +
+time_plot <- ggplot(time_ordered_df, aes(x = run_id, y = total_time, fill = method)) + 
+                      geom_col(position="dodge") +
+  facet_wrap(vars(seq_unit), 
+             scales = "free") + 
   theme_classic() +
   labs(x = "",
-       y = "Total run time (minutes)") +
+       y = "Total run time (minutes)",
+       fill = "") +
   theme(
-    legend.position = "none",
     aspect.ratio = 1,
-    text = element_text(size=14)
+    text = element_text(size=14),
+    axis.text.x = element_text(angle = 90, vjust = 0.5)
   ) +
   scale_fill_manual(values = method_colors)
 
+# order by memory
+mem_ordered_df <- grouped_log_df |> 
+  dplyr::mutate(run_id = forcats::fct_reorder(run_id, total_memory))
+
+
 # compare peak memory in GB
-memory_plot <- ggplot(grouped_log_df, aes(x = method, y = total_memory, fill = method)) +
-  geom_boxplot(outlier.shape = NA) +
-  geom_sina(position = position_dodge(width = 0.05), color = "darkgrey") +
+memory_plot <- ggplot(mem_ordered_df, aes(x = run_id, y = total_memory, fill = method)) + 
+  geom_col(position="dodge") +
+  facet_wrap(vars(seq_unit), 
+             scales = "free") + 
   theme_classic() +
   labs(x = "",
-       y = "Peak memory (GB)") +
+       y = "Peak memory (GB)", 
+       fill = "") +
   theme(
-    legend.position = "none",
     aspect.ratio = 1,
-    text = element_text(size=14)
+    text = element_text(size=14),
+    axis.text.x = element_text(angle = 90, vjust = 0.5)
   ) +
   scale_fill_manual(values = method_colors)
 
 # combine into one side by side plot
-combined_plot <- time_plot | memory_plot
+combined_plot <- patchwork::wrap_plots(list(time_plot, memory_plot), ncol = 1, guides = "collect")
 
 # export as png
 # using width and height that were exported when width and height weren't specified
-ggsave(output_plot_file, plot = combined_plot, width = 11, height = 7)
+ggsave(output_plot_file, plot = combined_plot, width = 10, height = 10)
 
