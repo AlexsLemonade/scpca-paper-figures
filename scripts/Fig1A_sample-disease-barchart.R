@@ -23,7 +23,7 @@ diagnosis_group_palette <- here::here("palettes", "diagnosis-group-palette.tsv")
 
 # output files 
 plots_dir <- here::here("figures", "pngs")
-output_plot_file <- file.path(plots_dir, "Fig1-sample-summary.png")
+output_plot_file <- file.path(plots_dir, "Fig1_sample-summary.png")
 
 # Prep sample metadata ------------------------------------------------------
 

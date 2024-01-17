@@ -44,7 +44,7 @@ processed_sce <- readr::read_rds(processed_sce_file)
 
 # define output file paths 
 plots_dir <- here::here("figures", "pngs") 
-output_plot_file <- file.path(plots_dir, "Fig2B-mini-qc-plots.png")
+output_plot_file <- file.path(plots_dir, "Fig2B_mini-qc-plots.png")
 
 # Knee plot --------------------------------------------------------------------
 

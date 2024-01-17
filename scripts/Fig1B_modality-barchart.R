@@ -22,7 +22,7 @@ suspension_palette_file <- file.path(root_dir, "palettes", "suspension-palette.t
 
 # output files 
 plots_dir <- file.path(root_dir, "figures", "pngs")
-output_plot_file <- file.path(plots_dir, "Fig1B-modality-summary.png")
+output_plot_file <- file.path(plots_dir, "Fig1B_modality-summary.png")
 
 # set order of modalities for final plot 
 modality_order <- c("Single suspension",

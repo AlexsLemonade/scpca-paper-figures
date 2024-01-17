@@ -29,14 +29,17 @@ op run -- Rscript sync-data-files.R
 
 The following scripts can be used to generate figures and tables:
 
-1. `fig_1a-sample_disease_barchart.R`: This script is used to generate Figure 1A, which includes a summary of the types of diagnoses found in the ScPCA portal.
+1. `Fig1A_sample-disease-barchart.R`: This script is used to generate Figure 1A, which includes a summary of the types of diagnoses found in the ScPCA portal.
 Before running this script, you must run `figure_setup/sync-metadata.R`.
 
-2. `fig_1b-modality_barchart.R`: This script is used to generate Figure 1B, which includes a summary of the types of modalities found in the ScPCA portal.
+2. `Fig1B_modality-barchart.R`: This script is used to generate Figure 1B, which includes a summary of the types of modalities found in the ScPCA portal.
 Before running this script, you must run `figure_setup/sync-metadata.R`.
 
-3. `table_s1-modality_summary.R`: This script is used to generate supplemental Table 1, which contains a summary of the types of libraries found in each project.
+3. `TableS1_modality-summary.R`: This script is used to generate supplemental Table 1, which contains a summary of the types of libraries found in each project.
 Before running this script, you must run `figure_setup/sync-metadata.R`.
 
-4. `fig_2b-qc_plots.R`: This script is used generate Figure 2B, which includes simplified and miniature versions of the plots found in the main QC report included with each sample download.
+4. `Fig2B_qc-plots.R`: This script is used generate Figure 2B, which includes simplified and miniature versions of the plots found in the main QC report included with each sample download.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
+
+5. `FigS1A_memory-time-comparison.R`: This script is used to generate supplemental Figure 1A, which shows a comparison of total run time and peak memory usage for Cell Ranger and Alevin-fry.
+This script uses the trace files found in `nextflow_logs`.
