@@ -21,7 +21,7 @@ palette_file <- here::here("palettes", "method-palette.tsv")
 
 # path to output plot
 plots_dir <- here::here("figures", "pngs")
-output_plot_file <- file.path(plots_dir, "FigS1A-time-memory-benchmarking.png")
+output_plot_file <- file.path(plots_dir, "FigS1A_time-memory-benchmarking.png")
 
 # define single-cell and single-nuc samples
 single_cell <- c("SCPCR000003", "SCPCR000126", "SCPCR000127")
