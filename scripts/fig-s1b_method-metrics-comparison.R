@@ -8,6 +8,21 @@ renv::load()
 library(ggplot2)
 library(SingleCellExperiment)
 
+# Set default ggplot theme
+theme_set(
+  theme_classic() +
+    theme(
+      #plot.margin = margin(rep(20, 4)),
+      strip.background = element_rect(fill = "transparent"),
+      strip.text.x = element_text(size = 8),
+      axis.text.x = element_text(size = 6),
+      legend.title = element_blank(),
+      legend.position = "top"
+    )
+)
+
+set.seed(2024)
+
 # Set up -----------------------------------------------------------------------
 
 # list of libraries 
@@ -31,6 +46,15 @@ cellranger_dir_list <- file.path(cellranger_dir, all_libs) |>
 # read in mito genes 
 mito_file <- here::here("s3_files", "reference_files", "Homo_sapiens.GRCh38.104.mitogenes.txt")
 mito_genes <- readLines(mito_file)
+
+# method palette
+palette_file <- here::here("palettes", "method-palette.tsv")
+
+# output plot 
+plots_dir <- here::here("figures", "pngs")
+umi_plot_file <- file.path(plots_dir, "FigS1B-umi-benchmarking.png")
+genes_detected_plot_file <- file.path(plots_dir, "FigS1C-genes-detected-benchmarking.png")
+gene_exp_plot_file <- file.path(plots_dir, "FigS1D-gene-exp-benchmarking.png")
 
 # Create SCE objects -----------------------------------------------------------
 
@@ -84,41 +108,62 @@ common_cells <- cell_counts |>
   dplyr::pull(cell_id)
 
 coldata_common <- coldata_df |>
-  dplyr::filter(cell_id %in% common_cells) 
+  dplyr::filter(cell_id %in% common_cells) |> 
+  split(seq_unit)
 
 # Plot cell metrics ------------------------------------------------------------
 
+# read in palette colors 
+palette <- readr::read_tsv(palette_file)
+
+# get list of all colors 
+method_colors <- palette$color |> 
+  purrr::set_names(palette$method)
+
 # create combined UMI per cell plot 
-umi_plot <- ggplot(coldata_common, aes(x = sum, color = tool)) + 
-  geom_density() + 
-  facet_wrap(vars(plot_id)) +
-  scale_x_log10(labels = scales::label_number()) +
-  theme_bw() + 
-  theme(strip.text.x = element_text(size = 8),
-        strip.background = element_rect(fill = "transparent"),
-        axis.text.x = element_text(size = 6),
-        legend.title = element_blank(),
-        legend.position = "top") +
-  labs(x = expression(paste(Log[10], " total UMI per cell")),
-       y = "") +
-  #TODO: Replace with palette colors 
-  scale_color_manual(values = c("#D55E00", "#0072B2"))
+umi_plot_list <- coldata_common |> 
+  purrr::map(\(df){
+    ggplot(df, aes(x = sum, color = tool)) + 
+      geom_density() + 
+      facet_grid(cols = vars(run_id),
+                 rows = vars(seq_unit), 
+                 scales = "free") +
+      scale_x_log10(labels = scales::label_number()) +
+      labs(x = "",
+           y = "", 
+           color = "") +
+      scale_color_manual(values = method_colors)
+  }) |> 
+  patchwork::wrap_plots(ncol = 1, guides = 'collect') +
+  labs(tag = expression(paste(Log[10], " total UMI per cell"))) +
+  theme(
+    plot.tag = element_text(size = rel(1)),
+    plot.tag.position = "bottom"
+  )
+  
+ggsave(filename = umi_plot_file, plot = umi_plot_list)
 
-genes_plot <- ggplot(coldata_common, aes(x = detected, color = tool)) + 
-  geom_density() + 
-  facet_wrap(~ plot_id) +
-  scale_x_log10(labels = scales::label_number()) +
-  theme_bw() + 
-  theme(strip.text.x = element_text(size = 8),
-        strip.background = element_rect(fill = "transparent"),
-        axis.text.x = element_text(size = 6),
-        legend.title = element_blank(),
-        legend.position = "top") +
-  labs(x = expression(paste(Log[10], " total genes detected per cell")),
-       y = "") +
-  scale_color_manual(values = c("#D55E00", "#0072B2"))
+genes_plot_list <- coldata_common |> 
+  purrr::map(\(df){
+    ggplot(df, aes(x = detected, color = tool)) + 
+      geom_density() + 
+      facet_grid(cols = vars(run_id),
+                 rows = vars(seq_unit), 
+                 scales = "free") +
+      scale_x_log10(labels = scales::label_number()) +
+      labs(x = "",
+           y = "", 
+           color = "") +
+      scale_color_manual(values = method_colors)
+  }) |> 
+  patchwork::wrap_plots(ncol = 1, guides = 'collect') +
+  labs(tag = expression(paste(Log[10], " total genes detected per cell"))) +
+  theme(
+    plot.tag = element_text(size = rel(1)),
+    plot.tag.position = "bottom"
+  )
 
-cell_metrics_plots <- patchwork::wrap_plots(list(umi_plot, genes_plot), ncol = 1, guides = 'collect')
+ggsave(filename = genes_detected_plot_file, plot = genes_plot_list)
 
 # prep row data ----------------------------------------------------------------
 
@@ -129,6 +174,7 @@ rowdata_df <- all_sces |>
     ~ purrr::map_df(.x, scpcaTools::rowdata_to_df, .id = "run_id"),
     .id = "tool"
   ) |>
+  # annotate as single cell vs. single nuclei
   dplyr::mutate(seq_unit = dplyr::case_when(run_id %in% single_cell ~ "Cell",
                                             run_id %in% single_nuclei ~ "Nuclei"),
                 plot_id = glue::glue("{run_id}-{seq_unit}"))
@@ -137,9 +183,9 @@ rowdata_df <- all_sces |>
 rowdata_cor <- rowdata_df |>
   dplyr::filter(detected >= 5.0) |> 
   # spread table to put mean expression for Alevin-fry and Cell ranger in its own columns for plotting
-  dplyr::select(tool, gene_id, plot_id, mean) |>
+  dplyr::select(tool, gene_id, run_id, seq_unit, mean) |>
   # spread the mean expression stats to one column per caller
-  tidyr::pivot_wider(id_cols = c(gene_id, plot_id),
+  tidyr::pivot_wider(id_cols = c(gene_id, run_id, seq_unit),
                      names_from = c("tool"),
                      values_from = mean) |>
   # drop rows with NA values to ease correlation calculations
@@ -150,13 +196,10 @@ rowdata_cor <- rowdata_df |>
 # plot correlation of alevin-fry to Cellranger for each sample 
 gene_exp_plot <- ggplot(rowdata_cor, aes(x = `Alevin-fry`, y = `Cell Ranger`)) +
   geom_point(size = 0.5, alpha = 0.1) + 
-  facet_wrap(~ plot_id) + 
+  facet_wrap(~ seq_unit + run_id) +
   scale_x_log10(labels = scales::label_number()) + 
   scale_y_log10(labels = scales::label_number()) + 
   labs(x = "Cell Ranger mean gene expression", y = "Alevin-fry mean gene expression") + 
-  theme_bw() + 
-  theme(axis.text = element_text(size = 6),
-        strip.background = element_rect()) +
-  ggpubr::stat_cor(aes(label = after_stat(r.label)), method = "pearson", size = 2)
+  ggpubr::stat_cor(aes(label = after_stat(r.label)), method = "pearson", size = 4)
 
-cell_metrics_plots / gene_exp_plot
+ggsave(filename = gene_exp_plot_file, plot = gene_exp_plot)
