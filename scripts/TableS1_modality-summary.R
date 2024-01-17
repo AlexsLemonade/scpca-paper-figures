@@ -22,7 +22,7 @@ diagnosis_groupings_file <- file.path(sample_info_dir, "diagnosis-groupings.tsv"
 # output files 
 table_dir <- file.path(root_dir, "tables")
 fs::dir_create(table_dir)
-output_table_file <- file.path(table_dir, "Supplemental-table-1-modality-overview.tsv")
+output_table_file <- file.path(table_dir, "TableS1-modality-overview.tsv")
 
 # read in project whitelist
 project_whitelist <- readLines(project_whitelist_file)
