@@ -50,6 +50,10 @@ mito_genes <- readLines(mito_file)
 # method palette
 palette_file <- here::here("palettes", "method-palette.tsv")
 
+# library metadata
+# we need this to connect run ID to library ID
+library_metadata_file <- file.path(root_dir, "s3_files", "scpca-library-metadata.tsv")
+
 # output plot 
 plots_dir <- here::here("figures", "pngs")
 umi_plot_file <- file.path(plots_dir, "FigS1B-umi-benchmarking.png")
@@ -94,10 +98,8 @@ coldata_df <- all_sces |>
     .id = "tool"
     ) |> 
   # create new columns with seq unit 
-  dplyr::mutate(seq_unit = dplyr::case_when(run_id %in% single_cell ~ "Cell",
-                                            run_id %in% single_nuclei ~ "Nuclei"),
-                # create title for plots 
-                plot_id = glue::glue("{run_id}-{seq_unit}"))
+  dplyr::mutate(seq_unit = dplyr::case_when(run_id %in% single_cell ~ "Single-cell",
+                                            run_id %in% single_nuclei ~ "Single-Nuclei"))
 
 # filter for cells that are found in both af + cellranger
 cell_counts <- coldata_df |>  
@@ -109,7 +111,8 @@ common_cells <- cell_counts |>
 
 coldata_common <- coldata_df |>
   dplyr::filter(cell_id %in% common_cells) |> 
-  split(seq_unit)
+  dplyr::group_by(seq_unit) |> 
+  dplyr::group_split()
 
 # Plot cell metrics ------------------------------------------------------------
 
@@ -176,8 +179,7 @@ rowdata_df <- all_sces |>
   ) |>
   # annotate as single cell vs. single nuclei
   dplyr::mutate(seq_unit = dplyr::case_when(run_id %in% single_cell ~ "Cell",
-                                            run_id %in% single_nuclei ~ "Nuclei"),
-                plot_id = glue::glue("{run_id}-{seq_unit}"))
+                                            run_id %in% single_nuclei ~ "Nuclei"))
 
 # remove genes with low detection 
 rowdata_cor <- rowdata_df |>
