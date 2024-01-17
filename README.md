@@ -29,7 +29,8 @@ Summary of libraries and types of libraries found on the Portal.
 
 **Figure 2**
 
-B. Simplified versions of plots in the main QC report.
+- B. Simplified versions of plots in the main QC report.
+- C. Illustration of individual sample download folder.
 
 ## Generating figures and tables
 
