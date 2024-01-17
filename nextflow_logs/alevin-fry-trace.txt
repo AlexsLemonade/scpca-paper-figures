@@ -1,0 +1,25 @@
+task_id	hash	native_id	name	status	exit	submit	duration	realtime	%cpu	peak_rss	peak_vmem	rchar	wchar
+1	a2/979848	f526e9b6-f598-4e6e-ad65-626c7a8b5094	alevin (SCPCR000003-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 16:41:59.810	27m 59s	23m 27s	716.6%	12.6 GB	16.7 GB	29.7 GB	1.8 GB
+7	78/41b5f8	ba73b486-b597-4f56-9a0c-505fc5c6686e	generate_permit (SCPCR000003-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 17:09:59.042	59.4s	11s	100.0%	279.1 MB	563.4 MB	1.9 GB	9.1 MB
+5	fb/3bae44	b1a8b3ac-a6ce-42ba-8a11-fce84a1cc694	alevin (SCPCR000221-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 16:41:59.833	29m 19s	26m 7s	701.2%	12.5 GB	16.6 GB	18.5 GB	1.5 GB
+8	8e/73344f	50d00ff7-47c5-4fb3-8bc1-75d9e25f7345	collate_fry (SCPCR000003-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 17:10:58.741	59.7s	9s	482.5%	733.8 MB	1.4 GB	5 GB	3.2 GB
+9	63/3e8685	4d4119d0-a278-4880-8e7a-16ea433dfa16	generate_permit (SCPCR000221-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 17:11:18.811	49.7s	8s	100.1%	279 MB	563.4 MB	1.6 GB	6.5 MB
+11	10/c9ea39	511537e3-d84b-43bf-a38e-4e59101dc36f	collate_fry (SCPCR000221-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 17:12:08.775	49.7s	4s	498.8%	884.9 MB	1.6 GB	3.1 GB	1.6 GB
+10	79/610013	67111272-72f8-4f11-8b9b-440632cc0410	quant_fry (SCPCR000003-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 17:11:58.798	1m 30s	27s	753.5%	745.1 MB	12 GB	1.6 GB	31.6 MB
+12	b3/2df088	cc939768-67c7-4447-928e-fe2dce851f02	quant_fry (SCPCR000221-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 17:12:58.768	1m 30s	43s	731.1%	545.6 MB	6.3 GB	850.7 MB	251.8 MB
+2	34/c50e39	8313b639-e1eb-49d5-98c8-84dafc2b901f	alevin (SCPCR000126-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 16:41:59.829	49m 19s	43m 37s	716.6%	12.6 GB	16.6 GB	30.8 GB	7.1 GB
+3	2a/5c16b8	e643cb00-9362-4656-88d0-8e67b8697710	alevin (SCPCR000127-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 16:41:59.831	52m 19s	46m 25s	716.3%	12.6 GB	16.6 GB	31.5 GB	7.6 GB
+13	2c/e8ca7a	9f95c4b3-5e99-45e0-94cf-d7e8e0c8c953	generate_permit (SCPCR000126-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 17:31:18.872	5m 30s	2m 29s	28.7%	284.4 MB	563.4 MB	7.2 GB	14.3 MB
+4	8a/70179a	59e3112a-3a5c-45a2-bdba-8865f36c5bee	alevin (SCPCR000220-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 16:41:59.831	56m 29s	52m 20s	709.7%	12.7 GB	16.6 GB	25.2 GB	2.8 GB
+16	2d/bddffd	1a77931c-e1b3-460d-a38a-f1cd1388978b	generate_permit (SCPCR000220-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 17:38:28.841	1m 10s	13s	105.6%	279 MB	563.4 MB	2.8 GB	7.5 MB
+14	81/48b214	ee495f6c-db6a-4d8d-9815-b50a0884fb0c	generate_permit (SCPCR000127-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 17:34:18.755	5m 30s	2m 53s	26.4%	302.9 MB	563.4 MB	7.7 GB	14.4 MB
+17	a2/214f05	18812049-8fa2-432c-8804-642f01bd62f8	collate_fry (SCPCR000127-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 17:39:38.813	1m 30s	8s	507.3%	827.6 MB	1.5 GB	5.5 GB	2.8 GB
+15	63/a7e7fb	45d39a49-1dfb-49d8-9888-326ba16b2e75	collate_fry (SCPCR000126-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 17:36:48.763	6m 10s	1m 38s	202.5%	1 GB	1.7 GB	19.6 GB	12.4 GB
+19	b5/3f6cf1	167cbcff-f530-44f7-ac8b-660bd272f145	quant_fry (SCPCR000126-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 17:41:08.991	2m 10s	50s	730.5%	594.8 MB	5.9 GB	1.4 GB	259.6 MB
+18	69/5110c3	c783f1af-8172-42cb-bd38-5c25945b4608	collate_fry (SCPCR000220-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 17:39:48.744	4m 50s	1m 44s	204.8%	1 GB	1.8 GB	20.9 GB	13.3 GB
+20	07/39d8fb	8c40198a-5eb9-4039-af9f-dd9fb785f078	quant_fry (SCPCR000127-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 17:42:58.758	6m	2m 13s	722.8%	1.4 GB	10.6 GB	6.2 GB	1004 MB
+21	6c/cbecdf	7e406958-3a8c-421c-8c76-9ef151a4f801	quant_fry (SCPCR000220-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 17:44:38.851	6m 20s	2m 19s	725.6%	1.4 GB	11 GB	6.7 GB	1023.3 MB
+6	a0/253bef	3c1c5010-c23b-4dd6-a628-c7beb36ae6cf	alevin (SCPCR000495-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 16:41:59.840	1h 43m 59s	1h 37m 25s	711.3%	12.9 GB	16.6 GB	28.3 GB	2.2 GB
+22	58/3038f5	7bf4701b-d844-460a-8fa1-79749f9baa13	generate_permit (SCPCR000495-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 18:25:58.837	59.7s	11s	100.1%	279.3 MB	563.4 MB	2.2 GB	8.4 MB
+23	25/c3aa45	d757a962-b16d-4b86-be27-b64e254e7a7d	collate_fry (SCPCR000495-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 18:26:58.816	1m 10s	7s	454.4%	825.9 MB	1.6 GB	4.5 GB	2.3 GB
+24	68/5e3d13	3742f211-a5a6-4ae8-9dfd-e70447261301	quant_fry (SCPCR000495-Homo_sapiens.GRCh38.104.spliced_intron.txome)	COMPLETED	0	2024-01-11 18:28:08.932	3m	1m 44s	763.4%	609.7 MB	7.8 GB	1.2 GB	341.3 MB
