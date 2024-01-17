@@ -3,7 +3,7 @@
 
 renv::load()
 
-# sync results files for SCPCP000001 
+# sync results files for SCPCP000001
 qc_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000001/SCPCS000001"
 qc_local_files <- here::here("s3_files", "SCPCS000001")
 fs::dir_create(qc_local_files)
@@ -19,20 +19,28 @@ cellranger_s3_dir <- "s3://nextflow-ccdl-results/scpca/cellranger-quant"
 
 # create local directory 
 local_benchmark_dir <- here::here("s3_files", "benchmarking_results")
-fs::dir_create(local_benchmark_dir)
+af_local_dir <- file.path(local_benchmark_dir, "alevin-fry")
+fs::dir_create(af_local_dir)
+cellranger_local_dir <- file.path(local_benchmark_dir, "cellranger")
+fs::dir_create(cellranger_local_dir)
 
-# create includes statement to use for copying
-aws_includes <- paste("--include '", benchmarking_run_ids, "*'", sep = '', collapse = ' ')
+# get list of directories containing results we want to copy over
+# we only want the specific benchmarking runs that use splici, salign, and cr-like-em
+af_dirs <- glue::glue("{alevin_s3_dir}/{benchmarking_run_ids}-Homo_sapiens.GRCh38.104.spliced_intron.txome-salign-cr-like-em")
 
-# sync alevin-fry 
-sync_call <- glue::glue(
-  "aws s3 cp '{alevin_s3_dir}' '{local_benchmark_dir}' --exclude '*' {aws_includes} --exclude '*.rad' --recursive"
-)
-system(sync_call)
+# we only want alevin folder and any json files 
+# copy to folder labeled with run id 
+af_sync <- glue::glue(
+  "aws s3 cp '{af_dirs}' '{af_local_dir}/{benchmarking_run_ids}' --exclude '*' --include 'alevin/*' --include '*.json' --recursive"
+) |>
+  purrr::map(system)
 
-# sync cell ranger 
-# exclude large bam files 
-sync_call <- glue::glue(
-  "aws s3 cp '{cellranger_s3_dir}' '{local_benchmark_dir}' --exclude '*' {aws_includes} --exclude '*/SC_RNA_COUNTER_CS/*' --exclude '*/SPATIAL_RNA_COUNTER_CS/*' --exclude '*.bam' --exclude '*.bam.bai' --recursive"
-)
-system(sync_call)
+# list of cellranger directories to copy over
+cellranger_dirs <- glue::glue("{cellranger_s3_dir}/{benchmarking_run_ids}-GRCh38_104_cellranger_full-mRNA")
+
+# we only need the filtered h5 file 
+# copy each file to folder labeled with run id
+cellranger_sync <- glue::glue(
+  "aws s3 cp '{cellranger_dirs}' '{cellranger_local_dir}/{benchmarking_run_ids}' --exclude '*' --include 'outs/filtered*.h5' --recursive"
+) |> 
+  purrr::map(system)
