@@ -48,11 +48,12 @@ mito_file <- here::here("s3_files", "reference_files", "Homo_sapiens.GRCh38.104.
 mito_genes <- readLines(mito_file)
 
 # method palette
-palette_file <- here::here("palettes", "method-palette.tsv")
+method_palette_file <- here::here("palettes", "method-palette.tsv")
+suspension_palette_file <- here::here("palettes", "suspension-palette.tsv")
 
 # library metadata
 # we need this to connect run ID to library ID
-library_metadata_file <- file.path(root_dir, "s3_files", "scpca-library-metadata.tsv")
+library_metadata_file <- here::here("s3_files", "scpca-library-metadata.tsv")
 
 # output plot 
 plots_dir <- here::here("figures", "pngs")
@@ -92,6 +93,14 @@ all_sces <- list(af_sces, cellranger_sces) |>
 
 # Prep for plotting ------------------------------------------------------------
 
+# read in library metadata
+library_df <- readr::read_tsv(library_metadata_file) |> 
+  dplyr::select(run_id = scpca_run_id, scpca_library_id)
+
+# read in suspension palette 
+suspension_palette <- readr::read_tsv(suspension_palette_file) |> 
+  dplyr::rename(seq_unit = suspension_type)
+
 # create a data frame with coldata info for each tool, run id combo 
 coldata_df <- all_sces |> 
   purrr::map_df(~ purrr::map_df(.x, scpcaTools::coldata_to_df, .id = "run_id"),
@@ -99,7 +108,10 @@ coldata_df <- all_sces |>
     ) |> 
   # create new columns with seq unit 
   dplyr::mutate(seq_unit = dplyr::case_when(run_id %in% single_cell ~ "Single-cell",
-                                            run_id %in% single_nuclei ~ "Single-Nuclei"))
+                                            run_id %in% single_nuclei ~ "Single-nuclei")) |>
+  dplyr::left_join(library_df) |>
+  dplyr::mutate(plot_id = glue::glue("{scpca_library_id} ({seq_unit})")) |> 
+  dplyr::left_join(suspension_palette)
 
 # filter for cells that are found in both af + cellranger
 cell_counts <- coldata_df |>  
@@ -110,63 +122,61 @@ common_cells <- cell_counts |>
   dplyr::pull(cell_id)
 
 coldata_common <- coldata_df |>
-  dplyr::filter(cell_id %in% common_cells) |> 
-  dplyr::group_by(seq_unit) |> 
-  dplyr::group_split()
+  dplyr::filter(cell_id %in% common_cells)
+
+# Set up colors ----------------------------------------------------------------
+
+# read in method palette colors 
+method_palette <- readr::read_tsv(method_palette_file)
+
+# get list of all colors 
+method_colors <- method_palette$color |> 
+  purrr::set_names(method_palette$method)
+
+# suspension colors 
+suspension_palette <- readr::read_tsv(suspension_palette_file)
+
+# get list of all colors 
+suspension_colors <- suspension_palette$color |> 
+  purrr::set_names(suspension_palette$suspension_type)
+
+# define suspension backgrounds to use on facet strips 
+backgrounds <- list(element_rect(fill = suspension_colors[["Single-cell"]]),
+                    element_rect(fill = suspension_colors[["Single-cell"]]),
+                    element_rect(fill = suspension_colors[["Single-cell"]]),
+                    element_rect(fill = suspension_colors[["Single-nuclei"]]),
+                    element_rect(fill = suspension_colors[["Single-nuclei"]]),
+                    element_rect(fill = suspension_colors[["Single-nuclei"]]))
 
 # Plot cell metrics ------------------------------------------------------------
 
-# read in palette colors 
-palette <- readr::read_tsv(palette_file)
-
-# get list of all colors 
-method_colors <- palette$color |> 
-  purrr::set_names(palette$method)
-
 # create combined UMI per cell plot 
-umi_plot_list <- coldata_common |> 
-  purrr::map(\(df){
-    ggplot(df, aes(x = sum, color = tool)) + 
-      geom_density() + 
-      facet_grid(cols = vars(run_id),
-                 rows = vars(seq_unit), 
-                 scales = "free") +
-      scale_x_log10(labels = scales::label_number()) +
-      labs(x = "",
-           y = "", 
-           color = "") +
-      scale_color_manual(values = method_colors)
-  }) |> 
-  patchwork::wrap_plots(ncol = 1, guides = 'collect') +
-  labs(tag = expression(paste(Log[10], " total UMI per cell"))) +
-  theme(
-    plot.tag = element_text(size = rel(1)),
-    plot.tag.position = "bottom"
-  )
-  
-ggsave(filename = umi_plot_file, plot = umi_plot_list)
+umi_plot <- ggplot(coldata_common, aes(x = sum, color = tool)) + 
+  geom_density() + 
+  ggh4x::facet_wrap2(~plot_id,
+                     scales = "free",
+                     strip = ggh4x::strip_themed(background_x = backgrounds)) +
+  scale_x_log10(labels = scales::label_number()) +
+  labs(x = expression(paste(Log[10], " total UMI per cell")),
+       y = "Density", 
+       color = "") +
+  scale_color_manual(values = method_colors)
 
-genes_plot_list <- coldata_common |> 
-  purrr::map(\(df){
-    ggplot(df, aes(x = detected, color = tool)) + 
-      geom_density() + 
-      facet_grid(cols = vars(run_id),
-                 rows = vars(seq_unit), 
-                 scales = "free") +
-      scale_x_log10(labels = scales::label_number()) +
-      labs(x = "",
-           y = "", 
-           color = "") +
-      scale_color_manual(values = method_colors)
-  }) |> 
-  patchwork::wrap_plots(ncol = 1, guides = 'collect') +
-  labs(tag = expression(paste(Log[10], " total genes detected per cell"))) +
-  theme(
-    plot.tag = element_text(size = rel(1)),
-    plot.tag.position = "bottom"
-  )
+ggsave(filename = umi_plot_file, plot = umi_plot)
 
-ggsave(filename = genes_detected_plot_file, plot = genes_plot_list)
+# genes detected per cell plot
+gene_exp_plot <- ggplot(coldata_common, aes(x = detected, color = tool)) + 
+  geom_density() + 
+  ggh4x::facet_wrap2(~plot_id,
+                     scales = "free",
+                     strip = ggh4x::strip_themed(background_x = backgrounds)) +
+  scale_x_log10(labels = scales::label_number()) +
+  labs(x = expression(paste(Log[10], " total genes detected per cell")),
+       y = "Density", 
+       color = "") +
+  scale_color_manual(values = method_colors)
+
+ggsave(filename = genes_detected_plot_file, plot = gene_exp_plot)
 
 # prep row data ----------------------------------------------------------------
 
@@ -178,16 +188,18 @@ rowdata_df <- all_sces |>
     .id = "tool"
   ) |>
   # annotate as single cell vs. single nuclei
-  dplyr::mutate(seq_unit = dplyr::case_when(run_id %in% single_cell ~ "Cell",
-                                            run_id %in% single_nuclei ~ "Nuclei"))
+  dplyr::mutate(seq_unit = dplyr::case_when(run_id %in% single_cell ~ "Single-cell",
+                                            run_id %in% single_nuclei ~ "Single-nuclei")) |> 
+  dplyr::left_join(library_df) |>
+  dplyr::mutate(plot_id = glue::glue("{scpca_library_id} ({seq_unit})"))
 
 # remove genes with low detection 
 rowdata_cor <- rowdata_df |>
   dplyr::filter(detected >= 5.0) |> 
   # spread table to put mean expression for Alevin-fry and Cell ranger in its own columns for plotting
-  dplyr::select(tool, gene_id, run_id, seq_unit, mean) |>
+  dplyr::select(tool, gene_id, plot_id, seq_unit, mean) |>
   # spread the mean expression stats to one column per caller
-  tidyr::pivot_wider(id_cols = c(gene_id, run_id, seq_unit),
+  tidyr::pivot_wider(id_cols = c(gene_id, plot_id, seq_unit),
                      names_from = c("tool"),
                      values_from = mean) |>
   # drop rows with NA values to ease correlation calculations
@@ -196,12 +208,16 @@ rowdata_cor <- rowdata_df |>
 # Plot gene metrics ------------------------------------------------------------
 
 # plot correlation of alevin-fry to Cellranger for each sample 
-gene_exp_plot <- ggplot(rowdata_cor, aes(x = `Alevin-fry`, y = `Cell Ranger`)) +
+gene_exp_plot <- ggplot(rowdata_cor, aes(x = `Alevin-fry`, y = `Cell Ranger`, color = seq_unit)) +
   geom_point(size = 0.5, alpha = 0.1) + 
-  facet_wrap(~ seq_unit + run_id) +
+  ggh4x::facet_wrap2(~plot_id,
+                     strip = ggh4x::strip_themed(background_x = backgrounds)) +
   scale_x_log10(labels = scales::label_number()) + 
   scale_y_log10(labels = scales::label_number()) + 
   labs(x = "Cell Ranger mean gene expression", y = "Alevin-fry mean gene expression") + 
-  ggpubr::stat_cor(aes(label = after_stat(r.label)), method = "pearson", size = 4)
+  ggpubr::stat_cor(aes(label = after_stat(rr.label)), method = "pearson", size = 4) +
+  # color points by suspension type
+  scale_color_manual(values = suspension_colors) +
+  theme(legend.position = "none")
 
 ggsave(filename = gene_exp_plot_file, plot = gene_exp_plot)
