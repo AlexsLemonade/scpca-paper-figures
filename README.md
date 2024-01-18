@@ -16,7 +16,7 @@ This repo contains the figures and tables included in the ScPCA manuscript.
 
 ## Summary of figures and tables
 
-Below is a summary of all figures in the paper.
+Below is a summary of all figures and tables in the paper.
 
 **Figure 1**
 
@@ -43,7 +43,30 @@ Summary of libraries and types of libraries found on the Portal.
 
 The `figures` and `tables` folders contain the most up-to-date version of each of the figures and tables, respectively.
 The `scripts` directory contains all scripts used to create the figures and tables.
-See the [`README` for the `scripts` directory](./scripts/README.md) for more information on generating figures.
+See the [`README` for the `scripts` directory](./scripts/README.md) for more information on figure and table scripts.
+
+To generate all figures and tables, run the script [`generate-figures-tables.sh`](generate-figures-tables.sh) as:
+
+```sh
+bash generate-figures-tables.sh
+```
+
+Note that this script assumes that the `s3_files` directory has been populated with relevant data files.
+These files can be obtained by first running the figure setup scripts, which currently require S3 bucket access as a Data Lab member.
+Setup scripts can be run as:
+
+```sh
+Rscript scripts/figure_setup/sync-metadata.R
+Rscript scripts/figure_setup/sync-data-files.R
+```
+
+If you have setup `1Password` to handle your AWS credentials, you will need to prefix those lines with `op run --`:
+
+```sh
+op run -- Rscript scripts/figure_setup/sync-metadata.R
+op run -- Rscript scripts/figure_setup/sync-data-files.R
+```
+
 
 ## Sample info
 
