@@ -52,6 +52,14 @@ Rscript scripts/figure_setup/sync-metadata.R
 Rscript scripts/figure_setup/sync-data-files.R
 ```
 
+If you have setup `1Password` to handle your AWS credentials, you will need to prefix those lines with `op run --`:
+
+```sh
+op run -- Rscript scripts/figure_setup/sync-metadata.R
+op run -- Rscript scripts/figure_setup/sync-data-files.R
+```
+
+
 ## Sample info
 
 The `sample_info` folder contains metadata files used to create figures and tables.
