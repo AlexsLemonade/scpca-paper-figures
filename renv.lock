@@ -132,7 +132,6 @@
       "Package": "BiocVersion",
       "Version": "3.18.1",
       "Source": "Bioconductor",
-      "Repository": "Bioconductor 3.18",
       "Requirements": [
         "R"
       ],
@@ -565,7 +564,6 @@
       "Package": "S4Vectors",
       "Version": "0.40.2",
       "Source": "Bioconductor",
-      "Repository": "Bioconductor 3.18",
       "Requirements": [
         "BiocGenerics",
         "R",
@@ -1324,6 +1322,24 @@
         "withr"
       ],
       "Hash": "a06503f54e227f79b45a72df2946a2d2"
+    },
+    "ggh4x": {
+      "Package": "ggh4x",
+      "Version": "0.2.7",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "cli",
+        "ggplot2",
+        "grid",
+        "gtable",
+        "lifecycle",
+        "rlang",
+        "scales",
+        "stats",
+        "vctrs"
+      ],
+      "Hash": "3df287fda9e2b75d6acc5d5c1aa41c80"
     },
     "ggpattern": {
       "Package": "ggpattern",
