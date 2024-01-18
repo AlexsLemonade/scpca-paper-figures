@@ -30,10 +30,10 @@ af_dirs <- glue::glue("{alevin_s3_dir}/{benchmarking_run_ids}-Homo_sapiens.GRCh3
 
 # we only want alevin folder and any json files 
 # copy to folder labeled with run id 
-af_sync <- glue::glue(
+glue::glue(
   "aws s3 cp '{af_dirs}' '{af_local_dir}/{benchmarking_run_ids}' --exclude '*' --include 'alevin/*' --include '*.json' --recursive"
 ) |>
-  purrr::map(system)
+  purrr::walk(system)
 
 # list of cellranger directories to copy over
 cellranger_dirs <- glue::glue("{cellranger_s3_dir}/{benchmarking_run_ids}-GRCh38_104_cellranger_full-mRNA")

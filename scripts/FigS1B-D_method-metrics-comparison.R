@@ -141,19 +141,15 @@ suspension_colors <- suspension_palette$color |>
   purrr::set_names(suspension_palette$suspension_type)
 
 # define suspension backgrounds to use on facet strips 
-backgrounds <- list(element_rect(fill = suspension_colors[["Single-cell"]]),
-                    element_rect(fill = suspension_colors[["Single-cell"]]),
-                    element_rect(fill = suspension_colors[["Single-cell"]]),
-                    element_rect(fill = suspension_colors[["Single-nuclei"]]),
-                    element_rect(fill = suspension_colors[["Single-nuclei"]]),
-                    element_rect(fill = suspension_colors[["Single-nuclei"]]))
+backgrounds <- rep(c("Single-cell", "Single-nuclei"), each = 3) |>
+  purrr::map(\(x) element_rect(fill = suspension_colors[[x]]))
 
 # Plot cell metrics ------------------------------------------------------------
 
 # create combined UMI per cell plot 
 umi_plot <- ggplot(coldata_common, aes(x = sum, color = tool)) + 
   geom_density() + 
-  ggh4x::facet_wrap2(~plot_id,
+  ggh4x::facet_wrap2(vars(plot_id),
                      scales = "free",
                      strip = ggh4x::strip_themed(background_x = backgrounds)) +
   scale_x_log10(labels = scales::label_number()) +
@@ -184,7 +180,7 @@ ggsave(filename = genes_detected_plot_file, plot = gene_exp_plot)
 # grab rowdata from filtered sces
 rowdata_df <- all_sces |> 
   purrr::map_df(
-    ~ purrr::map_df(.x, scpcaTools::rowdata_to_df, .id = "run_id"),
+    \(x) purrr::map_df(x, scpcaTools::rowdata_to_df, .id = "run_id"),
     .id = "tool"
   ) |>
   # annotate as single cell vs. single nuclei
@@ -215,7 +211,7 @@ gene_exp_plot <- ggplot(rowdata_cor, aes(x = `Alevin-fry`, y = `Cell Ranger`, co
   scale_x_log10(labels = scales::label_number()) + 
   scale_y_log10(labels = scales::label_number()) + 
   labs(x = "Cell Ranger mean gene expression", y = "Alevin-fry mean gene expression") + 
-  ggpubr::stat_cor(aes(label = after_stat(rr.label)), method = "pearson", size = 4) +
+  ggpubr::stat_cor(aes(label = after_stat(rr.label)), method = "pearson", size = 4, color = "black") +
   # color points by suspension type
   scale_color_manual(values = suspension_colors) +
   theme(legend.position = "none")
