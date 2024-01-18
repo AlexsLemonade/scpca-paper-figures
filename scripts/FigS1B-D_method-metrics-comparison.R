@@ -103,7 +103,8 @@ suspension_palette <- readr::read_tsv(suspension_palette_file) |>
 
 # create a data frame with coldata info for each tool, run id combo 
 coldata_df <- all_sces |> 
-  purrr::map_df(~ purrr::map_df(.x, scpcaTools::coldata_to_df, .id = "run_id"),
+  purrr::map_df(
+    \(x) purrr::map_df(x, scpcaTools::coldata_to_df, .id = "run_id"),
     .id = "tool"
     ) |> 
   # create new columns with seq unit 
@@ -150,7 +151,6 @@ backgrounds <- rep(c("Single-cell", "Single-nuclei"), each = 3) |>
 umi_plot <- ggplot(coldata_common, aes(x = sum, color = tool)) + 
   geom_density() + 
   ggh4x::facet_wrap2(vars(plot_id),
-                     scales = "free",
                      strip = ggh4x::strip_themed(background_x = backgrounds)) +
   scale_x_log10(labels = scales::label_number()) +
   labs(x = expression(paste(Log[10], " total UMI per cell")),
@@ -163,8 +163,7 @@ ggsave(filename = umi_plot_file, plot = umi_plot)
 # genes detected per cell plot
 gene_exp_plot <- ggplot(coldata_common, aes(x = detected, color = tool)) + 
   geom_density() + 
-  ggh4x::facet_wrap2(~plot_id,
-                     scales = "free",
+  ggh4x::facet_wrap2(vars(plot_id),
                      strip = ggh4x::strip_themed(background_x = backgrounds)) +
   scale_x_log10(labels = scales::label_number()) +
   labs(x = expression(paste(Log[10], " total genes detected per cell")),
@@ -206,7 +205,7 @@ rowdata_cor <- rowdata_df |>
 # plot correlation of alevin-fry to Cellranger for each sample 
 gene_exp_plot <- ggplot(rowdata_cor, aes(x = `Alevin-fry`, y = `Cell Ranger`, color = seq_unit)) +
   geom_point(size = 0.5, alpha = 0.1) + 
-  ggh4x::facet_wrap2(~plot_id,
+  ggh4x::facet_wrap2(vars(plot_id),
                      strip = ggh4x::strip_themed(background_x = backgrounds)) +
   scale_x_log10(labels = scales::label_number()) + 
   scale_y_log10(labels = scales::label_number()) + 
