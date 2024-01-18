@@ -11,6 +11,7 @@ This repo contains the figures and tables included in the ScPCA manuscript.
 - [Sample info](#sample-info)
 - [Color palettes](#color-palettes)
 - [Renv](#renv)
+- [Contributing](#contributing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -86,4 +87,14 @@ Package dependencies for scripts used in this repo are managed using [`renv`](ht
 For `renv` to work as intended, you'll need to work within the `scpca-paper-figures.Rproj` project in RStudio.
 You may need to run `renv::restore()` upon opening the project to ensure the `renv.lock` file is synced with the project library.
 
+
+## Contributing
+
+When developing new scripts, you may need to install or use new R packages.
 Each time you install or use new packages, you will want to run `renv::snapshot()` to update the `renv.lock` file with any added package and dependencies necessary to run the analyses and scripts in this repo.
+
+In addition, this repository uses the [`parsable-r`](https://lorenzwalthert.github.io/precommit/articles/available-hooks.html#parsable-r) pre-commit hook to ensure R scripts are parsable.
+To use this hook, first ensure that that the `pre-commit` package is installed on your system; you can install it with your favorite method (`pip install pre-commit` or `conda install pre-commit`).
+Then, run `pre-commit install` in the `scpca-paper-figures` directory to enable pre-commit hooks in this repository.
+This will install the hooks in the `.git/hooks` directory, and they will be run automatically when you commit changes.
+If the hook fails, the commit will be aborted, and you will need to fix the errors and re-commit.
