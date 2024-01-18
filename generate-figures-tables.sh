@@ -13,8 +13,7 @@
 # bash generate-figures-tables.sh
 
 # enviroment settings
-set -e
-set -o pipefail
+set -euo pipefail
 
 # Find and go to base directory, which is where this script lives
 BASEDIR=$(dirname "${BASH_SOURCE[0]}")
