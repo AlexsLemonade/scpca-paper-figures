@@ -161,7 +161,7 @@ umi_plot <- ggplot(coldata_common, aes(x = sum, color = tool)) +
 ggsave(filename = umi_plot_file, plot = umi_plot)
 
 # genes detected per cell plot
-gene_exp_plot <- ggplot(coldata_common, aes(x = detected, color = tool)) + 
+genes_detected_plot <- ggplot(coldata_common, aes(x = detected, color = tool)) + 
   geom_density() + 
   ggh4x::facet_wrap2(vars(plot_id),
                      strip = ggh4x::strip_themed(background_x = backgrounds)) +
@@ -171,7 +171,7 @@ gene_exp_plot <- ggplot(coldata_common, aes(x = detected, color = tool)) +
        color = "") +
   scale_color_manual(values = method_colors)
 
-ggsave(filename = genes_detected_plot_file, plot = gene_exp_plot)
+ggsave(filename = genes_detected_plot_file, plot = genes_detected_plot)
 
 # prep row data ----------------------------------------------------------------
 
