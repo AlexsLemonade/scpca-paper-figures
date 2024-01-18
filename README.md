@@ -94,7 +94,7 @@ When developing new scripts, you may need to install or use new R packages.
 Each time you install or use new packages, you will want to run `renv::snapshot()` to update the `renv.lock` file with any added package and dependencies necessary to run the analyses and scripts in this repo.
 
 In addition, this repository uses the [`parsable-r`](https://lorenzwalthert.github.io/precommit/articles/available-hooks.html#parsable-r) pre-commit hook to ensure R scripts are parsable.
-To use this hook, first ensure that that `pre-commit` package is installed on your system; you can install it with your favorite method (`pip install pre-commit` or `conda install pre-commit`).
+To use this hook, first ensure that that the `pre-commit` package is installed on your system; you can install it with your favorite method (`pip install pre-commit` or `conda install pre-commit`).
 Then, run `pre-commit install` in the `scpca-paper-figures` directory to enable pre-commit hooks in this repository.
 This will install the hooks in the `.git/hooks` directory, and they will be run automatically when you commit changes.
 If the hook fails, the commit will be aborted, and you will need to fix the errors and re-commit.
