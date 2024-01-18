@@ -40,7 +40,7 @@ cellranger_dirs <- glue::glue("{cellranger_s3_dir}/{benchmarking_run_ids}-GRCh38
 
 # we only need the filtered h5 file 
 # copy each file to folder labeled with run id
-cellranger_sync <- glue::glue(
+glue::glue(
   "aws s3 cp '{cellranger_dirs}' '{cellranger_local_dir}/{benchmarking_run_ids}' --exclude '*' --include 'outs/filtered*.h5' --recursive"
 ) |> 
-  purrr::map(system)
+  purrr::walk(system)
