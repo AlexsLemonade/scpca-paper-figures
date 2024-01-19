@@ -48,6 +48,8 @@ Rscript ${script_dir}/Fig2B_qc-plots.R
 # Figure S1A
 Rscript ${script_dir}/FigS1A_memory-time-comparison.R
 
+# Figure S1B-D
+Rscript ${script_dir}/FigS1B-D_method-metrics-comparison.R
 
 ##########################################################
 #         Generate tables in order of appearance         #
