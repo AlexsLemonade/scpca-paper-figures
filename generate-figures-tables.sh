@@ -51,6 +51,9 @@ Rscript ${script_dir}/FigS1A_memory-time-comparison.R
 # Figure S1B-D
 Rscript ${script_dir}/FigS1B-D_method-metrics-comparison.R
 
+# Figure S2B
+Rscript ${script_dir}/FigS2B_adt-plots.R
+
 ##########################################################
 #         Generate tables in order of appearance         #
 ##########################################################
