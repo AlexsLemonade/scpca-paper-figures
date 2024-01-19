@@ -14,8 +14,7 @@ theme_set(
     theme(
       #plot.margin = margin(rep(20, 4)),
       strip.background = element_rect(fill = "transparent"),
-      strip.text.x = element_text(size = 8),
-      axis.text.x = element_text(size = 6),
+      text = element_text(size = 12),
       legend.title = element_blank(),
       legend.position = "top"
     )
@@ -156,7 +155,7 @@ umi_plot <- ggplot(coldata_common, aes(x = sum, color = tool)) +
   labs(x = expression(paste(Log[10], " total UMI per cell")),
        y = "Density", 
        color = "") +
-  scale_color_manual(values = method_colors)
+  scale_color_manual(values = method_colors) 
 
 ggsave(filename = umi_plot_file, plot = umi_plot)
 
