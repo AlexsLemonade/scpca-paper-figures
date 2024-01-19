@@ -33,6 +33,13 @@ Summary of libraries and types of libraries found on the Portal.
 - B. Simplified versions of plots in the main QC report.
 - C. Illustration of individual sample download folder.
 
+**Supplemental Figure 1**
+
+- A. Comparison of run time and peak memory usage between Alevin-fry and Cell Ranger.
+- B. Total UMI/cell between Alevin-fry and Cell Ranger.
+- C. Total genes detected/cell between Alevin-fry and Cell Ranger.
+- D. Correlation of mean gene expression between Alevin-fry and Cell Ranger.
+
 ## Generating figures and tables
 
 The `figures` and `tables` folders contain the most up-to-date version of each of the figures and tables, respectively.
@@ -80,6 +87,7 @@ The `palettes` folder contains any palettes used in generating the figures.
 
 1. `diagnosis-group-palette.tsv`: This is the palette used to color the `diagnosis_group` for each sample.
 2. `suspension-palette.tsv`: This is the palette used to color libraries by `Single-cell` or `Single-nuclei`.
+3. `method-palette.tsv`: This is the palette used to color by quantification method used, either `Alevin-fry` or `Cell Ranger`.
 
 ## Renv
 

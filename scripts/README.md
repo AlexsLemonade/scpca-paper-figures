@@ -18,11 +18,21 @@ op run -- Rscript sync-metadata.R
 
 2. `sync-data-files.R`: This script is used sync any data files for individual libraries needed to generate figures to a local folder.
 In particular, the `.rds` files for `SCPCS000001` will be stored to a folder within the root directory of this repo named `s3_files/SCPCS000001`.
+Additionally, the results from benchmarking 3 single-cell and 3 single-nuclei samples with both Alevin-fry and Cell Ranger will be stored to a folder within the root directory of this repo named `s3_files/benchmarking_results`.
 In order to generate some of the figures (see more on which figures require this script below), this script will be need to run first.
 To run the script use the following command:
 
 ```sh
 op run -- Rscript sync-data-files.R
+```
+
+3. `sync-reference-files.R`: This script is used sync any reference files needed to generate figures to a local folder.
+These reference files will be stored to a folder within the root directory of this repo named `s3_files/reference_files`.
+In order to generate some of the figures (see more on which figures require this script below), this script will be need to run first.
+To run the script use the following command:
+
+```sh
+op run -- Rscript sync-reference-files.R
 ```
 
 ## Generating figures and tables
@@ -43,3 +53,6 @@ Before running this script, you must run `figure_setup/sync-data-files.R`.
 
 5. `FigS1A_memory-time-comparison.R`: This script is used to generate supplemental Figure 1A, which shows a comparison of total run time and peak memory usage for Cell Ranger and Alevin-fry.
 This script uses the trace files found in `nextflow_logs`.
+
+6. `FigS1B-D_method-metrics-comparison.R`: This script is used to generate supplemental figures 1B-D, which compares cell and gene level metrics between libraries quantified using Cell Ranger and Alevin-fry.
+Before running this script, you must run `figure_setup/sync-data-files.R` and `sync-reference-files.R`.
