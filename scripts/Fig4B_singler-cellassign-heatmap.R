@@ -66,12 +66,12 @@ ComplexHeatmap::Heatmap(
   ## Legend parameters
   heatmap_legend_param = list(
     title = "Jaccard index",
-    direction = "horizontal",
+    direction = "vertical",
     legend_width = unit(1.5, "in")
   )
 ) |> 
   ComplexHeatmap::draw(
-    heatmap_legend_side = "top"
+    heatmap_legend_side = "right"
   )
 
 dev.off()
