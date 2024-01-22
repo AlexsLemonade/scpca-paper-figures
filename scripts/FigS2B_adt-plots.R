@@ -9,7 +9,7 @@ library(SingleCellExperiment)
 theme_set(
   theme_classic() +
     theme(
-      strip.background = element_rect(fill = "transparent"),
+      strip.background = element_rect(fill = "transparent", linewidth = 0.5),
       # no axis ticks or labels
       axis.line = element_blank(),
       axis.ticks = element_blank(),
@@ -19,8 +19,6 @@ theme_set(
       aspect.ratio = 1
     )
 )
-
-set.seed(2024)
 
 
 # Set up -----------------------------------------------------------------------
@@ -141,4 +139,4 @@ adt_umap_plot <- ggplot(umap_df, aes(x = UMAP1, y = UMAP2, color = adt_expressio
 
 combined_plot <- patchwork::wrap_plots(list(filtered_plot, adt_density_plot, adt_umap_plot))
 
-ggsave(output_plot_file, combined_plot)
+ggsave(output_plot_file, combined_plot, width = 8, height = 7)
