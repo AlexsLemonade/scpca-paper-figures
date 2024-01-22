@@ -40,14 +40,12 @@ create_celltype_df <- function(processed_sce) {
     )
   
   if ("submitter_celltype_annotation" %in% names(celltype_df)) {
-    celltype_df <- celltype_df |> 
-      dplyr::filter(cellassign_celltype_annotation != "Unclassified cell") |> 
-      prepare_submitter_annotation_values(celltype_df)
+    celltype_df <- prepare_submitter_annotation_values(celltype_df)
   }
   
   if ("singler_celltype_annotation" %in% names(celltype_df)) {
     celltype_df <- celltype_df |> 
-      dplyr::filter(cellassign_celltype_annotation != "Unclassified cell") |> 
+      dplyr::filter(singler_celltype_annotation != "Unclassified cell") |> 
       prepare_automated_annotation_values(singler_celltype_annotation)
   }
   if ("cellassign_celltype_annotation" %in% names(celltype_df)) {
