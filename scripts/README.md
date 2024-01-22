@@ -17,7 +17,7 @@ op run -- Rscript sync-metadata.R
 ```
 
 2. `sync-data-files.R`: This script is used sync any data files for individual libraries needed to generate figures to a local folder.
-In particular, the `.rds` files for `SCPCS000001` will be stored to a folder within the root directory of this repo named `s3_files/SCPCS000001`.
+In particular, the `.rds` files for `SCPCS000001` and `SCPCS000216` will be stored to folders within the root directory of this repo named `s3_files/SCPCS000001` and `s3_files/SCPCS000216`, respectively.
 Additionally, the results from benchmarking 3 single-cell and 3 single-nuclei samples with both Alevin-fry and Cell Ranger will be stored to a folder within the root directory of this repo named `s3_files/benchmarking_results`.
 In order to generate some of the figures (see more on which figures require this script below), this script will be need to run first.
 To run the script use the following command:
@@ -56,3 +56,6 @@ This script uses the trace files found in `nextflow_logs`.
 
 6. `FigS1B-D_method-metrics-comparison.R`: This script is used to generate supplemental figures 1B-D, which compares cell and gene level metrics between libraries quantified using Cell Ranger and Alevin-fry.
 Before running this script, you must run `figure_setup/sync-data-files.R` and `sync-reference-files.R`.
+
+7. `FigS2B_adt-plots.R`: This script is used to generate supplemental Figure 2B, which includes simplified and miniature versions of the plots in the ADT section of the main QC report included with each sample download.
+Before running this script, you must run `figure_setup/sync-data-files.R`.

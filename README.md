@@ -40,6 +40,10 @@ Summary of libraries and types of libraries found on the Portal.
 - C. Total genes detected/cell between Alevin-fry and Cell Ranger.
 - D. Correlation of mean gene expression between Alevin-fry and Cell Ranger.
 
+**Supplemental Figure 2**
+
+- B. Simplified versions of plots found in the ADT section of the main QC report.
+
 ## Generating figures and tables
 
 The `figures` and `tables` folders contain the most up-to-date version of each of the figures and tables, respectively.
