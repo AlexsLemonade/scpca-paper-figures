@@ -16,7 +16,7 @@ adt_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000007/SCPCS
 adt_local_files <- here::here("s3_files", "SCPCS000216")
 fs::dir_create(adt_local_files)
 
-sync_call <- glue::glue("op run -- aws s3 cp '{adt_s3_files}' '{adt_local_files}' --exclude '*' --include '*.rds' --recursive")
+sync_call <- glue::glue("aws s3 cp '{adt_s3_files}' '{adt_local_files}' --exclude '*' --include '*.rds' --recursive")
 system(sync_call)
 
 # sync results for benchmarking libraries 
