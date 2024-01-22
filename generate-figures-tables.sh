@@ -8,6 +8,7 @@
 #
 # Rscript scripts/figure_setup/sync-data-files.R
 # Rscript scripts/figure_setup/sync-metadata.R
+# Rscript scripts/figure_setup/sync-reference-files.R
 #
 # This script can be run as:
 # bash generate-figures-tables.sh
