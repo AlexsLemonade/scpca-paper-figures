@@ -26,12 +26,14 @@ set.seed(2024)
 # Set up -----------------------------------------------------------------------
 
 # define file paths and read in sce objects
-data_dir <- here::here("s3_files", "SCPCS000216")
+sample_id <- "SCPCS000216"
+library_id <- "SCPCL000290"
+data_dir <- here::here("s3_files", sample_id)
 
-filtered_sce_file <- file.path(data_dir, "SCPCL000290_filtered.rds")
+filtered_sce_file <- file.path(data_dir, glue::glue("{library_id}_filtered.rds"))
 filtered_sce <- readr::read_rds(filtered_sce_file)
 
-processed_sce_file <- file.path(data_dir, "SCPCL000290_processed.rds")
+processed_sce_file <- file.path(data_dir, glue::glue("{library_id}_processed.rds"))
 processed_sce <- readr::read_rds(processed_sce_file)
 
 output_plot_file <- here::here("figures", "pngs", "FigS2B_adt-plots.png")
@@ -40,8 +42,7 @@ output_plot_file <- here::here("figures", "pngs", "FigS2B_adt-plots.png")
 
 # grab coldata from filterd object 
 filtered_coldata_df <- colData(filtered_sce) |>
-  as.data.frame() |>
-  tibble::rownames_to_column("barcode")
+  as.data.frame()
 
 filter_levels <- c("Keep", "Filter (RNA & ADT)", "Filter (RNA only)", "Filter (ADT only)")
 filtered_coldata_df <- filtered_coldata_df |>
@@ -62,7 +63,8 @@ filtered_coldata_df <- filtered_coldata_df |>
   ))
 
 # faceted plot to show cells belonging to each filter group
-filtered_plot <- ggplot(filtered_coldata_df, aes(x = detected, y = subsets_mito_percent, color = keep_column)) +
+filtered_plot <- ggplot(filtered_coldata_df, 
+                        aes(x = detected, y = subsets_mito_percent, color = keep_column)) +
   geom_point(alpha = 0.5, size = 1) +
   labs(
     x = "Number of genes detected",
@@ -93,10 +95,10 @@ var_adt_exp_df <- logcounts(altExp(processed_sce))[top_adts, ] |>
   as.matrix() |>
   t() |>
   as.data.frame() |>
-  tibble::rownames_to_column("barcode") |>
+  tibble::rownames_to_column("barcodes") |>
   # combine all ADTs into a single column for  faceting
   tidyr::pivot_longer(
-    !barcode,
+    !barcodes,
     names_to = "ADT",
     values_to = "adt_expression"
   )
@@ -112,14 +114,13 @@ adt_density_plot <- ggplot(var_adt_exp_df, aes(x = adt_expression, fill = ADT)) 
 
 # create data frame of UMAPs and expression
 umap_df <- scuttle::makePerCellDF(processed_sce) |>
-  tibble::rownames_to_column("barcode") |>
   dplyr::select(
-    barcode,
+    barcodes,
     UMAP1 = UMAP.1,
     UMAP2 = UMAP.2
   ) |>
   # combine with gene expression
-  dplyr::left_join(var_adt_exp_df, by = "barcode")
+  dplyr::left_join(var_adt_exp_df, by = "barcodes")
 
 adt_umap_plot <- ggplot(umap_df, aes(x = UMAP1, y = UMAP2, color = adt_expression)) +
   geom_point(alpha = 0.1, size = 0.1) +
