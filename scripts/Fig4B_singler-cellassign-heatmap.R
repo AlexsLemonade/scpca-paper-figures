@@ -39,7 +39,6 @@ singler_cellassign_matrix <- make_jaccard_matrix(
   "cellassign_celltype_annotation"
 )
 
-
 # Plot -------------------------------------------------------------------------
 
 # set up png to save heatmap
