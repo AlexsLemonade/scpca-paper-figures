@@ -3,7 +3,8 @@
 
 renv::load()
 
-# sync results files for SCPCS000001 (for QC plots)
+# sync results files for SCPCS000001 (for QC plots + cell type plots) ----------
+
 qc_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000001/SCPCS000001"
 qc_local_files <- here::here("s3_files", "SCPCS000001")
 fs::dir_create(qc_local_files)
@@ -11,7 +12,8 @@ fs::dir_create(qc_local_files)
 sync_call <- glue::glue("aws s3 cp '{qc_s3_files}' '{qc_local_files}' --exclude '*' --include '*.rds' --recursive")
 system(sync_call)
 
-# sync results for SCPCS000216 (for ADT plots)
+# sync results for SCPCS000216 (for ADT plots) ---------------------------------
+
 adt_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000007/SCPCS000216"
 adt_local_files <- here::here("s3_files", "SCPCS000216")
 fs::dir_create(adt_local_files)
@@ -19,7 +21,8 @@ fs::dir_create(adt_local_files)
 sync_call <- glue::glue("aws s3 cp '{adt_s3_files}' '{adt_local_files}' --exclude '*' --include '*.rds' --recursive")
 system(sync_call)
 
-# sync results for benchmarking libraries 
+# sync results for benchmarking libraries --------------------------------------
+
 # define ids and s3 directories 
 benchmarking_run_ids <- c("SCPCR000003", "SCPCR000126", "SCPCR000127", "SCPCR000220", "SCPCR000221", "SCPCR000495")
 alevin_s3_dir <- "s3://nextflow-ccdl-results/scpca/alevin-fry-unfiltered-quant"
@@ -52,3 +55,11 @@ glue::glue(
   "aws s3 cp '{cellranger_dirs}' '{cellranger_local_dir}/{benchmarking_run_ids}' --exclude '*' --include 'outs/filtered*.h5' --recursive"
 ) |> 
   purrr::walk(system)
+
+# sync results files for SCPCL000498 (for submitter cell type heatmap) ---------
+celltype_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000005/SCPCS000251"
+celltype_local_files <- here::here("s3_files", "SCPCS000251")
+fs::dir_create(celltype_local_files)
+
+sync_call <- glue::glue("aws s3 cp '{celltype_s3_files}' '{celltype_local_files}' --exclude '*' --include 'SCPCL000498_processed.rds' --recursive")
+system(sync_call)
