@@ -1,6 +1,6 @@
 # Helper functions for creating cell type plots 
-# These functions are taken directly from `scpca-nf/templates/celltypes_qc.rmd`,
-# `scpca-nf/templates/celltypes_supplemental_report.rmd`, and `scpca-nf/templates/utils/celltype_functions.Rmd`
+# These functions are taken directly from `scpca-nf/templates/celltypes_supplemental_report.rmd` and `scpca-nf/templates/utils/celltype_functions.rmd`
+# https://github.com/AlexsLemonade/scpca-nf/tree/f8905ef8601f017219e0f8e315a22a37fded75b8/templates/qc_report
 
 library(SingleCellExperiment)
 
