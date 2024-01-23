@@ -64,7 +64,10 @@ delta_median_df <- delta_median_df |>
       celltype = celltype_df$singler_celltype_annotation
     ) |> dplyr::distinct()
   ) |>
-  dplyr::select(-full_labels)
+  dplyr::select(-full_labels) |>
+  # filter out celltypes that have a low number of cells 
+  dplyr::add_count(celltype) |>
+  dplyr::filter(n >= 10)
 
 # add column with ordered levels with wrapped labels for visualization
 delta_median_df$annotation_wrapped <- factor(
@@ -75,7 +78,7 @@ delta_median_df$annotation_wrapped <- factor(
 )
 
 # Subset the data to just confident points for median+/-IQR
-delta_median_confident_df <- delta_median_df |>
+delta_median_confident_df <- delta_median_df |> 
   dplyr::filter(confident == "High-quality")
 
 # SingleR diagnostic plot ------------------------------------------------------
@@ -122,7 +125,7 @@ singler_diagnostic_plot <- ggplot(delta_median_df) +
     legend.position = "bottom"
   )
 
-ggsave(singler_diagnostic_plot_file, singler_diagnostic_plot, height = 9, width = 7)
+ggsave(singler_diagnostic_plot_file, singler_diagnostic_plot, height = 5, width = 7)
 
 # CellAssign plotting ----------------------------------------------------------
 
@@ -143,7 +146,9 @@ y_max <- celltype_df$cellassign_max_prediction |>
 
 # add count to celltype_df for setting alpha and yend values
 celltype_df <- celltype_df |>
-  dplyr::add_count(cellassign_celltype_annotation)
+  dplyr::add_count(cellassign_celltype_annotation, name = "total_celltypes") |> 
+  # remove cell types with < 10 cells
+  dplyr::filter(total_celltypes >= 10)
 
 # make the plot!
 cellassign_diagnostic_plot <- ggplot(celltype_df) +
@@ -158,11 +163,11 @@ cellassign_diagnostic_plot <- ggplot(celltype_df) +
     aes(
       # set alpha to vary based on the number of points in the row such that
       #  rows with more points are more transparent
-      alpha = pmax(0.2, 1 - 0.01 * n),
+      alpha = pmax(0.2, 1 - 0.01 * total_celltypes),
       xend = cellassign_max_prediction,
       # set yend as either 0 for rows with many points, or y_max/2.5 for
       #  rows with few points
-      yend = ifelse(n > 5, 0, y_max / 2.5),
+      yend = ifelse(total_celltypes > 5, 0, y_max / 2.5),
       y = -Inf
     ),
     color = "blue"
@@ -191,4 +196,4 @@ cellassign_diagnostic_plot <- ggplot(celltype_df) +
     panel.spacing = unit(0.02, "in")
   )
 
-ggsave(cellassign_diagnostic_plot_file, cellassign_diagnostic_plot, height = 9, width = 7)
+ggsave(cellassign_diagnostic_plot_file, cellassign_diagnostic_plot, width = 7, height = 7)
