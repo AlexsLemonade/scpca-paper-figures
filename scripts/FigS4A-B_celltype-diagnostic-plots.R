@@ -117,7 +117,7 @@ singler_diagnostic_plot <- ggplot(delta_median_df) +
     alpha = 0.9
   ) +
   guides(
-    alpha = FALSE,
+    alpha = "none",
     shape = guide_legend(override.aes = list(size = 1.5, alpha = 0.55))
   ) +
   theme(
