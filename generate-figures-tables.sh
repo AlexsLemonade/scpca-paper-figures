@@ -55,6 +55,9 @@ Rscript ${script_dir}/FigS1B-D_method-metrics-comparison.R
 # Figure S2B
 Rscript ${script_dir}/FigS2B_adt-plots.R
 
+# Figure S4C
+Rscript ${script_dir}/FigS4C_submitter-celltypes-heatmap.R
+
 ##########################################################
 #         Generate tables in order of appearance         #
 ##########################################################
