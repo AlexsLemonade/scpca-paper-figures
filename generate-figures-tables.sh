@@ -43,6 +43,8 @@ Rscript ${script_dir}/Fig1B_modality-barchart.R
 # Figure 2B
 Rscript ${script_dir}/Fig2B_qc-plots.R
 
+# Figure 4B
+Rscript ${script_dir}/Fig4B_singler-cellassign-heatmap.R
 
 ### Supplementary text figures ###
 
@@ -54,6 +56,9 @@ Rscript ${script_dir}/FigS1B-D_method-metrics-comparison.R
 
 # Figure S2B
 Rscript ${script_dir}/FigS2B_adt-plots.R
+
+# Figure S4A-B
+Rscript ${script_dir}/FigS4A-B_celltype-diagnostic-plots.R
 
 ##########################################################
 #         Generate tables in order of appearance         #

@@ -44,6 +44,15 @@ Summary of libraries and types of libraries found on the Portal.
 
 - B. Simplified versions of plots found in the ADT section of the main QC report.
 
+**Figure 4**
+
+- B. Comparison of cell type annotations obtained using `SingleR` and `CellAssign`. 
+
+**Supplemental Figure 4**
+
+- A. Diagnostic plot for cell type annotations from `SingleR`.
+- B. Diagnostic plot for cell type annotations from `CellAssign`. 
+
 ## Generating figures and tables
 
 The `figures` and `tables` folders contain the most up-to-date version of each of the figures and tables, respectively.
