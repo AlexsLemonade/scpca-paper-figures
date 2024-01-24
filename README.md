@@ -46,12 +46,13 @@ Summary of libraries and types of libraries found on the Portal.
 
 **Figure 4**
 
-- B. Comparison of cell type annotations obtained using `SingleR` and `CellAssign`. 
+- B. Comparison of cell type annotations obtained using `SingleR` and `CellAssign`.
 
 **Supplemental Figure 4**
 
 - A. Diagnostic plot for cell type annotations from `SingleR`.
-- B. Diagnostic plot for cell type annotations from `CellAssign`. 
+- B. Diagnostic plot for cell type annotations from `CellAssign`.
+- C. Comparison between submitter provided annotations and automated annotations from `SingleR` and `CellAssign`.
 
 ## Generating figures and tables
 
