@@ -60,6 +60,9 @@ Rscript ${script_dir}/FigS2B_adt-plots.R
 # Figure S4A-B
 Rscript ${script_dir}/FigS4A-B_celltype-diagnostic-plots.R
 
+# Figure S4C
+Rscript ${script_dir}/FigS4C_submitter-celltypes-heatmap.R
+
 ##########################################################
 #         Generate tables in order of appearance         #
 ##########################################################
