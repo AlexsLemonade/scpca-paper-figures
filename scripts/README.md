@@ -59,3 +59,9 @@ Before running this script, you must run `figure_setup/sync-data-files.R` and `s
 
 7. `FigS2B_adt-plots.R`: This script is used to generate supplemental Figure 2B, which includes simplified and miniature versions of the plots in the ADT section of the main QC report included with each sample download.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
+
+8. `Fig4B_singler-cellassign-heatmap.R`: This script is used to generate Figure 4B, which includes an example of the heatmap comparing cell type annotations from `SingleR` to `CellAssign`. 
+Before running this script, you must run `figure_setup/sync-data-files.R`.
+
+9. `FigS4A-B_celltype-diagnostic-plots.R`: This script is used to generate supplemental Figure 4A-B, which includes examples of the diagnostic plots for annotating cell types with `SingleR` and `CellAssign`. 
+Before running this script, you must run `figure_setup/sync-data-files.R`.
