@@ -84,7 +84,9 @@ jaccard_submitter_matrices |>
   # concatenate vertically into HeatmapList object
   purrr::reduce(ComplexHeatmap::`%v%`) |> 
   ComplexHeatmap::draw(
-    heatmap_legend_side = "right"
+    heatmap_legend_side = "right",
+    # add a margin to the heatmap so labels don't get cut off
+    padding = unit(c(2, 20, 2, 2), "mm")
   )
 
 dev.off()
