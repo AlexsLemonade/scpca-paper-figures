@@ -17,7 +17,7 @@ op run -- Rscript sync-metadata.R
 ```
 
 2. `sync-data-files.R`: This script is used sync any data files for individual libraries needed to generate figures to a local folder.
-In particular, the `.rds` files for `SCPCS000001` and `SCPCS000216` will be stored to folders within the root directory of this repo named `s3_files/SCPCS000001` and `s3_files/SCPCS000216`, respectively.
+In particular, the `.rds` files for `SCPCS000001`, `SCPCS000216`, and `SCPCS000251` will be stored to folders within the root directory of this repo named `s3_files/SCPCS000001`, `s3_files/SCPCS000216`, and `s3_files/SCPCS000251`, respectively.
 Additionally, the results from benchmarking 3 single-cell and 3 single-nuclei samples with both Alevin-fry and Cell Ranger will be stored to a folder within the root directory of this repo named `s3_files/benchmarking_results`.
 In order to generate some of the figures (see more on which figures require this script below), this script will be need to run first.
 To run the script use the following command:
