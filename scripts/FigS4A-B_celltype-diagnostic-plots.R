@@ -1,4 +1,6 @@
 # This script is used to generate example diagnostic plots for CellAssign and SingleR 
+# Much of this code comes from the supplemental cell type report: 
+# https://github.com/AlexsLemonade/scpca-nf/blob/main/templates/qc_report/celltypes_supplemental_report.rmd
 
 # load project
 renv::load()
@@ -64,10 +66,7 @@ delta_median_df <- delta_median_df |>
       celltype = celltype_df$singler_celltype_annotation
     ) |> dplyr::distinct()
   ) |>
-  dplyr::select(-full_labels) |>
-  # filter out celltypes that have a low number of cells 
-  dplyr::add_count(celltype) |>
-  dplyr::filter(n >= 10)
+  dplyr::select(-full_labels)
 
 # add column with ordered levels with wrapped labels for visualization
 delta_median_df$annotation_wrapped <- factor(
@@ -125,7 +124,7 @@ singler_diagnostic_plot <- ggplot(delta_median_df) +
     legend.position = "bottom"
   )
 
-ggsave(singler_diagnostic_plot_file, singler_diagnostic_plot, height = 5, width = 7)
+ggsave(singler_diagnostic_plot_file, singler_diagnostic_plot, height = 7, width = 7)
 
 # CellAssign plotting ----------------------------------------------------------
 
@@ -146,9 +145,7 @@ y_max <- celltype_df$cellassign_max_prediction |>
 
 # add count to celltype_df for setting alpha and yend values
 celltype_df <- celltype_df |>
-  dplyr::add_count(cellassign_celltype_annotation, name = "total_celltypes") |> 
-  # remove cell types with < 10 cells
-  dplyr::filter(total_celltypes >= 10)
+  dplyr::add_count(cellassign_celltype_annotation)
 
 # make the plot!
 cellassign_diagnostic_plot <- ggplot(celltype_df) +
@@ -163,11 +160,11 @@ cellassign_diagnostic_plot <- ggplot(celltype_df) +
     aes(
       # set alpha to vary based on the number of points in the row such that
       #  rows with more points are more transparent
-      alpha = pmax(0.2, 1 - 0.01 * total_celltypes),
+      alpha = pmax(0.2, 1 - 0.01 * n),
       xend = cellassign_max_prediction,
       # set yend as either 0 for rows with many points, or y_max/2.5 for
       #  rows with few points
-      yend = ifelse(total_celltypes > 5, 0, y_max / 2.5),
+      yend = ifelse(n > 5, 0, y_max / 2.5),
       y = -Inf
     ),
     color = "blue"
