@@ -1,4 +1,4 @@
-# This script is used to generate the heatmap comparing submitter annotations to SingleR/ CellAssign
+# This script is used to generate the heatmap comparing submitter annotations to SingleR and CellAssign
 
 # load project
 renv::load()
