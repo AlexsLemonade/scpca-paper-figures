@@ -55,7 +55,7 @@ delta_median_df <- tibble::tibble(
   )
 
 
-# we use inner_join b/c the above tibble does NOT contain "Unknown cell type", which
+# we use inner_join b/c celltype_df does NOT contain "Unknown cell type", which
 #  we do not want to display here
 delta_median_df <- delta_median_df |>
   dplyr::inner_join(
