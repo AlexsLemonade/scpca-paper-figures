@@ -6,3 +6,6 @@
 
 # s3 files
 s3_files
+
+#DS Store
+.DS_Store
