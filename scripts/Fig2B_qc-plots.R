@@ -43,8 +43,11 @@ filtered_sce <- readr::read_rds(filtered_sce_file)
 processed_sce <- readr::read_rds(processed_sce_file)
 
 # define output file paths 
-plots_dir <- here::here("figures", "pngs") 
-output_plot_file <- file.path(plots_dir, "Fig2B_mini-qc-plots.png")
+png_dir <- here::here("figures", "pngs") 
+output_png_file <- file.path(png_dir, "Fig2B_mini-qc-plots.png")
+
+pdf_dir <- here::here("figures", "pdfs") 
+output_pdf_file <- file.path(pdf_dir, "Fig2B_mini-qc-plots.pdf")
 
 # Knee plot --------------------------------------------------------------------
 
@@ -276,4 +279,5 @@ combined_plot <- patchwork::wrap_plots(plot_list, ncol = 3) &
   theme(text = element_text(size = 10))
 
 # save files 
-ggsave(output_plot_file, plot = combined_plot, width = 8.5, height = 5.5, units = "in")
+ggsave(output_png_file, plot = combined_plot, width = 8.5, height = 5.5, units = "in")
+ggsave(output_pdf_file, plot = combined_plot, width = 8.5, height = 5.5, units = "in")
