@@ -21,8 +21,11 @@ processed_sce_file <- file.path(local_results_dir, "SCPCL000001_processed.rds")
 processed_sce <- readr::read_rds(processed_sce_file)
 
 # define output file paths 
-plots_dir <- here::here("figures", "pngs") 
-output_plot_file <- file.path(plots_dir, "Fig4B_singler-cellassign-heatmap.png")
+png_dir <- here::here("figures", "pngs")
+output_png_file <- file.path(png_dir, "Fig4B_singler-cellassign-heatmap.png")
+
+pdf_dir <- here::here("figures", "pdfs")
+output_pdf_file <- file.path(pdf_dir, "Fig4B_singler-cellassign-heatmap.pdf")
 
 # source in helper functions for plotting
 function_file <- here::here("scripts", "utils", "celltype-plot-helper-functions.R")
@@ -41,36 +44,45 @@ singler_cellassign_matrix <- make_jaccard_matrix(
 
 # Plot -------------------------------------------------------------------------
 
-# set up png to save heatmap
-png(output_plot_file, width = 9, height = 9, units = 'in', res = 300)
-
 # heatmap comparing singleR to cellassign annotations
-ComplexHeatmap::Heatmap(
-  t(singler_cellassign_matrix), # transpose because matrix rows are in common & we want a vertical arrangement
-  col = circlize::colorRamp2(c(0, 1), colors = c("white", "darkslateblue")),
-  border = TRUE, 
-  ## Row parameters
-  cluster_rows = FALSE,
-  row_title = "CellAssign annotations",
-  row_title_gp = grid::gpar(fontsize = 12),
-  row_title_side = "right",
-  row_names_side = "left",
-  row_names_gp = grid::gpar(fontsize = 10),
-  ## Column parameters
-  cluster_columns = FALSE,
-  column_title = "SingleR annotations",
-  column_title_gp = grid::gpar(fontsize = 12),
-  column_names_side = "bottom",
-  column_names_gp = grid::gpar(fontsize = 10),
-  ## Legend parameters
-  heatmap_legend_param = list(
-    title = "Jaccard index",
-    direction = "vertical",
-    legend_width = unit(1.5, "in")
-  )
-) |> 
+heatmap <- ComplexHeatmap::Heatmap(
+    # transpose because matrix rows are in common & we want a vertical arrangement
+    t(singler_cellassign_matrix),
+    col = circlize::colorRamp2(c(0, 1), colors = c("white", "darkslateblue")),
+    border = TRUE,
+    ## Row parameters
+    cluster_rows = FALSE,
+    row_title = "CellAssign annotations",
+    row_title_gp = grid::gpar(fontsize = 12),
+    row_title_side = "right",
+    row_names_side = "left",
+    row_names_gp = grid::gpar(fontsize = 10),
+    ## Column parameters
+    cluster_columns = FALSE,
+    column_title = "SingleR annotations",
+    column_title_gp = grid::gpar(fontsize = 12),
+    column_names_side = "bottom",
+    column_names_gp = grid::gpar(fontsize = 10),
+    # ensure column labels fit in PDF export
+    column_names_max_height = unit(8, "cm"),
+    ## Legend parameters
+    heatmap_legend_param = list(
+      title = "Jaccard index",
+      direction = "vertical",
+      legend_width = grid::unit(1.5, "in")
+    )
+  ) |>
   ComplexHeatmap::draw(
     heatmap_legend_side = "right"
   )
 
+# save heatmap to png
+png(output_png_file, width = 9, height = 9, units = 'in', res = 300)
+ComplexHeatmap::draw(heatmap)
+dev.off()
+
+
+# save heatmap to pdf
+pdf(output_pdf_file, width = 9, height = 9, useDingbats = FALSE)
+ComplexHeatmap::draw(heatmap)
 dev.off()
