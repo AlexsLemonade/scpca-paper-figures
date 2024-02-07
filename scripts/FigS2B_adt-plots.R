@@ -14,8 +14,11 @@ theme_set(
       axis.line = element_blank(),
       axis.ticks = element_blank(),
       axis.text = element_blank(),
+      # font sizing
+      axis.title = element_text(size = 8),
+      strip.text = element_text(size = 6),
       # add a square around each of the plots
-      panel.background = element_rect(colour = "black", linewidth=0.5),
+      panel.background = element_rect(colour = "black", linewidth=0.75),
       aspect.ratio = 1
     )
 )
@@ -94,7 +97,7 @@ var_adt_exp_df <- logcounts(altExp(processed_sce))[top_adts, ] |>
   t() |>
   as.data.frame() |>
   tibble::rownames_to_column("barcodes") |>
-  # combine all ADTs into a single column for  faceting
+  # combine all ADTs into a single column for faceting
   tidyr::pivot_longer(
     !barcodes,
     names_to = "ADT",
@@ -102,7 +105,7 @@ var_adt_exp_df <- logcounts(altExp(processed_sce))[top_adts, ] |>
   )
 
 adt_density_plot <- ggplot(var_adt_exp_df, aes(x = adt_expression, fill = ADT)) +
-  geom_density() +
+  geom_density(linewidth = 0.25) +
   facet_wrap(vars(ADT), nrow = 2) +
   labs(x = "Log-normalized ADT expression",
        y = "Density") +
@@ -139,4 +142,4 @@ adt_umap_plot <- ggplot(umap_df, aes(x = UMAP1, y = UMAP2, color = adt_expressio
 
 combined_plot <- patchwork::wrap_plots(list(filtered_plot, adt_density_plot, adt_umap_plot))
 
-ggsave(output_plot_file, combined_plot, width = 8, height = 7)
+ggsave(output_plot_file, combined_plot, width = 8.25, height = 3.75)
