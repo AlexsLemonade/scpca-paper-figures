@@ -44,6 +44,11 @@ Summary of libraries and types of libraries found on the Portal.
 
 - B. Simplified versions of plots found in the ADT section of the main QC report.
 
+**Figure 3**
+
+- C. Overview of merged workflow.
+- D. Example UMAPs found in merged report.
+
 **Figure 4**
 
 - B. Comparison of cell type annotations obtained using `SingleR` and `CellAssign`.
