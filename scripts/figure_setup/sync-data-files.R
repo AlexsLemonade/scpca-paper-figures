@@ -63,3 +63,13 @@ fs::dir_create(celltype_local_files)
 
 sync_call <- glue::glue("aws s3 cp '{celltype_s3_files}' '{celltype_local_files}' --exclude '*' --include 'SCPCL000498_processed.rds' --recursive")
 system(sync_call)
+
+# sync merged object results for SCPCP000003 -----------------------------------
+merged_s3_dir <- "s3://nextflow-ccdl-results/scpca/processed/results/merged/SCPCP000003"
+merged_local_dir <- here::here("s3_files", "SCPCP000003")
+fs::dir_create(merged_local_dir)
+
+merged_file_name <- "SCPCP000003_merged.rds"
+
+sync_call <- glue::glue("aws s3 cp '{merged_s3_dir}/{merged_file_name}' '{merged_local_dir}/{merged_file_name}'")
+system(sync_call)
