@@ -9,7 +9,7 @@ qc_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000001/SCPCS0
 qc_local_files <- here::here("s3_files", "SCPCS000001")
 fs::dir_create(qc_local_files)
 
-sync_call <- glue::glue("aws s3 cp '{qc_s3_files}' '{qc_local_files}' --exclude '*' --include '*.rds' --recursive")
+sync_call <- glue::glue("aws s3 sync '{qc_s3_files}' '{qc_local_files}' --exclude '*' --include '*.rds' --exact-timestamps")
 system(sync_call)
 
 # sync results for SCPCS000216 (for ADT plots) ---------------------------------
@@ -18,7 +18,7 @@ adt_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000007/SCPCS
 adt_local_files <- here::here("s3_files", "SCPCS000216")
 fs::dir_create(adt_local_files)
 
-sync_call <- glue::glue("aws s3 cp '{adt_s3_files}' '{adt_local_files}' --exclude '*' --include '*.rds' --recursive")
+sync_call <- glue::glue("aws s3 sync '{adt_s3_files}' '{adt_local_files}' --exclude '*' --include '*.rds' --exact-timestamps")
 system(sync_call)
 
 # sync results for benchmarking libraries --------------------------------------
@@ -42,7 +42,7 @@ af_dirs <- glue::glue("{alevin_s3_dir}/{benchmarking_run_ids}-Homo_sapiens.GRCh3
 # we only want alevin folder and any json files 
 # copy to folder labeled with run id 
 glue::glue(
-  "aws s3 cp '{af_dirs}' '{af_local_dir}/{benchmarking_run_ids}' --exclude '*' --include 'alevin/*' --include '*.json' --recursive"
+  "aws s3 sync '{af_dirs}' '{af_local_dir}/{benchmarking_run_ids}' --exclude '*' --include 'alevin/*' --include '*.json' --exact-timestamps"
 ) |>
   purrr::walk(system)
 
@@ -52,7 +52,7 @@ cellranger_dirs <- glue::glue("{cellranger_s3_dir}/{benchmarking_run_ids}-GRCh38
 # we only need the filtered h5 file 
 # copy each file to folder labeled with run id
 glue::glue(
-  "aws s3 cp '{cellranger_dirs}' '{cellranger_local_dir}/{benchmarking_run_ids}' --exclude '*' --include 'outs/filtered*.h5' --recursive"
+  "aws s3 sync '{cellranger_dirs}' '{cellranger_local_dir}/{benchmarking_run_ids}' --exclude '*' --include 'outs/filtered*.h5' --exact-timestamps"
 ) |> 
   purrr::walk(system)
 
@@ -61,7 +61,7 @@ celltype_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000005/
 celltype_local_files <- here::here("s3_files", "SCPCS000251")
 fs::dir_create(celltype_local_files)
 
-sync_call <- glue::glue("aws s3 cp '{celltype_s3_files}' '{celltype_local_files}' --exclude '*' --include 'SCPCL000498_processed.rds' --recursive")
+sync_call <- glue::glue("aws s3 sync '{celltype_s3_files}' '{celltype_local_files}' --exclude '*' --include 'SCPCL000498_processed.rds' --exact-timestamps")
 system(sync_call)
 
 # sync merged object results for SCPCP000003 -----------------------------------
@@ -71,5 +71,5 @@ fs::dir_create(merged_local_dir)
 
 merged_file_name <- "SCPCP000003_merged.rds"
 
-sync_call <- glue::glue("aws s3 cp '{merged_s3_dir}/{merged_file_name}' '{merged_local_dir}/{merged_file_name}'")
+sync_call <- glue::glue("aws s3 sync '{merged_s3_dir}' '{merged_local_dir}' --exclude '*' --include '{merged_file_name}' --exact-timestamps")
 system(sync_call)
