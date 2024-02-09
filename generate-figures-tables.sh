@@ -4,12 +4,6 @@
 # This script assumes that you already have locally downloaded the necessary data from S3.
 # Currently, this requires that you have access to the relevant S3 bucket as a Data Lab member.
 #
-# To obtain all data, first run the following scripts (paths are relative to the base directory)
-#
-# Rscript scripts/figure_setup/sync-data-files.R
-# Rscript scripts/figure_setup/sync-metadata.R
-# Rscript scripts/figure_setup/sync-reference-files.R
-#
 # This script can be run as:
 # bash generate-figures-tables.sh
 
@@ -25,7 +19,20 @@ script_dir=${BASEDIR}/scripts
 
 # Ensure output directories exist
 mkdir -p ${BASEDIR}/figures/pngs
+mkdir -p ${BASEDIR}/figures/pdfs
 mkdir -p ${BASEDIR}/tables
+
+# check if s3 files directory already exists
+# if it does, delete it
+if [ -d "${BASEDIR}/s3_files" ]; then
+  rm -r ${BASEDIR}/s3_files
+fi
+mkdir -p ${BASEDIR}/s3_files
+
+# copy over any files needed from S3
+Rscript ${script_dir}/figure_setup/sync-data-files.R
+Rscript ${script_dir}/figure_setup/sync-metadata.R
+Rscript ${script_dir}/figure_setup/sync-reference-files.R
 
 #########################################################
 #        Generate figures in order of appearance        #
@@ -56,6 +63,9 @@ Rscript ${script_dir}/FigS1B-D_method-metrics-comparison.R
 
 # Figure S2B
 Rscript ${script_dir}/FigS2B_adt-plots.R
+
+# Figure 3D
+Rscript ${script_dir}/Fig3D_merged-umaps.R
 
 # Figure S4A-B
 Rscript ${script_dir}/FigS4A-B_celltype-diagnostic-plots.R
