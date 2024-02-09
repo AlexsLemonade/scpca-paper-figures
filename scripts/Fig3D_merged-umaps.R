@@ -23,8 +23,6 @@ theme_set(
     )
 )
 
-set.seed(2024)
-
 # Set up -----------------------------------------------------------------------
 
 # folder where any local data lives
