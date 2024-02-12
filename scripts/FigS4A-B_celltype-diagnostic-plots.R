@@ -27,10 +27,6 @@ processed_sce_file <- file.path(local_results_dir, "SCPCL000001_processed.rds")
 processed_sce <- readr::read_rds(processed_sce_file)
 
 # define output file paths 
-png_dir <- here::here("figures", "pngs") 
-singler_diagnostic_png_file <- file.path(png_dir, "FigS4A_singler-diagnostic.png")
-cellassign_diagnostic_png_file <- file.path(png_dir, "FigS4B_cellassign-diagnostic.png")
-
 pdf_dir <- here::here("figures", "pdfs") 
 singler_diagnostic_pdf_file <- file.path(pdf_dir, "FigS4A_singler-diagnostic.pdf")
 cellassign_diagnostic_pdf_file <- file.path(pdf_dir, "FigS4B_cellassign-diagnostic.pdf")
@@ -128,7 +124,6 @@ singler_diagnostic_plot <- ggplot(delta_median_df) +
     legend.position = "bottom"
   )
 
-ggsave(singler_diagnostic_png_file, singler_diagnostic_plot, height = 7, width = 7)
 ggsave(singler_diagnostic_pdf_file, singler_diagnostic_plot, height = 7, width = 7)
 
 # CellAssign plotting ----------------------------------------------------------
@@ -198,5 +193,4 @@ cellassign_diagnostic_plot <- ggplot(celltype_df) +
     panel.spacing = unit(0.02, "in")
   )
 
-ggsave(cellassign_diagnostic_png_file, cellassign_diagnostic_plot, width = 7, height = 7)
 ggsave(cellassign_diagnostic_pdf_file, cellassign_diagnostic_plot, width = 7, height = 7)
