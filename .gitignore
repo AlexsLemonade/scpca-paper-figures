@@ -9,3 +9,7 @@ s3_files
 
 #DS Store
 .DS_Store
+
+# Illustrator files 
+*.ai
+
