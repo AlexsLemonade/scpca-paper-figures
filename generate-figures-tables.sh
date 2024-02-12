@@ -29,7 +29,8 @@ if [ -d "${BASEDIR}/s3_files" ]; then
 fi
 mkdir -p ${BASEDIR}/s3_files
 
-# copy over any files needed from S3
+# copy over files from S3
+echo "Downloading data files..."
 Rscript ${script_dir}/figure_setup/sync-data-files.R
 Rscript ${script_dir}/figure_setup/sync-metadata.R
 Rscript ${script_dir}/figure_setup/sync-reference-files.R
@@ -37,6 +38,8 @@ Rscript ${script_dir}/figure_setup/sync-reference-files.R
 #########################################################
 #        Generate figures in order of appearance        #
 #########################################################
+
+echo "Generating figures and tables..."
 
 
 ### Main text figures ###
