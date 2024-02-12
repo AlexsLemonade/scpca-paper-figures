@@ -18,7 +18,7 @@ theme_set(
       axis.ticks = element_blank(),
       axis.text = element_blank(),
       # add a square around each of the plots
-      panel.background = element_rect(colour = "black", linewidth=0.5),
+      panel.background = element_rect(colour = "black", linewidth = 0.5),
       aspect.ratio = 1
     )
 )
