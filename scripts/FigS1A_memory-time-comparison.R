@@ -20,9 +20,6 @@ log_file_paths <- list("Alevin-fry" = af_log_file,
 palette_file <- here::here("palettes", "method-palette.tsv")
 
 # path to output plot
-png_dir <- here::here("figures", "pngs")
-output_png_file <- file.path(png_dir, "FigS1A_time-memory-benchmarking.png")
-
 pdf_dir <- here::here("figures", "pdfs")
 output_pdf_file <- file.path(pdf_dir, "FigS1A_time-memory-benchmarking.pdf")
 
@@ -139,6 +136,5 @@ combined_plot <- patchwork::wrap_plots(list(time_plot, memory_plot), ncol = 1, g
 
 # export as png
 # using width and height that were exported when width and height weren't specified
-ggsave(output_png_file, plot = combined_plot, width = 10, height = 10)
 ggsave(output_pdf_file, plot = combined_plot, width = 10, height = 10)
 
