@@ -22,8 +22,9 @@ sample_metadata_file <- here::here("s3_files", "scpca-sample-metadata.tsv")
 diagnosis_group_palette <- here::here("palettes", "diagnosis-group-palette.tsv")
 
 # output files 
-plots_dir <- here::here("figures", "pngs")
-output_plot_file <- file.path(plots_dir, "Fig1_sample-summary.png")
+pdf_dir <- here::here("figures", "pdfs")
+output_pdf_file <- file.path(pdf_dir, "Fig1_sample-summary.pdf")
+
 
 # Prep sample metadata ------------------------------------------------------
 
@@ -112,4 +113,4 @@ diagnosis_plot <- ggplot(plot_df, aes(y = diagnosis,  fill = diagnosis_group)) +
   coord_cartesian(clip = "off")
 
 # save plot 
-ggsave(output_plot_file, plot = diagnosis_plot, width = 15, height = 10)
+ggsave(output_pdf_file, plot = diagnosis_plot, width = 15, height = 10)

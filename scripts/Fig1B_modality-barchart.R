@@ -21,8 +21,11 @@ project_whitelist_file <- file.path(root_dir, "sample-info", "project-whitelist.
 suspension_palette_file <- file.path(root_dir, "palettes", "suspension-palette.tsv")
 
 # output files 
-plots_dir <- file.path(root_dir, "figures", "pngs")
-output_plot_file <- file.path(plots_dir, "Fig1B_modality-summary.png")
+png_dir <- file.path(root_dir, "figures", "pngs")
+output_png_file <- file.path(png_dir, "Fig1B_modality-summary.png")
+
+pdf_dir <- file.path(root_dir, "figures", "pdfs")
+output_pdf_file <- file.path(pdf_dir, "Fig1B_modality-summary.pdf")
 
 # set order of modalities for final plot 
 modality_order <- c("Single suspension",
@@ -143,4 +146,5 @@ ggplot(filtered_modality_df, aes(x = modality, fill = seq_unit)) +
         axis.text.x = element_text(angle = 45, hjust = 1)) +
   guides(fill = guide_legend(title.position = "top", title.hjust = 0.5))
 
-ggsave(output_plot_file, width = 7, height = 7)
+ggsave(output_png_file, width = 7, height = 7)
+ggsave(output_pdf_file, width = 7, height = 7)
