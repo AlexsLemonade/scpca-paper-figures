@@ -15,8 +15,8 @@ theme_set(
       axis.ticks = element_blank(),
       axis.text = element_blank(),
       # font sizing
-      axis.title = element_text(size = 8),
-      strip.text = element_text(size = 6),
+      axis.title = element_text(size = 11),
+      strip.text = element_text(size = 9),
       # add a square around each of the plots
       panel.background = element_rect(colour = "black", linewidth=0.75),
       aspect.ratio = 1
@@ -143,3 +143,4 @@ adt_umap_plot <- ggplot(umap_df, aes(x = UMAP1, y = UMAP2, color = adt_expressio
 combined_plot <- patchwork::wrap_plots(list(filtered_plot, adt_density_plot, adt_umap_plot))
 
 ggsave(output_plot_file, combined_plot, width = 8.25, height = 3.75)
+
