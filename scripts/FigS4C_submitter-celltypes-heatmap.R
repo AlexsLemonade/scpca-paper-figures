@@ -21,8 +21,8 @@ processed_sce_file <- file.path(local_results_dir, "SCPCL000498_processed.rds")
 processed_sce <- readr::read_rds(processed_sce_file)
 
 # define output file paths 
-plots_dir <- here::here("figures", "pngs") 
-output_plot_file <- file.path(plots_dir, "FigS4C_submitter-heatmap.png")
+pdf_dir <- here::here("figures", "pdfs") 
+output_pdf_file <- file.path(pdf_dir, "FigS4C_submitter-heatmap.pdf")
 
 # source in helper functions for plotting
 function_file <- here::here("scripts", "utils", "celltype-plot-helper-functions.R")
@@ -47,11 +47,8 @@ jaccard_submitter_matrices <- available_celltypes |>
 
 # Plot -------------------------------------------------------------------------
 
-# set up png to save heatmap
-png(output_plot_file, width = 9, height = 10, units = 'in', res = 300)
-
 # create concatenated heatmaps 
-jaccard_submitter_matrices |>
+heatmap <- jaccard_submitter_matrices |>
   purrr::imap(
     \(celltype_mat, celltype_method) {
       ComplexHeatmap::Heatmap(
@@ -89,5 +86,7 @@ jaccard_submitter_matrices |>
     padding = unit(c(2, 20, 2, 2), "mm")
   )
 
+# save heatmap to pdf
+pdf(output_pdf_file, width = 9, height = 9, useDingbats = FALSE)
+ComplexHeatmap::draw(heatmap)
 dev.off()
-
