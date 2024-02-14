@@ -21,8 +21,8 @@ processed_sce_file <- file.path(local_results_dir, "SCPCL000001_processed.rds")
 processed_sce <- readr::read_rds(processed_sce_file)
 
 # define output file paths 
-plots_dir <- here::here("figures", "pngs") 
-output_plot_file <- file.path(plots_dir, "Fig4B_singler-cellassign-heatmap.png")
+figure_dir <- here::here("figures", "pdfs")
+output_file <- file.path(figure_dir, "Fig4B_singler-cellassign-heatmap.pdf")
 
 # source in helper functions for plotting
 function_file <- here::here("scripts", "utils", "celltype-plot-helper-functions.R")
@@ -41,14 +41,12 @@ singler_cellassign_matrix <- make_jaccard_matrix(
 
 # Plot -------------------------------------------------------------------------
 
-# set up png to save heatmap
-png(output_plot_file, width = 9, height = 9, units = 'in', res = 300)
-
 # heatmap comparing singleR to cellassign annotations
-ComplexHeatmap::Heatmap(
-  t(singler_cellassign_matrix), # transpose because matrix rows are in common & we want a vertical arrangement
+heatmap <- ComplexHeatmap::Heatmap(
+  # transpose because matrix rows are in common & we want a vertical arrangement
+  t(singler_cellassign_matrix),
   col = circlize::colorRamp2(c(0, 1), colors = c("white", "darkslateblue")),
-  border = TRUE, 
+  border = TRUE,
   ## Row parameters
   cluster_rows = FALSE,
   row_title = "CellAssign annotations",
@@ -62,15 +60,20 @@ ComplexHeatmap::Heatmap(
   column_title_gp = grid::gpar(fontsize = 12),
   column_names_side = "bottom",
   column_names_gp = grid::gpar(fontsize = 10),
+  # ensure column labels fit in PDF export
+  column_names_max_height = grid::unit(8, "cm"),
   ## Legend parameters
   heatmap_legend_param = list(
     title = "Jaccard index",
     direction = "vertical",
-    legend_width = unit(1.5, "in")
+    legend_width = grid::unit(1.5, "in")
   )
-) |> 
-  ComplexHeatmap::draw(
-    heatmap_legend_side = "right"
-  )
+) |>
+ComplexHeatmap::draw(
+  heatmap_legend_side = "right"
+)
 
+# save heatmap to pdf
+pdf(output_file, width = 9, height = 9, useDingbats = FALSE)
+ComplexHeatmap::draw(heatmap)
 dev.off()
