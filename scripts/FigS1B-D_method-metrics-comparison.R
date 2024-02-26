@@ -56,9 +56,9 @@ library_metadata_file <- here::here("s3_files", "scpca-library-metadata.tsv")
 
 # output plot 
 pdf_dir <- here::here("figures", "pdfs")
-umi_pdf_file <- file.path(pdf_dir, "FigS1B-umi-benchmarking.pdf")
-genes_detected_pdf_file <- file.path(pdf_dir, "FigS1C-genes-detected-benchmarking.pdf")
-gene_exp_pdf_file <- file.path(pdf_dir, "FigS1D-gene-exp-benchmarking.pdf")
+umi_pdf_file <- file.path(pdf_dir, "FigS1B-gene-exp-benchmarking.pdf")
+genes_detected_pdf_file <- file.path(pdf_dir, "FigS1C-umi-benchmarking.pdf")
+gene_exp_pdf_file <- file.path(pdf_dir, "FigS1D-genes-detected-benchmarking.pdf")
 
 # Create SCE objects -----------------------------------------------------------
 
