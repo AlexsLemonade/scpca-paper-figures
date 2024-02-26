@@ -56,9 +56,10 @@ library_metadata_file <- here::here("s3_files", "scpca-library-metadata.tsv")
 
 # output plot 
 pdf_dir <- here::here("figures", "pdfs")
-umi_pdf_file <- file.path(pdf_dir, "FigS1B-umi-benchmarking.pdf")
-genes_detected_pdf_file <- file.path(pdf_dir, "FigS1C-genes-detected-benchmarking.pdf")
-gene_exp_pdf_file <- file.path(pdf_dir, "FigS1D-gene-exp-benchmarking.pdf")
+png_dir <- here::here("figures", "pngs")
+umi_pdf_file <- file.path(pdf_dir, "FigS1C-umi-benchmarking.pdf")
+genes_detected_pdf_file <- file.path(pdf_dir, "FigS1D-genes-detected-benchmarking.pdf")
+gene_exp_png_file <- file.path(png_dir, "FigS1B-gene-exp-benchmarking.png")
 
 # Create SCE objects -----------------------------------------------------------
 
@@ -157,7 +158,7 @@ umi_plot <- ggplot(coldata_common, aes(x = sum, color = tool)) +
        color = "") +
   scale_color_manual(values = method_colors) 
 
-ggsave(filename = umi_pdf_file, plot = umi_plot)
+ggsave(filename = umi_pdf_file, plot = umi_plot, width = 7, height = 7)
 
 # genes detected per cell plot
 genes_detected_plot <- ggplot(coldata_common, aes(x = detected, color = tool)) + 
@@ -170,7 +171,7 @@ genes_detected_plot <- ggplot(coldata_common, aes(x = detected, color = tool)) +
        color = "") +
   scale_color_manual(values = method_colors)
 
-ggsave(filename = genes_detected_pdf_file, plot = genes_detected_plot)
+ggsave(filename = genes_detected_pdf_file, plot = genes_detected_plot, width = 7, height = 7)
 
 # prep row data ----------------------------------------------------------------
 
@@ -214,4 +215,4 @@ gene_exp_plot <- ggplot(rowdata_cor, aes(x = `Alevin-fry`, y = `Cell Ranger`, co
   scale_color_manual(values = suspension_colors) +
   theme(legend.position = "none")
 
-ggsave(filename = gene_exp_pdf_file, plot = gene_exp_plot)
+ggsave(filename = gene_exp_png_file, plot = gene_exp_plot, width = 7, height = 7)
