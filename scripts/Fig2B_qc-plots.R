@@ -44,7 +44,8 @@ processed_sce <- readr::read_rds(processed_sce_file)
 
 # define output file paths 
 pdf_dir <- here::here("figures", "pdfs") 
-output_pdf_file <- file.path(pdf_dir, "Fig2B_mini-qc-plots.pdf")
+output_pdf_file <- file.path(pdf_dir, "Fig2B-F_mini-qc-plots.pdf")
+output_pdf_file_hvgs <- file.path(pdf_dir, "Fig2G_mini-qc-hvgs.pdf")
 
 # Knee plot --------------------------------------------------------------------
 
@@ -261,6 +262,7 @@ hvg_plot <- ggplot(coldata_df, aes(x = UMAP1, y = UMAP2, color = gene_expression
   theme(
     legend.position = "none",
     axis.title = element_text(size = 9, color = "black"),
+    strip.background = element_rect(linewidth = 0.5),
     strip.text = element_text(size = 8)
   ) 
 
@@ -270,10 +272,10 @@ plot_list <- list(knee_plot,
                   cell_metrics_plot,
                   miQC_plot,
                   filtered_plot,
-                  umap_plot, 
-                  hvg_plot)
+                  umap_plot)
 combined_plot <- patchwork::wrap_plots(plot_list, ncol = 3) &
   theme(text = element_text(size = 10))
 
 # save files 
 ggsave(output_pdf_file, plot = combined_plot, width = 8.5, height = 5.5, units = "in")
+ggsave(output_pdf_file_hvgs, plot = hvg_plot, width = 3, height = 2.75, units = "in")
