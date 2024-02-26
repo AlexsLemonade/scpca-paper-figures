@@ -48,7 +48,7 @@ Before running this script, you must run `figure_setup/sync-metadata.R`.
 3. `TableS1_modality-summary.R`: This script is used to generate supplemental Table 1, which contains a summary of the types of libraries found in each project.
 Before running this script, you must run `figure_setup/sync-metadata.R`.
 
-4. `Fig2B-G_qc-plots.R`: This script is used generate panels Figure 2B-G, which includes simplified and miniature versions of the plots found in the main QC report included with each sample download.
+4. `Fig2B-G_qc-plots.R`: This script is used to generate panels Figure 2B-G, which includes simplified and miniature versions of the plots found in the main QC report included with each sample download.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
 
 5. `FigS1A_memory-time-comparison.R`: This script is used to generate supplemental Figure 1A, which shows a comparison of total run time and peak memory usage for Cell Ranger and Alevin-fry.
