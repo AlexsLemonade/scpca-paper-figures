@@ -23,15 +23,24 @@ Below is a summary of all figures and tables in the paper.
 
 - A. Bar chart summarizing the types of diagnoses found on the Portal.
 - B. Bar chart summarizing the types of modalities found on the Portal.
-
-**Table S1**
-
-Summary of libraries and types of libraries found on the Portal.
+- C. Example project card as shown on the Portal.
 
 **Figure 2**
 
-- B. Simplified versions of plots in the main QC report.
-- C. Illustration of individual sample download folder.
+- A. Overview of main workflow.
+- B-G. Simplified versions of plots in the main QC report.
+
+**Figure 3**
+
+- A. Illustration of individual sample download folder.
+- B. Illustration of merged project download folder.
+- C. Overview of merged workflow.
+- D. Example UMAPs found in merged report.
+
+**Figure 4**
+
+- A. Overview of cell type annotation workflow.
+- B. Comparison of cell type annotations obtained using `SingleR` and `CellAssign`.
 
 **Supplemental Figure 1**
 
@@ -42,22 +51,31 @@ Summary of libraries and types of libraries found on the Portal.
 
 **Supplemental Figure 2**
 
-- B. Simplified versions of plots found in the ADT section of the main QC report.
+- A. Overview of cell type annotation workflow.
+- B-D. Simplified versions of plots found in the ADT section of the main QC report.
+- E. Overview of multiplexed library workflow.
 
-**Figure 3**
+**Supplemental Figure 3**
 
-- C. Overview of merged workflow.
-- D. Example UMAPs found in merged report.
+- A. Overview of bulk RNA-seq workflow.
+- B. Overview of spatial transcriptomics workflow.
 
-**Figure 4**
-
-- B. Comparison of cell type annotations obtained using `SingleR` and `CellAssign`.
 
 **Supplemental Figure 4**
 
 - A. Diagnostic plot for cell type annotations from `SingleR`.
 - B. Diagnostic plot for cell type annotations from `CellAssign`.
-- C. Comparison between submitter provided annotations and automated annotations from `SingleR` and `CellAssign`.
+
+
+**Supplemental Figure 5**
+
+Comparison between submitter provided annotations and automated annotations from `SingleR` and `CellAssign`.
+
+
+**Table S1**
+
+Summary of libraries and types of libraries found on the Portal.
+
 
 ## Generating figures and tables
 
