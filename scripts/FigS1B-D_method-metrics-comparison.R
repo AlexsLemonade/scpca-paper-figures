@@ -213,6 +213,11 @@ gene_exp_plot <- ggplot(rowdata_cor, aes(x = `Alevin-fry`, y = `Cell Ranger`, co
   ggpubr::stat_cor(aes(label = after_stat(rr.label)), method = "pearson", size = 4, color = "black") +
   # color points by suspension type
   scale_color_manual(values = suspension_colors) +
-  theme(legend.position = "none")
+  theme(
+    legend.position = "none", 
+    axis.line = element_line(linewidth = 1),
+    strip.background = element_rect(linewidth = 2), 
+    axis.title = element_text(size = rel(1.15))
+  )
 
 ggsave(filename = gene_exp_png_file, plot = gene_exp_plot, width = 7, height = 7)
