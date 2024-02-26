@@ -37,7 +37,7 @@ filtered_sce <- readr::read_rds(filtered_sce_file)
 processed_sce_file <- file.path(data_dir, glue::glue("{library_id}_processed.rds"))
 processed_sce <- readr::read_rds(processed_sce_file)
 
-output_plot_file <- here::here("figures", "pngs", "FigS2B_adt-plots.png")
+output_plot_file <- here::here("figures", "pngs", "FigS2B-D_adt-plots.png")
 
 # Filtered ADT plot ------------------------------------------------------------
 
