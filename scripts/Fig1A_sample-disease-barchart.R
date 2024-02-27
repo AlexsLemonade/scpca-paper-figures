@@ -25,7 +25,7 @@ diagnosis_group_palette <- here::here("palettes", "diagnosis-group-palette.tsv")
 pdf_dir <- here::here("figures", "pdfs")
 output_pdf_file <- file.path(pdf_dir, "Fig1_sample-summary.pdf")
 
-tables_dir <- here::here("tables")
+tables_dir <- here::here("manuscript-numbers")
 diagnosis_count_table <- file.path(tables_dir, "diagnosis-group-counts.tsv")
 disease_timing_count_table <- file.path(tables_dir, "disease-timing-counts.tsv")
 
