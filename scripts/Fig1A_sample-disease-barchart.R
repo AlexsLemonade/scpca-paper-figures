@@ -25,6 +25,9 @@ diagnosis_group_palette <- here::here("palettes", "diagnosis-group-palette.tsv")
 pdf_dir <- here::here("figures", "pdfs")
 output_pdf_file <- file.path(pdf_dir, "Fig1_sample-summary.pdf")
 
+tables_dir <- here::here("manuscript-numbers")
+diagnosis_count_table <- file.path(tables_dir, "diagnosis-group-counts.tsv")
+disease_timing_count_table <- file.path(tables_dir, "disease-timing-counts.tsv")
 
 # Prep sample metadata ------------------------------------------------------
 
@@ -60,6 +63,15 @@ plot_df <- diagnosis_plot_df |>
                 diagnosis_group = forcats::fct_relevel(diagnosis_group, 
                                                        "Other solid tumors",
                                                        after = Inf))
+
+# tables counting total for each group and disease timing
+diagnosis_group_totals <- plot_df |> 
+  dplyr::count(diagnosis_group)
+readr::write_tsv(diagnosis_group_totals, diagnosis_count_table)
+
+disease_timing_totals <- plot_df |> 
+  dplyr::count(standardized_disease_timing)
+readr::write_tsv(disease_timing_totals, disease_timing_count_table)
 # Plot -------------------------------------------------------------------------
 
 # get list of colors to use 

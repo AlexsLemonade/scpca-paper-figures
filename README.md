@@ -128,6 +128,11 @@ The `palettes` folder contains any palettes used in generating the figures.
 2. `suspension-palette.tsv`: This is the palette used to color libraries by `Single-cell` or `Single-nuclei`.
 3. `method-palette.tsv`: This is the palette used to color by quantification method used, either `Alevin-fry` or `Cell Ranger`.
 
+## Manuscript numbers
+
+The `manuscript-numbers` folder contains tables with total sample counts referenced when writing the manuscript.
+These tables are not included in the final manuscript and were created using `scripts/Fig1A_sample-disease-barchart.R`.
+
 ## Renv
 
 Package dependencies for scripts used in this repo are managed using [`renv`](https://rstudio.github.io/renv/index.html).
