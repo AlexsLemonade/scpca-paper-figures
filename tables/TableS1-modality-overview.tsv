@@ -9,8 +9,8 @@ SCPCP000006	Other solid tumors	Wilms tumor	45	183	0	40	43	100	0	0
 SCPCP000007	Leukemia	Acute myeloid leukemia;T-myeloid mixed phenotype acute leukemia	28	28	28	0	0	0	28	0
 SCPCP000007	Non-cancerous	Non-cancerous	2	2	2	0	0	0	2	0
 SCPCP000008	Leukemia	Early T-cell precursor T-cell acute lymphoblastic leukemia;B-cell acute lymphoblastic leukemia;Mixed phenotype acute leukemia;T-cell acute lymphoblastic leukemia	105	107	107	0	0	0	6	0
-SCPCP000009	Brain and CNS	Medulloblastoma;Ependymoma;Pilocytic astrocytoma;Dysplastic gangliocytoma;Primitive neuroectodermal tumor;Desmoplastic ganglioglioma;Anaplastic ganglioglioma;Dysembryoplastic neuroepithelial tumor;Subependymoma;Low-grade glioma;Myxopapillary ependymoma;Glioblastoma;Anaplastic ependymoma;Pilomyxoid astrocytoma;Schwannoma;Ganglioglioma	36	57	0	69	36	0	0	66
-SCPCP000009	Non-cancerous	Non-cancerous	3	5	0	3	3	0	0	3
+SCPCP000009	Brain and CNS	Medulloblastoma;Ependymoma;Pilocytic astrocytoma;Dysplastic gangliocytoma;Primitive neuroectodermal tumor;Desmoplastic ganglioglioma;Anaplastic ganglioglioma;Dysembryoplastic neuroepithelial tumor;Subependymoma;Low-grade glioma;Myxopapillary ependymoma;Glioblastoma;Anaplastic ependymoma;Pilomyxoid astrocytoma;Schwannoma;Ganglioglioma	36	57	0	21	36	0	0	18
+SCPCP000009	Non-cancerous	Non-cancerous	3	5	0	2	3	0	0	2
 SCPCP000010	Brain and CNS	Ganglioglioma;Low-grade glioma;Atypical teratoid rhabdoid tumor;Glial-neuronal tumor;Focal cortical dysplasia;High-grade glioma	42	44	0	44	0	0	0	0
 SCPCP000011	Brain and CNS	Retinoblastoma	25	35	28	7	0	0	0	0
 SCPCP000012	Other solid tumors	Adrenocortical carcinoma;Germ cell tumor	4	4	0	4	0	0	0	0

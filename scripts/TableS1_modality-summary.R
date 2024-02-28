@@ -55,14 +55,14 @@ demuxed_metadata_df <- library_metadata_df |>
   tidyr::unnest(scpca_sample_id)
   
 # create a total count of the number of libraries per project per diagnosis group
-total_library_count <- demuxed_metadata_df |> 
+total_library_count <- demuxed_metadata_df |>
   dplyr::left_join(sample_metadata_df) |> 
   dplyr::select(scpca_project_id, scpca_library_id, diagnosis_group) |> 
   # remove any duplicates (e.g. those with CITE or with cell hash)
-  dplyr::distinct() |> 
+  dplyr::distinct() |>
   dplyr::count(scpca_project_id, diagnosis_group, name = "Total number of libraries")
 
-total_sample_count <- demuxed_metadata_df |> 
+total_sample_count <- demuxed_metadata_df |>
   dplyr::left_join(sample_metadata_df) |> 
   dplyr::select(scpca_project_id, scpca_sample_id, diagnosis_group) |> 
   # remove any duplicates (e.g. those with CITE or with cell hash)
@@ -89,18 +89,22 @@ modality_counts_df <- demuxed_metadata_df |>
     scpca_project_id, scpca_library_id, modality, diagnosis, diagnosis_group
   ) 
 
-summarized_counts_df <- modality_counts_df |> 
-  # for each project, group by diagnosis group, count the total number of libraries
-  # and then summarize the diagnoses included 
+# determine full diagnoses for each project
+full_diagnoses <- modality_counts_df |>
+  # for each project, group by diagnosis group, and summarize the diagnoses included
   dplyr::group_by(scpca_project_id, diagnosis_group) |> 
-  dplyr::mutate(diagnosis = paste(unique(diagnosis), collapse = ";")) |>
-  dplyr::ungroup() |>
-  # make sure that diagnosis now gets retained throughout creation of the table
-  dplyr::count(scpca_project_id, diagnosis_group, diagnosis, modality) |> 
+  dplyr::summarize(diagnosis = paste(unique(diagnosis), collapse = ";"))
+
+summarized_counts_df <- modality_counts_df |>
+  dplyr::select(scpca_project_id, scpca_library_id, diagnosis_group, modality) |>
+  distinct() |>
+  # count each combination of diagnosis group and modality
+  dplyr::count(scpca_project_id, diagnosis_group, modality) |>
   # create a column for each modality that contains the total number of libraries
-  tidyr::pivot_wider(names_from = modality, values_from = n, values_fill = 0) |> 
-  dplyr::left_join(total_library_count) |> 
+  tidyr::pivot_wider(names_from = modality, values_from = n, values_fill = 0) |>
+  dplyr::left_join(total_library_count) |>
   dplyr::left_join(total_sample_count) |> 
+  dplyr::left_join(full_diagnoses) |>
   # set desired order and do some renaming
   dplyr::relocate(
     "Diagnosis group" = diagnosis_group, 
