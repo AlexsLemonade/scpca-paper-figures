@@ -69,5 +69,5 @@ Before running this script, you must run `figure_setup/sync-data-files.R`.
 10. `FigS4A-B_celltype-diagnostic-plots.R`: This script is used to generate supplemental Figure 4A-B, which includes examples of the diagnostic plots for annotating cell types with `SingleR` and `CellAssign`.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
 
-11. `FigS4C_submitter-celltypes-heatmap.R`: This script is used to generate supplemental Figure 4C, which includes an example heatmap comparing submitter provided annotations to automated annotations from `SingleR` and `CellAssign`.
+11. `FigS5_submitter-celltypes-heatmap.R`: This script is used to generate supplemental Figure 5, which includes an example heatmap comparing submitter provided annotations to automated annotations from `SingleR` and `CellAssign`.
 Before running this script, you must run `figure_setup/sync-data-files.R`.

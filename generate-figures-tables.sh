@@ -73,8 +73,8 @@ Rscript ${script_dir}/Fig3D_merged-umaps.R
 # Figure S4A-B
 Rscript ${script_dir}/FigS4A-B_celltype-diagnostic-plots.R
 
-# Figure S4C
-Rscript ${script_dir}/FigS4C_submitter-celltypes-heatmap.R
+# Figure S5
+Rscript ${script_dir}/FigS5_submitter-celltypes-heatmap.R
 
 ##########################################################
 #         Generate tables in order of appearance         #
