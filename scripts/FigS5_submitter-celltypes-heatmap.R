@@ -14,15 +14,15 @@ ComplexHeatmap::ht_opt(TITLE_PADDING = grid::unit(0.2, "in"))
 # folder where any local data lives
 local_results_dir <- here::here("s3_files", "SCPCS000251")
 
-# define file paths to downloaded files 
+# define file paths to downloaded files
 processed_sce_file <- file.path(local_results_dir, "SCPCL000498_processed.rds")
 
-# read in sce objects 
+# read in sce objects
 processed_sce <- readr::read_rds(processed_sce_file)
 
-# define output file paths 
-pdf_dir <- here::here("figures", "pdfs") 
-output_pdf_file <- file.path(pdf_dir, "FigS4C_submitter-heatmap.pdf")
+# define output file paths
+pdf_dir <- here::here("figures", "pdfs")
+output_pdf_file <- file.path(pdf_dir, "FigS5_submitter-heatmap.pdf")
 
 # source in helper functions for plotting
 function_file <- here::here("scripts", "utils", "celltype-plot-helper-functions.R")
@@ -47,14 +47,14 @@ jaccard_submitter_matrices <- available_celltypes |>
 
 # Plot -------------------------------------------------------------------------
 
-# create concatenated heatmaps 
+# create concatenated heatmaps
 heatmap <- jaccard_submitter_matrices |>
   purrr::imap(
     \(celltype_mat, celltype_method) {
       ComplexHeatmap::Heatmap(
         t(celltype_mat), # transpose because matrix rows are in common & we want a vertical arrangement
         col = circlize::colorRamp2(c(0, 1), colors = c("white", "darkslateblue")),
-        border = TRUE, 
+        border = TRUE,
         ## Row parameters
         cluster_rows = FALSE,
         row_title = celltype_method,
@@ -79,7 +79,7 @@ heatmap <- jaccard_submitter_matrices |>
       )
     }) |>
   # concatenate vertically into HeatmapList object
-  purrr::reduce(ComplexHeatmap::`%v%`) |> 
+  purrr::reduce(ComplexHeatmap::`%v%`) |>
   ComplexHeatmap::draw(
     heatmap_legend_side = "right",
     # add a margin to the heatmap so labels don't get cut off
