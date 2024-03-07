@@ -71,3 +71,6 @@ Before running this script, you must run `figure_setup/sync-data-files.R`.
 
 11. `FigS5_submitter-celltypes-heatmap.R`: This script is used to generate supplemental Figure 5, which includes an example heatmap comparing submitter provided annotations to automated annotations from `SingleR` and `CellAssign`.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
+
+12. `TableS2_cellassign-ref-summary.R`: This script is used to generate supplemental Table 2, which includes one row for each ScPCA project on the Portal and the associated diagnoses, reference used from `PanglaoDB`, and list of organs used to construct the reference.
+Before running this script, you must run `figure_setup/sync-metadata.R`
