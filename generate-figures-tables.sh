@@ -85,7 +85,7 @@ Rscript ${script_dir}/FigS5_submitter-celltypes-heatmap.R
 
 Rscript ${script_dir}/TableS1_modality-summary.R
 
-
+Rscript ${script_dir}/TableS2_cellassign-ref-summary.R
 
 
 
