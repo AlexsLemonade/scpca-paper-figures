@@ -1,18 +1,18 @@
-ScPCA Project ID	Diagnoses	PanglaoDB reference name	Organs included in reference
-SCPCP000001	Anaplastic glioma, Glioblastoma, High-grade glioma, Diffuse midline glioma, Non-cancerous, Pleomorphic xanthoastrocytoma, Anaplastic astrocytoma	brain-compartment	Brain, Embryo, Immune system, Vasculature
-SCPCP000002	Pilocytic astrocytoma, Ganglioglioma, Low-grade glioma, Ganglioglioma/ATRT, Ependymoma	brain-compartment	Brain, Embryo, Immune system, Vasculature
-SCPCP000003	T-myeloid mixed phenotype acute leukemia, Early T-cell precursor T-cell acute lymphoblastic leukemia, Non-early T-cell precursor T-cell acute lymphoblastic leukemia, Acute myeloid leukemia	blood-compartment	Blood, Bone, Immune system
+ScPCA Project ID	Diagnoses	ScPCA reference name	PanglaoDB organs included in reference
+SCPCP000001	Anaplastic astrocytoma, Anaplastic glioma, Diffuse midline glioma, Glioblastoma, High-grade glioma, Non-cancerous, Pleomorphic xanthoastrocytoma	brain-compartment	Brain, Embryo, Immune system, Vasculature
+SCPCP000002	Ependymoma, Ganglioglioma, Ganglioglioma/ATRT, Low-grade glioma, Pilocytic astrocytoma	brain-compartment	Brain, Embryo, Immune system, Vasculature
+SCPCP000003	Acute myeloid leukemia, Early T-cell precursor T-cell acute lymphoblastic leukemia, Non-early T-cell precursor T-cell acute lymphoblastic leukemia, T-myeloid mixed phenotype acute leukemia	blood-compartment	Blood, Bone, Immune system
 SCPCP000004	Neuroblastoma	adrenal-compartment	Adrenal glands, Connective tissue, Immune system, Embryo, Vasculature
 SCPCP000005	Rhabdomyosarcoma	muscle-compartment	Connective tissue, Embryo, Immune system, Skeletal muscle, Smooth muscle, Vasculature
 SCPCP000006	Wilms tumor	kidney-compartment	Embryo, Immune system, Kidney, Vasculature
-SCPCP000007	Acute myeloid leukemia, T-myeloid mixed phenotype acute leukemia, Non-cancerous	blood-compartment	Blood, Bone, Immune system
-SCPCP000008	Early T-cell precursor T-cell acute lymphoblastic leukemia, B-cell acute lymphoblastic leukemia, Mixed phenotype acute leukemia, T-cell acute lymphoblastic leukemia	blood-compartment	Blood, Bone, Immune system
-SCPCP000009	Medulloblastoma, Ependymoma, Pilocytic astrocytoma, Dysplastic gangliocytoma, Primitive neuroectodermal tumor, Desmoplastic ganglioglioma, Anaplastic ganglioglioma, Dysembryoplastic neuroepithelial tumor, Subependymoma, Low-grade glioma, Myxopapillary ependymoma, Non-cancerous, Glioblastoma, Anaplastic ependymoma, Pilomyxoid astrocytoma, Schwannoma, Ganglioglioma	brain-compartment	Brain, Embryo, Immune system, Vasculature
-SCPCP000010	Ganglioglioma, Low-grade glioma, Atypical teratoid rhabdoid tumor, Glial-neuronal tumor, Focal cortical dysplasia, High-grade glioma	brain-compartment	Brain, Embryo, Immune system, Vasculature
+SCPCP000007	Acute myeloid leukemia, Non-cancerous, T-myeloid mixed phenotype acute leukemia	blood-compartment	Blood, Bone, Immune system
+SCPCP000008	B-cell acute lymphoblastic leukemia, Early T-cell precursor T-cell acute lymphoblastic leukemia, Mixed phenotype acute leukemia, T-cell acute lymphoblastic leukemia	blood-compartment	Blood, Bone, Immune system
+SCPCP000009	Anaplastic ependymoma, Anaplastic ganglioglioma, Desmoplastic ganglioglioma, Dysembryoplastic neuroepithelial tumor, Dysplastic gangliocytoma, Ependymoma, Ganglioglioma, Glioblastoma, Low-grade glioma, Medulloblastoma, Myxopapillary ependymoma, Non-cancerous, Pilocytic astrocytoma, Pilomyxoid astrocytoma, Primitive neuroectodermal tumor, Schwannoma, Subependymoma	brain-compartment	Brain, Embryo, Immune system, Vasculature
+SCPCP000010	Atypical teratoid rhabdoid tumor, Focal cortical dysplasia, Ganglioglioma, Glial-neuronal tumor, High-grade glioma, Low-grade glioma	brain-compartment	Brain, Embryo, Immune system, Vasculature
 SCPCP000011	Retinoblastoma	eye-compartment	Embryo, Eye, Immune system, Vasculature
 SCPCP000012	Adrenocortical carcinoma, Germ cell tumor, Hepatoblastoma, Melanoma	adrenal-pancreas-reproductive	Adrenal glands,  Connective tissue, Embryo, Immune system, Pancreas, Reproductive, Smooth muscle, Vasculature
-SCPCP000013	Clear cell sarcoma of the kidney, Clear cell sarcoma, Desmoplastic small round cell tumor, Gastrointestinal stromal tumor, Spindle sarcoma, Infantile fibrosarcoma, Synovial sarcoma, Undifferentiated round cell sarcoma, Epithelioid sarcoma, Embryonal sarcoma, High-grade sarcoma	bone-and-soft-tissue	Bone, Connective tissue, Embryo, Immune system, Smooth muscle, Vasculature
+SCPCP000013	Clear cell sarcoma, Clear cell sarcoma of the kidney, Desmoplastic small round cell tumor, Embryonal sarcoma, Epithelioid sarcoma, Gastrointestinal stromal tumor, High-grade sarcoma, Infantile fibrosarcoma, Spindle sarcoma, Synovial sarcoma, Undifferentiated round cell sarcoma	bone-and-soft-tissue	Bone, Connective tissue, Embryo, Immune system, Smooth muscle, Vasculature
 SCPCP000014	Wilms tumor	kidney-compartment	Embryo, Immune system, Kidney, Vasculature
 SCPCP000015	Ewing sarcoma	bone-and-soft-tissue	Bone, Connective tissue, Embryo, Immune system, Smooth muscle, Vasculature
 SCPCP000016	Rhabdoid tumor	pediatric-cancers	Adrenal glands, Blood, Bone, Brain, Connective tissue, Embryo, Epithelium, Eye, GI tract, Immune system, Kidney, Liver, Lungs, Oral cavity, Pancreas, Parathyroid glands, Reproductive, Skeletal muscle, Skin, Smooth muscle, Thymus, Thyroid, Urinary bladder, Vasculature, Zygote
-SCPCP000021	High-grade glioma, Glioblastoma, Diffuse midline glioma, Infant-type hemispheric glioma	brain-compartment	Brain, Embryo, Immune system, Vasculature
+SCPCP000021	Diffuse midline glioma, Glioblastoma, High-grade glioma, Infant-type hemispheric glioma	brain-compartment	Brain, Embryo, Immune system, Vasculature
