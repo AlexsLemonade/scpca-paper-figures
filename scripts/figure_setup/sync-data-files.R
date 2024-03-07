@@ -23,12 +23,12 @@ system(sync_call)
 
 # sync results for benchmarking libraries --------------------------------------
 
-# define ids and s3 directories 
+# define ids and s3 directories
 benchmarking_run_ids <- c("SCPCR000003", "SCPCR000126", "SCPCR000127", "SCPCR000220", "SCPCR000221", "SCPCR000495")
 alevin_s3_dir <- "s3://nextflow-ccdl-results/scpca/alevin-fry-unfiltered-quant"
 cellranger_s3_dir <- "s3://nextflow-ccdl-results/scpca/cellranger-quant"
 
-# create local directory 
+# create local directory
 local_benchmark_dir <- here::here("s3_files", "benchmarking_results")
 af_local_dir <- file.path(local_benchmark_dir, "alevin-fry")
 fs::dir_create(af_local_dir)
@@ -39,8 +39,8 @@ fs::dir_create(cellranger_local_dir)
 # we only want the specific benchmarking runs that use splici, salign, and cr-like-em
 af_dirs <- glue::glue("{alevin_s3_dir}/{benchmarking_run_ids}-Homo_sapiens.GRCh38.104.spliced_intron.txome-salign-cr-like-em")
 
-# we only want alevin folder and any json files 
-# copy to folder labeled with run id 
+# we only want alevin folder and any json files
+# copy to folder labeled with run id
 glue::glue(
   "aws s3 sync '{af_dirs}' '{af_local_dir}/{benchmarking_run_ids}' --exclude '*' --include 'alevin/*' --include '*.json' --exact-timestamps"
 ) |>
@@ -49,11 +49,11 @@ glue::glue(
 # list of cellranger directories to copy over
 cellranger_dirs <- glue::glue("{cellranger_s3_dir}/{benchmarking_run_ids}-GRCh38_104_cellranger_full-mRNA")
 
-# we only need the filtered h5 file 
+# we only need the filtered h5 file
 # copy each file to folder labeled with run id
 glue::glue(
   "aws s3 sync '{cellranger_dirs}' '{cellranger_local_dir}/{benchmarking_run_ids}' --exclude '*' --include 'outs/filtered*.h5' --exact-timestamps"
-) |> 
+) |>
   purrr::walk(system)
 
 # sync results files for SCPCL000498 (for submitter cell type heatmap) ---------
@@ -73,3 +73,34 @@ merged_file_name <- "SCPCP000003_merged.rds"
 
 sync_call <- glue::glue("aws s3 sync '{merged_s3_dir}' '{merged_local_dir}' --exclude '*' --include '{merged_file_name}' --exact-timestamps")
 system(sync_call)
+
+# sync results for benchmarking SingleR refs -----------------------------------
+# define project and sample ids needed for syncing
+sample_ids <- c(
+  "SCPCS000001",
+  "SCPCS000002",
+  "SCPCS000004",
+  "SCPCS000222",
+  "SCPCS000223",
+  "SCPCS000224",
+  "SCPCS000252",
+  "SCPCS000258",
+  "SCPCS000262"
+)
+project_ids <- c(rep("SCPCP000001", 3),
+                 rep("SCPCP000007", 3),
+                 rep("SCPCP000005", 3))
+
+# define directory to each sample
+scpca_prod_dir <- "s3://nextflow-ccdl-results/scpca-prod/results"
+all_s3_dirs <- glue::glue("{scpca_prod_dir}/{project_ids}/{sample_ids}")
+
+# create local directory
+celltype_local_dir <- here::here("s3_files", "celltype_results")
+fs::dir_create(celltype_local_dir)
+
+# copy processed file for each sample 
+glue::glue(
+  "aws s3 sync '{all_s3_dirs}' '{celltype_local_dir}' --exclude '*' --include '*_processed.rds' --exact-timestamps"
+) |>
+  purrr::walk(system)
