@@ -78,7 +78,7 @@ Summary of libraries and types of libraries found on the Portal.
 
 **Table S2**
 
-List of references used for each project on Portal with `CellAssign`, including the list of organs used to create the reference.
+List of references used for each project on the Portal with `CellAssign`, including the list of organs used to create the reference.
 
 
 ## Generating figures and tables

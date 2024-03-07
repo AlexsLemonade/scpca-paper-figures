@@ -44,15 +44,15 @@ grouped_sample_df <- sample_df |>
   dplyr::filter(scpca_project_id %in% project_df$scpca_project_id) |> 
   dplyr::group_by(scpca_project_id) |> 
   # create a list of diagnoses for each project
-  dplyr::summarize(Diagnoses = paste(unique(diagnosis), collapse = ", ")) |> 
+  dplyr::summarize(Diagnoses = paste(sort(unique(diagnosis)), collapse = ", ")) |> 
   # add ref name
   dplyr::left_join(project_df) |> 
   # add organs
   dplyr::left_join(panglao_df, by = c("cellassign_ref_name" = "celltype_ref_name")) |> 
   dplyr::rename(
     "ScPCA Project ID" = "scpca_project_id",
-    "PanglaoDB reference name" = "cellassign_ref_name",
-    "Organs included in reference" = "organs"
+    "ScPCA reference name" = "cellassign_ref_name",
+    "PanglaoDB organs included in reference" = "organs"
   )
 
 # export table 
