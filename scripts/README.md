@@ -73,4 +73,8 @@ Before running this script, you must run `figure_setup/sync-data-files.R`.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
 
 12. `TableS2_cellassign-ref-summary.R`: This script is used to generate supplemental Table 2, which includes one row for each ScPCA project on the Portal and the associated diagnoses, reference used from `PanglaoDB`, and list of organs used to construct the reference.
-Before running this script, you must run `figure_setup/sync-metadata.R`
+Before running this script, you must run `figure_setup/sync-metadata.R`.
+
+13. `FigS6_celldex-ref-comparison.R`: This script is used to generate supplemental Figure 6, which compares the delta median statistic calculated from running `SingleR` on a subset of ScPCA libraries with 4 different `celldex` references.
+Before running this script, you must run both `figure_setup/sync-data-files.R` and `figure_setup/sync-metadata.R`.
+

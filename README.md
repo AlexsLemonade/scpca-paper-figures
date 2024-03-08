@@ -71,6 +71,10 @@ Below is a summary of all figures and tables in the paper.
 
 Comparison between submitter provided annotations and automated annotations from `SingleR` and `CellAssign`.
 
+**Supplemental Figure 6**
+
+Comparison of delta median statistic obtained from running `SingleR` with different `celldex` references.
+
 
 **Table S1**
 
