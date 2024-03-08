@@ -185,7 +185,8 @@ all_delta_plot <- ggplot(all_delta_df, aes(x = celldex_reference, y = delta_medi
     shape = guide_legend(override.aes = list(size = 1.5, alpha = 0.55))
   )  +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+    legend.position = "top"
   )
 
-ggsave(celldex_comparison_png_file, all_delta_plot, width = 11, height = 8)
+ggsave(celldex_comparison_png_file, all_delta_plot, width = 10, height = 10)
