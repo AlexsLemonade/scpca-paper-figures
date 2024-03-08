@@ -12,10 +12,6 @@ theme_set(
       text = element_text(size = 12),
       strip.background = element_rect(fill = "transparent"),
       aspect.ratio = 1,
-      # no axis ticks or labels
-      axis.line = element_blank(),
-      axis.ticks = element_blank(),
-      axis.text = element_blank(),
       # add a square around each of the plots
       panel.background = element_rect(colour = "black", linewidth = 0.5),
       # remove boxes around legends 
@@ -167,7 +163,7 @@ all_delta_plot <- ggplot(all_delta_df, aes(x = celldex_reference, y = delta_medi
   #  confident are closed black with alpha = 0.5
   #  not confident are open black with alpha = 1
   scale_shape_manual(values = c(19, 21)) +
-  scale_alpha_manual(values = c(0.5, 1)) +
+  scale_alpha_manual(values = c(0.8, 0.5)) +
   ggh4x::facet_wrap2(vars(plot_title),
              strip = ggh4x::strip_themed(background_x = backgrounds)) +
   stat_summary(
@@ -189,7 +185,7 @@ all_delta_plot <- ggplot(all_delta_df, aes(x = celldex_reference, y = delta_medi
     shape = guide_legend(override.aes = list(size = 1.5, alpha = 0.55))
   )  +
   theme(
-    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.2)
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)
   )
 
-ggsave(celldex_comparison_png_file, all_delta_plot)
+ggsave(celldex_comparison_png_file, all_delta_plot, width = 11, height = 8)
