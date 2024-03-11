@@ -154,10 +154,12 @@ backgrounds <- rep(c("Brain and CNS", "Leukemia", "Sarcoma"), each = 3) |>
 # create delta median plot 
 all_delta_plot <- ggplot(all_delta_df, aes(x = celldex_reference, y = delta_median, shape = confident, alpha = confident)) +
   ggforce::geom_sina(
-    size = 0.5,
+    size = 0.3,
     color = "black", # will get applied to all confident points and non-confident outline
     fill = "white", # will apply to non-confident fill only
-    position = position_dodge(width = 0.05) # Keep both types of points mostly in line
+    position = position_identity(), # Keep both types of points mostly in line
+    scale = "width",
+    maxwidth = 0.5
   ) +
   # Handle points aesthetics:
   #  confident are closed black with alpha = 0.5
