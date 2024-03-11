@@ -79,6 +79,9 @@ Rscript ${script_dir}/FigS5_submitter-celltypes-heatmap.R
 # Figure S6
 Rscript ${script_dir}/FigS6_celldex-ref-comparison.R
 
+# Figure S7
+Rscript ${script_dir}/FigS7_cellassign-justification.R
+
 ##########################################################
 #         Generate tables in order of appearance         #
 ##########################################################

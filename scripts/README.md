@@ -78,3 +78,5 @@ Before running this script, you must run `figure_setup/sync-metadata.R`.
 13. `FigS6_celldex-ref-comparison.R`: This script is used to generate supplemental Figure 6, which compares the delta median statistic calculated from running `SingleR` on a subset of ScPCA libraries with 4 different `celldex` references.
 Before running this script, you must run both `figure_setup/sync-data-files.R` and `figure_setup/sync-metadata.R`.
 
+14. `FigS7_cellassign-justification.R`: This script is used to generate supplemental Figure 7A-B, which includes a UMAP summarizing cell type annotations using `CellAssign` and a heatmap comparing the `CellAssign` annotations to submitter-provided annotations.
+Before running this script, you must run `figure_setup/sync-data-files.R`.
