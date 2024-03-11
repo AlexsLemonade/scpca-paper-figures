@@ -99,8 +99,17 @@ all_s3_dirs <- glue::glue("{scpca_prod_dir}/{project_ids}/{sample_ids}")
 celltype_local_dir <- here::here("s3_files", "celltype_results")
 fs::dir_create(celltype_local_dir)
 
-# copy processed file for each sample 
+# copy processed file for each sample
 glue::glue(
   "aws s3 sync '{all_s3_dirs}' '{celltype_local_dir}' --exclude '*' --include '*_processed.rds' --exact-timestamps"
 ) |>
   purrr::walk(system)
+
+# sync results files for SCPCL000490 (for submitter cell type heatmap) ---------
+celltype_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000005/SCPCS000264"
+celltype_local_files <- here::here("s3_files", "SCPCS000264")
+fs::dir_create(celltype_local_files)
+
+sync_call <- glue::glue("aws s3 sync '{celltype_s3_files}' '{celltype_local_files}' --exclude '*' --include 'SCPCL000490_processed.rds' --exact-timestamps")
+system(sync_call)
+
