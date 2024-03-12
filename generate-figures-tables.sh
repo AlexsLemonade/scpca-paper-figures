@@ -76,6 +76,9 @@ Rscript ${script_dir}/FigS4A-B_celltype-diagnostic-plots.R
 # Figure S5
 Rscript ${script_dir}/FigS5_submitter-celltypes-heatmap.R
 
+# Figure S6
+Rscript ${script_dir}/FigS6_celldex-ref-comparison.R
+
 ##########################################################
 #         Generate tables in order of appearance         #
 ##########################################################
