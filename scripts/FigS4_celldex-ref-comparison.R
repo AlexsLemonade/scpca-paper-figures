@@ -62,7 +62,7 @@ diagnosis_group_palette_file <- here::here("palettes", "diagnosis-group-palette.
 
 # define output file paths 
 png_dir <- here::here("figures", "pngs") 
-celldex_comparison_png_file <- file.path(png_dir, "FigS6_celldex-ref-comparison.png")
+celldex_comparison_png_file <- file.path(png_dir, "FigS4_celldex-ref-comparison.png")
 
 # SingleR ----------------------------------------------------------------------
 

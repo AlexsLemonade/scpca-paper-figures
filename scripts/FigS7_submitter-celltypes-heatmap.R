@@ -22,7 +22,7 @@ processed_sce <- readr::read_rds(processed_sce_file)
 
 # define output file paths
 pdf_dir <- here::here("figures", "pdfs")
-output_pdf_file <- file.path(pdf_dir, "FigS5_submitter-heatmap.pdf")
+output_pdf_file <- file.path(pdf_dir, "FigS7_submitter-heatmap.pdf")
 
 # source in helper functions for plotting
 function_file <- here::here("scripts", "utils", "celltype-plot-helper-functions.R")

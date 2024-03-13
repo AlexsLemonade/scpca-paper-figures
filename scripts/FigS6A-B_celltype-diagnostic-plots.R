@@ -28,8 +28,8 @@ processed_sce <- readr::read_rds(processed_sce_file)
 
 # define output file paths 
 pdf_dir <- here::here("figures", "pdfs") 
-singler_diagnostic_pdf_file <- file.path(pdf_dir, "FigS4A_singler-diagnostic.pdf")
-cellassign_diagnostic_pdf_file <- file.path(pdf_dir, "FigS4B_cellassign-diagnostic.pdf")
+singler_diagnostic_pdf_file <- file.path(pdf_dir, "FigS6A_singler-diagnostic.pdf")
+cellassign_diagnostic_pdf_file <- file.path(pdf_dir, "FigS6B_cellassign-diagnostic.pdf")
 
 # source in helper functions for plotting
 function_file <- here::here("scripts", "utils", "celltype-plot-helper-functions.R")

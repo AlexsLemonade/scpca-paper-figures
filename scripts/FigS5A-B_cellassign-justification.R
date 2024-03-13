@@ -43,11 +43,11 @@ processed_sce <- readr::read_rds(processed_sce_file)
 # define output file paths
 # use png for UMAP 
 png_dir <- here::here("figures", "pngs")
-umap_png_file <- file.path(png_dir, "FigS7A_cellassign-umap.png")
+umap_png_file <- file.path(png_dir, "FigS5A_cellassign-umap.png")
 
 # use pdf for heatmap 
 pdf_dir <- here::here("figures", "pdfs")
-heatmap_pdf_file <- file.path(pdf_dir, "FigS7B_cellassign-submitter-heatmap.pdf")
+heatmap_pdf_file <- file.path(pdf_dir, "FigS5B_cellassign-submitter-heatmap.pdf")
 
 # source in helper functions for plotting
 function_file <- here::here("scripts", "utils", "celltype-plot-helper-functions.R")

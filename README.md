@@ -60,25 +60,25 @@ Below is a summary of all figures and tables in the paper.
 - A. Overview of bulk RNA-seq workflow.
 - B. Overview of spatial transcriptomics workflow.
 
-
 **Supplemental Figure 4**
+
+Comparison of delta median statistic obtained from running `SingleR` with different `celldex` references.
+
+**Supplemental Figure 5**
+
+- A. UMAP displaying cell type annotations from `CellAssign` for an example ScPCA library.
+- B. Heatmap comparing submitter provided annotations to `CellAssign` annotations for an example ScPCA library.
+
+**Supplemental Figure 6**
 
 - A. Diagnostic plot for cell type annotations from `SingleR`.
 - B. Diagnostic plot for cell type annotations from `CellAssign`.
 
 
-**Supplemental Figure 5**
+**Supplemental Figure 7**
 
 Comparison between submitter provided annotations and automated annotations from `SingleR` and `CellAssign`.
 
-**Supplemental Figure 6**
-
-Comparison of delta median statistic obtained from running `SingleR` with different `celldex` references.
-
-**Supplemental Figure 7**
-
-- A. UMAP displaying cell type annotations from `CellAssign` for an example ScPCA library.
-- B. Heatmap comparing submitter provided annotations to `CellAssign` annotations for an example ScPCA library.
 
 **Table S1**
 
