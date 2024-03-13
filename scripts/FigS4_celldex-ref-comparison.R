@@ -61,8 +61,8 @@ singler_model_list <- ref_file_paths |>
 diagnosis_group_palette_file <- here::here("palettes", "diagnosis-group-palette.tsv")
 
 # define output file paths 
-png_dir <- here::here("figures", "pngs") 
-celldex_comparison_png_file <- file.path(png_dir, "FigS4_celldex-ref-comparison.png")
+pdf_dir <- here::here("figures", "pdfs") 
+celldex_comparison_pdf_file <- file.path(pdf_dir, "FigS4_celldex-ref-comparison.pdf")
 
 # SingleR ----------------------------------------------------------------------
 
@@ -165,7 +165,7 @@ all_delta_plot <- ggplot(all_delta_df, aes(x = celldex_reference, y = delta_medi
   #  confident are closed black with alpha = 0.5
   #  not confident are open black with alpha = 1
   scale_shape_manual(values = c(19, 21)) +
-  scale_alpha_manual(values = c(0.8, 0.5)) +
+  scale_alpha_manual(values = c(1, 0.5)) +
   ggh4x::facet_wrap2(vars(plot_title),
              strip = ggh4x::strip_themed(background_x = backgrounds)) +
   stat_summary(
@@ -183,7 +183,7 @@ all_delta_plot <- ggplot(all_delta_df, aes(x = celldex_reference, y = delta_medi
     shape = "Cell type annotation quality"
   ) +
   guides(
-    alpha = FALSE,
+    alpha = "none",
     shape = guide_legend(override.aes = list(size = 1.5, alpha = 0.55))
   )  +
   theme(
@@ -191,4 +191,4 @@ all_delta_plot <- ggplot(all_delta_df, aes(x = celldex_reference, y = delta_medi
     legend.position = "top"
   )
 
-ggsave(celldex_comparison_png_file, all_delta_plot, width = 10, height = 10)
+ggsave(celldex_comparison_pdf_file, all_delta_plot, width = 10, height = 10)
