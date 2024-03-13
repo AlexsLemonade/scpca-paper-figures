@@ -110,7 +110,17 @@ jaccard_submitter_matrix <- make_jaccard_matrix(
   celltype_df,
   "submitter_celltype_annotation",
   "cellassign_celltype_annotation"
-)
+) |> 
+  # sort so that all tumors are first 
+  as.data.frame() |> 
+  tibble::rownames_to_column("submitter_celltype") |> 
+  dplyr::mutate(group = dplyr::if_else(stringr::str_detect("tumor", submitter_celltype), "tumor", "non-tumor")) |> 
+  dplyr::group_by(group) |> 
+  dplyr::arrange(desc(submitter_celltype), .by_group = TRUE) |> 
+  dplyr::ungroup() |> 
+  dplyr::select(-group) |> 
+  tibble::column_to_rownames("submitter_celltype") |> 
+  as.matrix()
 
 # heatmap comparing cellassign to submitter annotations
 heatmap <- ComplexHeatmap::Heatmap(
