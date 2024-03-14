@@ -70,17 +70,17 @@ Rscript ${script_dir}/FigS2B_adt-plots.R
 # Figure 3D
 Rscript ${script_dir}/Fig3D_merged-umaps.R
 
-# Figure S4A-B
-Rscript ${script_dir}/FigS4A-B_celltype-diagnostic-plots.R
+# Figure S4
+Rscript ${script_dir}/FigS4_celldex-ref-comparison.R
 
-# Figure S5
-Rscript ${script_dir}/FigS5_submitter-celltypes-heatmap.R
+# Figure S5A-B
+Rscript ${script_dir}/FigS5A-B_cellassign-justification.R
 
-# Figure S6
-Rscript ${script_dir}/FigS6_celldex-ref-comparison.R
+# Figure S6A-B
+Rscript ${script_dir}/FigS6A-B_celltype-diagnostic-plots.R
 
 # Figure S7
-Rscript ${script_dir}/FigS7_cellassign-justification.R
+Rscript ${script_dir}/FigS7_submitter-celltypes-heatmap.R
 
 ##########################################################
 #         Generate tables in order of appearance         #
