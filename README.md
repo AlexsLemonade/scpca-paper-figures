@@ -91,6 +91,8 @@ List of references used for each project on the Portal with `CellAssign`, includ
 
 ## Generating figures and tables
 
+⚠️ _This section currently requires internal Data Lab access to data_
+
 The `figures` and `tables` folders contain the most up-to-date version of each of the figures and tables, respectively.
 The `scripts` directory contains all scripts used to create the figures and tables.
 See the [`README` for the `scripts` directory](./scripts/README.md) for more information on figure and table scripts.
