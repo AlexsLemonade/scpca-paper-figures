@@ -43,11 +43,6 @@ sample_metadata_df <- readr::read_tsv(sample_metadata_file) |>
 
 # Create table -----------------------------------------------------------------
 
-# create a list of all the modality values
-# we will use this to total the number of libraries for a project across all modalities 
-# these will also correspond to the column names in the final table that contain the total for each modality 
-modality_columns <- c("Single-cell", "Single-nucleus", "Bulk RNA", "Spatial transcriptomics", "With CITE-seq", "With cell hashing")
-
 demuxed_metadata_df <- library_metadata_df |> 
   # make sure we have one row per library/ sample combination
   # this specifically separates sample IDs for multiplex libraries for easier joining to sample metadata
@@ -72,7 +67,7 @@ total_sample_count <- demuxed_metadata_df |>
 modality_counts_df <- demuxed_metadata_df |> 
   dplyr::mutate(
     # make a new column that summarizes all modality info
-    # options are cell, nucleus, bulk, spatial, cite, or multiplexed
+    # options are cell, nucleus, bulk, spatial, cite, multiplexed, and 10X kits
     # the assigned values will eventually be the column names used in the output
     modality = dplyr::case_when(
       seq_unit == "bulk" ~ "Bulk RNA",
@@ -80,13 +75,20 @@ modality_counts_df <- demuxed_metadata_df |>
       stringr::str_detect(technology,"CITE") ~ "With CITE-seq",
       stringr::str_detect(technology,"cellhash") ~ "With cell hashing",
       seq_unit == "cell" ~ "Single-cell",
-      seq_unit == "nucleus" ~ "Single-nucleus",
+      seq_unit == "nucleus" ~ "Single-nucleus"
+    ),
+    # create a separate column with the kit used for each sample
+    kit_type = dplyr::case_when(
+      # account for both 10Xv2 3' and 5'
+      technology %in% c("10Xv2", "10Xv2_5prime") ~ "10Xv2",
+      technology == "10Xv3" ~ "10Xv3",
+      technology == "10Xv3.1" ~ "10Xv3.1"
     )
   ) |> 
   # join with sample metadata to add in diagnosis groupings
   dplyr::left_join(sample_metadata_df) |>
   dplyr::select(
-    scpca_project_id, scpca_library_id, modality, diagnosis, diagnosis_group
+    scpca_project_id, scpca_library_id, modality, kit_type, diagnosis, diagnosis_group
   ) 
 
 # determine full diagnoses for each project
@@ -95,9 +97,18 @@ full_diagnoses <- modality_counts_df |>
   dplyr::group_by(scpca_project_id, diagnosis_group) |> 
   dplyr::summarize(diagnosis = paste(unique(diagnosis), collapse = ";"))
 
+# get total numbers of libraries for each 10X kit for each project 
+kit_counts <- modality_counts_df |> 
+  dplyr::select(scpca_project_id, scpca_library_id, diagnosis_group, kit_type) |> 
+  # remove any NA, these are cell hash, bulk, ST, and CITE
+  tidyr::drop_na(kit_type) |> 
+  # count each combination of project, diagnosis group and kit
+  dplyr::count(scpca_project_id, diagnosis_group, kit_type) |> 
+  tidyr::pivot_wider(names_from = kit_type, values_from = n, values_fill = 0)
+
 summarized_counts_df <- modality_counts_df |>
-  dplyr::select(scpca_project_id, scpca_library_id, diagnosis_group, modality) |>
-  distinct() |>
+  dplyr::select(scpca_project_id, scpca_library_id, diagnosis_group, modality, kit_type) |>
+  dplyr::distinct() |>
   # count each combination of diagnosis group and modality
   dplyr::count(scpca_project_id, diagnosis_group, modality) |>
   # create a column for each modality that contains the total number of libraries
@@ -105,6 +116,7 @@ summarized_counts_df <- modality_counts_df |>
   dplyr::left_join(total_library_count) |>
   dplyr::left_join(total_sample_count) |> 
   dplyr::left_join(full_diagnoses) |>
+  dplyr::left_join(kit_counts) |> 
   # set desired order and do some renaming
   dplyr::relocate(
     "Diagnosis group" = diagnosis_group, 
@@ -113,6 +125,9 @@ summarized_counts_df <- modality_counts_df |>
     "Total number of libraries (L)" = "Total number of libraries", 
     "Single-cell (L)" = "Single-cell", 
     "Single-nucleus (L)" = "Single-nucleus", 
+    "10Xv2 (L)" = "10Xv2",
+    "10Xv3 (L)" = "10Xv3",
+    "10Xv3.1 (L)" = "10Xv3.1",
     "Bulk RNA (L)" = "Bulk RNA",
     "Spatial transcriptomics (L)" = "Spatial transcriptomics", 
     "With CITE-seq (L)" = "With CITE-seq",
