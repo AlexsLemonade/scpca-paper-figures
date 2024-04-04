@@ -1,21 +1,21 @@
-scpca_project_id	Diagnosis group	Diagnoses	Total number of samples (S)	Total number of libraries (L)	Single-cell (L)	Single-nucleus (L)	Bulk RNA (L)	Spatial transcriptomics (L)	With CITE-seq (L)	With cell hashing (L)
-SCPCP000001	Brain and CNS	Anaplastic glioma;Glioblastoma;High-grade glioma;Diffuse midline glioma;Pleomorphic xanthoastrocytoma;Anaplastic astrocytoma	22	40	22	0	18	0	0	0
-SCPCP000001	Non-cancerous	Non-cancerous	1	1	1	0	0	0	0	0
-SCPCP000002	Brain and CNS	Pilocytic astrocytoma;Ganglioglioma;Low-grade glioma;Ganglioglioma/ATRT;Ependymoma	26	46	26	0	20	0	0	0
-SCPCP000003	Leukemia	T-myeloid mixed phenotype acute leukemia;Early T-cell precursor T-cell acute lymphoblastic leukemia;Non-early T-cell precursor T-cell acute lymphoblastic leukemia;Acute myeloid leukemia	59	97	60	0	37	0	60	0
-SCPCP000004	Other solid tumors	Neuroblastoma	23	25	9	16	0	0	0	0
-SCPCP000005	Sarcoma	Rhabdomyosarcoma	45	47	20	27	0	0	0	0
-SCPCP000006	Other solid tumors	Wilms tumor	45	183	0	40	43	100	0	0
-SCPCP000007	Leukemia	Acute myeloid leukemia;T-myeloid mixed phenotype acute leukemia	28	28	28	0	0	0	28	0
-SCPCP000007	Non-cancerous	Non-cancerous	2	2	2	0	0	0	2	0
-SCPCP000008	Leukemia	Early T-cell precursor T-cell acute lymphoblastic leukemia;B-cell acute lymphoblastic leukemia;Mixed phenotype acute leukemia;T-cell acute lymphoblastic leukemia	105	107	107	0	0	0	6	0
-SCPCP000009	Brain and CNS	Medulloblastoma;Ependymoma;Pilocytic astrocytoma;Dysplastic gangliocytoma;Primitive neuroectodermal tumor;Desmoplastic ganglioglioma;Anaplastic ganglioglioma;Dysembryoplastic neuroepithelial tumor;Subependymoma;Low-grade glioma;Myxopapillary ependymoma;Glioblastoma;Anaplastic ependymoma;Pilomyxoid astrocytoma;Schwannoma;Ganglioglioma	36	57	0	21	36	0	0	18
-SCPCP000009	Non-cancerous	Non-cancerous	3	5	0	2	3	0	0	2
-SCPCP000010	Brain and CNS	Ganglioglioma;Low-grade glioma;Atypical teratoid rhabdoid tumor;Glial-neuronal tumor;Focal cortical dysplasia;High-grade glioma	42	44	0	44	0	0	0	0
-SCPCP000011	Brain and CNS	Retinoblastoma	25	35	28	7	0	0	0	0
-SCPCP000012	Other solid tumors	Adrenocortical carcinoma;Germ cell tumor	4	4	0	4	0	0	0	0
-SCPCP000013	Other solid tumors	Gastrointestinal stromal tumor	1	1	0	1	0	0	0	0
-SCPCP000013	Sarcoma	Clear cell sarcoma of the kidney;Clear cell sarcoma;Desmoplastic small round cell tumor;Spindle sarcoma;Infantile fibrosarcoma;Synovial sarcoma;Undifferentiated round cell sarcoma;Epithelioid sarcoma;Embryonal sarcoma	16	16	0	16	0	0	0	0
-SCPCP000014	Other solid tumors	Wilms tumor	8	8	0	8	0	0	0	0
-SCPCP000015	Sarcoma	Ewing sarcoma	7	7	0	7	0	0	0	0
-SCPCP000016	Other solid tumors	Rhabdoid tumor	5	5	0	5	0	0	0	0
+scpca_project_id	Diagnosis group	Diagnoses	Total number of samples (S)	Total number of libraries (L)	Single-cell (L)	Single-nucleus (L)	10Xv2 (L)	10Xv3 (L)	10Xv3.1 (L)	Bulk RNA (L)	Spatial transcriptomics (L)	With CITE-seq (L)	With cell hashing (L)
+SCPCP000001	Brain and CNS	Anaplastic glioma;Glioblastoma;High-grade glioma;Diffuse midline glioma;Pleomorphic xanthoastrocytoma;Anaplastic astrocytoma	22	40	22	0	0	22	0	18	0	0	0
+SCPCP000001	Non-cancerous	Non-cancerous	1	1	1	0	0	1	0	0	0	0	0
+SCPCP000002	Brain and CNS	Pilocytic astrocytoma;Ganglioglioma;Low-grade glioma;Ganglioglioma/ATRT;Ependymoma	26	46	26	0	0	26	0	20	0	0	0
+SCPCP000003	Leukemia	T-myeloid mixed phenotype acute leukemia;Early T-cell precursor T-cell acute lymphoblastic leukemia;Non-early T-cell precursor T-cell acute lymphoblastic leukemia;Acute myeloid leukemia	59	97	60	0	0	60	0	37	0	60	0
+SCPCP000004	Other solid tumors	Neuroblastoma	23	25	9	16	7	3	15	0	0	0	0
+SCPCP000005	Sarcoma	Rhabdomyosarcoma	45	47	20	27	13	34	0	0	0	0	0
+SCPCP000006	Other solid tumors	Wilms tumor	45	183	0	40	0	0	40	43	100	0	0
+SCPCP000007	Leukemia	Acute myeloid leukemia;T-myeloid mixed phenotype acute leukemia	28	28	28	0	28	0	0	0	0	28	0
+SCPCP000007	Non-cancerous	Non-cancerous	2	2	2	0	2	0	0	0	0	2	0
+SCPCP000008	Leukemia	Early T-cell precursor T-cell acute lymphoblastic leukemia;B-cell acute lymphoblastic leukemia;Mixed phenotype acute leukemia;T-cell acute lymphoblastic leukemia	104	105	105	0	100	0	5	0	0	6	0
+SCPCP000009	Brain and CNS	Medulloblastoma;Ependymoma;Pilocytic astrocytoma;Dysplastic gangliocytoma;Primitive neuroectodermal tumor;Desmoplastic ganglioglioma;Anaplastic ganglioglioma;Dysembryoplastic neuroepithelial tumor;Subependymoma;Low-grade glioma;Myxopapillary ependymoma;Glioblastoma;Anaplastic ependymoma;Pilomyxoid astrocytoma;Schwannoma;Ganglioglioma	36	57	0	21	0	0	21	36	0	0	18
+SCPCP000009	Non-cancerous	Non-cancerous	3	5	0	2	0	0	2	3	0	0	2
+SCPCP000010	Brain and CNS	Ganglioglioma;Low-grade glioma;Atypical teratoid rhabdoid tumor;Glial-neuronal tumor;Focal cortical dysplasia;High-grade glioma	42	44	0	44	41	0	3	0	0	0	0
+SCPCP000011	Brain and CNS	Retinoblastoma	25	35	28	7	28	0	7	0	0	0	0
+SCPCP000012	Other solid tumors	Adrenocortical carcinoma;Germ cell tumor	4	4	0	4	0	0	4	0	0	0	0
+SCPCP000013	Other solid tumors	Gastrointestinal stromal tumor	1	1	0	1	0	0	1	0	0	0	0
+SCPCP000013	Sarcoma	Clear cell sarcoma of the kidney;Clear cell sarcoma;Desmoplastic small round cell tumor;Spindle sarcoma;Infantile fibrosarcoma;Synovial sarcoma;Undifferentiated round cell sarcoma;Epithelioid sarcoma;Embryonal sarcoma	16	16	0	16	0	0	16	0	0	0	0
+SCPCP000014	Other solid tumors	Wilms tumor	8	8	0	8	0	0	8	0	0	0	0
+SCPCP000015	Sarcoma	Ewing sarcoma	7	7	0	7	0	0	7	0	0	0	0
+SCPCP000016	Other solid tumors	Rhabdoid tumor	5	5	0	5	0	0	5	0	0	0	0

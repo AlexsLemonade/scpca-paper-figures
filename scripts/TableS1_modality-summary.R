@@ -11,8 +11,10 @@ library(ggplot2)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # path to metadata files
-library_metadata_file <- file.path(root_dir, "s3_files", "scpca-library-metadata.tsv")
-sample_metadata_file <- file.path(root_dir, "s3_files", "scpca-sample-metadata.tsv")
+s3_file_dir <- file.path(root_dir, "s3_files")
+library_metadata_file <- file.path(s3_file_dir, "scpca-library-metadata.tsv")
+sample_metadata_file <- file.path(s3_file_dir, "scpca-sample-metadata.tsv")
+project_metadata_file <- file.path(s3_file_dir, "scpca-project-metadata.tsv")
 
 # project whitelist and diagnosis groupings
 sample_info_dir <- file.path(root_dir, "sample-info")
@@ -27,6 +29,24 @@ output_table_file <- file.path(table_dir, "TableS1-modality-overview.tsv")
 # read in project whitelist
 project_whitelist <- readLines(project_whitelist_file)
 
+# read in project metadata files and create sample whitelist 
+project_metadata_files <- readr::read_tsv(project_metadata_file) |> 
+  dplyr::filter(scpca_project_id %in% project_whitelist) |> 
+  dplyr::pull(metadata_file)
+# get full file paths to each project metadata file
+project_metadata_files <- file.path(s3_file_dir, "project-metadata", project_metadata_files)
+
+# grab samples that are on the portal and create a whitelist 
+sample_whitelist <- project_metadata_files |> 
+  purrr::map(\(file){
+    sample_list <- readr::read_tsv(file) |> 
+      dplyr::filter(on_portal) |> 
+      dplyr::pull(scpca_sample_id)
+    
+    return(sample_list)
+  }) |> 
+  unlist()
+
 # read in groupings
 diagnosis_groupings_df <- readr::read_tsv(diagnosis_groupings_file)
 
@@ -34,25 +54,23 @@ diagnosis_groupings_df <- readr::read_tsv(diagnosis_groupings_file)
 library_metadata_df <- readr::read_tsv(library_metadata_file) |> 
   dplyr::filter(scpca_project_id %in% project_whitelist)
 
-# read in sample metadata and filter to included projects
+# read in sample metadata and filter to included projects and samples
 sample_metadata_df <- readr::read_tsv(sample_metadata_file) |> 
-  dplyr::filter(scpca_project_id %in% project_whitelist) |> 
+  dplyr::filter(scpca_project_id %in% project_whitelist,
+                scpca_sample_id %in% sample_whitelist) |> 
   dplyr::select(scpca_project_id, scpca_sample_id, diagnosis) |> 
   # add diagnosis groupings
   dplyr::left_join(diagnosis_groupings_df, by = c("diagnosis" = "submitted_diagnosis"))
 
 # Create table -----------------------------------------------------------------
 
-# create a list of all the modality values
-# we will use this to total the number of libraries for a project across all modalities 
-# these will also correspond to the column names in the final table that contain the total for each modality 
-modality_columns <- c("Single-cell", "Single-nucleus", "Bulk RNA", "Spatial transcriptomics", "With CITE-seq", "With cell hashing")
-
 demuxed_metadata_df <- library_metadata_df |> 
   # make sure we have one row per library/ sample combination
   # this specifically separates sample IDs for multiplex libraries for easier joining to sample metadata
   dplyr::mutate(scpca_sample_id = stringr::str_split(scpca_sample_id, ";")) |> 
-  tidyr::unnest(scpca_sample_id)
+  tidyr::unnest(scpca_sample_id) |> 
+  # now that sample ids are separated, filter to whitelist 
+  dplyr::filter(scpca_sample_id %in% sample_whitelist)
   
 # create a total count of the number of libraries per project per diagnosis group
 total_library_count <- demuxed_metadata_df |>
@@ -72,7 +90,7 @@ total_sample_count <- demuxed_metadata_df |>
 modality_counts_df <- demuxed_metadata_df |> 
   dplyr::mutate(
     # make a new column that summarizes all modality info
-    # options are cell, nucleus, bulk, spatial, cite, or multiplexed
+    # options are cell, nucleus, bulk, spatial, cite, and multiplexed
     # the assigned values will eventually be the column names used in the output
     modality = dplyr::case_when(
       seq_unit == "bulk" ~ "Bulk RNA",
@@ -80,7 +98,7 @@ modality_counts_df <- demuxed_metadata_df |>
       stringr::str_detect(technology,"CITE") ~ "With CITE-seq",
       stringr::str_detect(technology,"cellhash") ~ "With cell hashing",
       seq_unit == "cell" ~ "Single-cell",
-      seq_unit == "nucleus" ~ "Single-nucleus",
+      seq_unit == "nucleus" ~ "Single-nucleus"
     )
   ) |> 
   # join with sample metadata to add in diagnosis groupings
@@ -95,9 +113,27 @@ full_diagnoses <- modality_counts_df |>
   dplyr::group_by(scpca_project_id, diagnosis_group) |> 
   dplyr::summarize(diagnosis = paste(unique(diagnosis), collapse = ";"))
 
+# get total numbers of libraries for each 10X kit for each project 
+kit_counts <- demuxed_metadata_df |> 
+  dplyr::left_join(sample_metadata_df) |>
+  dplyr::select(scpca_project_id, scpca_library_id, diagnosis_group, technology) |> 
+  dplyr::distinct() |> 
+  dplyr::mutate(    # create a separate column with the kit used for each sample
+    kit_type = dplyr::case_when(
+      # account for both 10Xv2 3' and 5'
+      technology %in% c("10Xv2", "10Xv2_5prime") ~ "10Xv2",
+      technology == "10Xv3" ~ "10Xv3",
+      technology == "10Xv3.1" ~ "10Xv3.1"
+    )) |> 
+  # remove any NA, these are cell hash, bulk, ST, and CITE
+  tidyr::drop_na(kit_type) |> 
+  # count each combination of project, diagnosis group and kit
+  dplyr::count(scpca_project_id, diagnosis_group, kit_type) |> 
+  tidyr::pivot_wider(names_from = kit_type, values_from = n, values_fill = 0)
+
 summarized_counts_df <- modality_counts_df |>
   dplyr::select(scpca_project_id, scpca_library_id, diagnosis_group, modality) |>
-  distinct() |>
+  dplyr::distinct() |>
   # count each combination of diagnosis group and modality
   dplyr::count(scpca_project_id, diagnosis_group, modality) |>
   # create a column for each modality that contains the total number of libraries
@@ -105,6 +141,7 @@ summarized_counts_df <- modality_counts_df |>
   dplyr::left_join(total_library_count) |>
   dplyr::left_join(total_sample_count) |> 
   dplyr::left_join(full_diagnoses) |>
+  dplyr::left_join(kit_counts) |> 
   # set desired order and do some renaming
   dplyr::relocate(
     "Diagnosis group" = diagnosis_group, 
@@ -113,6 +150,9 @@ summarized_counts_df <- modality_counts_df |>
     "Total number of libraries (L)" = "Total number of libraries", 
     "Single-cell (L)" = "Single-cell", 
     "Single-nucleus (L)" = "Single-nucleus", 
+    "10Xv2 (L)" = "10Xv2",
+    "10Xv3 (L)" = "10Xv3",
+    "10Xv3.1 (L)" = "10Xv3.1",
     "Bulk RNA (L)" = "Bulk RNA",
     "Spatial transcriptomics (L)" = "Spatial transcriptomics", 
     "With CITE-seq (L)" = "With CITE-seq",
