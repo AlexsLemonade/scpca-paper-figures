@@ -8,21 +8,23 @@ library(ggplot2)
 
 # Set up -----------------------------------------------------------------------
 
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+# source in helper functions for plotting
+function_file <- here::here("scripts", "utils", "sample-summary-helper-functions.R")
+source(function_file)
 
 # path to metadata files
-s3_file_dir <- file.path(root_dir, "s3_files")
+s3_file_dir <- here::here("s3_files")
 library_metadata_file <- file.path(s3_file_dir, "scpca-library-metadata.tsv")
 sample_metadata_file <- file.path(s3_file_dir, "scpca-sample-metadata.tsv")
 project_metadata_file <- file.path(s3_file_dir, "scpca-project-metadata.tsv")
 
 # project whitelist and diagnosis groupings
-sample_info_dir <- file.path(root_dir, "sample-info")
+sample_info_dir <- here::here("sample-info")
 project_whitelist_file <- file.path(sample_info_dir, "project-whitelist.txt")
 diagnosis_groupings_file <- file.path(sample_info_dir, "diagnosis-groupings.tsv")
 
 # output files 
-table_dir <- file.path(root_dir, "tables")
+table_dir <- here::here("tables")
 fs::dir_create(table_dir)
 output_table_file <- file.path(table_dir, "TableS1-modality-overview.tsv")
 
@@ -30,22 +32,7 @@ output_table_file <- file.path(table_dir, "TableS1-modality-overview.tsv")
 project_whitelist <- readLines(project_whitelist_file)
 
 # read in project metadata files and create sample whitelist 
-project_metadata_files <- readr::read_tsv(project_metadata_file) |> 
-  dplyr::filter(scpca_project_id %in% project_whitelist) |> 
-  dplyr::pull(metadata_file)
-# get full file paths to each project metadata file
-project_metadata_files <- file.path(s3_file_dir, "project-metadata", project_metadata_files)
-
-# grab samples that are on the portal and create a whitelist 
-sample_whitelist <- project_metadata_files |> 
-  purrr::map(\(file){
-    sample_list <- readr::read_tsv(file) |> 
-      dplyr::filter(on_portal) |> 
-      dplyr::pull(scpca_sample_id)
-    
-    return(sample_list)
-  }) |> 
-  unlist()
+sample_whitelist <- get_sample_whitelist(project_metadata_file, project_whitelist)
 
 # read in groupings
 diagnosis_groupings_df <- readr::read_tsv(diagnosis_groupings_file)
