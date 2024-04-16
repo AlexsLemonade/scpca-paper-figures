@@ -22,7 +22,7 @@ disease_timing_file <- file.path(sample_info_dir, "disease-timing.tsv")
 
 # path to metadata files
 sample_metadata_file <- here::here("s3_files", "scpca-sample-metadata.tsv")
-project_metadata_file <- file.path(s3_file_dir, "scpca-project-metadata.tsv")
+project_metadata_file <- here::here("s3_files", "scpca-project-metadata.tsv")
 
 # color palette
 diagnosis_group_palette <- here::here("palettes", "diagnosis-group-palette.tsv")
@@ -129,7 +129,7 @@ diagnosis_plot <- ggplot(plot_df, aes(y = diagnosis,  fill = diagnosis_group)) +
        x = "Number of samples",
        y = "Diagnosis") + 
   theme_classic() + 
-  theme(text = element_text(size = 14),
+  theme(text = element_text(size = 12),
         legend.position = "top",
         legend.key.size = unit(1, 'cm'),
         plot.margin = margin(1, 1, 1, 1, 'cm')
