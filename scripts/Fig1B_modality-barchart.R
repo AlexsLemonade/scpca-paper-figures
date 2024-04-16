@@ -24,9 +24,6 @@ project_whitelist_file <- here::here("sample-info", "project-whitelist.txt")
 suspension_palette_file <- here::here("palettes", "suspension-palette.tsv")
 
 # output files 
-png_dir <- here::here("figures", "pngs")
-output_png_file <- file.path(png_dir, "Fig1B_modality-summary.png")
-
 pdf_dir <- here::here("figures", "pdfs")
 output_pdf_file <- file.path(pdf_dir, "Fig1B_modality-summary.pdf")
 
@@ -165,5 +162,4 @@ ggplot(filtered_modality_df, aes(x = modality, fill = seq_unit)) +
         axis.text.x = element_text(angle = 45, hjust = 1)) +
   guides(fill = guide_legend(title.position = "top", title.hjust = 0.5))
 
-ggsave(output_png_file, width = 7, height = 7)
 ggsave(output_pdf_file, width = 7, height = 7)
