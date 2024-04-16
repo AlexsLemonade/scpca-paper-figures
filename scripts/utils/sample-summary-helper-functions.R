@@ -11,7 +11,7 @@ get_sample_whitelist <- function(project_metadata_file, project_whitelist) {
     dplyr::filter(scpca_project_id %in% project_whitelist) |> 
     dplyr::pull(metadata_file)
   # get full file paths to each project metadata file
-  project_metadata_files <- file.path(s3_file_dir, "project-metadata", project_metadata_files)
+  project_metadata_files <- here::here("s3_files", "project-metadata", project_metadata_files)
   
   # grab samples that are on the portal and create a whitelist 
   sample_whitelist <- project_metadata_files |> 
