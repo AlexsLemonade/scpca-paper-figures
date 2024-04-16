@@ -2,6 +2,7 @@
 #' Get whitelist of samples to include in plots 
 #'
 #' @param project_metadata_file Path to file containing ScPCA project metadata 
+#' @param project_whitelist A vector of project ID's 
 #'
 #' @return List of sample IDs that are present on the portal 
 get_sample_whitelist <- function(project_metadata_file, project_whitelist) {
