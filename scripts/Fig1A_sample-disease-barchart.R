@@ -9,14 +9,20 @@ library(ggplot2)
 
 # Set up -----------------------------------------------------------------------
 
+
+# source in helper functions for plotting
+function_file <- here::here("scripts", "utils", "sample-summary-helper-functions.R")
+source(function_file)
+
 # all metadata files 
 sample_info_dir <- here::here("sample-info")
 project_whitelist_file <- file.path(sample_info_dir, "project-whitelist.txt")
 diagnosis_groupings_file <- file.path(sample_info_dir, "diagnosis-groupings.tsv")
 disease_timing_file <- file.path(sample_info_dir, "disease-timing.tsv")
 
-# path to sample metadata 
+# path to metadata files
 sample_metadata_file <- here::here("s3_files", "scpca-sample-metadata.tsv")
+project_metadata_file <- here::here("s3_files", "scpca-project-metadata.tsv")
 
 # color palette
 diagnosis_group_palette <- here::here("palettes", "diagnosis-group-palette.tsv")
@@ -33,13 +39,21 @@ disease_timing_count_table <- file.path(tables_dir, "disease-timing-counts.tsv")
 
 # read in project whitelist and grouping metadata 
 project_whitelist <- readLines(project_whitelist_file)
+
+# get sample whitelist 
+sample_whitelist <- get_sample_whitelist(project_metadata_file, project_whitelist)
+
+# read in diagnosis groupings and disease timing
 diagnosis_groupings_df <- readr::read_tsv(diagnosis_groupings_file) |>
   dplyr::select(submitted_diagnosis, diagnosis_group)
 disease_timing_df <- readr::read_tsv(disease_timing_file)
 
 # read in sample metadata and filter to only projects in whitelist
 sample_metadata_df <- readr::read_tsv(sample_metadata_file) |> 
-  dplyr::filter(scpca_project_id %in% project_whitelist)
+  dplyr::filter(scpca_project_id %in% project_whitelist, 
+                scpca_sample_id %in% sample_whitelist,
+                # remove any cell lines from this plot
+                !is_cell_line)
 
 # Join sample metadata with diagnosis grouping and disease timing 
 diagnosis_plot_df <- sample_metadata_df |> 
@@ -115,7 +129,7 @@ diagnosis_plot <- ggplot(plot_df, aes(y = diagnosis,  fill = diagnosis_group)) +
        x = "Number of samples",
        y = "Diagnosis") + 
   theme_classic() + 
-  theme(text = element_text(size = 14),
+  theme(text = element_text(size = 12),
         legend.position = "top",
         legend.key.size = unit(1, 'cm'),
         plot.margin = margin(1, 1, 1, 1, 'cm')

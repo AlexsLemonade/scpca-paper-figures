@@ -8,23 +8,23 @@ library(ggplot2)
 
 # Set up -----------------------------------------------------------------------
 
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+# source in helper functions for plotting
+function_file <- here::here("scripts", "utils", "sample-summary-helper-functions.R")
+source(function_file)
 
 # path to metadata files
-library_metadata_file <- file.path(root_dir, "s3_files", "scpca-library-metadata.tsv")
-sample_metadata_file <- file.path(root_dir, "s3_files", "scpca-sample-metadata.tsv")
+library_metadata_file <- here::here( "s3_files", "scpca-library-metadata.tsv")
+sample_metadata_file <- here::here("s3_files", "scpca-sample-metadata.tsv")
+project_metadata_file <- here::here("s3_files", "scpca-project-metadata.tsv")
 
 # project whitelist file 
-project_whitelist_file <- file.path(root_dir, "sample-info", "project-whitelist.txt")
+project_whitelist_file <- here::here("sample-info", "project-whitelist.txt")
 
 # color palette for single-cell/single-nuclei
-suspension_palette_file <- file.path(root_dir, "palettes", "suspension-palette.tsv")
+suspension_palette_file <- here::here("palettes", "suspension-palette.tsv")
 
 # output files 
-png_dir <- file.path(root_dir, "figures", "pngs")
-output_png_file <- file.path(png_dir, "Fig1B_modality-summary.png")
-
-pdf_dir <- file.path(root_dir, "figures", "pdfs")
+pdf_dir <- here::here("figures", "pdfs")
 output_pdf_file <- file.path(pdf_dir, "Fig1B_modality-summary.pdf")
 
 # set order of modalities for final plot 
@@ -37,15 +37,31 @@ modality_order <- c("Single suspension",
 
 # Prep metadata ------------------------------------------------------
 
-# read in project whitelist
-project_whitelist <- readLines(project_whitelist_file)
-
 # read in color palette
 suspension_palette <- readr::read_tsv(suspension_palette_file)
 
-# read in library metadata and filter to only projects in whitelist
-library_metadata_df <- readr::read_tsv(library_metadata_file) |> 
+# read in project whitelist
+project_whitelist <- readLines(project_whitelist_file)
+
+# get sample whitelist 
+sample_whitelist <- get_sample_whitelist(project_metadata_file, project_whitelist)
+
+# read in library metadata
+library_metadata_df <- readr::read_tsv(library_metadata_file)
+
+# get library whitelist using sample and project whitelist 
+# this helps make sure we don't lose the multiplexed libraries that have more than one sample ID listed
+library_whitelist <- library_metadata_df |> 
   dplyr::filter(scpca_project_id %in% project_whitelist) |>
+  dplyr::mutate(scpca_sample_id = stringr::str_split(scpca_sample_id, ";")) |> 
+  tidyr::unnest(scpca_sample_id) |> 
+  # now that sample ids are separated, filter to whitelist 
+  dplyr::filter(scpca_sample_id %in% sample_whitelist) |> 
+  dplyr::pull(scpca_library_id)
+  
+library_metadata_df <- library_metadata_df |> 
+  # filter to library whitelist 
+  dplyr::filter(scpca_library_id %in% library_whitelist) |> 
   dplyr::select(scpca_project_id, scpca_sample_id, scpca_library_id, seq_unit, technology) |> 
   # create a modality column that labels everything as single suspension, bulk, spatial, or CITE
   dplyr::mutate(
@@ -146,5 +162,4 @@ ggplot(filtered_modality_df, aes(x = modality, fill = seq_unit)) +
         axis.text.x = element_text(angle = 45, hjust = 1)) +
   guides(fill = guide_legend(title.position = "top", title.hjust = 0.5))
 
-ggsave(output_png_file, width = 7, height = 7)
 ggsave(output_pdf_file, width = 7, height = 7)
