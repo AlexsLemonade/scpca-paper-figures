@@ -7,3 +7,6 @@ This script saves all files in `../data/salmon-quant-files/<project id>/<sample 
    ```sh
    op run -- Rscript sync-salmon-output.R
    ```
+- `calculate-tpm.R`: This script creates a TSV of TPM values for all samples in a given project.
+Ensembl ids are also converted to gene symbols, where TPM values for duplicate gene symbols are summed.
+TSV files are exported to `../data/tpm/<project id>-tpm.tsv`.
