@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# This script runs this analysis and I will add more comments later.
-# If you are using 1P, you may need op run -- .
+# This script runs the bulk deconvolution analysis.
 
 set -euo pipefail
 
