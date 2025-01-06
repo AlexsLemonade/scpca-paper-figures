@@ -25,17 +25,17 @@ option_list <- list(
     "--output_dir",
     type = "character",
     help = "Output directory to save TSV with TPM values."
-  ), 
+  ),
   make_option(
-    "--t2g_file", 
-    type = "character", 
-    default = here::here("s3_files", "reference_files", "Homo_sapiens.GRCh38.104.spliced_cdna.tx2gene.tsv"), 
+    "--t2g_file",
+    type = "character",
+    default = here::here("s3_files", "reference_files", "Homo_sapiens.GRCh38.104.spliced_cdna.tx2gene.tsv"),
     help = "Path to the t2g file used to read in quant.sf files."
   ),
   make_option(
-    "--scpca_sce_file", 
-    type = "character", 
-    default = here::here("s3_files", "SCPCS000001", "SCPCL000001_processed.rds"), 
+    "--scpca_sce_file",
+    type = "character",
+    default = here::here("s3_files", "SCPCS000001", "SCPCL000001_processed.rds"),
     help = "Path to an SCE file used to obtain mappings for converting ensembl ids to gene symbols."
   )
 )
@@ -43,7 +43,7 @@ opts <- parse_args(OptionParser(option_list = option_list))
 
 # Check inputs and define paths -------
 stopifnot(
-  "A project id in the format SCPCPXXXXXX must be provided to `project_id`." = !is.null(opts$project_id), 
+  "A project id in the format SCPCPXXXXXX must be provided to `project_id`." = !is.null(opts$project_id),
   "An output directory must be specified with `output_dir`." = !is.null(opts$output_dir)
 )
 
@@ -52,27 +52,27 @@ stopifnot("Provided `input_dir` does not contain a directory with quant files fo
 
 fs::dir_create(opts$output_dir)
 output_file <- file.path(opts$output_dir, glue::glue("{opts$project_id}-tpm.tsv"))
-  
+
 stopifnot("The t2g file could not be found." = file.exists(opts$t2g_file))
 stopifnot("The SCE file to use for id mapping could not be found." = file.exists(opts$scpca_sce_file))
 
 
 # Read input helper files -----------
 t2g_table <- readr::read_tsv(
-  opts$t2g_file, 
-  col_names = c("transcript_id", "gene_id"), 
+  opts$t2g_file,
+  col_names = c("transcript_id", "gene_id"),
   show_col_types = FALSE
 )
 sce <- readRDS(opts$scpca_sce_file)
 map_table <- data.frame(
-  ensembl_id = SingleCellExperiment::rowData(sce)$gene_ids, 
+  ensembl_id = SingleCellExperiment::rowData(sce)$gene_ids,
   gene_symbol = SingleCellExperiment::rowData(sce)$gene_symbol
 )
 
 
 # Find all quant.sf files -------------
 quant_files <- list.files(
-  path = data_dir, 
+  path = data_dir,
   recursive = TRUE
 )
 stopifnot("Could not find any quant.sf files for the specified project." = length(quant_files) > 0)
@@ -81,25 +81,25 @@ stopifnot("Could not find any quant.sf files for the specified project." = lengt
 tpm_df <- quant_files |>
   purrr::map(
     \(quant_file_path) {
-      
+
       split_file <- stringr::str_split_1(quant_file_path, pattern = "/")
       sample_id <- split_file[1]
       library_id <- split_file[2]
-      
+
       # read in with tximport and extract TPM
       txi_salmon <- tximport::tximport(
-        file.path(data_dir, quant_file_path), 
-        type = "salmon", 
+        file.path(data_dir, quant_file_path),
+        type = "salmon",
         tx2gene = t2g_table
       )
       tpm <- txi_salmon$abundance[,1]
       ensembl_ids <- names(tpm)
-      
+
       # return data frame where the tpm column is named by the sample id
       sample_tpm_df <- data.frame(tpm = tpm)
       names(sample_tpm_df) <- sample_id
       sample_tpm_df
-      
+
     }
   ) |>
   # we expect the same genes all around here since quantification used the same gene set
@@ -110,7 +110,7 @@ tpm_df <- quant_files |>
 
 # Convert ensembl ids to gene symbols and sum TPM for duplicate symbols ------
 tpm_symbols_df <- tpm_df |>
-  dplyr::left_join(map_table, by = "ensembl_id") |> 
+  dplyr::left_join(map_table, by = "ensembl_id") |>
   # Remove any NA genes
   tidyr::drop_na(gene_symbol) |>
   # Combine duplicate gene symbols by summing
@@ -122,21 +122,3 @@ tpm_symbols_df <- tpm_df |>
 
 # Export to tsv -------
 readr::write_tsv(tpm_symbols_df, output_file)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

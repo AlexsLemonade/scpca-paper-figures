@@ -31,4 +31,3 @@ for project_dir in $salmon_quant_dir/*; do
     # forthcoming!
 
 done
-
