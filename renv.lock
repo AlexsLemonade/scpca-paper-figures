@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.3.1",
+    "Version": "4.3.3",
     "Repositories": [
       {
         "Name": "BioCsoft",
@@ -132,6 +132,7 @@
       "Package": "BiocVersion",
       "Version": "3.18.1",
       "Source": "Bioconductor",
+      "Repository": "Bioconductor 3.18",
       "Requirements": [
         "R"
       ],
@@ -399,11 +400,12 @@
     },
     "Matrix": {
       "Package": "Matrix",
-      "Version": "1.5-4.1",
+      "Version": "1.6-5",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "https://packagemanager.posit.co/cran/2024-04-26",
       "Requirements": [
         "R",
+        "grDevices",
         "graphics",
         "grid",
         "lattice",
@@ -411,7 +413,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "38082d362d317745fb932e13956dccbb"
+      "Hash": "8c7115cd3a0e048bda2a7cd110549f7a"
     },
     "MatrixGenerics": {
       "Package": "MatrixGenerics",
@@ -617,6 +619,7 @@
       "Package": "S4Vectors",
       "Version": "0.40.2",
       "Source": "Bioconductor",
+      "Repository": "Bioconductor 3.18",
       "Requirements": [
         "BiocGenerics",
         "R",
@@ -836,6 +839,7 @@
       "Package": "bluster",
       "Version": "1.12.0",
       "Source": "Bioconductor",
+      "Repository": "Bioconductor 3.18",
       "Requirements": [
         "BiocNeighbors",
         "BiocParallel",
@@ -1415,6 +1419,16 @@
         "methods"
       ],
       "Hash": "15e9634c0fcd294799e9b2e929ed1b86"
+    },
+    "getopt": {
+      "Package": "getopt",
+      "Version": "1.20.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "stats"
+      ],
+      "Hash": "ed33b16c6d24f7ced1d68877ac2509ee"
     },
     "ggbeeswarm": {
       "Package": "ggbeeswarm",
@@ -2006,6 +2020,18 @@
       ],
       "Hash": "df58958f293b166e4ab885ebcad90e02"
     },
+    "optparse": {
+      "Package": "optparse",
+      "Version": "1.7.5",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "getopt",
+        "methods"
+      ],
+      "Hash": "ce5f8381cd2c38d1fc14c83d8b21efd0"
+    },
     "patchwork": {
       "Package": "patchwork",
       "Version": "1.2.0",
@@ -2348,6 +2374,7 @@
       "Package": "rhdf5",
       "Version": "2.46.1",
       "Source": "Bioconductor",
+      "Repository": "Bioconductor 3.18",
       "Requirements": [
         "R",
         "Rhdf5lib",
@@ -2361,6 +2388,7 @@
       "Package": "rhdf5filters",
       "Version": "1.14.1",
       "Source": "Bioconductor",
+      "Repository": "Bioconductor 3.18",
       "Requirements": [
         "Rhdf5lib"
       ],
@@ -2501,8 +2529,8 @@
       "Package": "scpcaTools",
       "Version": "0.3.1",
       "Source": "GitHub",
-      "Remotes": "AlexsLemonade/scpcaData, immunogenomics/lisi@v1.0",
       "RemoteType": "github",
+      "Remotes": "AlexsLemonade/scpcaData, immunogenomics/lisi@v1.0",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "scpcaTools",
       "RemoteUsername": "AlexsLemonade",
