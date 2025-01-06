@@ -5,7 +5,7 @@
 
 renv::load()
 
-# Define directories ---------
+# Define files and directories ---------
 library_metadata_file <- here::here("s3_files", "scpca-library-metadata.tsv")
 sample_metadata_file <- here::here("s3_files", "scpca-sample-metadata.tsv")
 bulk_dir <- here::here("analysis", "bulk-deconvolution")
@@ -58,7 +58,6 @@ sync_bulk_df <- library_metadata |>
 
 # Sync each quant.sf file to its target directory -------
 sync_bulk_df |>
-  dplyr::slice(1) |>
   purrr::pwalk(
     \(scpca_library_id, output_dir) {
       quant_sf_s3 <- file.path(s3_path, scpca_library_id)
@@ -67,4 +66,4 @@ sync_bulk_df |>
       sync_call <- glue::glue("aws s3 sync '{quant_sf_s3}/' '{output_dir}' --exclude '*' --include 'quant.sf'")
       system(sync_call)
   }
-  )
+)
