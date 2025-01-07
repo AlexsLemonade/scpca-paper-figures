@@ -2544,7 +2544,7 @@
       "RemoteHost": "api.github.com",
       "RemoteUsername": "AlexsLemonade",
       "RemoteRepo": "scpcaTools",
-      "RemoteRef": "main",
+      "RemoteRef": "v0.4.1",
       "RemoteSha": "e1c1e2f934c77c693e4bd50675d46cb64c8b8736",
       "Requirements": [
         "BiocGenerics",
@@ -2570,7 +2570,7 @@
         "tidyr",
         "tximport"
       ],
-      "Hash": "7a15cbf47978715e7ca3805e543f82cf"
+      "Hash": "3715e65e92a597562e91963404499652"
     },
     "scuttle": {
       "Package": "scuttle",
