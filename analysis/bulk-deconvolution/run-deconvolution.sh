@@ -12,11 +12,12 @@ cd "$basedir"
 data_dir="data"
 script_dir="scripts"
 salmon_quant_dir="${data_dir}/salmon-quant-files"
+reference_dir=${data_dir}/reference # stores the id map file
 tpm_dir="${data_dir}/tpm"
 
-# Step 0: Download quant.sf files if they do not exist
-if [ ! -d $salmon_quant_dir ]; then
-    Rscript ${script_dir}/figure_setup/sync-salmon-output.R
+# Step 0: Prepare id map and download quant.sf files if they do not exist
+if [[ ! -d $salmon_quant_dir || ! -d $reference_dir ]]; then
+    Rscript ${script_dir}/figure_setup/prepare-data-files.R
 fi
 
 for project_dir in $salmon_quant_dir/*; do
