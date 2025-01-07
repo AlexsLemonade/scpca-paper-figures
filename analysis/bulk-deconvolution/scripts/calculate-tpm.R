@@ -78,33 +78,18 @@ quant_files <- list.files(
 stopifnot("Could not find any quant.sf files for the specified project." = length(quant_files) > 0)
 
 # Calculate TPM for each sample and combine into single data frame ---------
-tpm_df <- quant_files |>
-  purrr::map(
-    \(quant_file_path) {
 
-      split_file <- stringr::str_split_1(quant_file_path, pattern = "/")
-      sample_id <- split_file[1]
-      library_id <- split_file[2]
+sample_ids <- stringr::str_split_i(quant_files, pattern = "/", i = 1)
+quant_paths <- setNames(file.path(data_dir, quant_files), sample_ids)
 
-      # read in with tximport and extract TPM
-      txi_salmon <- tximport::tximport(
-        file.path(data_dir, quant_file_path),
-        type = "salmon",
-        tx2gene = t2g_table
-      )
-      tpm <- txi_salmon$abundance[,1]
-      ensembl_ids <- names(tpm)
 
-      # return data frame where the tpm column is named by the sample id
-      sample_tpm_df <- data.frame(tpm = tpm)
-      names(sample_tpm_df) <- sample_id
-      sample_tpm_df
+txi_salmon <- tximport::tximport(
+  quant_paths,
+  type = "salmon",
+  tx2gene = t2g_table
+)
 
-    }
-  ) |>
-  # we expect the same genes all around here since quantification used the same gene set
-  dplyr::bind_cols() |>
-  tibble::rownames_to_column(var = "ensembl_id")
+tpm_mat  <- txi_salmon$abundance
 
 
 
