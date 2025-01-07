@@ -63,7 +63,9 @@ diagnosis_plot_df <- sample_metadata_df |>
   # right now let's remove this group
   dplyr::filter(diagnosis_group != "Non-cancerous") |> 
   # make it a factor so we can use ggpattern 
-  dplyr::mutate(standardized_disease_timing = as.factor(standardized_disease_timing))
+  dplyr::mutate(standardized_disease_timing = as.factor(standardized_disease_timing) |> 
+                  forcats::fct_rev() |> 
+                  forcats::fct_relevel("During or after treatment", after = 1))
 
 
 diagnosis_count <- diagnosis_plot_df |> 
@@ -100,7 +102,7 @@ diagnosis_colors <- diagnosis_group_palette_df$color |>
 # diagnosis is on the y axis and number of samples on the x axis
 # bars are patterned based on the disease timing group 
 diagnosis_plot <- ggplot(plot_df, aes(y = diagnosis,  fill = diagnosis_group)) +
-  ggpattern::geom_bar_pattern(aes(pattern = forcats::fct_rev(standardized_disease_timing)), 
+  ggpattern::geom_bar_pattern(aes(pattern = standardized_disease_timing), 
                               color = "black",
                               pattern_color = "black",
                               pattern_fill = "black",
@@ -113,8 +115,8 @@ diagnosis_plot <- ggplot(plot_df, aes(y = diagnosis,  fill = diagnosis_group)) +
   ggpattern::scale_pattern_manual(values = c(
     "Initial diagnosis" = 'none', 
     "Post-mortem" = 'stripe', 
-    "Progressive" = 'crosshatch', 
-    "Recurrence" = 'circle',
+    "Progressive/recurrence" = 'circle', 
+    "During or after treatment" = 'crosshatch',
     "Unknown" = 'wave'), 
     drop = FALSE) +
   # set colors to use palette for diagnosis groups
