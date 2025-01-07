@@ -155,11 +155,11 @@ ggplot(filtered_modality_df, aes(x = modality, fill = seq_unit)) +
     fill = "Suspension type"
   ) + 
   scale_fill_manual(values= suspension_colors) +
-  theme(legend.position = c(.8,.9),
+  theme(legend.position.inside = c(.8,.88),
         legend.direction = "horizontal",
         legend.box.background = element_rect(color = "black"),
         text = element_text(size = 14),
         axis.text.x = element_text(angle = 45, hjust = 1)) +
-  guides(fill = guide_legend(title.position = "top", title.hjust = 0.5))
+  guides(fill = guide_legend(position = "inside", title.position = "top", title.hjust = 0.5))
 
 ggsave(output_pdf_file, width = 7, height = 7)
