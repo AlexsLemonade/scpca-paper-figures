@@ -1,4 +1,4 @@
-# This script calculates a TPM matrix for salmon quant files from all samples in a given project and exports an RDS file named `<project_id>-tpm.tsv`.
+# This script calculates a TPM matrix for salmon quant files from all samples in a given project and exports an RDS file named `<project_id>-tpm.rds`.
 # Input quant files are expected to be stored as `project_id/sample_id/library_id/quant.sf` in the provided "input_dir" argument.
 # This file will have a column `gene_symbol` and a column for each sample.
 # As such, this script also converts ensembl ids to gene symbols, which is needed as input to deconvolution methods.
@@ -24,7 +24,7 @@ option_list <- list(
   make_option(
     "--output_dir",
     type = "character",
-    help = "Output directory to save TSV with TPM values."
+    help = "Output directory to save RDS with TPM values."
   ),
   make_option(
     "--t2g_file",
@@ -51,7 +51,7 @@ data_dir <- file.path(opts$input_dir, opts$project_id)
 stopifnot("Provided `input_dir` does not contain a directory with quant files for the specified `project_id`." = dir.exists(data_dir))
 
 fs::dir_create(opts$output_dir)
-output_file <- file.path(opts$output_dir, glue::glue("{opts$project_id}-tpm.tsv"))
+output_file <- file.path(opts$output_dir, glue::glue("{opts$project_id}-tpm.rds"))
 
 stopifnot("The t2g file could not be found." = file.exists(opts$t2g_file))
 stopifnot("The id mapping file to use for id mapping could not be found." = file.exists(opts$id_map_file))
