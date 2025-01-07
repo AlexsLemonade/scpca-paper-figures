@@ -22,7 +22,6 @@ option_list <- list(
   )
 )
 opts <- parse_args(OptionParser(option_list = option_list))
-stopifnot("The SCE file to use for id mapping could not be found." = file.exists(opts$scpca_sce_file))
 
 
 # Define files and directories ---------
@@ -38,6 +37,7 @@ fs::dir_create(dirname(map_tsv_path))
 
 # First, export the TSV file for id mapping if it does not yet exist ------------------
 if (!file.exists(map_tsv_path)) {
+  stopifnot("The SCE file to use for id mapping could not be found." = file.exists(opts$scpca_sce_file))
   sce <- readRDS(opts$scpca_sce_file)
   map_table <- data.frame(
     ensembl_id = SingleCellExperiment::rowData(sce)$gene_ids,
