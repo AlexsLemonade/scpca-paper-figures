@@ -241,7 +241,7 @@ perm_df <- samples |>
   tidyr::pivot_longer(ends_with("metric"), values_to = "pvalue", names_to = "test_type")
 ```
 
-We'll visualize the P-value distributions; the red line is at 0.05.
+We'll visualize the P-value distributions.
 
 ```{r}
 ggplot(perm_df) + 
@@ -251,7 +251,7 @@ ggplot(perm_df) +
 ```
 
 Permutation test p-values (with no corrections for multiple testing!) are all high for both nonparametric and parametric approaches.
-Therefore, our samples do not show evidence that the `quanTIseq` tumor genes (again, these are immune-related genes identified from TCGA) have abberantly high expression compared to other signature genes.
+Therefore, our samples do not show evidence that the `quanTIseq` tumor genes (again, these are immune-related genes identified from TCGA) have aberrantly high expression compared to other signature genes.
 
 ## Conclusion
 
