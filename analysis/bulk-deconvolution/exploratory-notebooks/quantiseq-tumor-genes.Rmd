@@ -191,54 +191,26 @@ ggplot(tpm_df) +
   )
 ```
 
-Looking over a great many jitter plots, there does not seem to be a universal trend of abberantly high expression among tumor genes.
+Looking over a great many jitter plots, there does not seem to be a universal trend of aberrantly high expression among tumor genes but of course these plots are rather small!
 
 
-## Permutation tests
+## Model
 
-Next, we'll perform two flavors of permutation tests to test the hypothesis that tumor genes have higher expression compared to non-tumor genes.
-For each sample, we'll perform a parametric test using the t-statistic and nonparametric test using the u-statistic (aka, wilcox), doing `r params$permutation_reps` permutations each.
-
-We'll do these tests as one-sided to test if the tumor genes have higher expression.
-Code-wise, since the reference tumor genes level here is `FALSE`, we'll specify `alternative = "less"` for the one-sided test that non-tumor genes have lower expression than do tumor genes.
+We'll build a mixed-effects model to test if TPM differs between tumor and non-tumor genes. 
+We'll specify random effects of sample and gene to control for their inherent groupings.
 
 ```{r}
-samples <- unique(tpm_df$sample_id)
-
-perm_df <- samples |>
-  purrr::map(
-    \(x) {
-      sample_tpm <- dplyr::filter(tpm_df, sample_id == x)
-      
-      wilcox_p <- wilcox.test(tpm ~ tumor_gene, alternative = "less", data = sample_tpm)$p.value
-      ttest_p <- t.test(tpm ~ tumor_gene, alternative = "less", data = sample_tpm)$p.value
-      
-      data.frame(
-        sample_id = x, 
-        nonparametric = wilcox_p, 
-        parametric = ttest_p
-      )
-    }
-  ) |>
-  dplyr::bind_rows() |>
-  tidyr::pivot_longer(ends_with("metric"), values_to = "pvalue", names_to = "test_type")
+lme4::lmer(tpm ~ tumor_gene + (1|sample_id) + (1|gene_symbol), data=tpm_df) |>
+  summary()
 ```
 
-We'll visualize the P-value distributions.
-
-```{r}
-ggplot(perm_df) + 
-  aes(x = pvalue) + 
-  geom_histogram() + 
-  facet_wrap(~test_type)
-```
-
-Permutation test p-values (with no corrections for multiple testing!) are all high for both nonparametric and parametric approaches.
-Therefore, our samples do not show evidence that the `quanTIseq` tumor genes (again, these are immune-related genes identified from TCGA) have aberrantly high expression compared to other signature genes.
+The fixed effect of `tumor_gene` has a t-statistic of 7.821, which is significant.
+This suggests that there is indeed elevated expression of these tumor genes compared to the other signature genes.
 
 ## Conclusion
 
-Based on visual inspection and permutation testing, we don't have strong evidence that we should use the `tumor = TRUE` setting when running `quanTIseq` on our pediatric tumor samples.
+Although the visual inspection did not necessarily show a universal trend, the mixed effects model suggests that there is indeed, on average, higher expression of these tumor-associated immune signature genes. 
+We should therefore consider using `tumor=TRUE` mode and excluding them in analysis.
 
 ## Session info
 
