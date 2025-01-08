@@ -51,7 +51,7 @@ Rscript ${script_dir}/Fig1A_sample-disease-barchart.R
 Rscript ${script_dir}/Fig1B_modality-barchart.R
 
 # Figure 2B
-Rscript ${script_dir}/Fig2B_qc-plots.R
+Rscript ${script_dir}/Fig2B-F_qc-plots.R
 
 # Figure 4B
 Rscript ${script_dir}/Fig4B_singler-cellassign-heatmap.R
@@ -65,7 +65,7 @@ Rscript ${script_dir}/FigS1A_memory-time-comparison.R
 Rscript ${script_dir}/FigS1B-D_method-metrics-comparison.R
 
 # Figure S2B
-Rscript ${script_dir}/FigS2B_adt-plots.R
+Rscript ${script_dir}/FigS2B-D_adt-plots.R
 
 # Figure 3D
 Rscript ${script_dir}/Fig3D_merged-umaps.R
