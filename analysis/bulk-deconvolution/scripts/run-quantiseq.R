@@ -22,7 +22,7 @@ opts <- parse_args(OptionParser(option_list = option_list))
 
 # Check inputs and define paths -------
 stopifnot(
-  "A path to an input RDS file must be specified wit `input_file`." = !is.null(opts$input_file),
+  "A path to an input RDS file must be specified with `input_file`." = !is.null(opts$input_file),
   "A path to an output TSV must be specified with `output_file`." = !is.null(opts$output_file)
 )
 

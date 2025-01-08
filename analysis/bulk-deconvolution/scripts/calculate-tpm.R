@@ -12,7 +12,7 @@ option_list <- list(
   make_option(
     "--input_dir",
     type = "character",
-    help = "Input directory containing a project-specific directory with salmon quant files organized by sample/library."
+    help = "Input directory with salmon quant files organized by project/sample/library."
   ),
   make_option(
     "--output_file",
@@ -36,7 +36,7 @@ opts <- parse_args(OptionParser(option_list = option_list))
 
 # Check inputs and paths -------
 stopifnot(
-  "An input directory must be provided to `character`." = !is.null(opts$input_dir),
+  "An input directory must be provided to `input_dir`." = !is.null(opts$input_dir),
   "A path to an output file must be specified with `output_file`." = !is.null(opts$output_file),
   "The t2g file could not be found." = file.exists(opts$t2g_file),
   "The id mapping file to use for id mapping could not be found." = file.exists(opts$id_map_file)
