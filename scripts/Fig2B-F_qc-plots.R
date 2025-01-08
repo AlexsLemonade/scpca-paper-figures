@@ -94,12 +94,14 @@ knee_plot <- ggplot(grouped_celldata, aes(x = med_rank, y = med_sum, color = pct
     color = ""
   ) +
   theme(
-    legend.position = c(.95, .9),
+    legend.position.inside = c(.95, .88),
     aspect.ratio = 1
     
   ) +
-  # remove legend labels
-  guides(color = guide_colorbar(label = FALSE, barwidth = 0.5, barheight = 2))
+  # remove legend labels and position legend inside
+  guides(
+    color = guide_colorbar(position = "inside", label = FALSE, barwidth = 0.5, barheight = 2)
+  )
 
 # Cell read metrics ------------------------------------------------------------
 
@@ -124,10 +126,10 @@ cell_metrics_plot <- ggplot(
     color = ""
   ) +
   theme(
-    legend.position = c(.95, .9)
+    legend.position.inside = c(.95, .88)
     
   ) +
-  guides(color = guide_colorbar(label = FALSE, barwidth = 0.5, barheight = 2))
+  guides(color = guide_colorbar(position = "inside", label = FALSE, barwidth = 0.5, barheight = 2))
 
 # miQC metrics -----------------------------------------------------------------
 
@@ -144,10 +146,9 @@ miQC_plot <- miQC::plotModel(filtered_sce, model = miQC_model) +
     color = ""
   ) +
   theme(
-    legend.position = c(.95, .9)
-    
+    legend.position.inside = c(.95, .88)
   ) +
-  guides(color = guide_colorbar(label = FALSE, barwidth = 0.5, barheight = 2))
+  guides(color = guide_colorbar(position = "inside", label = FALSE, barwidth = 0.5, barheight = 2))
 
 # set line thickness
 line_aes <- list(linewidth = 0.5, alpha = 0.8)
@@ -179,11 +180,11 @@ filtered_plot <- ggplot(filtered_coldata_df, aes(x = detected, y = subsets_mito_
     color = ""
   ) +
   theme(
-    legend.position = c(.8, .9),
+    legend.position.inside = c(.8, .88),
     legend.key = element_blank()
     
   ) + 
-  guides(color = guide_legend(override.aes = list(size = 2)))
+  guides(color = guide_legend(position = "inside", override.aes = list(size = 2)))
 
 # UMAP -------------------------------------------------------------------------
 
@@ -195,12 +196,14 @@ umap_plot <- scater::plotUMAP(
   colour_by = "detected"
 ) +
   scale_color_viridis_c() +
-  theme(legend.position = "none",
-        axis.line = element_blank(),
-        axis.ticks = element_blank(),
-        axis.text = element_blank(),
-        panel.background = element_rect(colour = "black", linewidth = 0.5),
-        aspect.ratio = 1)
+  theme(
+    legend.position = "none",
+    axis.line = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text = element_blank(),
+    panel.background = element_rect(colour = "black", linewidth = 0.5),
+    aspect.ratio = 1
+  )
 
 # HVGs -------------------------------------------------------------------------
 
