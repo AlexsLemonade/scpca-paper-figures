@@ -10,21 +10,14 @@ library(optparse)
 # Parse options --------
 option_list <- list(
   make_option(
-    "--project_id",
-    type = "character",
-    default = "SCPCP000001",
-    help = "ScPCA project id to calculate TPM for."
-  ),
-  make_option(
     "--input_dir",
     type = "character",
-    default = here::here("analysis", "bulk-deconvolution", "data", "salmon-quant-files"),
     help = "Input directory containing a project-specific directory with salmon quant files organized by sample/library."
   ),
   make_option(
-    "--output_dir",
+    "--output_file",
     type = "character",
-    help = "Output directory to save RDS with TPM values."
+    help = "Output file to save RDS with TPM matrix."
   ),
   make_option(
     "--t2g_file",
@@ -41,21 +34,15 @@ option_list <- list(
 )
 opts <- parse_args(OptionParser(option_list = option_list))
 
-# Check inputs and define paths -------
+# Check inputs and paths -------
 stopifnot(
-  "A project id in the format SCPCPXXXXXX must be provided to `project_id`." = !is.null(opts$project_id),
-  "An output directory must be specified with `output_dir`." = !is.null(opts$output_dir)
+  "An input directory must be provided to `character`." = !is.null(opts$input_dir),
+  "A path to an output file must be specified with `output_file`." = !is.null(opts$output_file),
+  "The t2g file could not be found." = file.exists(opts$t2g_file),
+  "The id mapping file to use for id mapping could not be found." = file.exists(opts$id_map_file)
 )
-
-data_dir <- file.path(opts$input_dir, opts$project_id)
-stopifnot("Provided `input_dir` does not contain a directory with quant files for the specified `project_id`." = dir.exists(data_dir))
-
-fs::dir_create(opts$output_dir)
-output_file <- file.path(opts$output_dir, glue::glue("{opts$project_id}-tpm.rds"))
-
-stopifnot("The t2g file could not be found." = file.exists(opts$t2g_file))
-stopifnot("The id mapping file to use for id mapping could not be found." = file.exists(opts$id_map_file))
-
+stopifnot("Provided `input_dir` does not exist." = dir.exists(opts$input_dir))
+fs::dir_create(dirname(opts$output_file))
 
 # Read input helper files -----------
 t2g_table <- readr::read_tsv(
@@ -68,14 +55,14 @@ map_table <- readr::read_tsv(opts$id_map_file, show_col_types = FALSE)
 
 # Find all quant.sf files -------------
 quant_files <- list.files(
-  path = data_dir,
+  path = opts$input_dir,
   recursive = TRUE
 )
 stopifnot("Could not find any quant.sf files for the specified project." = length(quant_files) > 0)
 
 # Calculate TPM for each sample  ---------
 sample_ids <- stringr::str_split_i(quant_files, pattern = "/", i = 1)
-quant_paths <- setNames(file.path(data_dir, quant_files), sample_ids)
+quant_paths <- setNames(file.path(opts$input_dir, quant_files), sample_ids)
 
 txi_salmon <- tximport::tximport(
   quant_paths,
@@ -97,4 +84,4 @@ tpm_summed_mat <- rowsum(
 ) # --> 39133 rows
 
 # Export to rds -------
-readr::write_rds(tpm_summed_mat, output_file)
+readr::write_rds(tpm_summed_mat, opts$output_file)
