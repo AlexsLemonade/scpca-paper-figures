@@ -13,3 +13,5 @@ This directory contains scripts used in the bulk deconvolution analysis.
 - `calculate-tpm.R`: This script creates a TSV of TPM values for all samples in a given project.
 Ensembl ids are also converted to gene symbols, where TPM values for duplicate gene symbols are summed.
 TSV files are exported to `../data/tpm/<project id>-tpm.tsv`.
+- `run-quantiseq.R`: This script runs `quanTIseq` on all samples in a project.
+TSV files with results are exported to `../results/<project id>-quantiseq.tsv`.
