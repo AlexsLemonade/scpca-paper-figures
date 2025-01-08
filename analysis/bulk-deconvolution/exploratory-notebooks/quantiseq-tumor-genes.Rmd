@@ -150,16 +150,11 @@ We'll read in the TPM data from all projects into a single long data frame, reta
 ```{r}
 # Create data frame of TPM values for all samples
 tpm_df <- tpm_files |>
-  purrr::map(
-    \(x) {
-      # read matrix and convert to table
-      readr::read_rds(x) |>
-        as.data.frame() |>
-        tibble::rownames_to_column(var = "gene_symbol")
-      }
-  ) |> 
-  # Combine into a single data frame
-  purrr::reduce(dplyr::left_join, by = "gene_symbol") |>
+  purrr::map(readr::read_rds) |> 
+  # combine into a single matrix
+  purrr::reduce(cbind) |>
+  as.data.frame() |>
+  tibble::rownames_to_column(var = "gene_symbol") |>
   # Filter to signature genes only and add indicator column for tumor genes
   dplyr::filter(gene_symbol %in% signature_genes) |>
   dplyr::mutate(tumor_gene = gene_symbol %in% tumor_genes) |>
@@ -215,20 +210,8 @@ perm_df <- samples |>
     \(x) {
       sample_tpm <- dplyr::filter(tpm_df, sample_id == x)
       
-      # Create permutations by shuffling tpm values
-      perms <- modelr::permute(sample_tpm, params$permutation_reps, tpm)
-      
-      # nonparametric
-      models <- purrr::map(perms$perm, \(perm_data) wilcox.test(tpm ~ tumor_gene, alternative = "less", data = perm_data))
-      glanced <- purrr::map_df(models, broom::glance, .id = "id")
-      mod <- wilcox.test(tpm ~ tumor_gene, alternative = "less", data = sample_tpm)
-      wilcox_p <- mean(glanced$statistic > broom::glance(mod)$statistic)
-      
-      # parametric
-      models <- purrr::map(perms$perm, \(perm_data) t.test(tpm ~ tumor_gene, alternative = "less", data = perm_data))
-      glanced <- purrr::map_df(models, broom::glance, .id = "id")
-      mod <- t.test(tpm ~ tumor_gene, alternative = "less", data = sample_tpm)
-      ttest_p <- mean(glanced$statistic > broom::glance(mod)$statistic)
+      wilcox_p <- wilcox.test(tpm ~ tumor_gene, alternative = "less", data = sample_tpm)$p.value
+      ttest_p <- t.test(tpm ~ tumor_gene, alternative = "less", data = sample_tpm)$p.value
       
       data.frame(
         sample_id = x, 
