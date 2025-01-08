@@ -1,4 +1,4 @@
-# This script runs quanTIseq for samples in a given ScPCA project and exports 
+# This script runs quanTIseq for samples in a given ScPCA project and exports
 #  a TSV of cell type proportions for each sample in the project.
 
 renv::load()
@@ -33,18 +33,18 @@ fs::dir_create(dirname(opts$output_file))
 # Prepare input rds file -----------
 tpm_matrix <- readr::read_rds(opts$input_file)
 
-# As determined in ../exploratory-notebooks/quantiseq-tumor-genes.Rmd, several gene names in the signature 
+# As determined in ../exploratory-notebooks/quantiseq-tumor-genes.Rmd, several gene names in the signature
 #  are outdated. Here, we'll replace those gene symbols in our matrix row names with the gene symbols quanTIseq expects:
-#  our data         quantiseq        
-#  PALM2AKAP2       AKAP2            
-#  TENT5C           FAM46C           
-#  GUCY1A1          GUCY1A3          
+#  our data         quantiseq
+#  PALM2AKAP2       AKAP2
+#  TENT5C           FAM46C
+#  GUCY1A1          GUCY1A3
 
 new_rownames <- dplyr::case_match(
-  rownames(tpm_matrix), 
+  rownames(tpm_matrix),
   "PALM2AKAP2" ~ "AKAP2",
-  "TENT5C" ~ "FAM46C", 
-  "GUCY1A1" ~ "GUCY1A3", 
+  "TENT5C" ~ "FAM46C",
+  "GUCY1A1" ~ "GUCY1A3",
   .default = rownames(tpm_matrix)
 )
 rownames(tpm_matrix) <- new_rownames
@@ -52,7 +52,7 @@ rownames(tpm_matrix) <- new_rownames
 # Run quanTIseq -------------
 deconv_df <- quantiseqr::run_quantiseq(
   expression_data = tpm_matrix,
-  is_tumordata = FALSE, # as determined in ../exploratory-notebooks/quantiseq-tumor-genes.Rmd
+  is_tumordata = TRUE, # as determined in ../exploratory-notebooks/quantiseq-tumor-genes.Rmd
   scale_mRNA = TRUE
 )
 
@@ -61,11 +61,11 @@ deconv_tidy_df <- deconv_df |>
   # remove rownames
   tibble::as_tibble() |>
   tidyr::pivot_longer(
-    -Sample, 
-    names_to = "quantiseq_celltype", 
+    -Sample,
+    names_to = "quantiseq_celltype",
     values_to = "proportion"
   ) |>
-  dplyr::rename(sample_id = Sample) 
+  dplyr::rename(sample_id = Sample)
 
 # Export to tsv -------
 readr::write_tsv(deconv_tidy_df, opts$output_file)
