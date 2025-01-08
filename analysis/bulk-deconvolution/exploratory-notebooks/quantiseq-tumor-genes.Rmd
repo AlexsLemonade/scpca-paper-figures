@@ -94,7 +94,7 @@ On the whole, while these genes which may be associated with (adult) tumors, the
 Since these genes were identified from an database of _adult_ tumor samples, it's not clear whether they have similar biological relevance to pediatric tumors. 
 The purpose of this notebook is to assess whether these genes indeed have aberrantly high expression values compared to the other signature genes in each of our bulk RNA-seq samples.
 
-## Confirm genes are present
+## Confirm signature genes are present
 
 Since we use gene symbol identifiers here, we should confirm that all gene symbols in the `quanTIseq` reference are indeed present in our data. 
 For this, we'll check that the signature genes are all present in our mapping table which converted ensembl ids to gene symbols.
@@ -195,10 +195,8 @@ ggplot(tpm_df) +
     legend.position = "none"
   )
 ```
-From a very quick look at a great many jitter plots, there does not seem to be a universal trend of abberantly high expression among tumor genes.
 
-
-
+Looking over a great many jitter plots, there does not seem to be a universal trend of abberantly high expression among tumor genes.
 
 
 ## Permutation tests
@@ -221,13 +219,13 @@ perm_df <- samples |>
       perms <- modelr::permute(sample_tpm, params$permutation_reps, tpm)
       
       # nonparametric
-      models <- purrr::map(perms$perm, ~ wilcox.test(tpm ~ tumor_gene, data = .))
+      models <- purrr::map(perms$perm, \(perm_data) wilcox.test(tpm ~ tumor_gene, alternative = "less", data = perm_data))
       glanced <- purrr::map_df(models, broom::glance, .id = "id")
       mod <- wilcox.test(tpm ~ tumor_gene, alternative = "less", data = sample_tpm)
       wilcox_p <- mean(glanced$statistic > broom::glance(mod)$statistic)
       
       # parametric
-      models <- purrr::map(perms$perm, ~ t.test(tpm ~ tumor_gene, data = .))
+      models <- purrr::map(perms$perm, \(perm_data) t.test(tpm ~ tumor_gene, alternative = "less", data = perm_data))
       glanced <- purrr::map_df(models, broom::glance, .id = "id")
       mod <- t.test(tpm ~ tumor_gene, alternative = "less", data = sample_tpm)
       ttest_p <- mean(glanced$statistic > broom::glance(mod)$statistic)
@@ -243,15 +241,13 @@ perm_df <- samples |>
   tidyr::pivot_longer(ends_with("metric"), values_to = "pvalue", names_to = "test_type")
 ```
 
-We'll visualize the P-value distributions:
+We'll visualize the P-value distributions; the red line is at 0.05.
 
 ```{r}
 ggplot(perm_df) + 
   aes(x = pvalue) + 
   geom_histogram() + 
-  facet_wrap(~test_type) +
-  geom_vline(xintercept = 0.05, color = "firebrick", lwd = 0.5) +
-  xlim(0, 1)
+  facet_wrap(~test_type)
 ```
 
 Permutation test p-values (with no corrections for multiple testing!) are all high for both nonparametric and parametric approaches.
