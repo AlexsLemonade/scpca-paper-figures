@@ -1,0 +1,221 @@
+---
+title: "Expression levels of quanTIseq tumor genes"
+author: Stephanie J. Spielman
+date: "`r Sys.Date()`"
+params:
+  permutation_reps: 1000
+output:
+  html_notebook:
+    toc: true
+    toc_depth: 3
+    code_folding: show
+---
+
+## Setup
+
+```{r setup}
+renv::load()
+
+library(ggplot2)
+theme_set(theme_bw())
+
+set.seed(2025) 
+```
+
+### Paths
+
+Input files:
+
+```{r}
+tpm_dir <- here::here("analysis", "bulk-deconvolution", "data", "tpm")
+tpm_files <- list.files(
+  path = tpm_dir,
+  full.names = TRUE, 
+  pattern = ".rds$"
+)
+```
+
+## Background
+
+`quanTIseq` uses a signature gene list to perform deconvolution: <https://github.com/icbi-lab/quanTIseq/blob/039eb16455373915ace33b3ecede09bde697d005/quantiseq/deconvolution/TIL10_signature.txt>.
+```{r}
+sig_genes_df <- readr::read_tsv(
+  "https://raw.githubusercontent.com/icbi-lab/quanTIseq/039eb16455373915ace33b3ecede09bde697d005/quantiseq/deconvolution/TIL10_signature.txt", 
+  show_col_types = FALSE
+)
+signature_genes <- sig_genes_df$ID
+head(signature_genes)
+```
+
+Within these signature genes, there are 17 genes which they recommend filtering out of tumor analyses based on TCGA expression.
+From the [`quanTIseq` paper](https://doi.org/10.1186/s13073-019-0638-6):
+
+> Aberrant de-methylation and sequence duplication can lead to over-expression of immune signature genes. 
+> Tumor RNA-seq data can be analyzed with quanTIseq setting the `--tumor` option to `TRUE`. 
+> This setting discards the signature genes whose `log2(xgl + 1)` expression in the TCGA RNA-seq data exceeds 11 TPM, which are NUPR1, CD36, CSTA, HPGD, CFB, ECM1, FCGBP, PLTP, FXYD6, HOPX, SERPING1, ENPP2, GATM, PDPN, ADAM6, FCRLA, and SLC1A3.
+
+These are also given here: <https://github.com/icbi-lab/quanTIseq/blob/039eb16455373915ace33b3ecede09bde697d005/quantiseq/deconvolution/TIL10_TCGA_aberrant_immune_genes.txt>
+
+```{r}
+tumor_genes_df <- readr::read_csv(
+  "https://raw.githubusercontent.com/icbi-lab/quanTIseq/039eb16455373915ace33b3ecede09bde697d005/quantiseq/deconvolution/TIL10_TCGA_aberrant_immune_genes.txt", 
+  col_names = "gene_symbol", 
+  show_col_types = FALSE
+)
+tumor_genes <- tumor_genes_df$gene_symbol
+
+# Indeed, they are all in the signature:
+all(tumor_genes %in% signature_genes)
+```
+
+What do these genes do? 
+Aside from being immune signature genes, they are _very briefly:_
+
+* `NUPR1`: Trans factor involved in cellular stress and tumor progression
+* `CD36`: Transmembrance receptor involved in lipid uptake
+* `CSTA`: Cysteine protease inhibitor 
+* `HPGD`: Prostaglandin metabolism
+* `CFB`: Complement factor B
+* `ECM1`: Extracellular matrix
+* `FCGBP`: IgGFc-binding protein, involved in tumor metastasis
+* `PLTP`: TP53 target gene
+* `FXYD6`: phosphohippolin; Na,K-ATPase regulator
+* `HOPX`: hox gene, development
+* `SERPING1`: serine protease inhibitor
+* `ENPP2`: enzyme involved in lipid signaling
+* `GATM`: amidinotransferase involved in creatine biosynthesis
+* `PDPN`: cell migration; known oncogene
+* `ADAM6`: pseudogene expressed in a lot of immune cells
+* `FCRLA`: cell surface glycoprotein, involved in inflammatory response
+* `SLC1A3`: glutamate transporter
+
+On the whole, while these genes which may be associated with (adult) tumors, they are not necessarily oncogenes or causatively linked to tumor progression.
+
+Since these genes were identified from an database of _adult_ tumor samples, it's not clear whether they have similar biological relevance to pediatric tumors. 
+The purpose of this notebook is to assess whether these genes indeed have aberrantly high expression values compared to the other signature genes in each of our bulk RNA-seq samples.
+
+## Confirm signature genes are present
+
+Since we use gene symbol identifiers here, we should confirm that all gene symbols in the `quanTIseq` reference are indeed present in our data. 
+For this, we'll check that the signature genes are all present in our mapping table which converted ensembl ids to gene symbols.
+
+```{r}
+map_table <- readr::read_tsv(
+  here::here("analysis", "bulk-deconvolution", "data", "reference", "ensembl_symbol.tsv"),
+  show_col_types = FALSE
+)
+map_symbols <- map_table$gene_symbol
+
+all(signature_genes %in% map_symbols)
+```
+
+We are indeed missing some! Which ones?
+
+```{r}
+signature_genes[which(!(signature_genes %in% map_symbols))]
+```
+
+It turns out the reason these are "missing" is because they have been deprecated since `quanTIseq` was written, or they are aliases for the official gene symbol:
+
+- `AKAP2` was deprecated and replaced with `PALM2AKAP2` (source: <https://www.ncbi.nlm.nih.gov/gene/11217>)
+- `FAM46C` is an alias for `TENT5C` (source: <https://www.ncbi.nlm.nih.gov/gene/54855>)
+- `GUCY1A3` is an alias for `GUCY1A1` (source: <https://www.ncbi.nlm.nih.gov/gene/2982>)
+
+Are these gene symbols present in our ensembl <-> symbol mapping table?
+
+```{r}
+updated_gene_names <- c("PALM2AKAP2", "TENT5C", "GUCY1A1")
+all(updated_gene_names %in% map_symbols)
+```
+
+Great, we have these other versions of the gene symbols!
+We'll directly replace them in the signature list here.
+
+```{r}
+signature_genes <- dplyr::case_match(
+  signature_genes, 
+  "AKAP2" ~ "PALM2AKAP2", 
+  "FAM46C" ~ "TENT5C", 
+  "GUCY1A3" ~ "GUCY1A1", 
+  .default = signature_genes
+)
+```
+
+When we actually run `quanTIseq`, we'll need to make sure that we have matching gene names between our TPM matrices and their signature.
+
+## Prepare the data
+
+We'll read in the TPM data from all projects into a single long data frame, retaining only the signature genes with an indicator column for which are the tumor genes.
+
+```{r}
+# Create data frame of TPM values for all samples
+tpm_df <- tpm_files |>
+  purrr::map(readr::read_rds) |> 
+  # combine into a single matrix
+  purrr::reduce(cbind) |>
+  as.data.frame() |>
+  tibble::rownames_to_column(var = "gene_symbol") |>
+  # Filter to signature genes only and add indicator column for tumor genes
+  dplyr::filter(gene_symbol %in% signature_genes) |>
+  dplyr::mutate(tumor_gene = gene_symbol %in% tumor_genes) |>
+  # Long data frame
+  tidyr::pivot_longer(
+    starts_with("SCPCS"), 
+    names_to = "sample_id", 
+    values_to = "tpm"
+  )
+
+head(tpm_df)
+```
+
+And confirm once more that we have all the genes:
+
+```{r}
+all(signature_genes %in% tpm_df$gene_symbol)
+```
+
+## Expression distributions
+
+First, we'll visualize distributions of TPM for tumor and non-tumor genes.
+
+
+```{r fig.height=12, fig.width=16}
+ggplot(tpm_df) + 
+  aes(x = tumor_gene, y = tpm, color = tumor_gene) + 
+  geom_jitter(width = 0.1, size = 0.25) + 
+  facet_wrap(~sample_id, scales = "free_y") + 
+  theme(
+    axis.text = element_text(size = rel(0.8)), 
+    axis.title = element_text(size = rel(0.8)), 
+    legend.position = "none"
+  )
+```
+
+Looking over a great many jitter plots, there does not seem to be a universal trend of aberrantly high expression among tumor genes but of course these plots are rather small!
+
+
+## Model
+
+We'll build a mixed-effects model to test if TPM differs between tumor and non-tumor genes. 
+We'll specify random effects of sample and gene to control for their inherent groupings.
+
+It's worth noting that, given the distribution of gene expression values, this may not be the most appropriate model framework, but it should suffice to give us a sense of whether or not we want to proceed with the `tumor = TRUE` argument in `quanTIseq`.
+
+```{r}
+lme4::lmer(tpm ~ tumor_gene + (1|sample_id) + (1|gene_symbol), data=tpm_df) |>
+  summary()
+```
+
+The fixed effect of `tumor_gene` has a t-statistic of 7.821, which is significant.
+This suggests that there is indeed elevated expression of these tumor genes compared to the other signature genes.
+
+## Conclusion
+
+Although the visual inspection did not necessarily show a universal trend, the mixed effects model suggests that there is indeed, on average, higher expression of these tumor-associated immune signature genes. 
+We should therefore consider using `tumor=TRUE` mode and excluding them in analysis.
+
+## Session info
+
+```{r}
+sessionInfo()
+```
