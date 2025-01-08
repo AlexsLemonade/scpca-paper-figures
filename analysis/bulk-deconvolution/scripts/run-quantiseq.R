@@ -1,4 +1,5 @@
-# This script runs quanTIseq for samples in a given ScPCA project
+# This script runs quanTIseq for samples in a given ScPCA project and exports 
+#  a TSV of cell type proportions for each sample in the project.
 
 renv::load()
 library(optparse)
@@ -75,7 +76,6 @@ deconv_tidy_df <- deconv_df |>
     values_to = "proportion"
   ) |>
   dplyr::rename(sample_id = Sample) 
-
 
 # Export to tsv -------
 readr::write_tsv(deconv_tidy_df, output_file)
