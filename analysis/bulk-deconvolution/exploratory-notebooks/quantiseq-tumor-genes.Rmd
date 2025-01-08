@@ -199,6 +199,8 @@ Looking over a great many jitter plots, there does not seem to be a universal tr
 We'll build a mixed-effects model to test if TPM differs between tumor and non-tumor genes. 
 We'll specify random effects of sample and gene to control for their inherent groupings.
 
+It's worth noting that, given the distribution of gene expression values, this may not be the most appropriate model framework, but it should suffice to give us a sense of whether or not we want to proceed with the `tumor = TRUE` argument in `quanTIseq`.
+
 ```{r}
 lme4::lmer(tpm ~ tumor_gene + (1|sample_id) + (1|gene_symbol), data=tpm_df) |>
   summary()
