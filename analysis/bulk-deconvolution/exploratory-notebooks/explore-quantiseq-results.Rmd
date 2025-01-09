@@ -233,40 +233,38 @@ Very generally speaking, we see:
 Let's look at some associated summaries for this sample-specific information.
 
 
-Of the 10 celltypes in `quanTIseq`, how many are represented in each sample?
+Of the 10 cell types in `quanTIseq`, how many are represented in each sample?
 For this, we'll make a histogram of the number of cell types identified per sample (regardless of their proportion).
 
 ```{r}
 celltype_counts_df <- quantiseq_df |>
   dplyr::filter(!is_other) |>
   dplyr::group_by(project_diagnosis, sample_id) |>
-  dplyr::summarize(num_celltypes = sum(proportion != 0)) |>
-  dplyr::ungroup()
-
-sample_order <- celltype_counts_df |>
-  dplyr::group_by(project_diagnosis) |>
-  dplyr::arrange(num_celltypes) |>
-  dplyr::pull(sample_id)
-
+  dplyr::summarize(num_celltypes = sum(proportion != 0))
 ```
 
-```{r fig.height=4, fig.width=10, message=FALSE}
-make_barplot(
-  celltype_counts_df,
-  xvar = forcats::fct_relevel(sample_id, sample_order), 
-  yvar = num_celltypes, 
-  facetvar = project_diagnosis
-) + 
-  scale_y_continuous(breaks = 0:10) +
-  xlab("Sample arranged by number of cell types present") 
+```{r fig.height=4, fig.width=10}
+ggplot(celltype_counts_df) + 
+  aes(x = num_celltypes) + 
+  geom_histogram(center = 0, binwidth = 1) + 
+  facet_wrap(vars(project_diagnosis), nrow = 1) + 
+  ggtitle("Number of cell types inferred in individual samples")
 ```  
-
-Here, we see that only all samples have at least two cell types, and only one sample was inferred to contain all 10 cell types.
-What's the median number of cells per sample, all pooled together?
+We can also make an associated summary table:
 
 ```{r}
-median(celltype_counts_df$num_celltypes)
+celltype_counts_df |>
+  dplyr::group_by(project_diagnosis) |>
+  dplyr::summarize(
+    min_celltypes = min(num_celltypes), 
+    median_celltypes = median(num_celltypes), 
+    max_celltypes = max(num_celltypes), 
+  )
 ```
+
+Overall, we see that only all samples have at least two cell types, and only one sample was inferred to contain all 10 cell types.
+On average, 6-7 cell types are represented per sample, which is more than 50%.
+
 
 Next, in what proportion of samples is each cell type represented?
 Again, this only considers cell type presence and absence.
