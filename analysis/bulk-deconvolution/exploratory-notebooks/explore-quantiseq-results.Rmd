@@ -1,0 +1,347 @@
+---
+title: "Explore quanTIseq results"
+author: Stephanie J. Spielman
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    toc: true
+    toc_depth: 3
+    code_folding: show
+---
+
+The goal of this notebook is to perform some visual exploration on `quanTIseq` results to assess cell type proportions across samples and projects.
+`quanTIseq` estimates the proportions of the following cell types (note they use these strings, not ontologies):
+
+- `B.cells`
+- `Macrophages.M1` 
+- `Macrophages.M2`
+- `Monocytes`
+- `Neutrophils`
+- `NK.cells`
+- `T.cells.CD4`
+- `T.cells.CD8`
+- `Tregs`
+- `Dendritic.cells` 
+- `Other`
+  - In our data, this _very putatively_ represents tumor cells, means we can loosely think of this value as proportional to tumor purity.
+  - However, since `quanTIseq` focuses on immune cell types and not other "normal" cell types that might be present (e.g. epithelial), this is not necessarily a rigorous or reliable assumption.
+
+In addition to `quanTIseq` result TSVs stored in `../results/`, this notebook also assumes that the ScPCA sample metadata is available at `../../../s3_files/scpca-sample-metadata.tsv`.
+
+## Setup
+
+```{r setup}
+renv::load()
+
+library(ggplot2)
+theme_set(theme_bw())
+```
+
+
+### Functions
+
+This chunk defines a helper function for making barplots throughout this notebook.
+
+```{r make_barplot function}
+#' Make a barplot using ggplot::geom_col()
+#' 
+#' Variables should be provided plain without quotes.
+#'
+#' @param df Data frame to plot
+#' @param xvar Variables to place on x-axis
+#' @param yvar Variable to place on y-axis
+#' @param facetvar Variable to use for faceting with facet_wrap()
+#' @param use_fill Boolean for whether there should be a fill. Default is FALSE
+#' @param fillvar Variable to use for fill. Only used if use_fill is TRUE
+#' @param facet_rows Number of rows for facetting
+#'
+#' @returns ggplot object
+make_barplot <- function(df, xvar, yvar, facetvar, use_fill = FALSE, fillvar = NULL, facet_rows = 1) {
+  
+  p <- ggplot(df) + 
+    aes(x = {{xvar}}, y = {{yvar}}) +
+    geom_col() + 
+    facet_wrap(vars({{facetvar}}), scales = "free_x", nrow = facet_rows) + 
+    scale_y_continuous(expand = c(0,0)) +
+    theme(axis.text.x = element_blank()) # will be overridden if we want the axis
+  
+  if (use_fill) {
+    p <- p + 
+      aes(fill = {{fillvar}}) + 
+      # not CVD-friendly, but has enough colors which should be fine for exploration here
+      scale_fill_brewer(palette = "Paired") + 
+      theme(legend.position = "bottom")
+  }
+  
+  return(p)
+}
+```
+
+### Paths
+
+```{r paths}
+results_dir <- here::here("analysis", "bulk-deconvolution", "results")
+sample_metadata_file <- here::here("s3_files", "scpca-sample-metadata.tsv") # for diagnosis
+
+quantiseq_files <- list.files(
+  path = results_dir,
+  full.names = TRUE,
+  pattern = "*-quantiseq.tsv$"
+)
+project_ids <- stringr::str_split_i(basename(quantiseq_files), pattern = "-", i = 1)
+quantiseq_files <- setNames(quantiseq_files, project_ids)
+```
+
+### Prepare input data
+
+```{r read metadata}
+# We want the diagnosis information for visualization
+metadata <- readr::read_tsv(sample_metadata_file) |>
+  dplyr::select(sample_id = scpca_sample_id, diagnosis)
+
+```
+
+```{r}
+# Read in quanTIseq result TSVs and combine into single data frame
+quantiseq_df <- quantiseq_files |>
+  purrr::imap(
+    \(filename, project_id) {
+      readr::read_tsv(filename, show_col_types = FALSE) |>
+        dplyr::mutate(project_id = project_id)
+  }) |>
+  dplyr::bind_rows() |>
+  # include diagnosis information
+  dplyr::left_join(metadata, by = "sample_id") |>
+  # add indicator column if the celltype is "Other"
+  dplyr::mutate(is_other = quantiseq_celltype == "Other")
+head(quantiseq_df)
+```
+
+```{r}
+# tabulate total samples which will be later used to calculate proportions
+total_samples <- length(unique(quantiseq_df$sample_id))
+```
+
+
+Let's remind ourselves also of the diagnoses present here:
+
+```{r}
+quantiseq_df |>
+  dplyr::group_by(project_id) |>
+  dplyr::summarize(diagnoses = paste(unique(diagnosis), collapse = ", "))
+```
+
+Below is a table with high-level diagnoses for each ScPCA project:
+
+
+| Project     | High-level diagnosis |
+|-------------|----------------------|
+| SCPCP000001 | High-grade glioma    |
+| SCPCP000002 | Low-grade glioma     |
+| SCPCP000006 | Wilms tumor          |
+| SCPCP000009 | CNS tumors           |
+| SCPCP000017 | Osteosarcoma         |
+
+For ease interpreting subsequent figures, we'll add these high-level diagnoses into the data frame with a project number indicator (excluding leading 0s).
+
+```{r}
+quantiseq_df <- quantiseq_df |>
+  dplyr::mutate(
+    project_diagnosis = dplyr::case_match(
+      project_id, 
+      "SCPCP000001" ~ "01: High-grade glioma", 
+      "SCPCP000002" ~ "02: Low-grade glioma", 
+      "SCPCP000006" ~ "06: Wilms tumor", 
+      "SCPCP000009" ~ "09: CNS tumors", 
+      "SCPCP000017" ~ "17: Osteosarcoma"
+    ))
+
+```
+
+## Visualization
+
+### Classified cells vs other
+
+First, let's look at the overall distribution classified cells in each sample, i.e. the proportion of  labeled cells as opposed to "Other" cells, which _theoretically_ represent tumor cells in our samples.
+
+```{r}
+classified_df <- quantiseq_df |>
+  dplyr::filter(is_other) |>
+  dplyr::mutate(classified_proportion = 1 - proportion)
+```
+
+We'll make a stacked barplot showing the proportion of "Other" cells and classified cells at sample level:
+```{r fig.height=4, fig.width=10}
+make_barplot(
+  quantiseq_df,
+  xvar = sample_id, 
+  yvar = proportion, 
+  use_fill = TRUE, 
+  fillvar = is_other, 
+  facetvar = project_diagnosis
+)
+```
+
+
+The percentage of classified cells in each sample ranges from close to 0 to up to around 0.5.
+SCPCP000001 and SCPCP000002, which were generated by the same lab group, tend to have higher values, _potentially suggesting_ somewhat lower tumor purity in these samples if we assume that the "Other" proportion is a proxy for percentage of tumor cells.
+Other projects tend to have lower lower proportions of classified cells and some appear very close to 0; there is no other overlap of generating lab.
+
+Which samples have lower classified proportions?
+
+```{r}
+classified_df |>
+  dplyr::filter(classified_proportion <= 0.05) |>
+  dplyr::select(project_id, sample_id, classified_proportion, diagnosis) |>
+  dplyr::arrange(classified_proportion)
+
+```
+
+### Classified cells only
+
+If we consider _only_ cells which were classified, what proportions of cell types are represented across samples?
+
+First, we'll need to remove the "Other" cells and normalize the remaining values to sum to 1.
+```{r}
+classified_normalized_df <- quantiseq_df |>
+  dplyr::filter(!is_other) |>
+  dplyr::group_by(sample_id) |>
+  # renormalize so non-other sums to 1
+  dplyr::mutate(proportion = proportion / sum(proportion))
+```
+
+
+```{r fig.height=5, fig.width=12}
+make_barplot(
+  classified_normalized_df,
+  xvar = sample_id, 
+  yvar = proportion, 
+  use_fill = TRUE, 
+  fillvar = quantiseq_celltype, 
+  facetvar = project_diagnosis
+)
+```
+
+Very generally speaking, we see:
+
+- `SCPCP000001` and `SCPCP000002` have relatively higher proportions of `Dendritic cells` compared to other projects
+- `SCPCP000006` and `SCPCP000009` have relatively higher proportions of `B.cells` compared to other projects
+- `SCPCP000017` appears to most frequently contain `Macrophages.M2` compared to other projects
+- `T.cells.CD4` and `T.cells.CD8` appear fairly infrequently,  although the `quanTIseq` paper does point out 
+
+Let's look at some associated summaries for this sample-specific information.
+
+
+Of the 10 celltypes in `quanTIseq`, how many are represented in each sample?
+For this, we'll make a histogram of the number of cell types identified per sample (regardless of their proportion).
+
+```{r}
+celltype_counts_df <- quantiseq_df |>
+  dplyr::filter(!is_other) |>
+  dplyr::group_by(project_diagnosis, sample_id) |>
+  dplyr::summarize(num_celltypes = sum(proportion != 0))
+```
+
+```{r fig.height=4, fig.width=10}
+ggplot(celltype_counts_df) + 
+  aes(x = num_celltypes) + 
+  geom_histogram(binwidth = 0.5) + 
+  facet_wrap(vars(project_diagnosis), nrow = 1) + 
+  scale_x_continuous(breaks = 0:10) + 
+  ggtitle("Number of cell types inferred in individual samples")
+```  
+We can also make an associated summary table:
+
+```{r}
+celltype_counts_df |>
+  dplyr::group_by(project_diagnosis) |>
+  dplyr::summarize(
+    min_celltypes = min(num_celltypes), 
+    median_celltypes = median(num_celltypes), 
+    max_celltypes = max(num_celltypes), 
+  )
+```
+
+Overall, we see that only all samples have at least two cell types, and only one sample was inferred to contain all 10 cell types.
+On average, 6-7 cell types are represented per sample, which is more than 50%.
+
+Second, in what proportion of samples is each cell type represented?
+Again, this only considers cell type presence and absence.
+
+```{r}
+# calculate number of celltypes per sample
+samples_per_celltype_df <- quantiseq_df |>
+  dplyr::filter(!is_other) |>
+  dplyr::mutate(celltype_present = proportion > 0) |>
+  dplyr::group_by(quantiseq_celltype, project_diagnosis) |>
+  dplyr::summarize(n_samples = sum(celltype_present)) 
+
+# convert number to proportion
+samples_per_celltype_df <- quantiseq_df |>
+  dplyr::filter(is_other) |>
+  dplyr::count(project_diagnosis) |>
+  dplyr::right_join(samples_per_celltype_df) |>
+  dplyr::mutate(prop_samples = n_samples / n)
+```
+
+```{r fig.height=4, fig.width=12, message = FALSE}
+make_barplot(
+  samples_per_celltype_df,
+  xvar = quantiseq_celltype, 
+  yvar = prop_samples, 
+  facetvar = project_diagnosis
+) +
+  # add guiding line at 0.5
+  geom_hline(yintercept = 0.5, color = "firebrick2") +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1, size = rel(0.8))) + 
+  ggtitle("Proportion of samples with each cell type")
+```
+
+
+- This plot emphasizes that the following cell types are not present or more infrequently represented (<25%) across samples:
+  - `SCPCP000001` has no `Neutrophils`, and few samples have `T.cells.CD8`
+  - `SCPCP000002` has no `Neutrophils` or `T.cells.CD8`
+  - Few samples in `SCPCP000006` have `Macrophages.M1`
+  - Few samples in `SCPCP000009` have `T.cells.CD8`
+
+
+## Tumor purity and cell types
+
+This section assesses if there is a relationship between a sample's tumor purity is correlated with the number of cell types identified.
+Again, we only have a _loose proxy_ for tumor purity as the the proportion of cells with an "Other" cell type.
+
+We do not expect a relationship here, since a relationship would indicate a bias that the overall content of a sample influences the algorithm's ability to identify cell types in the first place.
+
+```{r}
+# Create a data frame with the porportion of other and the number of cell types
+other_prop_df <- quantiseq_df |>
+  dplyr::filter(is_other)
+
+other_prop_df <- celltype_counts_df |>
+  dplyr::ungroup() |>
+  dplyr::left_join(other_prop_df) |>
+  dplyr::select(project_id, sample_id, num_celltypes, other_proportion = proportion)
+```
+
+
+```{r}
+ggplot(other_prop_df) + 
+  aes(x = other_proportion, y = num_celltypes) + 
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+Indeed there is no relationship, which is what we hoped!
+
+## Conclusions
+
+Although not all cell types are represented in all samples, there still appears to be a fair amount of diversity in cell types estimated.
+Most samples have at least 6/7 cell types represented.
+
+Samples have a fairly decent range of "tumor purities" as well.
+This appears related to the originating lab group rather than varying randomly across all samples, which is in line with expectations that lab protocol and diagnosis will have a strong influence.
+
+## Session info
+
+```{r}
+sessionInfo()
+```
