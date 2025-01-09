@@ -2,7 +2,6 @@ submitted_disease_timing	standardized_disease_timing
 Local control surgery	During or after treatment
 On therapy surgery	During or after treatment
 Post treatment resection	During or after treatment
-Remission	During or after treatment
 Initial Diagnosis	Initial diagnosis
 Initial diagnosis	Initial diagnosis
 Initial diagnosis of 2nd primary RIG	Initial diagnosis
@@ -11,13 +10,13 @@ Initial CNS tumor	Initial diagnosis
 Autopsy	Post-mortem
 Metastatic (autopsy)	Post-mortem
 Deceased	Post-mortem
-Progressive	Progressive/recurrence
-Progressive (Post-chemotherapy)	Progressive/recurrence
-First recurrence after treatment for glioblastoma	Progressive/recurrence
-Recurrence as glioblastoma after multiple resections for pleomorphic xanthoastrocytoma	Progressive/recurrence
-Metastatic recurrence of anaplastic pleomorphic xanthoastrocytoma	Progressive/recurrence
-Recurrence	Progressive/recurrence
-Recurrence after treatment for retinoblastoma	Progressive/recurrence
+Progressive	Progressive
+Progressive (Post-chemotherapy)	Progressive
+First recurrence after treatment for glioblastoma	Recurrence
+Recurrence as glioblastoma after multiple resections for pleomorphic xanthoastrocytoma	Recurrence
+Metastatic recurrence of anaplastic pleomorphic xanthoastrocytoma	Recurrence
+Recurrence	Recurrence
+Recurrence after treatment for retinoblastoma	Recurrence
 Primary	Unknown
 Metastatic resection	Unknown
 Metastasis	Unknown
