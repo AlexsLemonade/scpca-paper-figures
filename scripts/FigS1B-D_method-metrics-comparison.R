@@ -215,8 +215,6 @@ gene_exp_plot <- ggplot(rowdata_cor, aes(x = `Alevin-fry`, y = `Cell Ranger`, co
   scale_color_manual(values = suspension_colors) +
   theme(
     legend.position = "none", 
-    axis.line = element_line(linewidth = 1),
-    strip.background = element_rect(linewidth = 2), 
     axis.title = element_text(size = rel(1.15))
   )
 
