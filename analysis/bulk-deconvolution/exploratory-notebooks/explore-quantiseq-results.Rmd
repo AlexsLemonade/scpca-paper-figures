@@ -104,12 +104,8 @@ metadata <- readr::read_tsv(sample_metadata_file) |>
 ```{r}
 # Read in quanTIseq result TSVs and combine into single data frame
 quantiseq_df <- quantiseq_files |>
-  purrr::imap(
-    \(filename, project_id) {
-      readr::read_tsv(filename, show_col_types = FALSE) |>
-        dplyr::mutate(project_id = project_id)
-  }) |>
-  dplyr::bind_rows() |>
+  purrr::map(\(file) readr::read_tsv(file, show_col_types = FALSE)) |>
+  purrr::list_rbind(names_to = "project_id") |>
   # include diagnosis information
   dplyr::left_join(metadata, by = "sample_id") |>
   # add indicator column if the celltype is "Other"
@@ -245,9 +241,8 @@ celltype_counts_df <- quantiseq_df |>
 ```{r fig.height=4, fig.width=10}
 ggplot(celltype_counts_df) + 
   aes(x = num_celltypes) + 
-  geom_histogram(binwidth = 0.5) + 
+  geom_histogram(center = 0) + 
   facet_wrap(vars(project_diagnosis), nrow = 1) + 
-  scale_x_continuous(breaks = 0:10) + 
   ggtitle("Number of cell types inferred in individual samples")
 ```  
 We can also make an associated summary table:
