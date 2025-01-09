@@ -52,12 +52,11 @@ This chunk defines a helper function for making barplots throughout this noteboo
 #' @param xvar Variables to place on x-axis
 #' @param yvar Variable to place on y-axis
 #' @param facetvar Variable to use for faceting with facet_wrap()
-#' @param use_fill Boolean for whether there should be a fill. Default is FALSE
-#' @param fillvar Variable to use for fill. Only used if use_fill is TRUE
+#' @param fillvar Optional variable to use for fill
 #' @param facet_rows Number of rows for facetting
 #'
 #' @returns ggplot object
-make_barplot <- function(df, xvar, yvar, facetvar, use_fill = FALSE, fillvar = NULL, facet_rows = 1) {
+make_barplot <- function(df, xvar, yvar, facetvar, fillvar = NULL, facet_rows = 1) {
   
   p <- ggplot(df) + 
     aes(x = {{xvar}}, y = {{yvar}}) +
@@ -66,9 +65,8 @@ make_barplot <- function(df, xvar, yvar, facetvar, use_fill = FALSE, fillvar = N
     scale_y_continuous(expand = c(0,0)) +
     theme(axis.text.x = element_blank()) # will be overridden if we want the axis
   
-  # Note that we use this use_fill variable since an `is.null()` check won't work on a variable
-  #  being tidyeval'd, and syntax to get around that can get gnarly
-  if (use_fill) {
+  # use missing() instead of is.null() to avoid bug since this is a symbol
+  if (!missing(fillvar)) {
     p <- p + 
       aes(fill = {{fillvar}}) + 
       # not CVD-friendly, but has enough colors which should be fine for exploration here
@@ -220,7 +218,6 @@ make_barplot(
   classified_normalized_df,
   xvar = sample_id, 
   yvar = proportion, 
-  use_fill = TRUE,
   fillvar = quantiseq_celltype, 
   facetvar = project_diagnosis
 )
