@@ -247,6 +247,7 @@ celltype_counts_df <- quantiseq_df |>
 ggplot(celltype_counts_df) + 
   aes(x = num_celltypes) + 
   geom_histogram(center = 0, binwidth = 1) + 
+  scale_x_continuous(breaks = scales::breaks_pretty()) +
   facet_wrap(vars(project_diagnosis), nrow = 1) + 
   ggtitle("Number of cell types inferred in individual samples")
 ```  
