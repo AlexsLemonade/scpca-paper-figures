@@ -13,10 +13,13 @@ theme_set(
   theme_classic() +
     theme(
       #plot.margin = margin(rep(20, 4)),
-      strip.background = element_rect(fill = "transparent"),
       text = element_text(size = 12),
       legend.title = element_blank(),
-      legend.position = "top"
+      legend.text = element_text(size = rel(1.175)),
+      legend.position = "top", 
+      strip.background = element_rect(fill = "transparent", linewidth = rel(0.75)), 
+      axis.line = element_line(linewidth = rel(0.5)),
+      axis.ticks = element_line(linewidth = rel(0.5))
     )
 )
 
