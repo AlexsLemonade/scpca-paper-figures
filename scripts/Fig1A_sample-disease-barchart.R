@@ -25,7 +25,7 @@ sample_metadata_file <- here::here("s3_files", "scpca-sample-metadata.tsv")
 project_metadata_file <- here::here("s3_files", "scpca-project-metadata.tsv")
 
 # color palette
-diagnosis_group_palette <- here::here("palettes", "diagnosis-group-palette.tsv")
+disease_timing_palette <- here::here("palettes", "disease-timing-palette.tsv")
 
 # output files 
 pdf_dir <- here::here("figures", "pdfs")
@@ -91,36 +91,23 @@ readr::write_tsv(disease_timing_totals, disease_timing_count_table)
 # Plot -------------------------------------------------------------------------
 
 # get list of colors to use 
-diagnosis_group_palette_df <- readr::read_tsv(diagnosis_group_palette)
+disease_timing_palette_df <- readr::read_tsv(disease_timing_palette)
 
 
 # get list of all groups 
-diagnosis_colors <- diagnosis_group_palette_df$color |> 
-  purrr::set_names(diagnosis_group_palette_df$diagnosis_group)
+disease_timing_colors <- disease_timing_palette_df$color |> 
+  purrr::set_names(disease_timing_palette_df$disease_timing)
 
 # create faceted plot, one panel for each diagnosis group
 # diagnosis is on the y axis and number of samples on the x axis
-# bars are patterned based on the disease timing group 
-diagnosis_plot <- ggplot(plot_df, aes(y = diagnosis,  fill = diagnosis_group)) +
-  ggpattern::geom_bar_pattern(aes(pattern = standardized_disease_timing), 
-                              color = "black",
-                              pattern_color = "black",
-                              pattern_fill = "black",
-                              pattern_density = 0.2,
-                              pattern_spacing = 0.02)+
+# bars are colored based on the disease timing group 
+diagnosis_plot <- ggplot(plot_df, aes(y = diagnosis,  fill = disease_timing)) +
+  geom_bar(position = "stack", stat = "identity", color = "black") +
   facet_wrap(facets = "diagnosis_group", scales = "free") +
   # add label for the number of samples in each diagnosis group 
   geom_text(aes(label = after_stat(count)), stat = "count", hjust = -0.25, size = 4) +
-  # manually set patterns 
-  ggpattern::scale_pattern_manual(values = c(
-    "Initial diagnosis" = 'none', 
-    "Post-mortem" = 'stripe', 
-    "Progressive/recurrence" = 'circle', 
-    "During or after treatment" = 'crosshatch',
-    "Unknown" = 'wave'), 
-    drop = FALSE) +
   # set colors to use palette for diagnosis groups
-  scale_fill_manual(values = diagnosis_colors) +
+  scale_fill_manual(values = disease_timing_colors) +
   # make legend black and white 
   guides(fill = "none", 
          pattern = guide_legend(override.aes = list(fill = "white"), 
