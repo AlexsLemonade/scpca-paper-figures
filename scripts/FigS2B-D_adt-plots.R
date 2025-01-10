@@ -15,11 +15,12 @@ theme_set(
       axis.ticks = element_blank(),
       axis.text = element_blank(),
       # font sizing
-      axis.title = element_text(size = 11),
-      strip.text = element_text(size = 9),
+      axis.title = element_text(size = 9),
+      strip.text = element_text(size = 7),
       # add a square around each of the plots
-      panel.background = element_rect(colour = "black", linewidth=0.75),
-      aspect.ratio = 1
+      panel.background = element_rect(colour = "black", linewidth=0.5),
+      aspect.ratio = 1, 
+      legend.position = "none"
     )
 )
 
@@ -71,11 +72,7 @@ filtered_plot <- ggplot(filtered_coldata_df,
     x = "Number of genes detected",
     y = "Mitochondrial percentage"
   ) +
-  facet_wrap(vars(filter_summary)) +
-  theme(
-    plot.title = element_text(hjust = 0.5),
-    legend.position = "none"
-  )
+  facet_wrap(vars(filter_summary))
 
 # Top ADTs ---------------------------------------------------------------------
 
@@ -108,8 +105,7 @@ adt_density_plot <- ggplot(var_adt_exp_df, aes(x = adt_expression, fill = ADT)) 
   geom_density(linewidth = 0.25) +
   facet_wrap(vars(ADT), nrow = 2) +
   labs(x = "Log-normalized ADT expression",
-       y = "Density") +
-  theme(legend.position = "none")
+       y = "Density") 
 
 # ADT expression UMAP ----------------------------------------------------------
 
@@ -133,14 +129,11 @@ adt_umap_plot <- ggplot(umap_df, aes(x = UMAP1, y = UMAP2, color = adt_expressio
   # remove axis numbers and background grid
   scale_x_continuous(labels = NULL, breaks = NULL) +
   scale_y_continuous(labels = NULL, breaks = NULL) +
-  coord_fixed() +
-  theme(
-    legend.position = "none"
-  )
+  coord_fixed()
 
 # Combine and export -----------------------------------------------------------
 
-combined_plot <- patchwork::wrap_plots(list(filtered_plot, adt_density_plot, adt_umap_plot))
+combined_plot <- patchwork::wrap_plots(list(filtered_plot, adt_density_plot, adt_umap_plot)) & theme(plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm"))
 
-ggsave(output_plot_file, combined_plot, width = 8.25, height = 3.75)
+ggsave(output_plot_file, combined_plot, width = 9, height = 4)
 
