@@ -12,6 +12,7 @@ theme_set(
       text = element_text(size=14),
       axis.text.x = element_text(angle = 90, vjust = 0.5), 
       legend.position = "top",
+      legend.text = element_text(size = rel(1.175)),
       strip.background = element_rect(linewidth = rel(0.75)), 
       axis.line = element_line(linewidth = rel(0.5)),
       axis.ticks = element_line(linewidth = rel(0.5))
