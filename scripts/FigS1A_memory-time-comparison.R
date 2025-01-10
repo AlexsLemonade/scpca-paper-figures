@@ -106,7 +106,8 @@ time_plot <- ggplot(time_ordered_df, aes(x = run_id, y = total_time, fill = meth
   theme(
     aspect.ratio = 1,
     text = element_text(size=14),
-    axis.text.x = element_text(angle = 90, vjust = 0.5)
+    axis.text.x = element_text(angle = 90, vjust = 0.5), 
+    legend.position = "top"
   ) +
   scale_fill_manual(values = method_colors)
 
@@ -127,13 +128,13 @@ memory_plot <- ggplot(mem_ordered_df, aes(x = run_id, y = total_memory, fill = m
   theme(
     aspect.ratio = 1,
     text = element_text(size=14),
-    axis.text.x = element_text(angle = 90, vjust = 0.5)
+    axis.text.x = element_text(angle = 90, vjust = 0.5), 
+    legend.position = "top"
   ) +
   scale_fill_manual(values = method_colors)
 
 # combine into one side by side plot
-combined_plot <- patchwork::wrap_plots(list(time_plot, memory_plot), ncol = 1, guides = "collect")
-
+combined_plot <- patchwork::wrap_plots(list(time_plot, memory_plot), ncol = 1, guides = "collect") & theme(legend.position = "top")
 # export as png
 # using width and height that were exported when width and height weren't specified
 ggsave(output_pdf_file, plot = combined_plot, width = 10, height = 10)
