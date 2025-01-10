@@ -5,6 +5,19 @@ renv::load()
 library(ggplot2)
 library(ggforce)
 
+theme_set(
+  theme_classic() + 
+    theme(
+      aspect.ratio = 1,
+      text = element_text(size=14),
+      axis.text.x = element_text(angle = 90, vjust = 0.5), 
+      legend.position = "top",
+      strip.background = element_rect(linewidth = rel(0.75)), 
+      axis.line = element_line(linewidth = rel(0.5)),
+      axis.ticks = element_line(linewidth = rel(0.5))
+      )
+)
+
 # Set up -----------------------------------------------------------------------
 
 # nextflow logs directory 
@@ -99,16 +112,9 @@ time_plot <- ggplot(time_ordered_df, aes(x = run_id, y = total_time, fill = meth
                       geom_col(position="dodge") +
   facet_wrap(vars(seq_unit), 
              scales = "free") + 
-  theme_classic() +
   labs(x = "",
        y = "Total run time (minutes)",
        fill = "") +
-  theme(
-    aspect.ratio = 1,
-    text = element_text(size=14),
-    axis.text.x = element_text(angle = 90, vjust = 0.5), 
-    legend.position = "top"
-  ) +
   scale_fill_manual(values = method_colors)
 
 # order by memory
@@ -121,16 +127,9 @@ memory_plot <- ggplot(mem_ordered_df, aes(x = run_id, y = total_memory, fill = m
   geom_col(position="dodge") +
   facet_wrap(vars(seq_unit), 
              scales = "free") + 
-  theme_classic() +
   labs(x = "",
        y = "Peak memory (GB)", 
        fill = "") +
-  theme(
-    aspect.ratio = 1,
-    text = element_text(size=14),
-    axis.text.x = element_text(angle = 90, vjust = 0.5), 
-    legend.position = "top"
-  ) +
   scale_fill_manual(values = method_colors)
 
 # combine into one side by side plot
