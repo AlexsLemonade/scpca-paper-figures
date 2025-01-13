@@ -36,6 +36,8 @@ MONDO:0020743	Mixed phenotype acute leukemia	T-myeloid mixed phenotype acute leu
 MONDO:0006639	Adrenal cortex carcinoma	Adrenocortical carcinoma	Other solid tumors
 MONDO:0011719	Gastrointestinal stromal tumor	Gastrointestinal stromal tumor	Other solid tumors
 MONDO:0005040	Germ cell tumor	Germ cell tumor	Other solid tumors
+MONDO:0018666	Hepatoblastoma	Hepatoblastoma	Other solid tumors
+MONDO:0005105	Melanoma	Melanoma	Other solid tumors
 MONDO:0002728	Rhabdoid tumor	Rhabdoid tumor	Other solid tumors
 MONDO:0006058	Wilms tumor	Wilms tumor	Other solid tumors
 MONDO:0005072	Neuroblastoma	Neuroblastoma	Other solid tumors
@@ -45,6 +47,7 @@ MONDO:0019373	Desmoplastic small round cell tumor	Desmoplastic small round cell 
 MONDO:0015795	Undifferentiated embryonal sarcoma of the liver	Embryonal sarcoma	Sarcoma
 MONDO:0017387	Epithelioid sarcoma	Epithelioid sarcoma	Sarcoma
 MONDO:0012817	Ewing sarcoma	Ewing sarcoma	Sarcoma
+MONDO:0005089	sarcoma	High-grade sarcoma	Sarcoma
 MONDO:0004557	Congenital fibrosarcoma	Infantile fibrosarcoma	Sarcoma
 MONDO:0009807	Osteosarcoma	Osteosarcoma	Sarcoma
 MONDO:0005212	Rhabdomyosarcoma	Rhabdomyosarcoma	Sarcoma

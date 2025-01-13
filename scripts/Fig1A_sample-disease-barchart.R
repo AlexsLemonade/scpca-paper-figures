@@ -25,7 +25,7 @@ sample_metadata_file <- here::here("s3_files", "scpca-sample-metadata.tsv")
 project_metadata_file <- here::here("s3_files", "scpca-project-metadata.tsv")
 
 # color palette
-diagnosis_group_palette <- here::here("palettes", "diagnosis-group-palette.tsv")
+disease_timing_palette <- here::here("palettes", "disease-timing-palette.tsv")
 
 # output files 
 pdf_dir <- here::here("figures", "pdfs")
@@ -63,8 +63,9 @@ diagnosis_plot_df <- sample_metadata_df |>
   # right now let's remove this group
   dplyr::filter(diagnosis_group != "Non-cancerous") |> 
   # make it a factor so we can use ggpattern 
-  dplyr::mutate(standardized_disease_timing = as.factor(standardized_disease_timing))
-
+  dplyr::mutate(standardized_disease_timing = as.factor(standardized_disease_timing) |> 
+                  # make sure initial diagnosis is first part of bars in plot
+                  forcats::fct_relevel("Initial diagnosis", after = Inf)) 
 
 diagnosis_count <- diagnosis_plot_df |> 
   dplyr::count(diagnosis) 
@@ -89,52 +90,36 @@ readr::write_tsv(disease_timing_totals, disease_timing_count_table)
 # Plot -------------------------------------------------------------------------
 
 # get list of colors to use 
-diagnosis_group_palette_df <- readr::read_tsv(diagnosis_group_palette)
+disease_timing_palette_df <- readr::read_tsv(disease_timing_palette)
 
 
 # get list of all groups 
-diagnosis_colors <- diagnosis_group_palette_df$color |> 
-  purrr::set_names(diagnosis_group_palette_df$diagnosis_group)
+disease_timing_colors <- disease_timing_palette_df$color |> 
+  purrr::set_names(disease_timing_palette_df$disease_timing)
 
 # create faceted plot, one panel for each diagnosis group
 # diagnosis is on the y axis and number of samples on the x axis
 # bars are patterned based on the disease timing group 
-diagnosis_plot <- ggplot(plot_df, aes(y = diagnosis,  fill = diagnosis_group)) +
-  ggpattern::geom_bar_pattern(aes(pattern = forcats::fct_rev(standardized_disease_timing)), 
-                              color = "black",
-                              pattern_color = "black",
-                              pattern_fill = "black",
-                              pattern_density = 0.2,
-                              pattern_spacing = 0.02)+
+diagnosis_plot <- ggplot(plot_df, aes(y = diagnosis, fill = standardized_disease_timing)) +
+  geom_bar(stat = "count", color = "black") +
   facet_wrap(facets = "diagnosis_group", scales = "free") +
   # add label for the number of samples in each diagnosis group 
-  geom_text(aes(label = after_stat(count)), stat = "count", hjust = -0.25, size = 4) +
-  # manually set patterns 
-  ggpattern::scale_pattern_manual(values = c(
-    "Initial diagnosis" = 'none', 
-    "Post-mortem" = 'stripe', 
-    "Progressive" = 'crosshatch', 
-    "Recurrence" = 'circle',
-    "Unknown" = 'wave'), 
-    drop = FALSE) +
+  geom_text(aes(x = n, label = n), hjust = -0.25, size = 4) +
   # set colors to use palette for diagnosis groups
-  scale_fill_manual(values = diagnosis_colors) +
-  # make legend black and white 
-  guides(fill = "none", 
-         pattern = guide_legend(override.aes = list(fill = "white"), 
-                                title.position = "top", 
-                                title.hjust = 0.5,
-                                reverse = TRUE)) + 
-  labs(pattern = "Disease timing",
+  # make sure initial diagnosis is first in the legend 
+  scale_fill_manual(values = disease_timing_colors,
+                    breaks = names(disease_timing_colors)) +
+  labs(fill = "Disease timing",
        x = "Number of samples",
        y = "Diagnosis") + 
   theme_classic() + 
   theme(text = element_text(size = 12),
-        legend.position = "top",
-        legend.key.size = unit(1, 'cm'),
-        plot.margin = margin(1, 1, 1, 1, 'cm')
-        
-  ) +
+        legend.position = "top", # put entire legend on top
+        legend.title.position = "top", # make sure legend title is on top
+        legend.title = element_text(hjust = 0.5), # center legend title
+        legend.key.size = unit(1, 'cm'), # make legend elements bigger
+        plot.margin = margin(1, 1, 1, 1, 'cm'),
+        strip.background = element_rect(linewidth = 0.5)) +
   # make sure bar labels don't get cut off
   coord_cartesian(clip = "off")
 
