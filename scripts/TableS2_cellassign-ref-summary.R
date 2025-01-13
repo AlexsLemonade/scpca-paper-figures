@@ -17,6 +17,8 @@ panglao_metadata_file <- here::here("sample-info", "celltype-reference-metadata.
 # project celltype metadata 
 # need this to get ref name for each project
 project_metadata_file <- here::here("s3_files", "scpca-project-celltype-metadata.tsv")
+# project whitelist 
+project_whitelist_file <- file.path("sample-info", "project-whitelist.txt")
 
 # output table 
 table_dir <- here::here("tables")
@@ -32,9 +34,13 @@ project_df <- readr::read_tsv(project_metadata_file)
 panglao_df <- readr::read_tsv(panglao_metadata_file) |> 
   dplyr::select(celltype_ref_name, organs)
 
+# read in project whitelist
+project_whitelist <- readLines(project_whitelist_file)
+
 # filter project df to include only projects with a cellassign ref
 project_df <- project_df |> 
-  dplyr::filter(!is.na(cellassign_ref_name)) |> 
+  dplyr::filter(!is.na(cellassign_ref_name),
+                scpca_project_id %in% project_whitelist) |> 
   # only keep project ID and ref name for joining 
   dplyr::select(scpca_project_id, cellassign_ref_name)
 

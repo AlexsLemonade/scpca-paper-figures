@@ -1,0 +1,7 @@
+disease_timing	color
+Initial diagnosis	#FFFFFF
+During or after treatment	#CC79A7
+Progressive	#E69F00
+Recurrence	#0072B2
+Post-mortem	#009E73
+Unknown	#000000

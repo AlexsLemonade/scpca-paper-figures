@@ -15,4 +15,9 @@ SCPCP000013	Clear cell sarcoma, Clear cell sarcoma of the kidney, Desmoplastic s
 SCPCP000014	Wilms tumor	kidney-compartment	Embryo, Immune system, Kidney, Vasculature
 SCPCP000015	Ewing sarcoma	bone-and-soft-tissue	Bone, Connective tissue, Embryo, Immune system, Smooth muscle, Vasculature
 SCPCP000016	Rhabdoid tumor	pediatric-cancers	Adrenal glands, Blood, Bone, Brain, Connective tissue, Embryo, Epithelium, Eye, GI tract, Immune system, Kidney, Liver, Lungs, Oral cavity, Pancreas, Parathyroid glands, Reproductive, Skeletal muscle, Skin, Smooth muscle, Thymus, Thyroid, Urinary bladder, Vasculature, Zygote
+SCPCP000017	Osteosarcoma	bone-and-soft-tissue	Bone, Connective tissue, Embryo, Immune system, Smooth muscle, Vasculature
+SCPCP000018	Osteosarcoma	bone-and-soft-tissue	Bone, Connective tissue, Embryo, Immune system, Smooth muscle, Vasculature
 SCPCP000021	Diffuse midline glioma, Glioblastoma, High-grade glioma, Infant-type hemispheric glioma	brain-compartment	Brain, Embryo, Immune system, Vasculature
+SCPCP000022	Acute myeloid leukemia, B-cell acute lymphoblastic leukemia, T-cell acute lymphoblastic leukemia	blood-compartment	Blood, Bone, Immune system
+SCPCP000023	Osteosarcoma	bone-and-soft-tissue	Bone, Connective tissue, Embryo, Immune system, Smooth muscle, Vasculature
+SCPCP000024	Neuroblastoma	adrenal-compartment	Adrenal glands, Connective tissue, Immune system, Embryo, Vasculature

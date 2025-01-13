@@ -2,8 +2,6 @@
 title: "Expression levels of quanTIseq tumor genes"
 author: Stephanie J. Spielman
 date: "`r Sys.Date()`"
-params:
-  permutation_reps: 1000
 output:
   html_notebook:
     toc: true
