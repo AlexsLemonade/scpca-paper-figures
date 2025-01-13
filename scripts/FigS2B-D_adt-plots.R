@@ -135,5 +135,5 @@ adt_umap_plot <- ggplot(umap_df, aes(x = UMAP1, y = UMAP2, color = adt_expressio
 
 combined_plot <- patchwork::wrap_plots(list(filtered_plot, adt_density_plot, adt_umap_plot)) & theme(plot.margin = margin(0.2, 0.2, 0.2, 0.2, "cm"))
 
-ggsave(output_plot_file, combined_plot, width = 8.35, height = 3.2)
+ggsave(output_plot_file, combined_plot, width = 8.5, height = 3.5)
 
