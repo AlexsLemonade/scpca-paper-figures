@@ -1,7 +1,7 @@
 # This script runs EPIC, using both of its built-in gene signatures sets,
 # for all bulk samples in a given ScPCA project.
-# It exports a TSV of cell type proportions for each sample in the project 
-#  and an RDS file with a list of the full EPIC objects, named by reference
+# It exports a TSV of cell type proportions for each sample in the project
+# for each reference.
 # Note that EPIC does not require a seed.
 
 renv::load()
@@ -19,7 +19,7 @@ option_list <- list(
     "--output_file",
     type = "character",
     help = "Output TSV file to save EPIC inferences to."
-  ) 
+  )
 )
 opts <- parse_args(OptionParser(option_list = option_list))
 
@@ -29,7 +29,7 @@ opts <- parse_args(OptionParser(option_list = option_list))
 # into a long-format data frame with columns indicating the reference and whether
 # the sample converged
 format_epic_output <- function(epic_output, ref_name) {
-  
+
   # First, make a data frame of sample convergence
   convergence_df <- epic_output |>
     purrr::pluck("fit.gof") |>
@@ -37,9 +37,9 @@ format_epic_output <- function(epic_output, ref_name) {
     # the convergeCode is like bash: 1 is fail, 0 is success
     dplyr::mutate(converged = !as.logical(convergeCode)) |>
     dplyr::select(sample_id, converged)
-  
+
   # Convert matrices into a single data frame, and combine with convergence
-  epic_matrices <- c("cellFractions", "mRNAProportions") 
+  epic_matrices <- c("cellFractions", "mRNAProportions")
   epic_matrices |>
     purrr::set_names(epic_matrices) |>
     # get tables for each of the matrices
@@ -49,22 +49,22 @@ format_epic_output <- function(epic_output, ref_name) {
     # add reference indicator and order columns
     dplyr::mutate(reference = ref_name) |>
     dplyr::select(sample_id, epic_matrix_name, reference, epic_celltype, fraction)
-    
+
 }
 
-# This helper function converts an EPIC output matrix into a long data frame. 
+# This helper function converts an EPIC output matrix into a long data frame.
 # The `matrix_name` should be one of "cellFractions" or mRNAProportions".
 extract_epic_df <- function(matrix_name, epic_output) {
-  
+
   epic_output |>
     purrr::pluck(matrix_name) |>
     as.data.frame() |>
     tibble::rownames_to_column(var = "sample_id") |>
     tidyr::pivot_longer(
       -sample_id,
-      names_to = "epic_celltype", 
+      names_to = "epic_celltype",
       values_to = "fraction"
-    ) 
+    )
 }
 
 # Check inputs and define paths -------
@@ -80,7 +80,7 @@ fs::dir_create(dirname(opts$output_file))
 # Prepare input rds file -----------
 tpm_matrix <- readr::read_rds(opts$input_file)
 
-# As determined in ../exploratory-notebooks/epic-signature-genes.Rmd, several 
+# As determined in ../exploratory-notebooks/epic-signature-genes.Rmd, several
 #  gene names in the signatures are outdated. Here, we'll replace those gene symbols
 #  in our matrix row names with the gene symbols EPIC expects:
 #  our data     EPIC
@@ -101,9 +101,9 @@ rownames(tpm_matrix) <- new_rownames
 
 # Run EPIC with both references  -------------
 
-ref_list <- c("TRef", "BRef") 
+ref_list <- c("TRef", "BRef")
 names(ref_list) <- ref_list
-epic_list <- ref_list |> 
+epic_list <- ref_list |>
   purrr::map(\(ref){
     EPIC(bulk = tpm_matrix, reference = ref)
   })

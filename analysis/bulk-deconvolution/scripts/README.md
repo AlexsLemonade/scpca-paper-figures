@@ -16,4 +16,4 @@ TSV files are exported to `../data/tpm/<project id>-tpm.tsv`.
 * `run-quantiseq.R`: This script runs `quanTIseq` on all samples in a project.
 TSV files with results are exported to `../results/<project id>-quantiseq.tsv`.
 * `run-epic.R`: This script runs `EPIC` on all samples in a project.
-TSV files with results are exported to `../results/<project id>-epic.tsv`, and RDS files with the full `EPIC` objects are exported to `../results/<project id>-epic-full-object.rds`
+TSV files with results are exported to `../results/<project id>-epic.tsv`.
