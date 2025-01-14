@@ -197,7 +197,7 @@ cellassign_diagnostic_plot <- ggplot(celltype_df) +
     panel.grid.minor = element_blank(),
     panel.grid.major.y = element_blank(),
     panel.spacing = unit(0.02, "in"), 
-    axis.title = element_text(size = 12)
+    axis.title = element_text(size = 13)
   )
 
 ggsave(cellassign_diagnostic_pdf_file, cellassign_diagnostic_plot, width = 7, height = 7)
