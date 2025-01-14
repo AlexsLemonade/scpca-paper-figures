@@ -118,13 +118,19 @@ singler_diagnostic_plot <- ggplot(delta_median_df) +
   ) +
   guides(
     alpha = "none",
-    shape = guide_legend(override.aes = list(size = 1.5, alpha = 0.55))
+    shape = guide_legend(override.aes = list(size = 2.5, alpha = 0.55))
   ) +
   theme(
-    legend.position = "bottom"
+    legend.position = "bottom", 
+    axis.text = element_text(size = 8.5), 
+    axis.title = element_text(size = 12), 
+    legend.text = element_text(size = 11), 
+    legend.title = element_text(size = 12), 
+    legend.justification.top = "left", 
+    legend.location = "plot"
   )
 
-ggsave(singler_diagnostic_pdf_file, singler_diagnostic_plot, height = 7, width = 7)
+ggsave(singler_diagnostic_pdf_file, singler_diagnostic_plot, height = 5.75, width = 6.5)
 
 # CellAssign plotting ----------------------------------------------------------
 
@@ -190,7 +196,8 @@ cellassign_diagnostic_plot <- ggplot(celltype_df) +
     axis.ticks.y = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major.y = element_blank(),
-    panel.spacing = unit(0.02, "in")
+    panel.spacing = unit(0.02, "in"), 
+    axis.title = element_text(size = 12)
   )
 
 ggsave(cellassign_diagnostic_pdf_file, cellassign_diagnostic_plot, width = 7, height = 7)
