@@ -1,0 +1,78 @@
+---
+title: "EPIC signature genes"
+output: html_notebook
+---
+
+Previously, we observed in [`quantiseq-tumor-genes.Rmd`](quantiseq-tumor-genes.Rmd) that some of the signature genes in `quanTIseq`'s reference are recorded with different symbols in our ensembl/gene symbol mapping.
+This may also be the case with `EPIC` signature genes.
+
+If any genes present in the `EPIC` signatures, `Tref` and `Bref` are not present in our gene symbol mapping, we will need to find which ones to recode them before inference. 
+The goal of this notebook is to identify any such discrepancies and determine how to recode those symbols.
+
+## Setup
+
+```{r setup}
+renv::load()
+
+deconv_dir <- here::here("analysis", "bulk-deconvolution")
+```
+
+First, we'll read in our ensembl/symbol mapping table and pull out our gene symbols.
+
+```{r}
+map_table <- readr::read_tsv(
+  file.path(deconv_dir, "data", "reference", "ensembl_symbol.tsv")
+)
+gene_symbols <- map_table$gene_symbol
+```
+
+
+## Tref reference
+
+Are any `Tref` genes missing from our table?
+
+```{r}
+setdiff(EPIC::TRef$sigGenes, gene_symbols)
+```
+This gene is an alias for `DIPK2B` (source: https://www.ncbi.nlm.nih.gov/gene/79742) which is present in our gene symbols:
+
+```{r}
+map_table |>
+  dplyr::filter(gene_symbol == "DIPK2B")
+```
+
+## Bref reference
+
+
+Are any `Bref` genes missing from our table?
+
+```{r}
+setdiff(EPIC::BRef$sigGenes, gene_symbols)
+```
+* `CECR1` is an alias for `ADA2` (source: https://www.ncbi.nlm.nih.gov/gene/51816)
+* `HIST1H2BC` is an alias for `H2BC5` (source: https://www.ncbi.nlm.nih.gov/gene/3017)
+* `HIST1H3D` is an alias for `H3C4` (source: https://www.ncbi.nlm.nih.gov/gene/8351)
+
+Each of these HGNC names is present in our table:
+
+```{r}
+map_table |>
+  dplyr::filter(gene_symbol %in% c("ADA2", "H2BC5", "H3C4"))
+```
+
+
+## Conclusions
+
+We'll need to recode the following symbols in our objects before passing them into `EPIC`.
+
+* `CXorf36` should be changed to `DIPK2B`
+* `CECR1` should be changed to `ADA2`
+* `HIST1H2BC` should be changed to `H2BC5`
+* `HIST1H3D` should be changed to `H3C4`
+
+
+## Session info
+
+```{r}
+sessionInfo()
+```
