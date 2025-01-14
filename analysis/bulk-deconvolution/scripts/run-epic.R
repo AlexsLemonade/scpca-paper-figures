@@ -15,25 +15,20 @@ option_list <- list(
     help = "Input RDS file with a TPM matrix."
   ),
   make_option(
-    "--output_tsv_file",
+    "--output_file",
     type = "character",
     help = "Output TSV file to save EPIC inferences to."
-  ), 
-  make_option(
-    "--output_epic_object_file",
-    type = "character",
-    help = "Output RDS file to save the full EPIC objects to."
-  )   
+  ) 
 )
 opts <- parse_args(OptionParser(option_list = option_list))
-
+set.seed(2025)
 
 # Define functions --------------------
 
 # This is a helper function to format the cell fraction matrix that EPIC infers
 # into a long-format data frame with columns indicating the reference and whether
 # the sample converged
-format_epic_fractions <- function(epic_output, ref_name) {
+format_epic_output <- function(epic_output, ref_name) {
   
   # First, make a data frame of sample convergence
   convergence_df <- epic_output |>
@@ -43,31 +38,44 @@ format_epic_fractions <- function(epic_output, ref_name) {
     dplyr::mutate(converged = !as.logical(convergeCode)) |>
     dplyr::select(sample_id, converged)
   
+  # Convert matrices into a single data frame, and combine with convergence
+  epic_matrices <- c("cellFractions", "mRNAProportions") 
+  epic_matrices |>
+    purrr::set_names(epic_matrices) |>
+    # get tables for each of the matrices
+    purrr::map(extract_epic_df, epic_output) |>
+    purrr::list_rbind(names_to = "epic_matrix_name") |>
+    dplyr::full_join(convergence_df, by = "sample_id") |>
+    # add reference indicator and order columns
+    dplyr::mutate(reference = ref_name) |>
+    dplyr::select(sample_id, epic_matrix_name, reference, epic_celltype, fraction)
+    
+}
+
+# This helper function converts an EPIC output matrix into a long data frame. 
+# The `matrix_name` should be one of "cellFractions" or mRNAProportions".
+extract_epic_df <- function(matrix_name, epic_output) {
+  
   epic_output |>
-    purrr::pluck("cellFractions") |>
+    purrr::pluck(matrix_name) |>
     as.data.frame() |>
     tibble::rownames_to_column(var = "sample_id") |>
     tidyr::pivot_longer(
       -sample_id,
-      names_to = "cell_type", 
+      names_to = "epic_celltype", 
       values_to = "fraction"
-    ) |>
-    dplyr::mutate(reference = ref_name) |>
-    dplyr::full_join(convergence_df, by = "sample_id")
+    ) 
 }
-
 
 # Check inputs and define paths -------
 stopifnot(
   "A path to an input RDS file must be specified with `input_file`." = !is.null(opts$input_file),
-  "A path to an output TSV must be specified with `output_tsv_file`." = !is.null(opts$output_tsv_file),
-  "A path to an output RDS file must be specified with `output_epic_object_file`." = !is.null(opts$output_epic_object_file)
+  "A path to an output TSV must be specified with `output_tsv_file`." = !is.null(opts$output_file)
 )
 
 stopifnot("The provided `input_file` does not exist." = file.exists(opts$input_file))
 
-fs::dir_create(dirname(opts$output_tsv_file))
-fs::dir_create(dirname(opts$output_epic_object_file))
+fs::dir_create(dirname(opts$output_file))
 
 # Prepare input rds file -----------
 tpm_matrix <- readr::read_rds(opts$input_file)
@@ -93,26 +101,19 @@ rownames(tpm_matrix) <- new_rownames
 
 # Run EPIC with both references  -------------
 
-ref_list <- c("Tref", "Bref") 
-
+ref_list <- c("TRef", "BRef") 
+names(ref_list) <- ref_list
 epic_list <- ref_list |> 
   purrr::map(\(ref){
-    EPIC(
-      bulk = tpm_matrix,
-      reference = ref
-      )
-      })
-
+    EPIC(bulk = tpm_matrix, reference = ref)
+  })
 
 # Format and combine fractions into single data frame
 epic_df <- epic_list |>
-  purrr::imap(format_epic_fractions) |>
+  purrr::imap(format_epic_output) |>
   dplyr::bind_rows()
 
 # Export results-------
 
-# fractions
-readr::write_tsv(epic_df, opts$output_tsv_file)
+readr::write_tsv(epic_df, opts$output_file)
 
-# full result
-readr::write_rds(epic_list, opts$output_epic_object_file)
