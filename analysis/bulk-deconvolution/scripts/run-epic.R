@@ -64,8 +64,10 @@ format_epic_output <- function(epic_output, ref_name) {
     ) |>
     # join back into epic_df
     dplyr::right_join(epic_df, by = c("sample_id", "epic_celltype")) |>
+    # add reference name
+    dplyr::mutate(reference = ref_name) |>
     # arrange columns
-    dplyr::select(sample_id, epic_celltype, fraction, mRNAProportions)
+    dplyr::select(sample_id, epic_celltype, reference, fraction, mRNAProportions)
 
 }
 
