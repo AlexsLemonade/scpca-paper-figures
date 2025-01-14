@@ -2,6 +2,7 @@
 # for all bulk samples in a given ScPCA project.
 # It exports a TSV of cell type proportions for each sample in the project 
 #  and an RDS file with a list of the full EPIC objects, named by reference
+# Note that EPIC does not require a seed.
 
 renv::load()
 library(optparse)
@@ -21,7 +22,6 @@ option_list <- list(
   ) 
 )
 opts <- parse_args(OptionParser(option_list = option_list))
-set.seed(2025)
 
 # Define functions --------------------
 

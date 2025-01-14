@@ -1,6 +1,6 @@
 # This script runs quanTIseq for samples in a given ScPCA project and exports
 #  a TSV of cell type proportions for each sample in the project.
-# Note that quanTIseq is deterministic and does not require a seed.
+# Note that quanTIseq does not require a seed.
 
 renv::load()
 library(optparse)
