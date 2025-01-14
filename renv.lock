@@ -260,6 +260,22 @@
       ],
       "Hash": "77f762ad74d48a0ef578fc81deded039"
     },
+    "EPIC": {
+      "Package": "EPIC",
+      "Version": "1.1.7",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "GfellerLab",
+      "RemoteRepo": "EPIC",
+      "RemoteRef": "master",
+      "RemoteSha": "50a4f404f96c2842b2891b517b4e3bfaa6c64b8f",
+      "Requirements": [
+        "R",
+        "stats"
+      ],
+      "Hash": "50449a49c026380848fa068912dfac4d"
+    },
     "FNN": {
       "Package": "FNN",
       "Version": "1.1.4.1",
