@@ -1,6 +1,7 @@
 # This script runs EPIC, using both of its built-in gene signatures sets,
-# for all bulk samples in a given ScPCA project, and it a exports a TSV of 
-# cell type proportions for each sample in the project.
+# for all bulk samples in a given ScPCA project.
+# It a exports a TSV of cell type proportions for each sample in the project 
+#  and an RDS file with a list of the full EPIC objects, named by reference
 
 renv::load()
 library(optparse)
