@@ -6,7 +6,7 @@ output: html_notebook
 Previously, we observed in [`quantiseq-tumor-genes.Rmd`](quantiseq-tumor-genes.Rmd) that some of the signature genes in `quanTIseq`'s reference are recorded with different symbols in our ensembl/gene symbol mapping.
 This may also be the case with `EPIC` signature genes.
 
-If any genes present in the `EPIC` signatures, `Tref` and `Bref` are not present in our gene symbol mapping, we will need to find which ones to recode them before inference. 
+If any genes present in the `EPIC` signatures, `TRef` and `BRef` are not present in our gene symbol mapping, we will need to find which ones to recode them before inference. 
 The goal of this notebook is to identify any such discrepancies and determine how to recode those symbols.
 
 ## Setup
@@ -27,9 +27,9 @@ gene_symbols <- map_table$gene_symbol
 ```
 
 
-## Tref reference
+## TRef reference
 
-Are any `Tref` genes missing from our table?
+Are any `TRef` genes missing from our table?
 
 ```{r}
 setdiff(EPIC::TRef$sigGenes, gene_symbols)
@@ -41,10 +41,10 @@ map_table |>
   dplyr::filter(gene_symbol == "DIPK2B")
 ```
 
-## Bref reference
+## BRef reference
 
 
-Are any `Bref` genes missing from our table?
+Are any `BRef` genes missing from our table?
 
 ```{r}
 setdiff(EPIC::BRef$sigGenes, gene_symbols)
