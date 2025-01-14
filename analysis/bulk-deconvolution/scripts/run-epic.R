@@ -1,6 +1,6 @@
 # This script runs EPIC, using both of its built-in gene signatures sets,
 # for all bulk samples in a given ScPCA project.
-# It a exports a TSV of cell type proportions for each sample in the project 
+# It exports a TSV of cell type proportions for each sample in the project 
 #  and an RDS file with a list of the full EPIC objects, named by reference
 
 renv::load()
@@ -93,20 +93,15 @@ rownames(tpm_matrix) <- new_rownames
 
 # Run EPIC with both references  -------------
 
-epic_tref <- EPIC(
-  bulk = tpm_matrix, 
-  reference = "TRef"
-) 
+ref_list <- c("Tref", "Bref") 
 
-epic_bref <- EPIC(
-  bulk = tpm_matrix, 
-  reference = "BRef"
-) 
-
-epic_list <- list(
-  "Tref" = epic_tref, 
-  "Bref" = epic_bref
-)
+epic_list <- ref_list |> 
+  purrr::map(\(ref){
+    EPIC(
+      bulk = tpm_matrix,
+      reference = ref
+      )
+      })
 
 
 # Format and combine fractions into single data frame
