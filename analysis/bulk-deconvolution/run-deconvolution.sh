@@ -28,6 +28,7 @@ for project_dir in $salmon_quant_dir/*; do
 
     tpm_file="${tpm_dir}/${project_id}-tpm.rds"
     quantiseq_file="${result_dir}/${project_id}-quantiseq.tsv"
+    epic_file="${result_dir}/${project_id}-epic.tsv"
 
     # Step 1: Calculate TPM for each project
     Rscript ${script_dir}/calculate-tpm.R \
@@ -38,4 +39,9 @@ for project_dir in $salmon_quant_dir/*; do
     Rscript ${script_dir}/run-quantiseq.R \
         --input_file ${tpm_file} \
         --output_file ${quantiseq_file}
+
+    # Step 3: Run EPIC on each project
+    Rscript ${script_dir}/run-epic.R \
+        --input_file ${tpm_file} \
+        --output_file ${epic_file}
 done
