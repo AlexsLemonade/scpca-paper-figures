@@ -1,7 +1,7 @@
 # This script runs EPIC, using both of its built-in gene signatures sets,
 # for all bulk samples in a given ScPCA project.
 # It exports a TSV of cell type proportions for each sample in the project
-# for each reference.
+# for both the TRef and BRef reference in EPIC.
 # Note that EPIC does not require a seed.
 
 renv::load()
@@ -26,8 +26,10 @@ opts <- parse_args(OptionParser(option_list = option_list))
 # Define functions --------------------
 
 # This is a helper function to format the cell fraction matrix that EPIC infers
-# into a long-format data frame with columns indicating the reference and whether
-# the sample converged
+# into a long-format data frame with additional columns for:
+# - the reference (`ref_name`)
+# - the `mRNAProportions` fractions
+# - whether the model for the given sample converged
 format_epic_output <- function(epic_output, ref_name) {
 
   # First, make a data frame of sample convergence
@@ -37,27 +39,10 @@ format_epic_output <- function(epic_output, ref_name) {
     # the convergeCode is like bash: 1 is fail, 0 is success
     dplyr::mutate(converged = !as.logical(convergeCode)) |>
     dplyr::select(sample_id, converged)
-
-  # Convert matrices into a single data frame, and combine with convergence
-  epic_matrices <- c("cellFractions", "mRNAProportions")
-  epic_matrices |>
-    purrr::set_names(epic_matrices) |>
-    # get tables for each of the matrices
-    purrr::map(extract_epic_df, epic_output) |>
-    purrr::list_rbind(names_to = "epic_matrix_name") |>
-    dplyr::full_join(convergence_df, by = "sample_id") |>
-    # add reference indicator and order columns
-    dplyr::mutate(reference = ref_name) |>
-    dplyr::select(sample_id, epic_matrix_name, reference, epic_celltype, fraction)
-
-}
-
-# This helper function converts an EPIC output matrix into a long data frame.
-# The `matrix_name` should be one of "cellFractions" or mRNAProportions".
-extract_epic_df <- function(matrix_name, epic_output) {
-
-  epic_output |>
-    purrr::pluck(matrix_name) |>
+  
+  # Extract `cellFractions` into long data frame
+  epic_df <- epic_output |>
+    purrr::pluck("cellFractions") |>
     as.data.frame() |>
     tibble::rownames_to_column(var = "sample_id") |>
     tidyr::pivot_longer(
@@ -65,6 +50,23 @@ extract_epic_df <- function(matrix_name, epic_output) {
       names_to = "epic_celltype",
       values_to = "fraction"
     )
+  
+  # Add column with mRNAProportions
+  epic_output |>
+    purrr::pluck("mRNAProportions") |>
+    as.data.frame() |>
+    tibble::rownames_to_column(var = "sample_id") |>
+    # name columns to facilitate joining
+    tidyr::pivot_longer(
+      -sample_id,
+      names_to = "epic_celltype", # this column will be used to join
+      values_to = "mRNAProportions" # this column will actually contain the values
+    ) |>
+    # join back into epic_df
+    dplyr::right_join(epic_df, by = c("sample_id", "epic_celltype")) |>
+    # arrange columns
+    dplyr::select(sample_id, epic_celltype, fraction, mRNAProportions)
+
 }
 
 # Check inputs and define paths -------
@@ -114,6 +116,5 @@ epic_df <- epic_list |>
   dplyr::bind_rows()
 
 # Export results-------
-
 readr::write_tsv(epic_df, opts$output_file)
 
