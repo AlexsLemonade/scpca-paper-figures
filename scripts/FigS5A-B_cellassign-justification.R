@@ -25,7 +25,7 @@ theme_set(
       panel.background = element_rect(colour = "black", linewidth = 0.5),
       aspect.ratio = 1,
       # remove boxes around legends 
-      legend.key=element_blank()
+      legend.key = element_blank()
     )
 )
 
@@ -99,9 +99,17 @@ faceted_umap <- ggplot(
       )
     )
   ) +
-  theme(legend.position = "bottom")
+  theme(
+    legend.position = "bottom", 
+    strip.text = element_text(size = rel(0.7)), 
+    legend.title = element_text(size = rel(0.7)),  
+    legend.text = element_text(size = rel(0.65)),  
+    axis.title = element_text(size = rel(0.8)),  
+    legend.box.spacing = unit(1, "pt"),
+    legend.key.spacing = unit(2, "pt")
+  )
 
-ggsave(umap_png_file, faceted_umap, width = 8, height = 8)
+ggsave(umap_png_file, faceted_umap, width = 5.4, height = 4.5)
 
 # Heatmap ----------------------------------------------------------------------
 
