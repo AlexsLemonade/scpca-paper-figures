@@ -30,7 +30,7 @@ These two distinct references estimate the proportions of the following cell typ
   - **`NKcells`**
   - `otherCells`
           
-Notably, `TRef` includes fibroblasts and epithelial cells, which we are interested in being able to quantify!
+Notably, `TRef` includes fibroblasts and endothelial cells, which we are interested in being able to quantify!
 
 This notebook also assumes the ScPCA sample metadata is available in, relative to the repository root,` s3_files/scpca-sample-metadata.tsv`.
 
@@ -238,7 +238,6 @@ From all above comparisons, we see these trends:
 
 * `Bcell`, `CD4_Tcells`,  and `NKcell` proportions are roughly similar between references and low across all samples
   * In a handful of CNS tumor samples, `TRef` estimates higher `BCell` proportions
-  * In a handful of CNS tumor samples, `TRef` estimates higher `BCell` proportions
   * It does look like `CD4_Tcells` estimates are a bit higher for `TRef`, but there are two osteosarcoma samples which show really high values from `BRef`
 * `CD8_Tcells` are mostly similar with some additional trends:
   * Vaues are generally higher for `BRef` for Wilms Tumor samples
@@ -254,7 +253,7 @@ tref_df <- epic_df |>
 ```
 
 
-Let's look at the samples had very few "other" cells:
+Let's look at the samples had very few "other" cells (those with fraction < 0.1):
 
 ```{r}
 classified_samples <- tref_df |>
