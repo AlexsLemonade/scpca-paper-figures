@@ -25,7 +25,7 @@ theme_set(
       panel.background = element_rect(colour = "black", linewidth = 0.5),
       aspect.ratio = 1,
       # remove boxes around legends 
-      legend.key=element_blank()
+      legend.key = element_blank()
     )
 )
 
