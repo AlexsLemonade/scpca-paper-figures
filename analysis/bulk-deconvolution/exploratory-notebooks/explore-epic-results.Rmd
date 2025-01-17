@@ -49,43 +49,9 @@ Based on the biology of these groups of tumors, we plan to analyze each with the
 renv::load()
 
 library(ggplot2)
-library(patchwork)
 theme_set(theme_bw())
 ```
 
-
-### Functions
-
-This chunk defines a helper function for making barplots to display cell types.
-
-```{r make_barplot function}
-#' Make a barplot of EPIC cell types using ggplot::geom_col()
-#' 
-#' Variables should be provided plain without quotes.
-#'
-#' @param df Data frame to plot
-#' @param xvar Variables to place on x-axis
-#' @param yvar Variable to place on y-axis
-#' @param facetvar Variable to use for faceting with facet_wrap()
-#' @param fillvar Variable to use for fill
-#' @param plot_title String for plot title
-#' @param color_map Vector mapping cell types to their color
-#'
-#' @returns ggplot object
-make_epic_celltype_barplot <- function(df, xvar, yvar, facetvar, fillvar, plot_title, color_map) {
-  
- ggplot(df) + 
-   aes(x = {{xvar}}, y = {{yvar}}, fill = {{fillvar}}) +
-   geom_col() + 
-   facet_wrap(vars({{facetvar}}), scales = "free_x", nrow = 1) + 
-   scale_y_continuous(expand = c(0,0)) +
-   scale_fill_manual(values = color_map, na.value = "grey90", name = "cell type") +
-   labs(title = plot_title) + 
-   theme(axis.text.x = element_blank())
-   
-}
-
-```
 
 ### Paths
 
