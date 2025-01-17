@@ -1,5 +1,5 @@
 ---
-title: "Explore EPIC results and identify a reference"
+title: "Explore EPIC results"
 author: Stephanie J. Spielman
 date: "`r Sys.Date()`"
 output:
@@ -9,7 +9,7 @@ output:
     code_folding: show
 ---
 
-The goal of this notebook is to explore the `EPIC` results and identify whether we should use inferences from `TRef` or `BRef` reference moving forward. 
+The goal of this notebook is to explore the `EPIC` results obtained with both of its references `TRef` or `BRef`. 
 These two distinct references estimate the proportions of the following cell types (note they use these strings, not ontologies), where I have bolded the cell types they share:
 
 - The `TRef` reference (7 + other):
@@ -30,9 +30,18 @@ These two distinct references estimate the proportions of the following cell typ
   - **`NKcells`**
   - `otherCells`
           
-Notably, `TRef` includes fibroblasts and endothelial cells, which we are interested in being able to quantify!
+`EPIC` was run on bulk samples from five different projects with the high-level diagnoses shown in the table below.
+Based on the biology of these groups of tumors, we plan to analyze each with the reference indicated in the table.
 
-This notebook also assumes the ScPCA sample metadata is available in, relative to the repository root,` s3_files/scpca-sample-metadata.tsv`.
+
+| Project     | High-level diagnosis | `EPIC` Reference |
+|-------------|----------------------|------------------|
+| SCPCP000001 | High-grade glioma    | `TRef`           |   
+| SCPCP000002 | Low-grade glioma     | `TRef`           |   
+| SCPCP000006 | Wilms tumor          | `BRef`           |   
+| SCPCP000009 | CNS tumors           | `TRef`           |   
+| SCPCP000017 | Osteosarcoma         | `BRef`           |   
+
 
 ## Setup
 
@@ -82,7 +91,6 @@ make_epic_celltype_barplot <- function(df, xvar, yvar, facetvar, fillvar, plot_t
 
 ```{r paths}
 results_dir <- here::here("analysis", "bulk-deconvolution", "results")
-sample_metadata_file <- here::here("s3_files", "scpca-sample-metadata.tsv") # for diagnosis
 
 epic_files <- list.files(
   path = results_dir,
@@ -95,51 +103,55 @@ epic_files <- setNames(epic_files, project_ids)
 
 ### Prepare input data
 
-```{r read metadata}
-# We want the diagnosis information for visualization
-metadata <- readr::read_tsv(sample_metadata_file) |>
-  dplyr::select(sample_id = scpca_sample_id, diagnosis)
-
-```
+First, we'll read in the `EPIC` results and subset to only the reference of interest for each. 
+We'll retain the `reference` column in the final data frame since it will help with visualization.
 
 ```{r}
+tref_projects <- c("SCPCP000001", "SCPCP000002", "SCPCP000009")
+bref_projects <- c("SCPCP000006", "SCPCP000017")
+
 # Read in epic result TSVs and combine into single data frame
-epic_df <- epic_files |>
+epic_raw_df <- epic_files |>
   purrr::map(\(file) readr::read_tsv(file, show_col_types = FALSE)) |>
-  purrr::list_rbind(names_to = "project_id") |>
-  # include diagnosis information
-  dplyr::left_join(metadata, by = "sample_id") |>
-  # add indicator column if the celltype is "otherCells"
-  dplyr::mutate(is_other = epic_celltype == "otherCells")
+  purrr::list_rbind(names_to = "project_id") 
+
+# Filter based on projects and references
+epic_tref <- epic_raw_df |>
+  dplyr::filter(
+    project_id %in% tref_projects,
+    reference == "TRef"
+  )
+ 
+epic_bref <- epic_raw_df |>
+  dplyr::filter(
+    project_id %in% bref_projects,
+    reference == "BRef"
+  )
+
+# Create final epic_df with only references of interest for each project
+epic_df <- dplyr::bind_rows(
+  epic_tref, 
+  epic_bref
+) |>
+  # add column to support interpreting figure panels with projects, diagnosis, and EPIC reference
+ dplyr::mutate(
+   project = dplyr::case_match(
+      project_id, 
+      "SCPCP000001" ~ "01: High-grade glioma (TRef)", 
+      "SCPCP000002" ~ "02: Low-grade glioma (TRef)", 
+      "SCPCP000006" ~ "06: Wilms tumor (BRef)", 
+      "SCPCP000009" ~ "09: CNS tumors (TRef)", 
+      "SCPCP000017" ~ "17: Osteosarcoma (BRef)", 
+    ), 
+   # arrange in order of reference, not project
+   project = forcats::fct_relevel(project, "09: CNS tumors (TRef)", after = 2)
+  ) |>
+  dplyr::select(project, sample_id, epic_celltype, reference, fraction)
+
 head(epic_df)
 ```
 
-Below is a table with high-level diagnoses for each ScPCA project:
 
-
-| Project     | High-level diagnosis |
-|-------------|----------------------|
-| SCPCP000001 | High-grade glioma    |
-| SCPCP000002 | Low-grade glioma     |
-| SCPCP000006 | Wilms tumor          |
-| SCPCP000009 | CNS tumors           |
-| SCPCP000017 | Osteosarcoma         |
-
-For ease interpreting subsequent figures, we'll add these high-level diagnoses into the data frame with a project number indicator (excluding leading 0s).
-
-```{r}
-epic_df <- epic_df |>
-  dplyr::mutate(
-    project_diagnosis = dplyr::case_match(
-      project_id, 
-      "SCPCP000001" ~ "01: High-grade glioma", 
-      "SCPCP000002" ~ "02: Low-grade glioma", 
-      "SCPCP000006" ~ "06: Wilms tumor", 
-      "SCPCP000009" ~ "09: CNS tumors", 
-      "SCPCP000017" ~ "17: Osteosarcoma"
-    ))
-
-```
 
 ## Visualization
 
@@ -148,16 +160,7 @@ epic_df <- epic_df |>
 Considering all categories of cells, what proportions of cell types are represented across samples?
 
 
-```{r fig.height=8, fig.width=16}
-# First, we'll turn the otherCells level into `NA` for ease in coloring
-epic_otherna_df <- epic_df |>
-  dplyr::mutate(epic_celltype = ifelse(
-    epic_celltype == "otherCells", 
-    NA_character_, 
-    epic_celltype
-  ))
-
-
+```{r fig.height=8, fig.width=12}
 # Next, we'll define a vector of colors to use for plots which ensures that shared cell types have the same colors
 # hex codes are (mostly) from Okabe-Ito
 color_map <- c(
@@ -171,134 +174,81 @@ color_map <- c(
   "Endothelial" = "#D55E00",
   "Macrophages" = "#CC79A7",
   "Monocytes" = "grey30", 
-  "Neutrophils" = "grey60"
+  "Neutrophils" = "grey50",
+  "otherCells" = "grey95"
 )  
 celltype_levels <- c(names(color_map))
   
-  
-tref_barplot <- make_epic_celltype_barplot(
-  epic_otherna_df |> dplyr::filter(reference == "TRef"),
-  xvar = sample_id, 
-  yvar = fraction, 
-  facetvar = project_diagnosis,
-  fillvar = forcats::fct_relevel(epic_celltype, celltype_levels),
-  plot_title = "TRef reference", 
-  color_map = color_map
-) 
-  
-bref_barplot <- make_epic_celltype_barplot(
-  epic_otherna_df |> dplyr::filter(reference == "BRef"),
-  xvar = sample_id, 
-  yvar = fraction, 
-  facetvar = project_diagnosis,
-  fillvar = forcats::fct_relevel(epic_celltype, celltype_levels),
-  plot_title = "BRef reference", 
-  color_map = color_map
-) 
-
-tref_barplot / bref_barplot
-```
-
-Generally speaking, `TRef` identifies more cell types compared to `BRef`, although whether it _should_ be classifying all those cells is an open question to bear in mind!
-
-Let's compare the proportions of shared cell types inferred between references a bit closely with scatterplots:
-
-```{r fig.width = 12, fig.height = 14}
-shared_celltypes <- c("Bcells", "CD4_Tcells", "CD8_Tcells", "NKcells", "otherCells")
-
-
-compare_reference_celltype <- function(celltype, epic_df) {
-  epic_other_df <- epic_df |>
-    dplyr::filter(epic_celltype == celltype) |>
-    dplyr::select(project_diagnosis, sample_id, reference, fraction) |>
-    dplyr::group_by(project_diagnosis, sample_id) |>
-    tidyr::pivot_wider(
-      names_from = reference, 
-      values_from = fraction
-    ) |>
-    dplyr::mutate(higher_value = ifelse(BRef > TRef, "BRef", "TRef"))
-  
-  ggplot(epic_other_df) + 
-    aes(x = TRef, y = BRef, color = higher_value) + 
-    geom_point(alpha = 0.5) + 
-    geom_abline() +
-    labs(
-      x = "TRef fraction",
-      y = "BRef fraction", 
-      title = celltype
-    ) +
-    facet_wrap(vars(project_diagnosis), nrow = 1)
-}
-
-shared_celltypes |>
-  purrr::map(compare_reference_celltype, epic_df) |>
-  patchwork::wrap_plots(nrow = length(shared_celltypes), guides = "collect")
-```
-From all above comparisons, we see these trends:
-
-* `Bcell`, `CD4_Tcells`,  and `NKcell` proportions are roughly similar between references and low across all samples
-  * In a handful of CNS tumor samples, `TRef` estimates higher `BCell` proportions
-  * It does look like `CD4_Tcells` estimates are a bit higher for `TRef`, but there are two osteosarcoma samples which show really high values from `BRef`
-* `CD8_Tcells` are mostly similar with some additional trends:
-  * Vaues are generally higher for `BRef` for Wilms Tumor samples
-  * Values are generally higher for `TRef` and both CNS tumor and osteosarcoma samples
-* As stated, `TRef` classifies more cells than does `BRef` for all but one osteosarcoma sample
-
-
-**Based on these comparisons, we'll move forward with the `TRef` reference.**
-
-```{r}
-tref_df <- epic_df |>
-  dplyr::filter(reference == "TRef")
-```
-
-
-Let's look at the samples had very few "other" cells (those with fraction < 0.1):
-
-```{r}
-classified_samples <- tref_df |>
-  dplyr::filter(is_other, fraction <= 0.1) |> 
-  dplyr::pull(sample_id)
-
-classified_samples_df <- tref_df |>
-  dplyr::filter(sample_id %in% classified_samples) |>
-  # add more detailed diagnosis for the non-osteo sample
-  dplyr::mutate(sample_diagnosis = ifelse(
-    project_id == "SCPCP000009", 
-    glue::glue("{sample_id}\n({diagnosis})"), 
-    sample_id)
-  ) |>
-  dplyr::select(
-    project_diagnosis, 
-    sample_diagnosis, 
-    epic_celltype, 
-    fraction) 
-
-ggplot(classified_samples_df) + 
-  aes(x = sample_diagnosis, y = fraction, fill = epic_celltype) +
+ggplot(epic_df) + 
+ aes(
+   x = sample_id, 
+   y = fraction, 
+   fill = forcats::fct_relevel(epic_celltype, celltype_levels)
+  ) +
   geom_col() + 
-  scale_fill_manual(values = color_map, na.value = "grey90", name = "cell type") + 
-  theme(axis.text.x = element_text(angle = 30, hjust = 1)) + 
-  facet_wrap(vars(project_diagnosis), scales = "free_x")
+  facet_wrap(vars(project), scales = "free_x", nrow = 2) + 
+  scale_y_continuous(expand = c(0,0)) +
+  scale_fill_manual(values = color_map, name = "cell type") +
+  theme(
+    legend.position = "bottom", 
+    axis.text.x = element_blank()
+  )
 ```
-* It does make sense that `CAFs` are dominating osteosarcoma samples (indeed they are prevalent, generally speaking, across a few more than these osteosarcoma samples) since we know they are a major component of osteosarcomas
-  * Some of those cells may actually be tumor cells which `EPIC` misclassified
-* It's worth noting that osteo sample dominated by `CD4 TCells` was also dominated by this cell type for the other `BRef` reference
+
+In most samples, the vast majority of cells are `otherCells`, although there are two samples which are estimated to have ~100% cells classified; it is very likely that cells in these samples (and possibly more samples) are incorrectly classified.
+
+We also see these trends:
+
+* For the `TRef` projects:
+  * Macrophages are most commonly observed in `SCPCP000001` samples
+  * Endotheliel cells tend to dominate `SCPCP000001` and `SCPCP000002`
+* For the `BRef` projects:
+  * CD4 T-cells and monocytes are more prevalent in `SCPCP000017` compared to `SCPCP000006`
+  * CD8 T-cells dominate `SCPCP000006` cell types
+
+Let's have a quick look at the proportion of classified cells on its own:
+
+```{r}
+epic_classified_df <- epic_df |>
+  dplyr::filter(epic_celltype == "otherCells") |>
+  dplyr::mutate(fraction_classified = 1 - fraction) 
+
+ggplot(epic_classified_df) +
+  aes(x = project, y = fraction_classified) + 
+  geom_boxplot() + 
+  theme(axis.text.x = element_text(angle = 30, hjust = 1, size = rel(0.9)))
+
+```
+In the vast majority of samples, fewer than 25% of cells are classified, with the fewest cells classified in Wilms Tumor. 
+
+
+Notably, across samples, there appear to be very few B-cells inferred, and when they are inferred the frations are extremely small (to the point that we might essentially consider them to be 0).
+Let's look at this a bit more closely, zooming in on the section of the plot with most of the data:
+
+```{r, fig.width = 10}
+epic_bcell_df <- epic_df |>
+  dplyr::filter(epic_celltype == "Bcells") 
+
+ggplot(epic_bcell_df) +
+  aes(x = project, y = fraction) + 
+  geom_boxplot() + 
+  theme(axis.text.x = element_text(angle = 30, hjust = 1, size = rel(0.9))) + 
+  ggforce::facet_zoom(ylim = c(0, 0.02)) 
+```
 
 
 ### Number of identified cell types
 
-Let's look at some associated summaries for this sample-specific information.
-
-Of the 7 cell types in `TRef`, how many are represented in each sample?
+How many cell types are represented in each sample?
 For this, we'll make a histogram of the number of cell types identified per sample (regardless of their proportion).
 Since, as it seems, EPIC generally doesn't estimate 0's, we'll instead provide a low threshold value of `1e-4` (artbitrarily chosen as low but not _too_ low!).
 
+Note that the maximum number of cell types is 7 for `TRef` and 6 for `BRef` (not including other).
 ```{r}
-celltype_counts_df <- tref_df |>
-  dplyr::filter(!is_other) |>
-  dplyr::group_by(project_diagnosis, sample_id) |>
-  dplyr::summarize(num_celltypes = sum(fraction >= 1e-4))
+celltype_counts_df <- epic_df |>
+  dplyr::filter(epic_celltype != "otherCells") |>
+  dplyr::group_by(project, sample_id) |>
+  dplyr::summarize(num_celltypes = sum(fraction > 1e-4))
 ```
 
 
@@ -307,14 +257,14 @@ ggplot(celltype_counts_df) +
   aes(x = num_celltypes) + 
   geom_histogram(center = 0, binwidth = 1) + 
   scale_x_continuous(breaks = scales::breaks_pretty()) +
-  facet_wrap(vars(project_diagnosis), nrow = 1) + 
+  facet_wrap(vars(project), nrow = 1) + 
   ggtitle("Number of cell types inferred in individual samples")
 ```  
 We can also make an associated summary table:
 
 ```{r}
 celltype_counts_df |>
-  dplyr::group_by(project_diagnosis) |>
+  dplyr::group_by(project) |>
   dplyr::summarize(
     min_celltypes = min(num_celltypes), 
     median_celltypes = median(num_celltypes), 
@@ -322,24 +272,23 @@ celltype_counts_df |>
   )
 ```
 
-Overall, we see that most all samples have at least 5-6 cell types, which is more than half of the possible cell types (there are seven total).
+Overall, we see that most `TRef`-analyzed cell types have 6 cell types, and most `BRef`-analyzed samples have 4. 
 
-
-Next, in what proportion of samples is each cell type represented?
+Let's look at how many samples contain each cell type:
 Again, this only considers cell type presence and absence at a `1e-4` threshold.
 
 ```{r}
 # calculate number of celltypes per sample
 samples_per_celltype_df <- epic_df |>
-  dplyr::filter(!is_other) |>
+  dplyr::filter(epic_celltype != "otherCells") |>
   dplyr::mutate(celltype_present = fraction > 1e-4) |>
-  dplyr::group_by(epic_celltype, project_diagnosis) |>
+  dplyr::group_by(epic_celltype, project) |>
   dplyr::summarize(n_samples = sum(celltype_present)) 
 
 # convert number to proportion
 samples_per_celltype_df <- epic_df |>
-  dplyr::filter(is_other) |>
-  dplyr::count(project_diagnosis) |>
+  dplyr::filter(epic_celltype != "otherCells") |>
+  dplyr::count(project) |>
   dplyr::right_join(samples_per_celltype_df) |>
   dplyr::mutate(prop_samples = n_samples / n)
 ```
@@ -348,50 +297,19 @@ samples_per_celltype_df <- epic_df |>
 ggplot(samples_per_celltype_df) + 
   aes(x = epic_celltype, y = prop_samples) + 
   geom_col() +
-  geom_hline(yintercept = 0.5, color = "firebrick2") +
-  facet_wrap(vars(project_diagnosis), nrow = 1) +
-  # add guiding line at 0.5
+  facet_wrap(vars(project), nrow = 1, scales = "free_x") +
   theme(axis.text.x = element_text(angle = 30, hjust = 1, size = rel(0.8))) + 
   ggtitle("Proportion of samples with each cell type")
 ```
-
-* `NKcells` are not common in `SCPCP000002` or `SCPCP000009` and generally appear in the fewest samples
-* Most samples contain `CD8` T cells, and `CD4` cells are also common but a bit less than `CD8`
-* Except for `SCPCP000017`, most samples contain `BCells`
-
-### Comparison with mRNAProportions
+The main new trend we can pull out from here is that `NKcells` are rarely observed in samples from `SCPCP000001` and `SCPCP000006`, and are virtually unobserved in `SCPCP000002` and `SCPCP000009`.
 
 
-`EPIC` also provides an estimate for cell fractions without correcting for expected mRNA content among cell types; this setting is recommended for pseudobulk samples but not true bulk RNA-seq, so we didn't use it above.
-
-Just to cover all bases though, let's do a quick comparison to see how different the values are. 
-In the plot `corrected_fractions` corresponds to what we have been using; `uncorrected_fractions` corresponds to fractions which have not been corrected for mRNA content, i.e. the `mRNAProportions` quantity.
-
-```{r fig.height=10}
-tref_renamed_df <- tref_df |>
-  dplyr::filter(!is_other) |>
-  dplyr::select(project_diagnosis, epic_celltype, corrected_fractions = fraction, uncorrected_fractions = mRNAProportions)
-
-ggplot(tref_renamed_df) +
-  aes(x = corrected_fractions, y = uncorrected_fractions) + 
-  geom_point() + 
-  geom_abline(color = "blue") + 
-  coord_equal() +
-  facet_grid(
-    rows = vars(epic_celltype), 
-    cols = vars(project_diagnosis)
-  )
-```
-Overall values seem highly similar, but we can see that `Macrophages` have been corrected to have slightly lower values.
-A more in-depth comparison here might zoom in to axes and/or explore relative error between measurements, but that is beyond the scope of what we are interested in looking at which is just to peek and get a sense!
 
 ## Conclusions
 
-Between the two `EPIC` references explored here, `TRef` seems more suited to our data since it contains some non-leukocyte normal cell types and does a more thorough job of classification.
-That said, it is not clear whether it _should_ do a more thorough job of classification, and it is missing useful-to-have cell types `Monocytes` and `Neutrophils` which are in the `BRef` reference.
-
-There are also samples which were nearly if not entirely fully classified, but many of these might be misclassifications due to biological similarity between fibroblasts and osteosarcoma cells. 
-
+`EPIC` appears to be a more conservative method and, frequently, cell types present in the reference are not present in the samples even though we might have _a priori_ expectations they are present. 
+There are also samples which were virtually entirely classified, but these inferences are not unlikely to be spurious.
+The next step will be to compare these inferences with `quanTIseq` inferences.
 
 ## Session info
 
