@@ -70,7 +70,6 @@ epic_files <- setNames(epic_files, project_ids)
 ### Prepare input data
 
 First, we'll read in the `EPIC` results and subset to only the reference of interest for each. 
-We'll retain the `reference` column in the final data frame since it will help with visualization.
 
 ```{r}
 tref_projects <- c("SCPCP000001", "SCPCP000002", "SCPCP000009")
@@ -112,7 +111,7 @@ epic_df <- dplyr::bind_rows(
    # arrange in order of reference, not project
    project = forcats::fct_relevel(project, "09: CNS tumors (TRef)", after = 2)
   ) |>
-  dplyr::select(project, sample_id, epic_celltype, reference, fraction)
+  dplyr::select(project, sample_id, epic_celltype, fraction)
 
 head(epic_df)
 ```
