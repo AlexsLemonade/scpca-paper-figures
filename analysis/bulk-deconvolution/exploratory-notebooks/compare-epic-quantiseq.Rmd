@@ -267,8 +267,7 @@ And now to the plots:
         tidyr::drop_na()
         
       # Assign the colors to use for this plot, depending on the reference
-      is_tref <- pid %in% tref_projects
-      if (is_tref) {
+      if (pid %in% tref_projects) {
         color_map <- color_map_tref
       } else {
         color_map <- color_map_bref
@@ -284,6 +283,74 @@ And now to the plots:
   )
 
 ```
+
+## Directly compare shared cell types
+
+Next, we'll directly compare inferences of shared cell types.
+
+
+To support comparison, we'll first also collapse the "Macrophages" cell types in `quanTIseq` into a single "Macrophages" (which `TRef` contains) by summing values for M1 and M2. 
+
+```{r, message = FALSE}
+# sum the quantiseq macrophage to be a single cell type
+quantiseq_macro <- deconv_df |> 
+  dplyr::filter(stringr::str_starts(celltype, "Macrophages.M")) |>
+  dplyr::group_by(project_name, project_id, sample_id, method) |>
+  dplyr::summarize(proportion = sum(proportion)) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(celltype_consensus = "Macrophages")
+
+# update consensus df to have this new macrophage grouping for quantiseq
+consensus_macrophages_df <- consensus_df |>
+  dplyr::filter(
+    !stringr::str_starts(celltype_consensus, "Macrophages.M")
+  ) |>
+  dplyr::bind_rows(quantiseq_macro)
+```
+
+
+```{r, fig.width = 12, fig.height = 6, warning = FALSE}
+
+tref_shared <- c("B cells", "CD4 T cells", "CD8 T cells", "NK cells", "Macrophages")
+bref_shared <- c("B cells", "CD4 T cells", "CD8 T cells", "NK cells", "Monocytes", "Neutrophils")
+
+project_ids |> 
+  purrr::walk(
+    \(pid) {
+            
+      # determine which cell types to plot
+      if (pid %in% tref_projects) {
+        plot_celltypes <- tref_shared
+      } else {
+        plot_celltypes <- bref_shared
+      }
+  
+      # Subset to only this project and those cell types
+      project_df <- consensus_macrophages_df |>
+        dplyr::filter(
+          project_id == pid, 
+          celltype_consensus %in% plot_celltypes
+        ) |>
+        tidyr::drop_na()
+      
+      
+      p <- ggplot(project_df) +
+        aes(x = sample_id, y = proportion, fill = method) +
+        geom_col(position = position_dodge()) + 
+        facet_wrap(vars(celltype_consensus), nrow = 2, scales = "free_y") +
+        scale_fill_brewer(palette = "Dark2") + 
+        scale_y_continuous(expand = c(0,0)) +
+        ggtitle(project_df$project_name[1]) +
+        theme(axis.text.x = element_blank()) 
+      
+      # again, we print the plot within purrr::walk() to reduce extra notebook printing from purrr::map()
+      print(p)
+      
+    }
+  )
+```
+
+
 
 ## Proportions of classified cells
 
