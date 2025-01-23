@@ -206,7 +206,7 @@ consensus_df <- deconv_df |>
 First, we'll visualize all cell type proportions estimated as follows:
 
 * The first column in all plots shows inferred proportions for all labels, including "Other"
-* The second column in all plots shows inferred proportions for all labels, exclusing "Other".
+* The second column in all plots shows inferred proportions for all labels, excluding "Other".
   * This allows you to more clearly see many of the cell types which are hard to see in the first column since "Other" is generally high (which we indeed expect)
 * Note the "Macrophage" cell type color scheme:
   * "Macrophages.M1" and "Macrophages.M2" are two separate categories in `quanTIseq`, but there is only one category "Macrophages" for all subtypes in `TRef`.
