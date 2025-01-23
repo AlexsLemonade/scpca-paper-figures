@@ -1,0 +1,387 @@
+---
+title: "Convert EPIC ids to Ensembl"
+author: Stephanie J. Spielman
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    toc: true
+    toc_depth: 3
+    code_folding: hide
+---
+
+Previously, we observed in [`quantiseq-tumor-genes.Rmd`](quantiseq-tumor-genes.Rmd) that some of the signature genes in `quanTIseq`'s reference are recorded with different symbols in our ensembl/gene symbol mapping.
+This is likely also the case with `EPIC` reference profile and signature genes, in particular because `EPIC` was built with an earlier genome annotation compared to how ScPCA was compiled.
+
+We will therefore need to find which gene symbols in the `EPIC` profile and signatures for `TRef` and `BRef` are not present in our gene symbol mapping.
+In this case, since we have _a lot_ of genes to look at (the reference is transcriptome-wide), so we will instead export updated versions of the `EPIC` references that use Ensembl IDs rather than gene symbols
+
+
+## Setup
+
+```{r setup}
+renv::load()
+library(biomaRt)
+options(timeout=10000) # for biomaRt querying
+
+deconv_dir <- here::here("analysis", "bulk-deconvolution")
+reference_dir <- file.path(deconv_dir, "data", "reference")
+
+# Output file to save a list of new references: list(TRef = ...updated TRef reference..., BRref =  ...updated BRef reference...)
+epic_reference_rds <- file.path(reference_dir, "epic-references-ensembl.rds")
+```
+
+Below we read in our internal ScPCA ensembl/symbol mapping table.
+
+```{r}
+scpca_map_df <- readr::read_tsv(
+  file.path(reference_dir,  "ensembl_symbol.tsv")
+)
+```
+
+
+## Determine appropriate Ensembl version
+
+As pointed out in this comment <https://github.com/AlexsLemonade/scpca-paper-figures/issues/125#issuecomment-2609846590>, the `EPIC` reference was built with an older genome annotation version than we used for ScPCA.
+
+To determine which annotation to use, we'll look at some previous versions and determine which gets us the most coverage based on symbols in the `BRef` reference, which is larger than the `TRef`.
+
+```{r}
+check_symbols <- rownames(EPIC::BRef$refProfiles)
+ensembl_versions <- c(75, 77, 80, 98, 99, 100, 101, 113)
+
+pick_ensembl_version_df <- ensembl_versions |>
+  purrr::map(
+    \(v) {
+      ensembl_mart <- useEnsembl("ensembl","hsapiens_gene_ensembl", version = v) 
+      res <- getBM(
+        attributes = 'ensembl_gene_id', 
+        filters = 'hgnc_symbol',
+        values = check_symbols, 
+        mart = ensembl_mart)
+      total_ensembl <- nrow(res) - sum(!stringr::str_starts(res$ensembl_gene_id, "ENSG"))
+  
+      data.frame(version = v, overlap = total_ensembl)
+      
+    }
+  ) |>
+    purrr::list_rbind()
+
+pick_ensembl_version_df  |>
+  dplyr::arrange(-overlap)
+```
+
+We should use **Ensembl version 98** for this conversion since it has the highest overlap with the gene symbols we'd like to work with.
+
+
+```{r}
+ensembl_mart <- useEnsembl("ensembl","hsapiens_gene_ensembl", version = 98) 
+```
+
+## Functions
+
+This section contains functions that help handle id comparisons to identify mappings from their gene symbols to our Ensembl ids, and ultimately create an updated `EPIC` reference.
+
+```{r}
+# This function creates mappings for all gene symbols which appear in EPIC _and_ appear in ScPCA
+ensembl_for_matching_symbols <- function(epic_symbols_df, scpca_map_df, biomart_map_df) {
+    
+  shared_symbols_df <- scpca_map_df |>
+    dplyr::inner_join(epic_symbols_df, by = "gene_symbol") |>
+    # keep only those for which we have ensembl ids in the first place
+    dplyr::filter(ensembl_id %in% scpca_map_df$ensembl_id) |>
+    # how many times does the symbol appear? this will help us find 1:1 vs many:1
+    dplyr::add_count(gene_symbol)
+  
+  # Find the symbols with 1:1 mappings, aka the gene symbol appears only once in ScPCA
+  # This will be used in the final mapping
+  unique_shared_symbols_df <- shared_symbols_df |>
+    dplyr::filter(n == 1) |>
+    dplyr::select(-n)
+  
+  # Find the symbols with many:1 mappings, aka the gene symbol appears several times in ScPCA
+  # We'll need to figure out which of these can be used
+  ambigious_gene_symbols <- shared_symbols_df |>
+    dplyr::filter(n > 1) |>
+    dplyr::distinct(gene_symbol) |>
+    dplyr::pull(gene_symbol)
+  
+  # For all many:1, 
+  # - Get the ensembl ids associated with this gene symbol in BOTH Ensembl98 and ScPCA
+  # - This resolves the ambiguity if we end up with a 1:1, and we keep the match
+  # - Otherwise, if there are still many mappings, we cannot resolve it and the gene symbol can't be converted to Ensembl
+  resolved_ambiguous_shared_symbols_df <- ambigious_gene_symbols |>
+    purrr::map(
+      \(gs) {
+        scpca_map_df |>
+          dplyr::filter(gene_symbol == gs) |>
+          # join with Ensembl98 on BOTH symbol and ensembl
+          dplyr::inner_join(
+            biomart_map_df |>
+              dplyr::filter(biomart_symbol == gs), 
+              by = c("gene_symbol" = "biomart_symbol", "ensembl_id" = "biomart_ensembl")
+          ) 
+        }
+    ) |>
+    dplyr::bind_rows() |>
+    # if n == 1, we have a 1:1 between ensembl and gene symbol
+    dplyr::add_count(gene_symbol) |>
+    dplyr::filter(n == 1) |>
+    dplyr::select(-n)
+    
+  # Prepare final mapping data frame from this section
+  dplyr::bind_rows(
+    unique_shared_symbols_df, 
+    resolved_ambiguous_shared_symbols_df
+  ) 
+}
+```
+
+```{r}
+# This function creates mappings for all gene symbols which appear in EPIC but _not in_ ScPCA
+ensembl_for_different_symbols <- function(epic_symbols_df, scpca_map_df, biomart_map_df) {
+  
+  # First, we're going to do some renaming to keep columns identifiable throughout the code:
+  epic_symbols_renamed_df <- epic_symbols_df |>
+    dplyr::rename(epic_gene_symbol = gene_symbol)
+  
+  scpca_map_renamed_df <- scpca_map_df |>
+    dplyr::rename(
+      scpca_ensembl_id = ensembl_id, 
+      scpca_gene_symbol = gene_symbol
+    )
+  
+  epic_symbols_renamed_df |>
+    dplyr::filter(!(epic_gene_symbol %in% scpca_map_renamed_df$scpca_gene_symbol)) |>
+    # of the symbols we don't have, which are in ensembl98?
+    dplyr::inner_join(
+      biomart_map_df, by = c("epic_gene_symbol" = "biomart_symbol")
+    ) |> 
+    # which of those ensembls match up with ours?
+    # anything that matches up, we can use for mapping
+    dplyr::inner_join(
+      scpca_map_renamed_df, by = c("biomart_ensembl" = "scpca_ensembl_id")
+    ) |>
+    # format into these columns to return:
+    # ensembl_id should be the Ensembl id we're replacing with (biomart_ensembl)
+    # gene_symbol should be the EPIC symbol to replace (epic_gene_symbol)
+    dplyr::select(ensembl_id = biomart_ensembl, gene_symbol = epic_gene_symbol)
+
+}
+```
+  
+  
+  
+
+```{r}
+# This function creates mappings for all gene symbols which are aliases that do not appear in biomart, which has only canonical gene names
+# We'll use AnnotationDbi here, which does have aliases, even though it does not have ensembl 98
+ensembl_for_aliases <- function(epic_symbols_df, scpca_map_df, epic_scpca_map) {
+
+  ensembl_from_alias <- AnnotationDbi::mapIds(
+    org.Hs.eg.db::org.Hs.eg.db,
+    keys = epic_symbols_df$gene_symbol,
+    keytype = "ALIAS",
+    column = "ENSEMBL"
+  ) 
+  
+  alias_df <- as.data.frame(ensembl_from_alias) |>
+    tibble::rownames_to_column("gene_symbol_alias") |>
+    # remove any unknown ensembl ids, since we can't do anything with those
+    tidyr::drop_na() 
+  
+  # Check the ensembl ids which are NOT part of our current mapping
+  # We can use them if they are in ScPCA
+  alias_df |>
+    # nothing here can be in our current mapping
+    dplyr::filter(
+      !(ensembl_from_alias %in% epic_scpca_map$ensembl_id), 
+      !(gene_symbol_alias %in% epic_scpca_map$gene_symbol)) |>
+    # but are they in ScPCA?
+    dplyr::filter(ensembl_from_alias %in% scpca_map_df$ensembl_id) |>
+    # these can be propagated forward
+    dplyr::rename(
+      gene_symbol = gene_symbol_alias, 
+      ensembl_id = ensembl_from_alias
+    )
+  
+}
+```
+
+
+
+```{r}
+# This function wraps all `ensembl_for_*` functions to establish a map between EPIC gene symbols (original row names) and Ensembl ids (new row names), where possible
+create_map <- function(epic_profile_symbols, scpca_map_df, ensembl_mart) {
+  
+    
+  # define a map of Ensembl98 to use
+  biomart_map_df <- getBM(
+    attributes = c('ensembl_gene_id', 'hgnc_symbol'), 
+    filters = 'hgnc_symbol',
+    values = epic_profile_symbols, 
+    mart = ensembl_mart) |>
+    dplyr::rename(
+      biomart_ensembl = ensembl_gene_id, 
+      biomart_symbol = hgnc_symbol 
+    )
+  epic_symbols_df <- data.frame(gene_symbol = epic_profile_symbols)
+  
+  
+  map_matching <- ensembl_for_matching_symbols(epic_symbols_df, scpca_map_df, biomart_map_df)
+  map_different <-  ensembl_for_different_symbols(epic_symbols_df, scpca_map_df, biomart_map_df)
+  
+  epic_scpca_map <- dplyr::bind_rows(map_matching, map_different) 
+  
+  # grab any additional we can via ALIAS
+  map_alias <- ensembl_for_aliases(epic_symbols_df, scpca_map_df, epic_scpca_map) 
+  
+  # Next, check for aliases using the current map as input
+  epic_scpca_map <- epic_scpca_map |>
+    dplyr::bind_rows(map_alias) |>
+    dplyr::distinct() |>
+    as.data.frame() # we'll want rownames later, so this un-tibbles
+  
+  
+  # Check that there are no duplicates
+  dup_genes <- epic_scpca_map |> 
+    dplyr::add_count(gene_symbol) |>
+    dplyr::filter(n > 1) |>
+    nrow()
+  stopifnot("duplicate gene symbols recovered" = dup_genes == 0)
+  
+  return(epic_scpca_map)
+  
+}
+
+```
+
+
+
+```{r}
+# This function creates a renamed version of an EPIC reference with Ensembl ids instead of symbols, where possible
+rename_epic_reference <- function(epic_scpca_map, epic_reference) {
+  
+  current_rownames_df <- data.frame(current_rownames = rownames(epic_reference$refProfiles))
+  
+  new_rownames_df <- current_rownames_df |>
+    dplyr::left_join(epic_scpca_map, by = c("current_rownames" = "gene_symbol")) |>
+    dplyr::mutate(new_rownames = ifelse(
+      is.na(ensembl_id), 
+      current_rownames, 
+      ensembl_id
+    ))
+  
+  new_rownames <- new_rownames_df$new_rownames
+  stopifnot(
+    "wrong number of new rownames" = nrow(current_rownames_df) == length(new_rownames), 
+    "there are NAs in the new rownames" = !all(is.na(new_rownames))
+  )
+
+  # Get order for signature genes
+  sig_rownames_df <- new_rownames_df |>
+    dplyr::filter(current_rownames %in% EPIC::TRef$sigGenes)
+  rownames(sig_rownames_df) <- sig_rownames_df$current_rownames
+
+
+  # Create a new reference with updated Ensembl names where possible
+  new_reference <- epic_reference
+  rownames(new_reference$refProfiles) <- new_rownames
+  rownames(new_reference$refProfiles.var) <- new_rownames
+  new_reference$sigGenes <- sig_rownames_df[EPIC::TRef$sigGenes,"new_rownames"]
+    
+  return(new_reference)
+}
+```
+
+
+## Perform TRef conversion
+
+The `TRef` reference has this many genes:
+
+```{r}
+tref_profile_symbols <- rownames(EPIC::TRef$refProfiles)
+length(tref_profile_symbols)
+```
+  
+  
+```{r}
+tref_map <- create_map(tref_profile_symbols, scpca_map_df, ensembl_mart)
+```
+
+
+
+Now, we can create an updated reference using our mapping so that, to the extent possible, row names are Ensembl ids.
+
+```{r}
+new_tref <- rename_epic_reference(tref_map, EPIC::TRef)
+```
+
+
+
+What percentage of genes in the reference profile were we able to update?
+
+```{r}
+sum(stringr::str_starts(rownames(new_tref$refProfiles), "ENSG")) /  length(tref_profile_symbols)
+```
+
+Are all genes in the reference signature defined?
+
+```{r}
+all(stringr::str_starts(new_tref$sigGenes, "ENSG"))
+```
+
+
+## Peform BRef conversion
+
+
+The `TRef` reference has this many genes:
+
+```{r}
+bref_profile_symbols <- rownames(EPIC::BRef$refProfiles)
+length(bref_profile_symbols)
+```
+
+  
+```{r}
+bref_map <- create_map(bref_profile_symbols, scpca_map_df, ensembl_mart) # ADD ONE MORE CHECK THAT INDEED ALL THESE ENSEMBL IDS ARE OURS
+```
+
+
+Now, we can create an updated reference using our mapping so that, to the extent possible, row names are Ensembl ids.
+
+```{r}
+new_bref <- rename_epic_reference(bref_map, EPIC::BRef)
+```
+
+
+
+What percentage of genes in the reference profile were we able to update?
+
+```{r}
+sum(stringr::str_starts(rownames(new_bref$refProfiles), "ENSG")) /  length(bref_profile_symbols)
+```
+
+Are all genes in the reference signature defined?
+
+```{r}
+all(stringr::str_starts(new_bref$sigGenes, "ENSG"))
+```
+
+
+## Export
+
+Finally we'll export them to a single file:
+
+```{r}
+epic_refs <- list(
+  "TREf" = new_tref,
+  "BRef" = new_bref
+)
+readr::write_rds(epic_refs, epic_reference_rds)
+```
+
+## Session info
+
+```{r}
+sessionInfo()
+```
