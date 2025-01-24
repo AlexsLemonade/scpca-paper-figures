@@ -6,7 +6,7 @@ output:
   html_notebook:
     toc: true
     toc_depth: 3
-    code_folding: show
+    code_folding: hide
 ---
 
 The goal of this notebook is to compare inferences from `EPIC` and `quanTIseq`.
@@ -63,30 +63,19 @@ theme_set(theme_bw())
 This chunk defines a helper function to make bar plots of cell type proportions for both methods.
 
 ```{r}
-make_barplot <- function(df, pid, color_map, hide_other = TRUE, plot_title = "", facet = TRUE) {
-  
-  if (hide_other) {
-    df <- df |> 
-      dplyr::filter(celltype_consensus != "Other")
-    theme_elements <- list(theme(axis.text.x = element_blank(), legend.position = "none"))
-  } else {
-    theme_elements <- list(theme(axis.text.x = element_blank()))
-  }
+make_barplot <- function(df, color_map, cell_type_column = celltype_consensus) {
   
   p <- ggplot(df) +
     aes(
       x = sample_id, 
       y = proportion, 
-      fill = forcats::fct_relevel(celltype_consensus, names(color_map))
+      fill = forcats::fct_relevel({{cell_type_column}}, names(color_map))
     ) +
     geom_col() + 
     scale_fill_manual(values = color_map, name = "cell type") +
-    labs(x = "", title = plot_title) +
-    theme_elements
-  
-  if (facet) {
-     p <- p + facet_wrap(vars(method), nrow = 2, scales = "free_y")
-  }
+    labs(x = "", title = df$project_name[1]) +
+    facet_wrap(vars(method), nrow = 2, scales = "free_y") +
+    theme(axis.text.x = element_blank())
   
   return(p)
 }
@@ -201,14 +190,12 @@ consensus_df <- deconv_df |>
 ```
 
 
-## All cell type proportions
+## Cell type proportions
 
-First, we'll visualize all cell type proportions estimated as follows:
+First, we'll visualize all cell type proportions. 
 
-* The first column in all plots shows inferred proportions for all labels, including "Other"
-* The second column in all plots shows inferred proportions for all labels, excluding "Other".
-  * This allows you to more clearly see many of the cell types which are hard to see in the first column since "Other" is generally high (which we indeed expect)
-* Note the "Macrophage" cell type color scheme:
+Note the "Macrophage" cell type color scheme:
+
   * "Macrophages.M1" and "Macrophages.M2" are two separate categories in `quanTIseq`, but there is only one category "Macrophages" for all subtypes in `TRef`.
   There are _no_ macrophages in `BRef`.
   * Macrophage cell types are all shown in orange, where `quanTIseq` may have two colors but `TRef` will, if present, only have one.
@@ -226,7 +213,7 @@ color_map_tref <- c(
   ### tref only
   "CAFs" = "#009E73",
   "Endothelial" = "grey30", 
-  "Macrophages" = "#D55E00",
+  "Macrophages" = "orange2",
   #### quantiseq only
   "Monocytes" = "#CC79A7",
   "Macrophages.M1" = "sienna3", 
@@ -244,7 +231,7 @@ color_map_bref <- c(
   "CD8 T cells" = "#0072B2", 
   "NK cells" =  "#F0E442",
   "Monocytes" = "#CC79A7",
-  "Neutrophils" = "grey50",
+  "Neutrophils" = "grey40",
   #### quantiseq only
   "Macrophages.M1" = "sienna3", 
   "Macrophages.M2" = "sienna1",
@@ -273,23 +260,15 @@ And now to the plots:
         color_map <- color_map_bref
       }
       
-      # Make two plots: with and without showing other
-      with_other <- make_barplot(project_df, pid, color_map, hide_other = FALSE, plot_title = project_df$project_name[1])
-      without_other <- make_barplot(project_df, pid, color_map, hide_other = TRUE, plot_title = "Other not shown")
-        
-      # Use print so we can use purrr::walk() and avoid unnecessary empty line printing
-      print(patchwork::wrap_plots(with_other, without_other, guides = "collect"))
+       print(make_barplot(project_df, color_map))
+
     }
   )
 
 ```
 
-## Directly compare shared cell types
-
-Next, we'll directly compare inferences of shared cell types.
-
-
-To support comparison, we'll first also collapse the "Macrophages" cell types in `quanTIseq` into a single "Macrophages" (which `TRef` contains) by summing values for M1 and M2. 
+Next we'll make a version of these plots which emphasizes shared cell types; cell types that are unique to a reference will be grouped together.
+In addition, we'll also collapse the "Macrophages" cell types in `quanTIseq` into a single "Macrophages" (which `TRef` contains) by summing values for M1 and M2. 
 
 ```{r, message = FALSE}
 # sum the quantiseq macrophage to be a single cell type
@@ -310,10 +289,20 @@ consensus_macrophages_df <- consensus_df |>
 
 
 ```{r, fig.width = 12, fig.height = 6, warning = FALSE}
-
+# Prepare some plotting colors
 tref_shared <- c("B cells", "CD4 T cells", "CD8 T cells", "NK cells", "Macrophages")
 bref_shared <- c("B cells", "CD4 T cells", "CD8 T cells", "NK cells", "Monocytes", "Neutrophils")
+other_celltypes_label <- "All other reference-specific cell types"
+other_colors <- c( 
+  "Other" = "grey95",
+  "All other reference-specific cell types" = "grey75"
+)
 
+tref_shared_color_map <- c(other_colors, color_map_tref[tref_shared])
+bref_shared_color_map <- c(other_colors, color_map_bref[bref_shared])
+ 
+
+# plot each project
 project_ids |> 
   purrr::walk(
     \(pid) {
@@ -321,40 +310,61 @@ project_ids |>
       # determine which cell types to plot
       if (pid %in% tref_projects) {
         plot_celltypes <- tref_shared
+        color_map <- tref_shared_color_map
       } else {
         plot_celltypes <- bref_shared
+        color_map <- bref_shared_color_map
       }
   
-      # Subset to only this project and those cell types
+      # Subset to only this project and update celltypes to be:
+      # - In the shared vector
+      # - "Other"
+      # - not other but unshared
       project_df <- consensus_macrophages_df |>
-        dplyr::filter(
-          project_id == pid, 
-          celltype_consensus %in% plot_celltypes
-        ) |>
-        tidyr::drop_na()
+        dplyr::filter(project_id == pid) |>
+        tidyr::drop_na() |>
+        dplyr::mutate(
+          celltype_grouped = ifelse(
+            celltype_consensus %in% c("Other", plot_celltypes), 
+            celltype_consensus,
+            other_celltypes_label
+          ),
+          celltype_grouped = forcats::fct_relevel(celltype_grouped, names(color_map)),
+          celltype_grouped = forcats::fct_rev(celltype_grouped)
+        ) 
+        
       
-      
-      p <- ggplot(project_df) +
-        aes(x = sample_id, y = proportion, fill = method) +
-        geom_col(position = position_dodge()) + 
-        facet_wrap(vars(celltype_consensus), nrow = 2, scales = "free_y") +
-        scale_fill_brewer(palette = "Dark2") + 
-        scale_y_continuous(expand = c(0,0)) +
-        ggtitle(project_df$project_name[1]) +
-        theme(axis.text.x = element_blank()) 
-      
-      # again, we print the plot within purrr::walk() to reduce extra notebook printing from purrr::map()
-      print(p)
+      print(make_barplot(project_df, color_map, cell_type_column = celltype_grouped))
       
     }
   )
 ```
 
 
+### Conclusions
+
+
+* Across all inferences from both methods, B cells are fairly uncommon, but `quanTIseq` generally estimates higher fractions compared to `EPIC`
+* Considering projects `SCPCP000001` and `SCPCP000002` (high grade and low grade gliomas, respectively):
+	* NK cells are commonly identified by `quanTIseq` but not by `EPIC`
+	* There appears to be some amount of consistency between macrophage inferences between methods
+	* `EPIC` estimates substantial portions of endothelial cells, which are not present in `quanTIseq`. Similarly, `quanTIseq` estimates substantial proportions of dendritic cells, which are not present in `EPIC`.
+* For project `SCPCP000006` (wilms):
+	* CD8 T cells as well as monocytes dominate the `EPIC` results, and while we don't see CD8 as commonly in `quanTIseq`, we do also see monocytes although often in _different_ samples from where this cell type is common according to `EPIC`
+	* `EPIC` results here have fewer cell types in general compared to `quanTIseq`, even considering the difference in references
+* For project `SCPCP000009` (cns tumors):
+	* We see similar patterns to `SCPCP000001` and `SCPCP000002` where NK cells are commonly identified by `quanTIseq` but not by `EPIC`,  `EPIC` estimates substantial portions of endothelial cells, and `quanTIseq` estimates substantial proportions of dendritic cells
+	* We also see T cells, in particular CD4, dominating in `EPIC` but not in `quanTIseq`
+	* In the sample where `EPIC` classifies nearly 100% of the cells, there are similar cell types between methods but vastly different proportions
+* For project `SCPCP000017` (osteo):
+	* Monocytes and CD4 T cells dominate in `EPIC` but these are much less common in `quanTIseq
+	* In the sample where `EPIC` classifies nearly 100% of the cells, the cell types dominating in `EPIC` tend not to be those dominating in `quanTIseq`.
+
+
 
 ## Proportions of classified cells
 
-Next, we'll look specifically at the distributions of the total classified porportion (i.e., 1 - "other") across samples.
+Next, we'll look specifically at the distributions of the total classified proportion (i.e., 1 - "other") across samples.
 For this, we'll only consider samples which are not essentially fully classified.
 There are two samples which `EPIC` fully classified:
 ```{r}
@@ -414,6 +424,15 @@ ggplot(classified_wide_df) +
 * There is no relationship between the unclassified proportions for projects `SCPCP000001`, `SCPCP000002`, and `SCPCP000017`
 * We see a positive relationship for projects `SCPCP000006` and `SCPCP000009`, and the latter is actually quite close to unity (although there may not be much to interpret there).
 
+
+## Overall conclusions 
+
+Overall, there are substantial differences between `quanTIseq` and `EPIC` results using built-in references.
+Moving forward, we might consider:
+
+* Devising our own reference to use with at least one of these methods
+* Revisiting gene IDs to ensure as high as possible correspondence between the `EPIC` reference profile and input TPM data
+* Performing initial comparisons to cell typing performed on the single-cell level to help identify which method might be more accurate
 
 ## Session info
 
