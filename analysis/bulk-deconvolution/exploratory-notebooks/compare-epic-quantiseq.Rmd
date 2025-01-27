@@ -1,0 +1,492 @@
+---
+title: "Compare results from EPIC and quanTIseq"
+author: Stephanie J. Spielman
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    toc: true
+    toc_depth: 3
+    code_folding: hide
+---
+
+The goal of this notebook is to compare inferences from `EPIC` and `quanTIseq`.
+Please refer to these notebooks for an initial exploration of the results of each method:
+
+* `explore-epic-results.Rmd` contains an initial exploration of `EPIC` results
+* `explore-quantiseq-results.Rmd` contains an initial exploration of `quanTIseq` results
+
+In this notebook, we'll compare estimates of the fractions of shared cell types as well as estimates of classified vs. unclassified cells.
+There are several important caveats to bear in mind when interpreting results in this notebook:
+
+* Both methods use strings to label cell types, not cell ontologies.
+Therefore, while we assume that labels like "CD4 T-cells" (for example) directly correspond between methods, we cannot say this with absolute certainty.
+* All `quanTIseq` inferences used the same reference, but there were two references used for `EPIC`.
+Previously,in the notebook `explore-epic-results.Rmd`, we identified which reference to use for each project; only results from that reference are presented here in comparisons.
+* Because all three references across the two methods have different sets of cell types, inferred proportions are not necessarily directly comparable. 
+  * Results from each inference are necessarily conditioned, to an extent, on the other cell types in the reference and their respective gene signatures, which means that the relative proportions obtained with different methods/references may not be an apples-to-apples comparison.
+  * It's also important to note that higher proportions of classified cells does not strictly imply better performance; it is not known _a priori_ what proportion of each sample _should_ be classified in the first place (aka, is not tumor tissue).
+
+
+The table below gives all ScPCA project ids considered, their overall diagnoses, and which `EPIC` reference is considered here.
+
+| Project     | High-level diagnosis | `EPIC` Reference |
+|-------------|----------------------|------------------|
+| SCPCP000001 | High-grade glioma    | `TRef`           |
+| SCPCP000002 | Low-grade glioma     | `TRef`           |
+| SCPCP000006 | Wilms tumor          | `BRef`           |
+| SCPCP000009 | CNS tumors           | `TRef`           |
+| SCPCP000017 | Osteosarcoma         | `BRef`           |
+
+The table below gives all cell types (excluding "other") which are present in each method/reference.
+Cell types that are in all methods/references are shown only once on the first line.
+
+| Method         | Cell types |
+|----------------|---------------------------------------------|
+| All methods    | B cells, CD4 T cells, CD8 T cells, NK cells |
+| `EPIC`: `TRef` | CAFs (cancer-associated fibroblasts), Endothelial, Macrophages |
+| `EPIC`: `BRef` | Monocytes, Neutrophils |
+| `quanTIseq`    | M1 Macrophages, M2 Macrophages, Monocytes, Neutrophils, Tregs, Dendritic cells |
+
+Thus, of these options, `quanTIseq` has the most represented cell types, but notably it does not consider non-immune cell types like endothelial. 
+  
+## Setup
+
+```{r setup, message = FALSE}
+renv::load()
+
+library(ggplot2)
+theme_set(theme_bw())
+```
+
+### Functions
+
+This chunk defines a helper function to make bar plots of cell type proportions for both methods.
+
+```{r}
+make_barplot <- function(df, color_map, cell_type_column = celltype_consensus) {
+  
+  p <- ggplot(df) +
+    aes(
+      x = sample_id, 
+      y = proportion, 
+      fill = forcats::fct_relevel({{cell_type_column}}, names(color_map))
+    ) +
+    geom_col() + 
+    scale_fill_manual(values = color_map, name = "cell type") +
+    labs(x = "", title = df$project_name[1]) +
+    facet_wrap(vars(method), nrow = 2, scales = "free_y") +
+    theme(axis.text.x = element_blank())
+  
+  return(p)
+}
+```
+
+This chunk defines a helper function to make a scatterplot comparing common cell types between methods, faceted by cell type and project.
+
+```{r}
+make_comparison_scatterplot <- function(df, project_list) {
+  proj_df <- df |>
+    dplyr::filter(project_id %in% project_list) |>
+    tidyr::pivot_wider(
+     names_from = method, 
+     values_from = proportion
+    ) |>
+    tidyr::drop_na()
+    
+  ggplot(proj_df) +
+    aes(x = epic, y = quantiseq) + 
+    geom_point(alpha = 0.5) + 
+    geom_abline(color = "red") + 
+    geom_smooth(method = "lm") + 
+    facet_grid(
+      rows = vars(project_name), 
+      cols = vars(celltype_consensus), 
+      scales = "free") + 
+    theme(aspect.ratio = 1)
+}
+```
+
+### Paths
+
+
+```{r paths}
+results_dir <- here::here("analysis", "bulk-deconvolution", "results")
+
+epic_files <- list.files(
+  path = results_dir,
+  full.names = TRUE,
+  pattern = "*-epic.tsv$"
+)
+project_ids <- stringr::str_split_i(basename(epic_files), pattern = "-", i = 1)
+epic_files <- setNames(epic_files, project_ids)
+quantiseq_files <- setNames(
+  stringr::str_replace(epic_files, "-epic", "-quantiseq"), 
+  project_ids
+)
+```
+
+### Read and prepare data
+
+First, we'll read in the `EPIC` results and subset to only the reference of interest for each project.
+
+```{r}
+tref_projects <- c("SCPCP000001", "SCPCP000002", "SCPCP000009")
+bref_projects <- c("SCPCP000006", "SCPCP000017")
+
+# Read in epic result TSVs and combine into single data frame
+epic_raw_df <- epic_files |>
+  purrr::map(\(file) readr::read_tsv(file, show_col_types = FALSE)) |>
+  purrr::list_rbind(names_to = "project_id")
+
+# Filter based on projects and references
+epic_tref <- epic_raw_df |>
+  dplyr::filter(
+    project_id %in% tref_projects,
+    reference == "TRef"
+  )
+
+epic_bref <- epic_raw_df |>
+  dplyr::filter(
+    project_id %in% bref_projects,
+    reference == "BRef"
+  )
+
+# Create final epic_df with only references of interest for each project
+epic_df <- dplyr::bind_rows(epic_tref, epic_bref) |>
+  dplyr::rename(celltype = epic_celltype, proportion = fraction)
+```
+
+
+Next, we'll read in the `quanTIseq` results and combine with the `EPIC` results.
+
+
+```{r}
+quantiseq_df <- quantiseq_files |>
+  purrr::map(\(file) readr::read_tsv(file, show_col_types = FALSE)) |>
+  purrr::list_rbind(names_to = "project_id") |>
+  dplyr::rename(celltype = quantiseq_celltype)
+
+# combine data frames and set levels for method
+deconv_df <- list("epic" = epic_df, "quantiseq" = quantiseq_df) |>
+  purrr::list_rbind(names_to = "method") |>
+  dplyr::mutate(
+    project_name = dplyr::case_match(
+      project_id,
+      "SCPCP000001" ~ "01: High-grade glioma (TRef)",
+      "SCPCP000002" ~ "02: Low-grade glioma (TRef)",
+      "SCPCP000006" ~ "06: Wilms tumor (BRef)",
+      "SCPCP000009" ~ "09: CNS tumors (TRef)",
+      "SCPCP000017" ~ "17: Osteosarcoma (BRef)",
+    )
+  ) |>
+  # arrange columns
+  dplyr::select(project_id, sample_id, method, celltype, proportion, project_name)
+  
+head(deconv_df)
+```
+
+
+#### Recode cell types
+
+We'll now recode cell types so that matching cell types have the same string representation as:
+
+* `B cells`
+* `CD4 T cell`
+* `CD8 T cells`
+* `NK cells`
+
+All methods/references additionally have an "Other" cell type, but these are not necessarily directly comparable because different cell types are present in each reference, so each "Other" encapsulates different cell types.
+
+```{r}
+consensus_df <- deconv_df |>
+  dplyr::mutate(
+    # this is to make a shared label, not quite a consensus
+    celltype_consensus = dplyr::case_when(
+      celltype %in% c("Bcells", "B.cells") ~ "B cells",
+      celltype %in% c("CD4_Tcells", "T.cells.CD4") ~ "CD4 T cells",
+      celltype %in% c("CD8_Tcells", "T.cells.CD8") ~ "CD8 T cells",
+      celltype %in% c("NKcells", "NK.cells") ~ "NK cells",
+      celltype %in% c("Other", "otherCells") ~ "Other",
+      .default = celltype
+    )
+  ) |>
+  dplyr::select(project_name, project_id, sample_id, method, celltype_consensus, proportion)
+```
+
+
+## Cell type proportions
+
+First, we'll visualize all cell type proportions. 
+
+Note the "Macrophage" cell type color scheme:
+
+  * "Macrophages.M1" and "Macrophages.M2" are two separate categories in `quanTIseq`, but there is only one category "Macrophages" for all subtypes in `TRef`.
+  There are _no_ macrophages in `BRef`.
+  * Macrophage cell types are all shown in orange, where `quanTIseq` may have two colors but `TRef` will, if present, only have one.
+
+First, we'll define some shared colors to use for these plots.
+```{r}
+# cell types to show when coloring quantiseq & tref together
+color_map_tref <- c(
+  ### shared
+  "Other" = "grey95",
+  "B cells" = "firebrick",
+  "CD4 T cells" = "#56B4E9", 
+  "CD8 T cells" = "#0072B2", 
+  "NK cells" =  "#F0E442",
+  ### tref only
+  "CAFs" = "#009E73",
+  "Endothelial" = "grey30", 
+  "Macrophages" = "orange2",
+  #### quantiseq only
+  "Monocytes" = "#CC79A7",
+  "Macrophages.M1" = "sienna3", 
+  "Macrophages.M2" = "sienna1",
+  "Dendritic.cells" = "purple",
+  "Tregs" = "blue"
+)  
+
+# cell types to show when coloring quantiseq & bref together
+color_map_bref <- c(
+  ### shared
+  "Other" = "grey95",
+  "B cells" = "firebrick",
+  "CD4 T cells" = "#56B4E9", 
+  "CD8 T cells" = "#0072B2", 
+  "NK cells" =  "#F0E442",
+  "Monocytes" = "#CC79A7",
+  "Neutrophils" = "grey40",
+  #### quantiseq only
+  "Macrophages.M1" = "sienna3", 
+  "Macrophages.M2" = "sienna1",
+  "Dendritic.cells" = "purple",
+  "Tregs" = "blue"
+) 
+```
+
+
+And now to the plots:
+
+```{r, fig.width = 12, fig.height = 7, warning = FALSE}
+ project_ids |> 
+  purrr::walk(
+    \(pid) {
+      
+      # Subset to only this project
+      project_df <- consensus_df |>
+        dplyr::filter(project_id == pid) |>
+        tidyr::drop_na()
+        
+      # Assign the colors to use for this plot, depending on the reference
+      if (pid %in% tref_projects) {
+        color_map <- color_map_tref
+      } else {
+        color_map <- color_map_bref
+      }
+      
+       print(make_barplot(project_df, color_map))
+
+    }
+  )
+
+```
+
+Next we'll make a version of these plots which emphasizes shared cell types; cell types that are unique to a reference will be grouped together.
+In addition, we'll also collapse the "Macrophages" cell types in `quanTIseq` into a single "Macrophages" (which `TRef` contains) by summing values for M1 and M2. 
+
+```{r, message = FALSE}
+# sum the quantiseq macrophage to be a single cell type
+quantiseq_macro <- deconv_df |> 
+  dplyr::filter(stringr::str_starts(celltype, "Macrophages.M")) |>
+  dplyr::group_by(project_name, project_id, sample_id, method) |>
+  dplyr::summarize(proportion = sum(proportion)) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(celltype_consensus = "Macrophages")
+
+# update consensus df to have this new macrophage grouping for quantiseq
+consensus_macrophages_df <- consensus_df |>
+  dplyr::filter(
+    !stringr::str_starts(celltype_consensus, "Macrophages.M")
+  ) |>
+  dplyr::bind_rows(quantiseq_macro)
+```
+
+
+```{r, fig.width = 12, fig.height = 6, warning = FALSE}
+# Prepare some plotting colors
+tref_shared <- c("B cells", "CD4 T cells", "CD8 T cells", "NK cells", "Macrophages")
+bref_shared <- c("B cells", "CD4 T cells", "CD8 T cells", "NK cells", "Monocytes", "Neutrophils")
+other_celltypes_label <- "All other reference-specific cell types"
+other_colors <- c( 
+  "Other" = "grey95",
+  "All other reference-specific cell types" = "grey75"
+)
+
+tref_shared_color_map <- c(other_colors, color_map_tref[tref_shared])
+bref_shared_color_map <- c(other_colors, color_map_bref[bref_shared])
+ 
+
+# plot each project
+project_ids |> 
+  purrr::walk(
+    \(pid) {
+            
+      # determine which cell types to plot
+      if (pid %in% tref_projects) {
+        plot_celltypes <- tref_shared
+        color_map <- tref_shared_color_map
+      } else {
+        plot_celltypes <- bref_shared
+        color_map <- bref_shared_color_map
+      }
+  
+      # Subset to only this project and update celltypes to be:
+      # - In the shared vector
+      # - "Other"
+      # - not other but unshared
+      project_df <- consensus_macrophages_df |>
+        dplyr::filter(project_id == pid) |>
+        tidyr::drop_na() |>
+        dplyr::mutate(
+          celltype_grouped = ifelse(
+            celltype_consensus %in% c("Other", plot_celltypes), 
+            celltype_consensus,
+            other_celltypes_label
+          ),
+          celltype_grouped = forcats::fct_relevel(celltype_grouped, names(color_map)),
+          celltype_grouped = forcats::fct_rev(celltype_grouped)
+        ) 
+        
+      
+      print(make_barplot(project_df, color_map, cell_type_column = celltype_grouped))
+      
+    }
+  )
+```
+
+
+### Observations from proportions
+
+
+* Across all inferences from both methods...
+
+  * B cells are fairly uncommon, but `quanTIseq` generally estimates higher fractions compared to `EPIC`
+  * `EPIC` generally estimates a lot of T cells but virtually no NK cells, but by contrast `quanTIseq` generally estimates a lot of NK cells but fewer T cells. 
+  * `EPIC` infers a couple samples to be nearly fully classified which is likely spurious since we do not expect purely normal samples
+  The latter may be due to `quanTIseq`'s higher granularity of cell types in its reference.
+* Considering projects `SCPCP000001` and `SCPCP000002` (high grade and low grade gliomas, respectively):
+	* NK cells are commonly identified by `quanTIseq` but not by `EPIC`
+	* There appears to be some amount of consistency between macrophage inferences between methods
+	* `EPIC` estimates substantial portions of endothelial cells, which are not present in `quanTIseq`. Similarly, `quanTIseq` estimates substantial proportions of dendritic cells, which are not present in `EPIC`
+	* A large proportion of the `quanTIseq` inferences are monocytes, macrophages, or NK cells 
+* For project `SCPCP000006` (wilms):
+	* CD8 T cells as well as monocytes dominate the `EPIC` results, and while we don't see CD8 as commonly in `quanTIseq`, we do also see monocytes although often in _different_ samples from where this cell type is common according to `EPIC`
+	* `EPIC` results here have fewer cell types in general compared to `quanTIseq`, even considering the difference in references
+* For project `SCPCP000009` (cns tumors):
+	* We see similar patterns to `SCPCP000001` and `SCPCP000002` where NK cells are commonly identified by `quanTIseq` but not by `EPIC`,  `EPIC` estimates substantial portions of endothelial cells, and `quanTIseq` estimates substantial proportions of dendritic cells
+	* We also see T cells, in particular CD4, dominating in `EPIC` but not in `quanTIseq`
+	* In the sample where `EPIC` classifies nearly 100% of the cells, there are similar cell types between methods but vastly different proportions
+* For project `SCPCP000017` (osteo):
+	* Monocytes and CD4 T cells dominate in `EPIC` but these are much less common in `quanTIseq
+	* In the sample where `EPIC` classifies nearly 100% of the cells, the cell types dominating in `EPIC` tend not to be those dominating in `quanTIseq`
+
+
+## Proportions of classified cells
+
+Next, we'll look specifically at the distributions of the total classified proportion (i.e., 1 - "other") across samples.
+For this, we'll only consider samples which are not essentially fully classified.
+There are two samples which `EPIC` fully classified:
+```{r}
+fully_classified_df <- consensus_df |>
+  dplyr::filter(
+    celltype_consensus == "Other", 
+    proportion <= 0.01
+  ) 
+fully_classified_df
+```
+
+
+First, we'll visualize these distributions as sina plots:
+
+```{r, fig.width = 7, fig.height = 5}
+classified_prop_df <- consensus_df |>
+  dplyr::filter(
+    !(sample_id %in% fully_classified_df$sample_id), 
+    celltype_consensus == "Other"
+  ) |>
+  dplyr::mutate(
+    classified_proportion = 1 - proportion
+  )
+
+ggplot(classified_prop_df) + 
+  aes(x = project_name, y = classified_proportion, color = method) + 
+  ggforce::geom_sina(size = 1, position = position_dodge(width = 0.4)) +
+  scale_y_continuous(
+    limits = c(0, 0.6),
+    breaks = seq(0, 0.6, 0.1)
+  ) + 
+  scale_color_brewer(palette = "Dark2") +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+Distributions of classified proportions, across all projects, are generally below 0.4 with a handful of outliers. 
+As noted in the barplots, `EPIC` tends to classify lower proportions of each sample compared to `quanTIseq`, but whether this is due to a) the method itself, b) fewer cell types in the `EPIC` signature gene lists, or c) marker gene information in the signature gene matrices themselves would require further investigation.
+
+
+## Relationship between shared cell types
+
+In this section we'll look more closely at shared cell types between references to directly compare inferred quantities.
+
+
+Next, we can ask whether there is any relationship between these quantities.
+We'll also include a panel for the proportion of classified cells.
+
+In plots below, projects that use `TRef` in `EPIC` are shown first, and then `BRef`.
+In each panel, the red line is `y=x` and the blue line with CI is the regression line (due to faceting, coordinates are not 1:1 on the axes though).
+
+
+```{r fig.width = 13}
+consensus_macrophages_classified_df <- consensus_macrophages_df |>
+  # switch other to classified cells, and make it the last level
+  dplyr::mutate(
+    proportion = ifelse(
+      celltype_consensus == "Other", 
+      1 - proportion, 
+      proportion
+    ), 
+    celltype_consensus = ifelse(
+      celltype_consensus == "Other", 
+      "classified cells", 
+      celltype_consensus
+    ),
+    celltype_consensus = forcats::fct_relevel(celltype_consensus, "classified cells", after = Inf)
+  ) 
+make_comparison_scatterplot(consensus_macrophages_classified_df, tref_projects)
+make_comparison_scatterplot(consensus_macrophages_classified_df, bref_projects)
+```
+
+
+
+
+There does not appear to be any meaningful relationship for cell types estimated with either method, with the possible exception of `B cells` and `NK cells` for `SCPCP0000017`.
+However, in both cases, the relationship appears driven by an outlying point, and/or values are generally always close to 0 so the comparisons are not very meaningful in the first place.
+
+In terms of classified cells, there is no relationship between the unclassified proportions for projects `SCPCP000001`, `SCPCP000002`, and `SCPCP000017`
+But, there is a positive relationship for projects `SCPCP000006` and `SCPCP000009`, and the latter is actually quite close to unity.
+That said, there may not be much to interpret from these panels, since references have different cell types in the first place so we expect different proportions in results.
+
+
+## Overall conclusions 
+
+Overall, there are substantial differences between `quanTIseq` and `EPIC` results using built-in references.
+If we want to proceed with bulk deconvolution, moving forward, we might consider:
+
+* Devising our own reference to use with at least one of these methods
+* Revisiting gene IDs to ensure as high as possible correspondence between the `EPIC` reference profile and input TPM data
+* Performing initial comparisons to cell typing performed on the single-cell level to help identify which method might be more accurate
+
+## Session info
+
+```{r}
+sessionInfo()
+```

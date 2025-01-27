@@ -5,3 +5,4 @@ This directory contains notebooks used for exploratory analyses.
 * `explore-quantiseq-results.Rmd` explores, primarily using visualization, cell type distributions across samples and projects inferred by `quanTIseq`
 * `epic-signature-genes.Rmd` identifies discrepancies between our gene symbols and those used in `EPIC`'s gene signature sets and determines how to recode them for analysis
 * `explore-epic-results.Rmd` explores, primarily using visualization, cell type distributions across samples and projects inferred by `EPIC`, using the reference most biologically-suited for each ScPCA project
+* `compare-epic-quantiseq.Rmd` compares, primarily using visualization, `EPIC` and `quanTIseq` inferences
