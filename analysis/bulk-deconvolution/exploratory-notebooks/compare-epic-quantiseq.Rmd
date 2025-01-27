@@ -365,14 +365,20 @@ project_ids |>
 ```
 
 
-### Conclusions
+### Observations from proportions
 
 
-* Across all inferences from both methods, B cells are fairly uncommon, but `quanTIseq` generally estimates higher fractions compared to `EPIC`
+* Across all inferences from both methods...
+
+  * B cells are fairly uncommon, but `quanTIseq` generally estimates higher fractions compared to `EPIC`
+  * `EPIC` generally estimates a lot of T cells but virtually no NK cells, but by contrast `quanTIseq` generally estimates a lot of NK cells but fewer T cells. 
+  * `EPIC` infers a couple samples to be nearly fully classified which is likely spurious since we do not expect purely normal samples
+  The latter may be due to `quanTIseq`'s higher granularity of cell types in its reference.
 * Considering projects `SCPCP000001` and `SCPCP000002` (high grade and low grade gliomas, respectively):
 	* NK cells are commonly identified by `quanTIseq` but not by `EPIC`
 	* There appears to be some amount of consistency between macrophage inferences between methods
-	* `EPIC` estimates substantial portions of endothelial cells, which are not present in `quanTIseq`. Similarly, `quanTIseq` estimates substantial proportions of dendritic cells, which are not present in `EPIC`.
+	* `EPIC` estimates substantial portions of endothelial cells, which are not present in `quanTIseq`. Similarly, `quanTIseq` estimates substantial proportions of dendritic cells, which are not present in `EPIC`
+	* A large proportion of the `quanTIseq` inferences are monocytes, macrophages, or NK cells 
 * For project `SCPCP000006` (wilms):
 	* CD8 T cells as well as monocytes dominate the `EPIC` results, and while we don't see CD8 as commonly in `quanTIseq`, we do also see monocytes although often in _different_ samples from where this cell type is common according to `EPIC`
 	* `EPIC` results here have fewer cell types in general compared to `quanTIseq`, even considering the difference in references
@@ -382,8 +388,7 @@ project_ids |>
 	* In the sample where `EPIC` classifies nearly 100% of the cells, there are similar cell types between methods but vastly different proportions
 * For project `SCPCP000017` (osteo):
 	* Monocytes and CD4 T cells dominate in `EPIC` but these are much less common in `quanTIseq
-	* In the sample where `EPIC` classifies nearly 100% of the cells, the cell types dominating in `EPIC` tend not to be those dominating in `quanTIseq`.
-
+	* In the sample where `EPIC` classifies nearly 100% of the cells, the cell types dominating in `EPIC` tend not to be those dominating in `quanTIseq`
 
 
 ## Proportions of classified cells
@@ -464,11 +469,11 @@ make_comparison_scatterplot(consensus_macrophages_classified_df, bref_projects)
 
 
 There does not appear to be any meaningful relationship for cell types estimated with either method, with the possible exception of `B cells` and `NK cells` for `SCPCP0000017`.
-However, in both cases, the relationship appears driven by an outlying point, and/or values are generally always close to 0 so the comparisons are not very meaningful in the first palce.
+However, in both cases, the relationship appears driven by an outlying point, and/or values are generally always close to 0 so the comparisons are not very meaningful in the first place.
 
 In terms of classified cells, there is no relationship between the unclassified proportions for projects `SCPCP000001`, `SCPCP000002`, and `SCPCP000017`
-But, there is a positive relationship for projects `SCPCP000006` and `SCPCP000009`, and the latter is actually quite close to unity (although there may not be much to interpret there).
-That said, there may not be much to interpret from this panel, since references have different cell types in the first place so we expect different proportions in results.
+But, there is a positive relationship for projects `SCPCP000006` and `SCPCP000009`, and the latter is actually quite close to unity.
+That said, there may not be much to interpret from these panels, since references have different cell types in the first place so we expect different proportions in results.
 
 
 ## Overall conclusions 
