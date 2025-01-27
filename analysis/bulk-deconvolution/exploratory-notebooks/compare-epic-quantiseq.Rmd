@@ -81,6 +81,30 @@ make_barplot <- function(df, color_map, cell_type_column = celltype_consensus) {
 }
 ```
 
+This chunk defines a helper function to make a scatterplot comparing common cell types between methods, faceted by cell type and project.
+
+```{r}
+make_comparison_scatterplot <- function(df, project_list) {
+  proj_df <- df |>
+    dplyr::filter(project_id %in% project_list) |>
+    tidyr::pivot_wider(
+     names_from = method, 
+     values_from = proportion
+    ) |>
+    tidyr::drop_na()
+    
+  ggplot(proj_df) +
+    aes(x = epic, y = quantiseq) + 
+    geom_point(alpha = 0.5) + 
+    geom_abline(color = "red") + 
+    geom_smooth(method = "lm") + 
+    facet_grid(
+      rows = vars(project_name), 
+      cols = vars(celltype_consensus), 
+      scales = "free") + 
+    theme(aspect.ratio = 1)
+}
+```
 
 ### Paths
 
@@ -404,31 +428,53 @@ Distributions of classified proportions, across all projects, are generally belo
 As noted in the barplots, `EPIC` tends to classify lower proportions of each sample compared to `quanTIseq`, but whether this is due to a) the method itself, b) fewer cell types in the `EPIC` signature gene lists, or c) marker gene information in the signature gene matrices themselves would require further investigation.
 
 
-Next, we can ask whether there is any relationship between these quantities:
+## Relationship between shared cell types
 
-```{r fig.width = 12}
-classified_wide_df <- classified_prop_df |> 
-  dplyr::select(project_name, sample_id, method, classified_proportion) |>
-  tidyr::pivot_wider(names_from = method, values_from = classified_proportion)
+In this section we'll look more closely at shared cell types between references to directly compare inferred quantities.
 
 
-ggplot(classified_wide_df) + 
-  aes(x = epic, y = quantiseq) + 
-  geom_point() + 
-  geom_abline(color = "red") +
-  geom_smooth(method = "lm") +
-  coord_equal(xlim = c(0, 0.5), ylim = c(0, 0.5)) + 
-  facet_wrap(vars(project_name), nrow = 1)
+Next, we can ask whether there is any relationship between these quantities.
+We'll also include a panel for the proportion of classified cells.
+
+In plots below, projects that use `TRef` in `EPIC` are shown first, and then `BRef`.
+In each panel, the red line is `y=x` and the blue line with CI is the regression line (due to faceting, coordinates are not 1:1 on the axes though).
+
+
+```{r fig.width = 13}
+consensus_macrophages_classified_df <- consensus_macrophages_df |>
+  # switch other to classified cells, and make it the last level
+  dplyr::mutate(
+    proportion = ifelse(
+      celltype_consensus == "Other", 
+      1 - proportion, 
+      proportion
+    ), 
+    celltype_consensus = ifelse(
+      celltype_consensus == "Other", 
+      "classified cells", 
+      celltype_consensus
+    ),
+    celltype_consensus = forcats::fct_relevel(celltype_consensus, "classified cells", after = Inf)
+  ) 
+make_comparison_scatterplot(consensus_macrophages_classified_df, tref_projects)
+make_comparison_scatterplot(consensus_macrophages_classified_df, bref_projects)
 ```
 
-* There is no relationship between the unclassified proportions for projects `SCPCP000001`, `SCPCP000002`, and `SCPCP000017`
-* We see a positive relationship for projects `SCPCP000006` and `SCPCP000009`, and the latter is actually quite close to unity (although there may not be much to interpret there).
+
+
+
+There does not appear to be any meaningful relationship for cell types estimated with either method, with the possible exception of `B cells` and `NK cells` for `SCPCP0000017`.
+However, in both cases, the relationship appears driven by an outlying point, and/or values are generally always close to 0 so the comparisons are not very meaningful in the first palce.
+
+In terms of classified cells, there is no relationship between the unclassified proportions for projects `SCPCP000001`, `SCPCP000002`, and `SCPCP000017`
+But, there is a positive relationship for projects `SCPCP000006` and `SCPCP000009`, and the latter is actually quite close to unity (although there may not be much to interpret there).
+That said, there may not be much to interpret from this panel, since references have different cell types in the first place so we expect different proportions in results.
 
 
 ## Overall conclusions 
 
 Overall, there are substantial differences between `quanTIseq` and `EPIC` results using built-in references.
-Moving forward, we might consider:
+If we want to proceed with bulk deconvolution, moving forward, we might consider:
 
 * Devising our own reference to use with at least one of these methods
 * Revisiting gene IDs to ensure as high as possible correspondence between the `EPIC` reference profile and input TPM data
