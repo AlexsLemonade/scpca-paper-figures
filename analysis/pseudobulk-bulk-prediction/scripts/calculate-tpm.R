@@ -11,7 +11,7 @@ option_list <- list(
   make_option(
     "--input_dir",
     type = "character",
-    help = "Input directory with salmon quant files organized by project/sample/library."
+    help = "Input directory with salmon quant files organized by project/sample"
   ),
   make_option(
     "--output_file",
@@ -43,12 +43,12 @@ t2g_table <- readr::read_tsv(
   show_col_types = FALSE
 )
 
-
 # Find all quant.sf files -------------
 quant_files <- list.files(
   path = opts$input_dir,
+  pattern = "quant.sf",
   recursive = TRUE
-)
+) 
 stopifnot("Could not find any quant.sf files for the specified project." = length(quant_files) > 0)
 
 # Calculate TPM for each sample  ---------
