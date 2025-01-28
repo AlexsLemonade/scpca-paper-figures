@@ -13,7 +13,7 @@ option_list <- list(
   make_option(
     "--output_dir",
     type = "character",
-    help = "Output directory to save synced data files organized by project/sample/library."
+    help = "Output directory to save synced data files organized by project/sample"
   ),
   make_option(
     "--sample_metadata_file",

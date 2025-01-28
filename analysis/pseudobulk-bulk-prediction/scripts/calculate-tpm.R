@@ -1,5 +1,5 @@
 # This script calculates a TPM matrix for salmon quant files from all samples in a given project and exports an TSV file named `<project_id>-tpm.tsv`.
-# Input quant files are expected to be stored as `project_id/sample_id/library_id/quant.sf` in the provided "input_dir" argument.
+# Input quant files are expected to be stored as `project_id/sample_id/quant.sf` in the provided "input_dir" argument.
 # Note that this script retains the original ensembl gene identifiers and does not perform gene symbol conversion
 
 renv::load()
