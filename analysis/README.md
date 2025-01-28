@@ -1,1 +1,1 @@
-This directory contains code and results for analyses presented in the manscript.
+This directory contains code and results for analyses intended for the manscript.
