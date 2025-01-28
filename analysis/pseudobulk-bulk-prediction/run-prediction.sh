@@ -19,8 +19,8 @@ mkdir -p $scpca_dir
 mkdir -p $tpm_dir
 mkdir -p $result_dir
 
-# Step 0: Prepare sync quant.sf files if they do not exist
-Rscript ${script_dir}/prepare-data-files.R \
+# Step 0: Sync data files from S3
+Rscript ${script_dir}/sync-data-files.R \
   --output_dir ${scpca_dir}
 
 for project_dir in $scpca_dir/*; do
