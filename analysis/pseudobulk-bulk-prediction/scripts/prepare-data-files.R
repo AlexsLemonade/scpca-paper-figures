@@ -15,9 +15,7 @@ s3_path <- "s3://nextflow-ccdl-results/scpca-prod/checkpoints/salmon" #/library_
 data_path <- file.path(bulk_dir, "data", "salmon-quant-files")
 fs::dir_create(data_path)
 
-# Obtain and save the quant.sf files ------------------
-
-# Read in the metadata files and parse it for bulk samples of interest ---------
+## Determine which quant.sf files to download -----------
 # Parsing code adapted from: https://github.com/AlexsLemonade/scpca-paper-figures/issues/98#issuecomment-2573164429
 stopifnot(
   "Metadata files could not be found. Were they synced?" = all(file.exists(c(library_metadata_file, sample_metadata_file)))
@@ -60,7 +58,7 @@ sync_bulk_df <- library_metadata |>
   )
 
 
-# Sync each quant.sf file to its target directory -------
+# Obtain and save the quant.sf files ------------------
 sync_bulk_df |>
   purrr::pwalk(
     \(scpca_library_id, output_dir) {
