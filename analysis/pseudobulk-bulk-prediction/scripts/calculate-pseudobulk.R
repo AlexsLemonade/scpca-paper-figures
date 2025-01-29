@@ -61,7 +61,7 @@ sce_list <- purrr::map(rds_files, readr::read_rds)
 pseudo_raw_counts <- sce_list |>
   counts() |>
   purrr::map(DelayedArray::rowSums) |>
-  # reduce seems to make the names go away, which is sad
+  # cbind seems to make the names go away, which is sad
   purrr::reduce(cbind)
 
 colnames(pseudo_raw_counts) <- sample_ids
