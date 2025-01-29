@@ -104,7 +104,7 @@ sync_bulk_df <- library_metadata |>
   ) |>
   # only keep columns needed for syncing or checking
   dplyr::select(
-    scpca_sample_id,
+    scpca_sample_id, # this column is used for checking, not syncing
     output_dir,
     s3_dir
   )
