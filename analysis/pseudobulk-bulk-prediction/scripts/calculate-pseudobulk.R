@@ -99,6 +99,12 @@ colnames(pseudo_logcounts) <- sample_ids
 
 
 # Export ------------------
+
+# Confirm we have the same genes
+stopifnot(
+  setequal(rownames(pseudo_deseq), rownames(pseudo_logcounts))
+)
+
 pseudo_list <- list(
   pseudobulk_deseq = pseudo_deseq, 
   pseudobulk_logcounts = pseudo_logcounts
