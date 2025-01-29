@@ -1,0 +1,3 @@
+# Ignore the data directory (but keep it present)
+/data/*
+!/data/.gitkeep
