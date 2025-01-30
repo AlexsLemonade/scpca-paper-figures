@@ -9,9 +9,8 @@ output:
     code_folding: show
 ---
 
-The goal of this notebook is to compare pseudobulk and bulk calculations to determine which pseudobulk calculation should we proceed with for modeling: the sum of logcounts (`pseudobulk_logcounts`) or the `DESeq2`-normalized sum of raw counts (`pseudobulk_deseq`).
+The goal of this notebook is to compare pseudobulk and bulk calculations to determine which pseudobulk calculation should we proceed with for modeling: the log2 of the sum of raw counts (`pseudobulk_log_counts`) or the `DESeq2`-normalized sum of raw counts (`pseudobulk_deseq`).
 To this end, we'll visualize expression distributions, both on their own and compared to bulk TPM. 
-
 
 
 ## Setup
@@ -56,7 +55,8 @@ stopifnot(
 
 ### Read and prepare input data
 
-We'll make both a long and wide version of the data for each project.
+We'll make both a long and wide version of the data for convenience throughout the notebook.
+
 
 ```{r}
 project_long_df_list <- purrr::map2(
@@ -65,7 +65,9 @@ project_long_df_list <- purrr::map2(
   \(tpm_file, pseudo_file) {
     
     dplyr::bind_rows(
-      readr::read_tsv(tpm_file, show_col_types = FALSE),
+      # TPM needs to be in log2 space
+      readr::read_tsv(tpm_file, show_col_types = FALSE) |>
+        dplyr::mutate(expression = log2(expression)),
       readr::read_tsv(pseudo_file, show_col_types = FALSE)
     )
   }
@@ -82,152 +84,214 @@ project_wide_df_list <- project_long_df_list |>
 ```
 
 
-## Bulk TPM distributions
-
-When establishing pseudobulk datasets, genes with low expression levels were removed. 
-
-Before looking at pseudobulk measures here, we'll look at how the TPM distributions (log2) compared between for genes that are and are not included in the pseudobulk datasets. the comparisons.
-We expect to see that genes not included in the pseudobulk have lower TPM.
-
-
-```{r, fig.width = 12,  fig.height = 4, warning=FALSE}
-tpm_df_indicator_list |>
-  purrr::imap(
-    \(df, project_id) {
-      
-      ggplot(df) + 
-        aes(x = log2(expression), fill = in_pseudo) + 
-        geom_density(alpha = 0.5) + 
-        labs(
-          title = project_id, 
-          x = "log2 bulk TPM"
-        ) +
-        theme(legend.position = "bottom")
-    }
-  ) |>
-  patchwork::wrap_plots(guides = "collect", nrow = 1) & theme(legend.position = "bottom")
-
-
-```
-
-We mostly see the expected trend: Genes included in the pseudobulk counts have higher expression in bulk compared to genes which were removed.
-`SCPCP000009` is an exception here, but this project has fewer samples compared to the rest so this could be a power artifact:
-
-```{r}
-tpm_df_indicator_list |>
-  purrr::map(
-    \(df) length(unique(df$sample_id))
-  )
-```
-
-Pause to clean up a little!
-
-```{r}
-rm(tpm_df_indicator_list)
-```
-
-
-## Distributions of pseudobulk
+## Distributions of expression values
 
 
 First, let's get a general sense of the scale of values in the pseudobulk quantities:
 
-
 ```{r}
-## logcounts
-project_df_list |>
+project_wide_df_list |>
   purrr::map(
     \(df) {
-      df |> 
-        dplyr::filter(expression_type == "pseudobulk_logcounts") |>
-        dplyr::pull(expression) |> 
+      df |>
+        # consider only genes with values not lost to transformation
+        dplyr::filter(is.finite(pseudobulk_log_counts)) |>
+        dplyr::pull(pseudobulk_log_counts) |>
         summary()
-  })
-```
-
-
-```{r}
-## deseq
-project_df_list |>
-  purrr::map(
-    \(df) {
-      df |> 
-        dplyr::filter(expression_type == "pseudobulk_deseq") |>
-        dplyr::pull(expression) |> 
-        summary()
-  })
-```
-
-The logcounts version has some strong right-skew, so we should log those values to support modeling. 
-We don't see the same level of skew from DESeq, which is good since we don't expect to see it out of that normalization procedure; we don't need to transform those.
-
-Let's therefore update expression to be log2 for both TPM and pseudobulk logcounts (i.e., for all but pseudobulk deseq) since we'll use those scales moving forward:
-
-```{r warning = FALSE}
-project_df_list <- project_df_list |>
-  purrr::map(
-    \(df) {
-        df |>
-          dplyr::mutate(expression = ifelse(
-            stringr::str_detect(expression_type, "deseq"),
-            expression,
-            log2(expression) # TODO: do we want a fudge here?
-          ))
     }
   )
 ```
 
-Now, we can visualize distributions of all quantities:
 
-```{r, fig.width = 12, fig.height = 8}
-project_df_list |>
+```{r}
+project_wide_df_list |>
+  purrr::map(
+    \(df) summary(df$pseudobulk_deseq)
+  )
+```
+
+
+
+Due to the different transformation approaches, the `pseudobulk_deseq` version has some negatives for fractional values, but `pseudobulk_log_counts` has a lower bound of 0.
+These different scales of data are important to keep in mind.
+
+
+### Undefined values
+
+Due to the `log2` transformation and sparsity of scRNA-seq counts, many values in `pseudobulk_log_counts` are expected to be `-Inf`, aka essentially unobserved in the single-cell data.
+We'll look at histograms, per project, of the percentage of genes with _defined_:
+
+```{r fig.height = 3, fig.width = 8}
+finite_df <- project_wide_df_list |>
+  purrr::map(
+    \(df) {
+      df |>
+        dplyr::count(sample_id, is_finite = is.finite(pseudobulk_log_counts)) |>
+        tidyr::pivot_wider(
+          names_from = is_finite, 
+          values_from = n, 
+          names_prefix = "finite_",
+          values_fill = 0
+        ) |>
+        dplyr::mutate(percent_genes_with_expression = finite_TRUE/(finite_FALSE + finite_TRUE))
+    }) |>
+  purrr::list_rbind(names_to = "project_id")
+
+
+ggplot(finite_df) +
+  aes(x = percent_genes_with_expression, fill = project_id) + 
+  geom_histogram(bins = 15) + 
+  facet_wrap(vars(project_id), nrow = 1) + 
+  theme(legend.position = "none")
+```
+It looks like about half the genes, but ranging from ~20 - 60\%, of genes in a given sample are non-zero.
+This means about 40-80\% of genes in the genome are not observed per sample.
+
+
+What are the `pseudobulk_deseq` values where the `pseudobulk_log_counts` values (above) are `-Inf`?
+
+```{r fig.height = 3, fig.width = 8}
+deseq_inf_df <- project_wide_df_list |>
+  purrr::map(
+    \(df) dplyr::filter(df, is.infinite(pseudobulk_log_counts))
+  )|>
+  purrr::list_rbind(names_to = "project_id")
+
+
+ggplot(deseq_inf_df) +
+  aes(x = pseudobulk_deseq, fill = project_id) + 
+  geom_histogram(bins = 15) + 
+  facet_wrap(vars(project_id), nrow = 1) + 
+  theme(legend.position = "none")
+```
+
+So, lots of the 0s are here which we expect to see.
+Are _all_ the 0s here?
+
+If all the 0s are the same as all the infinites, then there should be no rows where 0 and finite co-occur:
+
+
+```{r}
+project_wide_df_list |>
+  purrr::map(
+    \(df) {
+      df |>
+        # when deseq is 0, is log_counts always -inf?
+        dplyr::filter(
+          pseudobulk_deseq == 0, 
+          is.finite(pseudobulk_log_counts)
+        ) |>
+        nrow()
+  })
+```
+Indeed, `pseudobulk_log_counts` is never finite (aka, it is always `-Inf`) when `pseudobulk_deseq` is 0, which is good to know.
+
+
+Let's also check if we have the same genes between bulk and single-cell.
+Any genes present in one modality but not the other will have `NA` expression (transforming any 0 expressions will have produced `-Inf`, not `NA`, so those `NA`s are from joining).
+
+Are any in single-cell but not bulk?
+```{r}
+project_wide_df_list |>
+  purrr::map(\(df){
+    df |> 
+      dplyr::filter(!is.na(bulk_tpm), 
+                    is.na(pseudobulk_deseq), 
+                    is.na(pseudobulk_log_counts)) 
+  }) |>
+  dplyr::bind_rows()
+
+```
+Nope! How about single-cell but not bulk?
+```{r}
+only_single_cell <- project_wide_df_list |>
+  purrr::map(\(df){
+    df |> 
+      dplyr::filter(is.na(bulk_tpm), 
+                    !is.na(pseudobulk_deseq), 
+                    !is.na(pseudobulk_log_counts)) 
+  }) |>
+  purrr::list_rbind(names_to = "project_id") |>
+  dplyr::count(project_id, ensembl_id)
+only_single_cell
+```
+
+
+Yup!
+Plus, these numbers are all the sample numbers...
+
+```{r}
+only_single_cell |>
+  dplyr::count(ensembl_id)
+```
+..and it's the same genes all round (probably a reference thing...?).
+
+
+In any case, what is the expression of these genes in pseudobulk?
+```{r fig.height=3, fig.width=8}
+genes_not_in_bulk <- project_wide_df_list |>
+  purrr::map(
+  \(df) df |> dplyr::filter(is.na(bulk_tpm)) 
+) |>
+  purrr::list_rbind(names_to = "project_id") |>
+  dplyr::select(-bulk_tpm) |>
+  tidyr::pivot_longer(
+    contains("pseudobulk"), 
+    names_to = "expression_type", 
+    values_to = "expression"
+  )
+
+ggplot(genes_not_in_bulk) + 
+  aes(x = expression_type, y = expression) +
+  geom_boxplot() + 
+  facet_wrap(vars(project_id), nrow = 1) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+```
+Some of these genes actually have decent values in single-cell.
+
+
+### Full distributions
+
+Here, we visualize distributions of all quantities:
+
+```{r, fig.width = 12, fig.height = 8, warning = FALSE}
+project_long_df_list |>
   purrr::imap(
     \(df, project_id) {
-      
-     ggplot(df) + 
-        aes(x = expression, fill = expression_type) + 
-        geom_density(alpha = 0.5) + 
-        scale_fill_brewer(palette = "Dark2") + 
-        facet_wrap(vars(expression_type), scales = "free", nrow = 3) +
-        ggtitle(project_id) +
-        theme(legend.position = "none")
+       ggplot(df) + 
+          aes(x = expression, fill = expression_type) + 
+          geom_density(alpha = 0.5) + 
+          scale_fill_brewer(palette = "Dark2") + 
+          facet_wrap(vars(expression_type), scales = "free", nrow = 4) +
+          ggtitle(project_id) +
+          theme(legend.position = "none")
     }
   ) |>
   patchwork::wrap_plots(guides = "collect", nrow = 1)
 ```
 
-Both the pseudobulk distributions look reasonable enough!
 
 
 ## Relationship between quantities
 
-Now come the many plots: What does the relationship look like between bulk and each flavor of pseudobulk?
-We'll visualize this per sample.
 
-We'll first make a pivoted version of this data to enable plotting and modeling.
+This section will look at the relationship between bulk and pseudobulk quantities with:
 
+* scatterplots to confirm if we have a linear relationship
+* per-sample linear models of `bulk ~ pseudobulk` to do a cursory comparison of model statistics
+  * these results are presented both as plots and as the full per-sample table to scroll through
+  
+  
+### Scatterplots 
 
-```{r}
-project_df_wide_list <- project_df_list |>
-  purrr::imap(
-    \(df, project_id) {
-       df |> 
-        tidyr::pivot_wider(
-          names_from = expression_type, 
-          values_from = expression
-        )
-    })
-```
-
-
-Next, we have many plots, organized by project:
+What does the relationship look like between bulk and each flavor of pseudobulk?
+Plots are organized by project and:
 
 * Left-side panels are `bulk tpm ~ deseq pseudocounts`
-* Center panels are `bulk tpm ~ logcounts pseudocounts`
-* Right-side panels are `deseq pseudocounts ~ logcounts pseudocounts`, to assess their similarity directly
+* Right-side panels are `bulk tpm ~ log_counts pseudocounts`
 
-```{r fig.height=30, fig.width=18, message=FALSE, warning=FALSE}
-project_df_wide_list |>
+```{r fig.height=35, fig.width=18, message=FALSE, warning=FALSE}
+project_wide_df_list |>
   purrr::imap(
     \(df, project_id) {
       
@@ -239,102 +303,102 @@ project_df_wide_list |>
         ggtitle("bulk tpm ~ deseq")
       
       p2 <- ggplot(df) + 
-        aes(x = pseudobulk_logcounts, y = bulk_tpm) + 
+        aes(x = pseudobulk_log_counts, y = bulk_tpm) + 
         geom_point(alpha = 0.2, size = 0.5) + 
         geom_smooth(method = "lm") +
         facet_wrap(vars(sample_id), nrow = 5) +
         ggtitle("bulk tpm ~ logcounts") 
-      
-       p3 <- ggplot(df) + 
-        aes(x = pseudobulk_logcounts, y = pseudobulk_deseq) + 
-        geom_point(alpha = 0.2, size = 0.5) + 
-        geom_smooth(method = "lm") +
-        facet_wrap(vars(sample_id), nrow = 5) +
-        ggtitle("deseq ~ logcounts") 
            
       
-      patchwork::wrap_plots(p1, p2, p3) 
+      patchwork::wrap_plots(p1, p2) 
 
     }
   ) |>
   patchwork::wrap_plots(nrow = 5)
 ```
 
-On the whole, the relationship between bulk and pseudobulk look exceptionally similar regardless of which pseudobulk quantity is used!
-On the right-side, we see that indeed the pseudobulk versions are highly similar to one another (right-side panels).
-The main difference we can pick out from these plots is that the `logcounts` version has a band of lowly-expressed genes which the `deseq` version doesn't appear to show, which again is consistent with their different origins.
 
+### Statistics 
 
-To identify if there's a meaningful benefit to using one pseudobulk version over another, we'll build linear models of `tpm ~ pseudobulk * sample`; we can assume an interaction based on the slopes in the above scatterplots.
-Note that these are not final models for analysis, but only used to guide our next steps of actually building/fine-tuning the models.
+Let's now get some stats for each sample.
+We'll fit a linear model for each sample, and display some quantities below both as boxplots and the full table.
 
-We'll also have a look at the distributions of model residuals along the way.
+```{r fig.height = 10, fig.width = 12}
 
-```{r fig.height = 2, fig.width = 5}
-project_df_wide_list |>
+plot_stats <- function(df, column, title) {
+  ggplot(df) + 
+    aes(x = expression_type, y = {{column}}, color = expression_type) + 
+    geom_boxplot() + 
+    scale_color_brewer(palette = "Dark2") +
+    ggtitle(title) +
+    facet_wrap(vars(project_id), nrow = 1) +
+    theme(legend.position = "none")
+}
+
+model_samples <- function(id, df) {
+  sample_df <- df |>
+    dplyr::filter(sample_id == id) 
+  
+  df_deseq <- sample_df |>
+    dplyr::filter(is.finite(pseudobulk_deseq), is.finite(bulk_tpm))
+  fit_deseq <- lm(bulk_tpm ~ pseudobulk_deseq, data = df_deseq) 
+
+  df_log_counts <- sample_df |>
+      dplyr::filter(is.finite(pseudobulk_log_counts), is.finite(bulk_tpm))
+  fit_log_counts <- lm(bulk_tpm ~ pseudobulk_log_counts, data = df_log_counts)
+      
+  # Tabulate and return some fit stats
+  data.frame(
+    expression_type = c("deseq", "log_counts"),
+    rsquared = c(broom::glance(fit_deseq)$r.squared, broom::glance(fit_log_counts)$r.squared), 
+    coeff = c(broom::tidy(fit_deseq)$estimate[2], broom::tidy(fit_log_counts)$estimate[2]), 
+    residual_sd = c(broom::glance(fit_deseq)$sigma, broom::glance(fit_log_counts)$sigma)
+  )
+}
+
+stats_df <- project_wide_df_list |>
   purrr::map(
     \(df) {
       
-      # Build models
-      # We first need to remove any undefined values for each model
-      df_deseq <- df |>
-        dplyr::filter(is.finite(pseudobulk_deseq), is.finite(bulk_tpm))
-      fit_deseq <- lm(bulk_tpm ~ pseudobulk_deseq * sample_id, data = df_deseq)
-    
-      df_logcounts <- df |>
-        dplyr::filter(is.finite(pseudobulk_logcounts), is.finite(bulk_tpm))
-      fit_logcounts <- lm(bulk_tpm ~ pseudobulk_logcounts * sample_id, data = df_logcounts)
+      # We need to map over sample ids now
+      samples <- unique(df$sample_id)
+      names(samples) <- samples
       
-      # Tabulate some fit stats
-      fit_table <- tibble::tribble(
-        ~expression_type, ~rsquared, ~residual_sd, 
-        "deseq", broom::glance(fit_deseq)$r.squared, broom::glance(fit_deseq)$sigma, 
-        "logcounts", broom::glance(fit_logcounts)$r.squared, broom::glance(fit_logcounts)$sigma
-      )
+      fit_table <- samples |>
+        purrr::map(model_samples, df) |>
+        purrr::list_rbind(names_to = "sample_id")
       
-      
-      # Tabulate some fit stats, wide for easier viewing
-      broom_deseq <- broom::glance(fit_deseq)
-      broom_logcounts <- broom::glance(fit_logcounts)
-      fit_table <- data.frame(
-        deseq_rsquared        = broom_deseq$r.squared,
-        logcounts_rsquared    = broom_logcounts$r.squared,
-        deseq_residual_sd     = broom_deseq$sigma,
-        logcounts_residual_sd = broom_logcounts$sigma    
-      )
-      
-      # Plot the residuals as well on the way down
-      deseq_augment <- broom::augment(fit_deseq)
-      logcounts_augment <- broom::augment(fit_logcounts)
-      
-      p1 <- ggplot(deseq_augment) + 
-        aes(x = pseudobulk_deseq, y = .resid) + 
-        geom_point(size = 0.5, alpha = 0.5) + 
-        geom_hline(yintercept = 0, color = "red") +
-        ggtitle("deseq")
-      p2 <- ggplot(logcounts_augment) + 
-        aes(x = pseudobulk_logcounts, y = .resid) + 
-        geom_point(size = 0.5, alpha = 0.5) + 
-        geom_hline(yintercept = 0, color = "red") +
-        ggtitle("logcounts")
-      
-      print(patchwork::wrap_plots(p1, p2, nrow = 1))
-      
-      # actually return the fit info
-      fit_table
-      
+      return(fit_table)
+
     }
-) |>
+  ) |>
+  # now, combine all projects into a single table
   purrr::list_rbind(names_to = "project_id")
+
+patchwork::wrap_plots(
+  plot_stats(stats_df, rsquared, "rsquared"),
+  plot_stats(stats_df, coeff, "coeff"), 
+  plot_stats(stats_df, residual_sd, "residual_sd"), 
+  nrow = 3
+) 
+
+
+
 ```
 
-Models from different pseudobulk quantities are expectedly, based on scatterplots above,  minimal, and based on the residual plots around linear model assumptions seem reasonably met.
-The `DESeq2` flavor appears to marginally outperform (based on these limited stats) in 3/5 projects. 
+* Pseudobulk quantities are mostly similar, and `pseudobolk_deseq` tends to outperform `pseudobolk_log_counts` for all projects except `SCPCP000009`, but notably there are only 3 samples for this project
+* Correlations are mostly zero or very low for `SCPCP000017`, and `SCPCP000001` and `SCPCP000002` show the strongest relationships overall
 
-## Conclusions
 
-Either calculation for pseudobulk appears to be fine, and it's likely that we'd get roughly the same results either way.
-I would suggest to proceed with the `DESeq2` normalized version since we do not need additional `log2` transformations, which leads to loss of 0-expression genes in the model since they are undefined (unless we want to fudge factor them, but avoiding this if we can seems best).
+All the actual values are here:
+
+
+```{r}
+stats_df
+```
+
+
+
 
 ## Session info
 
