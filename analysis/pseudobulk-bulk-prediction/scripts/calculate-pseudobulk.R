@@ -92,7 +92,7 @@ make_long <- function(pseudo_mat, label) {
 
 pseudo_df <- dplyr::bind_rows(
   make_long(pseudo_deseq, "pseudobulk_deseq"), 
-  make_long(pseudo_deseq, "pseudobulk_log_counts")
+  make_long(pseudo_log_counts, "pseudobulk_log_counts")
 )
 
 # Export ------------------
