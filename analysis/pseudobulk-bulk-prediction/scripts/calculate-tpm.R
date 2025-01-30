@@ -62,7 +62,15 @@ txi_salmon <- tximport::tximport(
 )
 tpm_df  <- txi_salmon$abundance |>
   as.data.frame() |>
-  tibble::rownames_to_column("ensembl_id")
+  tibble::rownames_to_column("ensembl_id") |>
+  # make it long
+  tidyr::pivot_longer(
+    -ensembl_id, 
+    names_to = "sample_id", 
+    values_to = "expression"
+  ) |>
+  # add indicator column for the type of expression this file contains
+  dplyr::mutate(expression_type = "bulk_tpm")   
 
 
 # Export to tsv -------
