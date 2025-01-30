@@ -29,7 +29,7 @@ for project_dir in $scpca_dir/*; do
     project_id=$(basename $project_dir)
 
     tpm_file="${tpm_dir}/${project_id}-tpm.tsv"
-    pseudobulk_file="${pseudobulk_dir}/${project_id}-pseudobulk.rds"
+    pseudobulk_file="${pseudobulk_dir}/${project_id}-pseudobulk.tsv"
 
     # Step 1: Calculate bulk TPM for each project
     if [ ! -f ${tpm_file} ]; then
@@ -37,7 +37,7 @@ for project_dir in $scpca_dir/*; do
         --input_dir "${scpca_dir}/${project_id}" \
         --output_file "${tpm_file}"
     fi
-    
+
     # Step 2: Calculate pseudobulk matrices for each project
     if [ ! -f ${pseudobulk_file} ]; then
       Rscript ${script_dir}/calculate-pseudobulk.R \
