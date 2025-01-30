@@ -1,7 +1,7 @@
 # This script calculates two flavors of pseudobulk normalized counts for a given project.
 # The script exports an RDS file with a list of two matrices:
 #  1. `pseudobulk_deseq`: Pseudobulk calculated by summing raw counts and normalizing them with DESeq2
-#  2. `pseudobulk_logcounts`: Pseudobulk calculated by summing logcounts directly
+#  2. `pseudobulk_log_counts`: Pseudobulk calculated by summing counts and taking their log2
 #
 # Currently, we also discard genes for which
 
@@ -23,13 +23,7 @@ option_list <- list(
   make_option(
     "--output_file",
     type = "character",
-    help = "Path to output RDS to save pseudobulk matrices"
-  ),
-  make_option(
-    "--min_count_per_gene",
-    type = "integer",
-    default = 10, # TODO: Do we just to get rid of rows that are all 0s, and remove this option entirely?
-    help = "Threshold raw expression level to retain genes. If the pseudobulk count is less than this value, we discard the gene."
+    help = "Path to output TSV to save pseudobulk calculations"
   )
 )
 opts <- parse_args(OptionParser(option_list = option_list))
@@ -58,17 +52,11 @@ names(rds_files) <- sample_ids
 
 sce_list <- purrr::map(rds_files, readr::read_rds)
 
+# extract and sum the raw counts
 pseudo_raw_counts <- sce_list |>
   purrr::map(counts) |>
   purrr::map(rowSums) |>
-  # cbind seems to make the names go away, which is sad
- do.call(cbind, args = _ )
-
-colnames(pseudo_raw_counts) <- sample_ids
-
-# We'll also identify rows to keep based on opts$min_count_per_gene
-keep_rows <- DelayedArray::rowSums(pseudo_raw_counts >= opts$min_count_per_gene) > 0
-pseudo_raw_counts <- pseudo_raw_counts[keep_rows, ]
+  do.call(cbind, args = _ )
 
 
 # Approach 1: Normalize with DESeq 2 ----------------
@@ -80,30 +68,32 @@ pseudo_deseq <- DESeqDataSetFromMatrix(
   design = ~sample) |>
   estimateSizeFactors() |>
   rlog(blind = TRUE) |>
-  assay()
+  assay() 
 
 
-# Approach 2: Sum logcounts directly ----------------
-pseudo_logcounts <- sce_list |>
-  purrr::map(
-    \(sce) {
-      # subset to the `keep_rows` we previously identified from the raw counts
-      DelayedArray::rowSums(logcounts(sce)[keep_rows, ])
-    }
-  ) |>
-  purrr::reduce(cbind)
-colnames(pseudo_logcounts) <- sample_ids
+# Approach 2: Sum counts and log2 directly ----------------
+pseudo_log_counts <- log2(pseudo_raw_counts)
 
+
+# Combine into a single long data frame ---------------------
+
+# Define a helper function for converting each matrix to a long data frame
+make_long <- function(pseudo_mat, label) {
+  pseudo_mat |>
+    as.data.frame() |>
+    tibble::rownames_to_column(var = "ensembl_id") |>
+    tidyr::pivot_longer(
+      -ensembl_id, 
+      names_to = "sample_id", 
+      values_to = "expression"
+    ) |>
+    dplyr::mutate(expression_type = label)
+}
+
+pseudo_df <- dplyr::bind_rows(
+  make_long(pseudo_deseq, "pseudobulk_deseq"), 
+  make_long(pseudo_deseq, "pseudobulk_log_counts")
+)
 
 # Export ------------------
-
-# Confirm we have the same genes
-stopifnot(
-  setequal(rownames(pseudo_deseq), rownames(pseudo_logcounts))
-)
-
-pseudo_list <- list(
-  pseudobulk_deseq = pseudo_deseq,
-  pseudobulk_logcounts = pseudo_logcounts
-)
-readr::write_rds(pseudo_list, opts$output_file)
+readr::write_tsv(pseudo_df, opts$output_file)
