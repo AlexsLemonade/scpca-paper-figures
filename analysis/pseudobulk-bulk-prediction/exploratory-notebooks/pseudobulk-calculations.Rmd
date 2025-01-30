@@ -34,7 +34,7 @@ pseudobulk_dir <- file.path(data_dir, "pseudobulk")
 tpm_files <- list.files(
   path = tpm_dir,
   full.names = TRUE,
-  pattern = "*-tpm.tsv$"
+  pattern = "-tpm\\.tsv$"
 )
 tpm_names <- stringr::str_split_i(basename(tpm_files), pattern = "-", i = 1)
 names(tpm_files) <- tpm_names
@@ -43,7 +43,7 @@ names(tpm_files) <- tpm_names
 pseudobulk_files <- list.files(
   path = pseudobulk_dir,
   full.names = TRUE,
-  pattern = "*-pseudobulk.rds$"
+  pattern = "-pseudobulk\\.tsv$"
 )
 pseudobulk_names <- stringr::str_split_i(basename(pseudobulk_files), pattern = "-", i = 1)
 names(pseudobulk_files) <- pseudobulk_names
@@ -56,70 +56,30 @@ stopifnot(
 
 ### Read and prepare input data
 
-
-Data are saved as matrices, so we'll convert them to per-project long data frames here. 
+We'll make both a long and wide version of the data for each project.
 
 ```{r}
-tpm_df_list <- tpm_files |>
-  purrr::map(
-    \(tpm_file) {
-      readr::read_tsv(tpm_file, show_col_types = FALSE) |>
-        tidyr::pivot_longer(
-          -ensembl_id, 
-          names_to = "sample_id", 
-          values_to = "expression"
-        ) |>
-        dplyr::mutate(expression_type = "bulk_tpm")   
-   }
-  )
-
-project_df_list <- purrr::map2(
+project_long_df_list <- purrr::map2(
+  tpm_files, 
   pseudobulk_files, 
-  tpm_df_list,
-  \(pseudo_file, tpm_df) {
+  \(tpm_file, pseudo_file) {
     
-    pseudo_list <- readr::read_rds(pseudo_file)
-    
-    # Filter tpm_df for genes in the pseudobulk
-    tpm_filtered_df <- tpm_df |>
-      dplyr::filter(ensembl_id %in% rownames(pseudo_list[[1]]))
-      
-    # combine pseudobulk matrices into a long data frame and bind with tpm
-    combined_df_long <- pseudo_list |>
-      purrr::map(
-        \(mat) {
-          mat |>
-            as.data.frame() |> 
-            tibble::rownames_to_column("ensembl_id") |> 
-            tidyr::pivot_longer(
-              -ensembl_id, 
-              names_to = "sample_id", 
-              values_to = "expression"
-            )
-        }
-      ) |>
-      purrr::list_rbind(names_to = "expression_type") |> 
-      dplyr::bind_rows(tpm_filtered_df) |>
-      dplyr::select(sample_id, ensembl_id, expression, expression_type)
+    dplyr::bind_rows(
+      readr::read_tsv(tpm_file, show_col_types = FALSE),
+      readr::read_tsv(pseudo_file, show_col_types = FALSE)
+    )
   }
 )
 
-shared_genes <- purrr::map(
-  project_df_list, 
-  \(df) df$ensembl_id
+# Make a wide version as well
+project_wide_df_list <- project_long_df_list |>
+  purrr::map(
+    \(df) {
+      df |>
+        tidyr::pivot_wider(names_from = expression_type, values_from = expression)
+    }
 )
-
-tpm_df_indicator_list <- purrr::map2(
-  tpm_df_list,
-  shared_genes,
-  \(df, ids) dplyr::mutate(df, in_pseudo = ensembl_id %in% ids)
-  )
-
-# clean up!
-rm(shared_genes)
-rm(tpm_df_list)
 ```
-
 
 
 ## Bulk TPM distributions
