@@ -45,7 +45,7 @@ fs::dir_create(dirname(opts$output_file))
 # Read in all SCEs----------------
 rds_files <- list.files(
   path = opts$input_dir,
-  pattern = "*_processed.rds",
+  pattern = "_processed\\.rds$",
   recursive = TRUE
 )
 stopifnot(
@@ -59,10 +59,10 @@ names(rds_files) <- sample_ids
 sce_list <- purrr::map(rds_files, readr::read_rds)
 
 pseudo_raw_counts <- sce_list |>
-  counts() |>
-  purrr::map(DelayedArray::rowSums) |>
+  purrr::map(counts) |>
+  purrr::map(rowSums) |>
   # cbind seems to make the names go away, which is sad
-  purrr::reduce(cbind)
+ do.call(cbind, args = _ )
 
 colnames(pseudo_raw_counts) <- sample_ids
 
