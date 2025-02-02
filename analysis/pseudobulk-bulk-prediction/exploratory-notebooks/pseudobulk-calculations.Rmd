@@ -255,19 +255,16 @@ Some of these genes actually have decent values in single-cell.
 Here, we visualize distributions of all quantities:
 
 ```{r, fig.width = 12, fig.height = 8, warning = FALSE}
-project_long_df_list |>
-  purrr::imap(
-    \(df, project_id) {
-       ggplot(df) + 
-          aes(x = expression, fill = expression_type) + 
-          geom_density(alpha = 0.5) + 
-          scale_fill_brewer(palette = "Dark2") + 
-          facet_wrap(vars(expression_type), scales = "free", nrow = 4) +
-          ggtitle(project_id) +
-          theme(legend.position = "none")
-    }
-  ) |>
-  patchwork::wrap_plots(guides = "collect", nrow = 1)
+ggplot(purrr::list_rbind(project_long_df_list, names_to = "project_id")) + 
+  aes(x = expression, fill = expression_type) + 
+  geom_density(alpha = 0.5) + 
+  scale_fill_brewer(palette = "Dark2") + 
+  facet_grid(
+    rows = vars(expression_type), 
+    cols = vars(project_id),
+    scales = "free_y"
+  ) +
+  theme(legend.position = "none")
 ```
 
 
@@ -314,7 +311,7 @@ project_wide_df_list |>
 
     }
   ) |>
-  patchwork::wrap_plots(nrow = 5)
+  patchwork::wrap_plots(ncol = 1)
 ```
 
 

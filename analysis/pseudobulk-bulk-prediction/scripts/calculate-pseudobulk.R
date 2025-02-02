@@ -72,7 +72,7 @@ pseudo_deseq <- DESeqDataSetFromMatrix(
 
 
 # Approach 2: Sum counts and log2 directly ----------------
-pseudo_log_counts <- log2(pseudo_raw_counts)
+pseudo_log_counts <- log1p(pseudo_raw_counts)/log(2)
 
 
 # Combine into a single long data frame ---------------------
