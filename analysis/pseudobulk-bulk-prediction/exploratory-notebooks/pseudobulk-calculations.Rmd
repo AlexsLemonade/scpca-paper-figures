@@ -187,69 +187,6 @@ project_wide_df_list |>
 Indeed, `pseudobulk_log_counts` is never finite (aka, it is always `-Inf`) when `pseudobulk_deseq` is 0, which is good to know.
 
 
-Let's also check if we have the same genes between bulk and single-cell.
-Any genes present in one modality but not the other will have `NA` expression (transforming any 0 expressions will have produced `-Inf`, not `NA`, so those `NA`s are from joining).
-
-Are any in single-cell but not bulk?
-```{r}
-project_wide_df_list |>
-  purrr::map(\(df){
-    df |> 
-      dplyr::filter(!is.na(bulk_tpm), 
-                    is.na(pseudobulk_deseq), 
-                    is.na(pseudobulk_log_counts)) 
-  }) |>
-  dplyr::bind_rows()
-
-```
-Nope! How about single-cell but not bulk?
-```{r}
-only_single_cell <- project_wide_df_list |>
-  purrr::map(\(df){
-    df |> 
-      dplyr::filter(is.na(bulk_tpm), 
-                    !is.na(pseudobulk_deseq), 
-                    !is.na(pseudobulk_log_counts)) 
-  }) |>
-  purrr::list_rbind(names_to = "project_id") |>
-  dplyr::count(project_id, ensembl_id)
-only_single_cell
-```
-
-
-Yup!
-Plus, these numbers are all the sample numbers...
-
-```{r}
-only_single_cell |>
-  dplyr::count(ensembl_id)
-```
-..and it's the same genes all round (probably a reference thing...?).
-
-
-In any case, what is the expression of these genes in pseudobulk?
-```{r fig.height=3, fig.width=8}
-genes_not_in_bulk <- project_wide_df_list |>
-  purrr::map(
-  \(df) df |> dplyr::filter(is.na(bulk_tpm)) 
-) |>
-  purrr::list_rbind(names_to = "project_id") |>
-  dplyr::select(-bulk_tpm) |>
-  tidyr::pivot_longer(
-    contains("pseudobulk"), 
-    names_to = "expression_type", 
-    values_to = "expression"
-  )
-
-ggplot(genes_not_in_bulk) + 
-  aes(x = expression_type, y = expression) +
-  geom_boxplot() + 
-  facet_wrap(vars(project_id), nrow = 1) +
-  theme(axis.text.x = element_text(angle = 30, hjust = 1))
-```
-Some of these genes actually have decent values in single-cell.
-
-
 ### Full distributions
 
 Here, we visualize distributions of all quantities:
