@@ -133,7 +133,7 @@ project_df_list <- purrr::map2(
 
 First, we'll visualize distributions of all quantities:
 
-```{r, fig.width = 7, fig.height = 7, warning = FALSE}
+```{r, fig.width = 7, fig.height = 6.5, warning = FALSE}
 plot_df <- project_df_list |>
   purrr::list_rbind(names_to = "project_id") |> 
   tidyr::pivot_longer(
@@ -302,7 +302,7 @@ make_binned_scatterplots(
 Let's nail this down further with correlations comparing each measure for bulk with each measure for pseudobulk.
 We'll perform correlations on a per-sample basis, both parametric and non-parametric, display some correlations below both as boxplots and the full table.
 
-```{r fig.height = 10, fig.width = 8}
+```{r fig.height = 10, fig.width = 6}
 
 # Helper function to run correlations
 model_samples <- function(id, df) {
@@ -405,7 +405,7 @@ In this notebook, we'll just a sense of how much "there is there," and we'll lea
 In this section, we'll also use a threshold of `1e-12` for zero here.
 
 
-### Bulk TPM when single-cell is zero
+### Bulk counts when single-cell is zero
 
 
 ```{r fig.height=10, fig.width=12, message=FALSE, warning=FALSE}
@@ -424,7 +424,7 @@ ggplot(plot_df) +
 
 
 
-### Single-cell when bulk TPM is zero
+### Single-cell when bulk counts is zero
 
 
 ```{r fig.height=10, fig.width=12, message=FALSE, warning=FALSE}
