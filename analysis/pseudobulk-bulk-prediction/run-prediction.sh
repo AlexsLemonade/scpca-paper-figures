@@ -23,7 +23,14 @@ mkdir -p $result_dir
 
 # Step 0: Sync data files from S3
 Rscript ${script_dir}/sync-data-files.R \
-  --output_dir ${scpca_dir}
+  --output_dir ${scpca_dir} \
+  --map_file ${scpca_dir}/bulk_library_sample_ids.tsv
+
+# Prepare bulk counts data for comparisons
+Rscript ${script_dir}/prepare-bulk-counts.R \
+  --input_dir ${scpca_dir} \
+  --map_file ${scpca_dir}/bulk_library_sample_ids.tsv \
+  --output_file ${scpca_dir}/normalized_bulk_counts.rds
 
 for project_dir in $scpca_dir/*; do
     project_id=$(basename $project_dir)
