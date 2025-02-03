@@ -103,19 +103,8 @@ ggplot(purrr::list_rbind(project_long_df_list, names_to = "project_id")) +
 
 We see big spikes at zero for pseudobulk, not surprisingly.
 Due to the different transformation approaches, the `pseudobulk_deseq` version has some negatives for fractional values, but the other quantities have a lower bound of zero.
-Bulk TPM has the highest peak at zero by a good amount, followed by `pseudobulk_log_counts` and then `pseudobulk_deseq`.
 All around, distributions range from their lower bound up to around 20, so it's nice to know pseudobulk and bulk are definitely on the same scale.
 
-## Relationship between quantities
-
-
-This section will look at the relationship between bulk and pseudobulk quantities with:
-
-* scatterplots to confirm if we have a linear relationship
-* per-sample linear models of `bulk ~ pseudobulk` to do a cursory comparison of model statistics
-  * these results are presented both as plots and as the full per-sample table to scroll through
-  
-  
   
 ## Relationship between quantities
 
@@ -134,7 +123,7 @@ In all plots, the red line is `y=x`, and the blue line is the regression line.
 
 #### Compare pseudobulk measures
 
-```{r fig.height=28, fig.width=12, message=FALSE, warning=FALSE}
+```{r fig.height=34, fig.width=8, message=FALSE, warning=FALSE}
 project_wide_df_list |>
   purrr::imap(
     \(df, project_id) {
@@ -145,7 +134,7 @@ project_wide_df_list |>
         geom_smooth(method = "lm", linewidth = 0.5) +
         geom_abline(linewidth = 0.5, color = "red") + 
         facet_wrap(vars(sample_id), nrow = 5) +
-        ggtitle("log_counts ~ deseq") 
+        ggtitle(project_id) 
 
     }
   ) |>
@@ -156,7 +145,7 @@ project_wide_df_list |>
 These quantities are exceptionally similar with these differences:
 
 * Driven by different normalization approaches, genes with very low to zero expression
-* In a handful of sampels (1-2 per project), `pseudobulk_log_counts` appears to have a higher proportion of low to zero counts, and throughout has markedly lower values compares to `pseudobulk_deseq`.
+* In a handful of samples (1-2 per project), `pseudobulk_log_counts` appears to have a higher proportion of low to zero counts, and throughout has lower values than `pseudobulk_deseq`.
 
 
 #### Compare pseudobulk to bulk
