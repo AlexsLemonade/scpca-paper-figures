@@ -116,41 +116,126 @@ This section will look at the relationship between bulk and pseudobulk quantitie
   * these results are presented both as plots and as the full per-sample table to scroll through
   
   
+  
+## Relationship between quantities
+
+This section will look at the relationship among quantities.
+
+  
 ### Scatterplots 
 
-What does the relationship look like between bulk and each flavor of pseudobulk?
-Plots are organized by project and:
+First, we'll look at some scatterplots:
 
-* Left-side panels are `bulk tpm ~ deseq pseudocounts`
-* Right-side panels are `bulk tpm ~ log_counts pseudocounts`
+* How similar are the pseudobulk measures themselves?
+* How does each pseudobulk measure compare to bulk?
+  * For these plots, we'll bin data to see the concentration of overlapping points more easily.
 
-```{r fig.height=35, fig.width=18, message=FALSE, warning=FALSE}
+In all plots, the red line is `y=x`, and the blue line is the regression line.
+
+#### Compare pseudobulk measures
+
+```{r fig.height=28, fig.width=12, message=FALSE, warning=FALSE}
 project_wide_df_list |>
   purrr::imap(
     \(df, project_id) {
       
-      p1 <- ggplot(df) + 
-        aes(x = pseudobulk_deseq, y = bulk_tpm) + 
+      ggplot(df) + 
+        aes(x = pseudobulk_deseq, y = pseudobulk_log_counts) + 
         geom_point(alpha = 0.2, size = 0.5) + 
-        geom_smooth(method = "lm") + 
+        geom_smooth(method = "lm", linewidth = 0.5) +
+        geom_abline(linewidth = 0.5, color = "red") + 
         facet_wrap(vars(sample_id), nrow = 5) +
-        ggtitle("bulk tpm ~ deseq")
-      
-      p2 <- ggplot(df) + 
-        aes(x = pseudobulk_log_counts, y = bulk_tpm) + 
-        geom_point(alpha = 0.2, size = 0.5) + 
-        geom_smooth(method = "lm") +
-        facet_wrap(vars(sample_id), nrow = 5) +
-        ggtitle("bulk tpm ~ logcounts") 
-           
-      
-      patchwork::wrap_plots(p1, p2) 
+        ggtitle("log_counts ~ deseq") 
 
     }
   ) |>
   patchwork::wrap_plots(ncol = 1)
 ```
 
+
+These quantities are exceptionally similar with these differences:
+
+* Driven by different normalization approaches, genes with very low to zero expression
+* In a handful of sampels (1-2 per project), `pseudobulk_log_counts` appears to have a higher proportion of low to zero counts, and throughout has markedly lower values compares to `pseudobulk_deseq`.
+
+
+#### Compare pseudobulk to bulk
+
+To make sure we get a good view, we'll first make the plots and then show them per project with their plot settings.
+
+```{r}
+# Helper function to visualize scatterplots with geom_bin_2d()
+make_binned_scatterplots <- function(df, project_id, facet_rows) {
+  p1 <- ggplot(df) + 
+    aes(x = pseudobulk_deseq, y = bulk_tpm) + 
+    geom_bin_2d(bins = 12) + # signal mostly starts to wash out after this
+    geom_smooth(method = "lm", alpha = 0.8, linewidth = 0.5) +
+    geom_abline(alpha = 0.8, linewidth = 0.5, color = "red") + 
+    facet_wrap(vars(sample_id), nrow = facet_rows) +
+    ggtitle("bulk_tpm ~ deseq") 
+    
+  p2 <- ggplot(df) + 
+    aes(x = pseudobulk_log_counts, y = bulk_tpm) + 
+    geom_bin_2d(bins = 12) +
+    geom_smooth(method = "lm", alpha = 0.8, linewidth = 0.5) +
+    geom_abline(alpha = 0.8, linewidth = 0.5, color = "red") + 
+    facet_wrap(vars(sample_id), nrow = facet_rows) +
+    ggtitle("bulk_tpm ~ log_counts") 
+      
+  print(
+    patchwork::wrap_plots(p1, p2, ncol = 2) + patchwork::plot_annotation(title = project_id)
+  )
+}
+```
+
+
+```{r fig.height = 8, fig.width = 12, message=FALSE, warning=FALSE}
+make_binned_scatterplots(
+  project_wide_df_list$SCPCP000001, 
+  project_id = "SCPCP000001",
+  facet_rows = 6
+)
+```
+
+
+
+```{r fig.height = 8, fig.width = 12, message=FALSE, warning=FALSE}
+make_binned_scatterplots(
+  project_wide_df_list$SCPCP000002, 
+  project_id = "SCPCP000002",
+  facet_rows = 6
+)
+```
+
+
+```{r fig.height = 8, fig.width = 12, message=FALSE, warning=FALSE}
+make_binned_scatterplots(
+  project_wide_df_list$SCPCP000006, 
+  project_id = "SCPCP000006",
+  facet_rows = 9
+)
+```
+
+
+```{r fig.height = 3, fig.width = 12, message=FALSE, warning=FALSE}
+make_binned_scatterplots(
+  project_wide_df_list$SCPCP000009, 
+  project_id = "SCPCP000009",
+  facet_rows = 1
+)
+```
+
+
+```{r fig.height = 8, fig.width = 12, message=FALSE, warning=FALSE}
+make_binned_scatterplots(
+  project_wide_df_list$SCPCP000017, 
+  project_id = "SCPCP000017",
+  facet_rows = 7
+)
+```
+
+
+Points are fairly evenly distributed across the scatterplot, except for a very high concentration of points at `0,0` (and into the negatives for `pseudobulk_deseq`). 
 
 ### Statistics 
 
