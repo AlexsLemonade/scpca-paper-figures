@@ -315,6 +315,122 @@ stats_df
 ```
 
 
+## Disagreeing expression
+
+Next, we'll take a quick look at cases where one modality has zero expression and the other doesn't.
+In these cases, if expression is generally high, we have evidence of disagreement/discrepancy between bulk and single-cell that may be interesting to investigate.
+In this notebook, we'll just a sense of how much "there is there," and we'll leave the in-depth look into any such genes for a subsequent notebook.
+
+In this section, we'll also use a threshold of `1e-12` for zero here.
+
+
+### Bulk TPM when single-cell is zero
+
+
+```{r fig.height=10, fig.width=12, message=FALSE, warning=FALSE}
+project_wide_df_list |>
+  purrr::map(
+    \(df) {
+      
+      low_deseq <- df |>
+        dplyr::filter(pseudobulk_deseq <= 1e-12, 
+                      bulk_tpm > 1e-12)
+      low_logcounts <- df |>
+        dplyr::filter(pseudobulk_log_counts <= 1e-12, 
+                      bulk_tpm > 1e-12)  
+
+      
+      p1 <- ggplot(low_deseq) + 
+        aes(x = sample_id, y = bulk_tpm) + 
+        ggforce::geom_sina(size = 0.5) +
+        theme(axis.text.x = element_blank()) +
+        ggtitle("TPM for zero & negative pesudobulk_deseq")
+  
+      p2 <- ggplot(low_logcounts) + 
+        aes(x = sample_id, y = bulk_tpm) + 
+        ggforce::geom_sina(size = 0.5) +
+        theme(axis.text.x = element_blank()) +
+        ggtitle("TPM for zero pseudobulk_log_counts")
+      
+      patchwork::wrap_plots(p1, p2, nrow = 1)
+    }
+  ) |>
+  patchwork::wrap_plots(ncol = 1)
+```
+
+
+
+### Single-cell when bulk TPM is zero
+
+Even though we don't have 1:1 correspondance between pseudobulks here, we'll just consider only points where neither is 0 to get a sense.
+This isn't final.
+
+```{r fig.height=12, fig.width=12, message=FALSE, warning=FALSE}
+project_wide_df_list |>
+  purrr::imap(
+    \(df, project_id) {
+      
+      low_bulk <- df |>
+        dplyr::filter(bulk_tpm <= 1e-12, 
+                      pseudobulk_deseq> 1e-12, 
+                      pseudobulk_log_counts> 1e-12) |>
+        tidyr::pivot_longer(
+          contains("pseudobulk"), 
+          names_to = "expression_type", 
+          values_to = "expression"
+        )
+      
+      ggplot(low_bulk) + 
+        aes(x = sample_id, y = expression, color = expression_type) + 
+        ggforce::geom_sina(size = 0.5) +
+        theme(axis.text.x = element_blank()) +
+        ggtitle(project_id)
+
+    }
+  ) |>
+  patchwork::wrap_plots(ncol = 1, guides = "collect")
+```
+
+
+
+From both comparisons, there are a fair number of genes with high expression in one modality and essentially zero in the other. 
+A more careful investigation here look into what exactly these genes are, and whether they have some biological relationship that might suggest modalities are picking up different information.
+
+
+### Do pseudobulks have strong disagreements?
+
+This will show genes strongly affected by different normalizations.
+
+
+```{r fig.height=12, fig.width=12, message=FALSE, warning=FALSE}
+project_wide_df_list |>
+  purrr::imap(
+    \(df, project_id) {
+      
+      different_low_pseudo <- df |>
+        dplyr::filter((pseudobulk_deseq> 1e-12 & pseudobulk_log_counts <= 1e-12) |
+                       (pseudobulk_deseq <=1e-12 & pseudobulk_log_counts > 1e-12) ) |>
+        tidyr::pivot_longer(
+          contains("pseudobulk"), 
+          names_to = "expression_type", 
+          values_to = "expression"
+        )
+      
+      ggplot(different_low_pseudo) + 
+        aes(x = sample_id, y = expression, color = expression_type) + 
+        ggforce::geom_sina(size = 0.5) +
+        theme(axis.text.x = element_blank()) +
+        ggtitle(project_id)
+
+
+    }
+  ) |>
+  patchwork::wrap_plots(ncol = 1, guides = "collect")
+```
+
+Most values seem to be `[-2.5, 2.5]` for both pseudobulks, but some are getting as high as 6-9. 
+
+
 ## Session info
 
 ```{r}
