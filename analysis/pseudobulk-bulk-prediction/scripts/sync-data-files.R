@@ -1,7 +1,9 @@
 # This script prepares files needed for analysis:
 # 1. First, we identify samples of interest as non-multiplexed samples from solid tumors with paired bulk data
 # 2. Second, we sync all associated bulk `quant.sf` files and single-cell `_processed.rds` files from S3 needed for analysis
-# All files are organized in `<project id>/<sample id>/`
+# 3. Third, we sync all bulk counts from `_bulkd_quant.tsv` from S3
+# All files are organized in `<project id>/<sample id>/` (except bulk counts which are only per project)
+# We also export a TSV file mapping bulk library and sample ideas to support later matching up bulk counts and TPM
 
 
 renv::load()
@@ -20,7 +22,7 @@ option_list <- list(
     type = "character",
     default = here::here("s3_files", "scpca-sample-metadata.tsv"),
     help = "Path to ScPCA sample metadata file."
-  ),  
+  ),
   make_option(
     "--library_metadata_file",
     type = "character",
@@ -35,8 +37,11 @@ opts <- parse_args(OptionParser(option_list = option_list))
 stopifnot(
   "Metadata files could not be found. Were they synced?" = all(file.exists(c(opts$library_metadata_file, opts$sample_metadata_file)))
 )
-s3_bulk_path <- "s3://nextflow-ccdl-results/scpca-prod/checkpoints/salmon" #/library_id/quant.sf
-s3_processed_path <- "s3://nextflow-ccdl-results/scpca-prod/results" #/project_id/sample_id/library_id_processed.rds
+s3_bulk_tpm_path <- "s3://nextflow-ccdl-results/scpca-prod/checkpoints/salmon" #/library_id/quant.sf
+s3_processed_path <- "s3://nextflow-ccdl-results/scpca-prod/results" #/project_id/sample_id/library_id_processed.rds AND project_id/bulk/<project_id>_bulk_quant.tsv
+
+ids_file <- file.path(opts$output_dir, "bulk_library_sample_ids.tsv")
+
 
 fs::dir_create(opts$output_dir)
 
@@ -56,7 +61,7 @@ cellhash_samples <- library_metadata |>
 # all possible samples of interest
 all_bulk_samples <- library_metadata |>
   dplyr::filter(
-    !(scpca_sample_id %in% cellhash_samples), 
+    !(scpca_sample_id %in% cellhash_samples),
     seq_unit == "bulk"
   ) |>
   dplyr::pull(scpca_sample_id) |>
@@ -85,21 +90,21 @@ sync_sc_df <- library_metadata |>
   ) |>
   # only keep columns needed for syncing or checking
   dplyr::select(
-    scpca_sample_id, 
+    scpca_sample_id,
     scpca_library_id,
     output_dir,
     s3_dir
   )
 
 
-# Create data frame to iterate over for syncing bulk files
-sync_bulk_df <- library_metadata |>
+# Create data frame to iterate over for syncing bulk TPM files
+sync_bulk_tpm_df <- library_metadata |>
   dplyr::filter(
     scpca_sample_id %in% sync_sc_df$scpca_sample_id,
     seq_unit == "bulk"
   ) |>
   dplyr::mutate(
-    s3_dir = file.path(s3_bulk_path, scpca_library_id), 
+    s3_dir = file.path(s3_bulk_tpm_path, scpca_library_id),
     output_dir = file.path(opts$output_dir, scpca_project_id, scpca_sample_id)
   ) |>
   # only keep columns needed for syncing or checking
@@ -109,15 +114,36 @@ sync_bulk_df <- library_metadata |>
     s3_dir
   )
 
+
+
+# Create data frame to iterate over for syncing bulk counts TSV files
+sync_bulk_counts_df <- library_metadata |>
+  dplyr::filter(
+    scpca_sample_id %in% sync_sc_df$scpca_sample_id,
+    seq_unit == "bulk"
+  ) |>
+  dplyr::mutate(
+    s3_dir = file.path(s3_processed_path, scpca_project_id, "bulk"),
+    output_dir = file.path(opts$output_dir, scpca_project_id)
+  ) |>
+  # only keep columns needed for syncing
+  dplyr::select(
+    scpca_project_id, 
+    output_dir,
+    s3_dir
+  ) |>
+  dplyr::distinct()
+
+
 # Confirm we're matching all around
 stopifnot(
-  "Bulk and single-cell samples don't match" = setequal(sync_sc_df$scpca_sample_id, sync_bulk_df$scpca_sample_id)
+  "Bulk and single-cell samples don't match" = setequal(sync_sc_df$scpca_sample_id, sync_bulk_tpm_df$scpca_sample_id)
 )
 
 
 
 # Sync quant.sf files ------------------
-sync_bulk_df |>
+sync_bulk_tpm_df |>
   purrr::pwalk(
     \(scpca_sample_id, output_dir, s3_dir) {
       # need trailing slash on s3 path
@@ -135,3 +161,22 @@ sync_sc_df |>
       system(sync_call)
   }
 )
+
+# Sync the bulk counts TSV files ------------------
+sync_bulk_counts_df |>
+  purrr::pwalk(
+    \(scpca_project_id, output_dir, s3_dir) {
+      sync_call <- glue::glue("aws s3 sync '{s3_dir}/' '{output_dir}' --exclude '*' --include '{scpca_project_id}_bulk_quant.tsv'")
+      system(sync_call)
+  }
+)
+
+
+# Export a TSV of matching sample and library ids for bulk, since counts TSV are labeled by library, not sample
+bulk_libraries_samples <- library_metadata |>
+  dplyr::filter(
+    scpca_sample_id %in% sync_sc_df$scpca_sample_id,
+    seq_unit == "bulk"
+  ) |>
+  dplyr::select(scpca_sample_id, scpca_library_id)
+readr::write_tsv(bulk_libraries_samples, ids_file)
