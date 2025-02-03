@@ -6,7 +6,7 @@ output:
   html_notebook:
     toc: true
     toc_depth: 3
-    code_folding: show
+    code_folding: hide
 ---
 
 The goal of this notebook is to compare pseudobulk and bulk calculations to determine which pseudobulk calculation should we proceed with for modeling: the log2 of the sum of raw counts (`pseudobulk_log_counts`) or the `DESeq2`-normalized sum of raw counts (`pseudobulk_deseq`).
@@ -67,7 +67,7 @@ project_long_df_list <- purrr::map2(
     dplyr::bind_rows(
       # TPM needs to be in log2 space
       readr::read_tsv(tpm_file, show_col_types = FALSE) |>
-        dplyr::mutate(expression = log2(expression)),
+        dplyr::mutate(expression = log2(expression)), 
       readr::read_tsv(pseudo_file, show_col_types = FALSE)
     )
   }
@@ -101,10 +101,10 @@ ggplot(purrr::list_rbind(project_long_df_list, names_to = "project_id")) +
   theme(legend.position = "none")
 ```
 
-We see big spikes at zero, not surprisingly.
+We see big spikes at zero for pseudobulk, not surprisingly.
 Due to the different transformation approaches, the `pseudobulk_deseq` version has some negatives for fractional values, but the other quantities have a lower bound of zero.
 Bulk TPM has the highest peak at zero by a good amount, followed by `pseudobulk_log_counts` and then `pseudobulk_deseq`.
-All around distribution range from their lower bound up to around 20.
+All around, distributions range from their lower bound up to around 20, so it's nice to know pseudobulk and bulk are definitely on the same scale.
 
 ## Relationship between quantities
 
@@ -165,10 +165,10 @@ To make sure we get a good view, we'll first make the plots and then show them p
 
 ```{r}
 # Helper function to visualize scatterplots with geom_bin_2d()
-make_binned_scatterplots <- function(df, project_id, facet_rows) {
+make_binned_scatterplots <- function(df, project_id, nbins, facet_rows) {
   p1 <- ggplot(df) + 
     aes(x = pseudobulk_deseq, y = bulk_tpm) + 
-    geom_bin_2d(bins = 12) + # signal mostly starts to wash out after this
+    geom_bin_2d(bins = nbins) + 
     geom_smooth(method = "lm", alpha = 0.8, linewidth = 0.5) +
     geom_abline(alpha = 0.8, linewidth = 0.5, color = "red") + 
     facet_wrap(vars(sample_id), nrow = facet_rows) +
@@ -176,7 +176,7 @@ make_binned_scatterplots <- function(df, project_id, facet_rows) {
     
   p2 <- ggplot(df) + 
     aes(x = pseudobulk_log_counts, y = bulk_tpm) + 
-    geom_bin_2d(bins = 12) +
+    geom_bin_2d(bins = nbins) + 
     geom_smooth(method = "lm", alpha = 0.8, linewidth = 0.5) +
     geom_abline(alpha = 0.8, linewidth = 0.5, color = "red") + 
     facet_wrap(vars(sample_id), nrow = facet_rows) +
@@ -189,29 +189,32 @@ make_binned_scatterplots <- function(df, project_id, facet_rows) {
 ```
 
 
-```{r fig.height = 8, fig.width = 12, message=FALSE, warning=FALSE}
+```{r fig.height = 12, fig.width = 12, message=FALSE, warning=FALSE}
 make_binned_scatterplots(
   project_wide_df_list$SCPCP000001, 
   project_id = "SCPCP000001",
+  nbins = 40,
   facet_rows = 6
 )
 ```
 
 
 
-```{r fig.height = 8, fig.width = 12, message=FALSE, warning=FALSE}
+```{r fig.height = 10, fig.width = 12, message=FALSE, warning=FALSE}
 make_binned_scatterplots(
   project_wide_df_list$SCPCP000002, 
   project_id = "SCPCP000002",
+  nbins = 30,
   facet_rows = 6
 )
 ```
 
 
-```{r fig.height = 8, fig.width = 12, message=FALSE, warning=FALSE}
+```{r fig.height = 12, fig.width = 12, message=FALSE, warning=FALSE}
 make_binned_scatterplots(
   project_wide_df_list$SCPCP000006, 
   project_id = "SCPCP000006",
+  nbins = 50,
   facet_rows = 9
 )
 ```
@@ -221,6 +224,7 @@ make_binned_scatterplots(
 make_binned_scatterplots(
   project_wide_df_list$SCPCP000009, 
   project_id = "SCPCP000009",
+  nbins = 15,
   facet_rows = 1
 )
 ```
@@ -230,15 +234,16 @@ make_binned_scatterplots(
 make_binned_scatterplots(
   project_wide_df_list$SCPCP000017, 
   project_id = "SCPCP000017",
+  nbins = 40,
   facet_rows = 7
 )
 ```
 
+We see high concentrations of points around `(0,0`) as well as towards the middle values across plots.
+Next, we'll look at regression stats for these plots directly.
 
-Points are fairly evenly distributed across the scatterplot, except for a very high concentration of points at `0,0` (and into the negatives for `pseudobulk_deseq`). 
 
-
-### Statistics 
+### Statistics: pseudobulk to bulk comparison
 
 Let's now get some stats for the comparison between bulk and pseudobulk.
 We'll fit a linear model for each sample, and display some quantities below both as boxplots and the full table.
@@ -304,8 +309,9 @@ patchwork::wrap_plots(
 ```
 
 * Pseudobulk quantities are exceptionally similar here, which isn't necessarily surprising given the similarity of the pseudobulk measures
-* Relationships are strongest for`SCPCP000001` and `SCPCP000002`, then `SCPCP000006`, and finally `SCPCP000009` and `SCPCP000017`, although `SCPCP00001`, `SCPCP000002`, and `SCPCP000006` do have higher residual sd.
-* Samples within a given project have broadly similar coefficients, with a few outliers, suggesting less of an interaction among samples/expression than one might have thought (although how much do the zeros drive this?)
+* Relationships are strongest for`SCPCP000001` and `SCPCP000002`, then `SCPCP000006`, then `SCPCP000009`, and finally `SCPCP000017` whose relationship is weak if at all present.
+* Samples within a given project have broadly similar coefficients, with a few outliers, suggesting less of an interaction among samples/expression than one might have thought.
+`SCPCP000017` does have more variation here, but also the relationship is very weak in the first place so these different coefficients are not necessarily statistically significantly different.
 
 All the actual values are here:
 
@@ -362,8 +368,7 @@ project_wide_df_list |>
 
 ### Single-cell when bulk TPM is zero
 
-Even though we don't have 1:1 correspondance between pseudobulks here, we'll just consider only points where neither is 0 to get a sense.
-This isn't final.
+
 
 ```{r fig.height=12, fig.width=12, message=FALSE, warning=FALSE}
 project_wide_df_list |>
@@ -371,6 +376,8 @@ project_wide_df_list |>
     \(df, project_id) {
       
       low_bulk <- df |>
+        # Even though we don't have 1:1 correspondence between pseudobulks here,
+        #  we'll just consider only points where neither is 0 to get a sense.
         dplyr::filter(bulk_tpm <= 1e-12, 
                       pseudobulk_deseq> 1e-12, 
                       pseudobulk_log_counts> 1e-12) |>
@@ -399,7 +406,7 @@ A more careful investigation here look into what exactly these genes are, and wh
 
 ### Do pseudobulks have strong disagreements?
 
-This will show genes strongly affected by different normalizations.
+This will show genes strongly affected by different preparation/normalization approaches.
 
 
 ```{r fig.height=12, fig.width=12, message=FALSE, warning=FALSE}
