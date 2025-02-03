@@ -1,5 +1,5 @@
 ---
-title: "Pseudobulk and bulk data distributions"
+title: "Initial exploration and comparison of pseudobulk vs. bulk expression"
 author: Stephanie J. Spielman
 date: "`r Sys.Date()`"
 output:
@@ -10,7 +10,7 @@ output:
 ---
 
 The goal of this notebook is to compare pseudobulk and bulk calculations to determine which pseudobulk calculation should we proceed with for modeling: the log2 of the sum of raw counts (`pseudobulk_log_counts`) or the `DESeq2`-normalized sum of raw counts (`pseudobulk_deseq`).
-To this end, we'll visualize expression distributions, both on their own and compared to bulk TPM. 
+To this end, we'll explore pseudobulk expression distributions, compare them to bulk, and also explore distributions of expression where there is disagreement between bulk and single-cell.
 
 
 ## Setup
@@ -344,7 +344,7 @@ project_wide_df_list |>
         aes(x = sample_id, y = bulk_tpm) + 
         ggforce::geom_sina(size = 0.5) +
         theme(axis.text.x = element_blank()) +
-        ggtitle("TPM for zero & negative pesudobulk_deseq")
+        ggtitle("TPM for zero & negative pseudobulk_deseq")
   
       p2 <- ggplot(low_logcounts) + 
         aes(x = sample_id, y = bulk_tpm) + 
