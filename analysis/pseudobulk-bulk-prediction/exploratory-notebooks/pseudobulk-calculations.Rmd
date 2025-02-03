@@ -237,13 +237,14 @@ make_binned_scatterplots(
 
 Points are fairly evenly distributed across the scatterplot, except for a very high concentration of points at `0,0` (and into the negatives for `pseudobulk_deseq`). 
 
+
 ### Statistics 
 
-Let's now get some stats for each sample.
+Let's now get some stats for the comparison between bulk and pseudobulk.
 We'll fit a linear model for each sample, and display some quantities below both as boxplots and the full table.
 
 ```{r fig.height = 10, fig.width = 12}
-
+# Helper function to plot model statistics from data frame
 plot_stats <- function(df, column, title) {
   ggplot(df) + 
     aes(x = expression_type, y = {{column}}, color = expression_type) + 
@@ -260,18 +261,18 @@ model_samples <- function(id, df) {
   
   df_deseq <- sample_df |>
     dplyr::filter(is.finite(pseudobulk_deseq), is.finite(bulk_tpm))
-  fit_deseq <- lm(bulk_tpm ~ pseudobulk_deseq, data = df_deseq) 
+  fit_deseq <- summary(lm(bulk_tpm ~ pseudobulk_deseq, data = df_deseq))
 
   df_log_counts <- sample_df |>
       dplyr::filter(is.finite(pseudobulk_log_counts), is.finite(bulk_tpm))
-  fit_log_counts <- lm(bulk_tpm ~ pseudobulk_log_counts, data = df_log_counts)
+  fit_log_counts <- summary(lm(bulk_tpm ~ pseudobulk_log_counts, data = df_log_counts))
       
   # Tabulate and return some fit stats
   data.frame(
     expression_type = c("deseq", "log_counts"),
-    rsquared = c(broom::glance(fit_deseq)$r.squared, broom::glance(fit_log_counts)$r.squared), 
-    coeff = c(broom::tidy(fit_deseq)$estimate[2], broom::tidy(fit_log_counts)$estimate[2]), 
-    residual_sd = c(broom::glance(fit_deseq)$sigma, broom::glance(fit_log_counts)$sigma)
+    rsquared = c(fit_deseq$r.squared, fit_log_counts$r.squared), 
+    coeff = c(fit_deseq$coefficients[2], fit_log_counts$coefficients[2]), 
+    residual_sd = c(fit_deseq$sigma,  fit_log_counts$sigma)
   )
 }
 
@@ -300,14 +301,11 @@ patchwork::wrap_plots(
   plot_stats(stats_df, residual_sd, "residual_sd"), 
   nrow = 3
 ) 
-
-
-
 ```
 
-* Pseudobulk quantities are mostly similar, and `pseudobolk_deseq` tends to outperform `pseudobolk_log_counts` for all projects except `SCPCP000009`, but notably there are only 3 samples for this project
-* Correlations are mostly zero or very low for `SCPCP000017`, and `SCPCP000001` and `SCPCP000002` show the strongest relationships overall
-
+* Pseudobulk quantities are exceptionally similar here, which isn't necessarily surprising given the similarity of the pseudobulk measures
+* Relationships are strongest for`SCPCP000001` and `SCPCP000002`, then `SCPCP000006`, and finally `SCPCP000009` and `SCPCP000017`, although `SCPCP00001`, `SCPCP000002`, and `SCPCP000006` do have higher residual sd.
+* Samples within a given project have broadly similar coefficients, with a few outliers, suggesting less of an interaction among samples/expression than one might have thought (although how much do the zeros drive this?)
 
 All the actual values are here:
 
@@ -315,8 +313,6 @@ All the actual values are here:
 ```{r}
 stats_df
 ```
-
-
 
 
 ## Session info
