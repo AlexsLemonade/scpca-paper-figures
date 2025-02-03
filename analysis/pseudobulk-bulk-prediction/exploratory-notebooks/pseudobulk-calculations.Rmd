@@ -84,114 +84,11 @@ project_wide_df_list <- project_long_df_list |>
 ```
 
 
-## Distributions of expression values
+## Full distributions
 
+First, we'll visualize distributions of all quantities:
 
-First, let's get a general sense of the scale of values in the pseudobulk quantities:
-
-```{r}
-project_wide_df_list |>
-  purrr::map(
-    \(df) {
-      df |>
-        # consider only genes with values not lost to transformation
-        dplyr::filter(is.finite(pseudobulk_log_counts)) |>
-        dplyr::pull(pseudobulk_log_counts) |>
-        summary()
-    }
-  )
-```
-
-
-```{r}
-project_wide_df_list |>
-  purrr::map(
-    \(df) summary(df$pseudobulk_deseq)
-  )
-```
-
-
-
-Due to the different transformation approaches, the `pseudobulk_deseq` version has some negatives for fractional values, but `pseudobulk_log_counts` has a lower bound of 0.
-These different scales of data are important to keep in mind.
-
-
-### Undefined values
-
-Due to the `log2` transformation and sparsity of scRNA-seq counts, many values in `pseudobulk_log_counts` are expected to be `-Inf`, aka essentially unobserved in the single-cell data.
-We'll look at histograms, per project, of the percentage of genes with _defined_:
-
-```{r fig.height = 3, fig.width = 8}
-finite_df <- project_wide_df_list |>
-  purrr::map(
-    \(df) {
-      df |>
-        dplyr::count(sample_id, is_finite = is.finite(pseudobulk_log_counts)) |>
-        tidyr::pivot_wider(
-          names_from = is_finite, 
-          values_from = n, 
-          names_prefix = "finite_",
-          values_fill = 0
-        ) |>
-        dplyr::mutate(percent_genes_with_expression = finite_TRUE/(finite_FALSE + finite_TRUE))
-    }) |>
-  purrr::list_rbind(names_to = "project_id")
-
-
-ggplot(finite_df) +
-  aes(x = percent_genes_with_expression, fill = project_id) + 
-  geom_histogram(bins = 15) + 
-  facet_wrap(vars(project_id), nrow = 1) + 
-  theme(legend.position = "none")
-```
-It looks like about half the genes, but ranging from ~20 - 60\%, of genes in a given sample are non-zero.
-This means about 40-80\% of genes in the genome are not observed per sample.
-
-
-What are the `pseudobulk_deseq` values where the `pseudobulk_log_counts` values (above) are `-Inf`?
-
-```{r fig.height = 3, fig.width = 8}
-deseq_inf_df <- project_wide_df_list |>
-  purrr::map(
-    \(df) dplyr::filter(df, is.infinite(pseudobulk_log_counts))
-  )|>
-  purrr::list_rbind(names_to = "project_id")
-
-
-ggplot(deseq_inf_df) +
-  aes(x = pseudobulk_deseq, fill = project_id) + 
-  geom_histogram(bins = 15) + 
-  facet_wrap(vars(project_id), nrow = 1) + 
-  theme(legend.position = "none")
-```
-
-So, lots of the 0s are here which we expect to see.
-Are _all_ the 0s here?
-
-If all the 0s are the same as all the infinites, then there should be no rows where 0 and finite co-occur:
-
-
-```{r}
-project_wide_df_list |>
-  purrr::map(
-    \(df) {
-      df |>
-        # when deseq is 0, is log_counts always -inf?
-        dplyr::filter(
-          pseudobulk_deseq == 0, 
-          is.finite(pseudobulk_log_counts)
-        ) |>
-        nrow()
-  })
-```
-Indeed, `pseudobulk_log_counts` is never finite (aka, it is always `-Inf`) when `pseudobulk_deseq` is 0, which is good to know.
-
-
-### Full distributions
-
-Here, we visualize distributions of all quantities:
-
-```{r, fig.width = 12, fig.height = 8, warning = FALSE}
+```{r, fig.width = 7, fig.height = 5, warning = FALSE}
 ggplot(purrr::list_rbind(project_long_df_list, names_to = "project_id")) + 
   aes(x = expression, fill = expression_type) + 
   geom_density(alpha = 0.5) + 
@@ -204,7 +101,10 @@ ggplot(purrr::list_rbind(project_long_df_list, names_to = "project_id")) +
   theme(legend.position = "none")
 ```
 
-
+We see big spikes at zero, not surprisingly.
+Due to the different transformation approaches, the `pseudobulk_deseq` version has some negatives for fractional values, but the other quantities have a lower bound of zero.
+Bulk TPM has the highest peak at zero by a good amount, followed by `pseudobulk_log_counts` and then `pseudobulk_deseq`.
+All around distribution range from their lower bound up to around 20.
 
 ## Relationship between quantities
 
