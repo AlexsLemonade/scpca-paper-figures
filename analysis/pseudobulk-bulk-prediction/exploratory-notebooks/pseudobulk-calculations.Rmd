@@ -1,0 +1,455 @@
+---
+title: "Initial exploration and comparison of pseudobulk vs. bulk expression"
+author: Stephanie J. Spielman
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    toc: true
+    toc_depth: 3
+    code_folding: hide
+---
+
+The goal of this notebook is to compare pseudobulk and bulk calculations to determine which calculation flavors we should proceed with.
+We compare two pseudobulk and two bulk measures:
+
+* Pseudobulk:
+  * `pseudobulk_deseq`: raw counts summed and normalized with `DESeq2`
+  * `pseudobulk_log_counts`: raw counts summed and with a `log2(x+1)` transformation
+* Bulk:
+  * `bulk_counts`: Bulk raw counts normalized with `DESeq2`
+  * `bulk_tpm`: TPM bulk data on a `log2` scale
+  
+  
+We'll explore expression distributions, the relationships between bulk and pseudobulk measures, and we'll also have a brief look at  whether there are any genes with strong disagreement between bulk and single-cell. 
+
+
+## Setup
+
+```{r setup}
+renv::load()
+
+library(ggplot2)
+theme_set(theme_bw())
+```
+
+### Paths
+
+```{r paths}
+data_dir <- here::here("analysis", "pseudobulk-bulk-prediction", "data")
+tpm_dir <- file.path(data_dir, "tpm")
+pseudobulk_dir <- file.path(data_dir, "pseudobulk")
+bulk_counts_file <- file.path(data_dir, "scpca_data", "normalized_bulk_counts.rds")
+
+tpm_files <- list.files(
+  path = tpm_dir,
+  full.names = TRUE,
+  pattern = "-tpm\\.tsv$"
+)
+tpm_names <- stringr::str_split_i(basename(tpm_files), pattern = "-", i = 1)
+names(tpm_files) <- tpm_names
+
+
+pseudobulk_files <- list.files(
+  path = pseudobulk_dir,
+  full.names = TRUE,
+  pattern = "-pseudobulk\\.tsv$"
+)
+pseudobulk_names <- stringr::str_split_i(basename(pseudobulk_files), pattern = "-", i = 1)
+names(pseudobulk_files) <- pseudobulk_names
+
+# Make sure we have the same projects, in the same order
+stopifnot(
+  all.equal(names(tpm_files), names(pseudobulk_files))
+)
+```
+
+### Read and prepare input data
+
+We'll make both a long and wide version of the data for convenience throughout the notebook.
+
+
+```{r}
+project_df_list <- purrr::map2(
+  tpm_files, 
+  pseudobulk_files, 
+  \(tpm_file, pseudo_file) {
+    
+    tpm_df <- readr::read_tsv(tpm_file, show_col_types = FALSE) |>
+      #  TPM needs to be in log2 space
+      dplyr::mutate(expression = log2(expression))
+    
+    pseudo_df <- readr::read_tsv(pseudo_file, show_col_types = FALSE) 
+    
+    dplyr::bind_rows(
+      tpm_df, 
+      pseudo_df
+    ) |>
+      tidyr::pivot_wider(
+        names_from = expression_type, 
+        values_from = expression
+      )
+  }
+)
+```
+
+We'll read in the bulk counts data and combine with the rest of the data.
+
+```{r}
+# we only want to keep these samples from the bulk counts
+present_samples <- project_df_list |>
+  purrr::map(
+    \(df) {
+      df |> 
+        dplyr::pull(sample_id) |> 
+        unique()
+    }
+  ) |>
+  purrr::reduce(c)
+
+# Make a list of data frames of bulk counts, normalized by DESeq2
+bulk_df_list <- readr::read_rds(bulk_counts_file) |>
+  purrr::map(
+    \(df) {
+      df |>
+        dplyr::filter(sample_id %in% present_samples) |>
+        dplyr::rename(ensembl_id = gene_id)
+    }
+  )
+
+# Combine the data
+project_df_list <- purrr::map2(
+  bulk_df_list, 
+  project_df_list, 
+  \(df_counts, df_main) {
+    
+    df_main |>
+      dplyr::left_join(df_counts, by = c("ensembl_id", "sample_id"))
+  }
+)
+```
+
+
+## Full distributions
+
+First, we'll visualize distributions of all quantities:
+
+```{r, fig.width = 7, fig.height = 6.5, warning = FALSE}
+plot_df <- project_df_list |>
+  purrr::list_rbind(names_to = "project_id") |> 
+  tidyr::pivot_longer(
+    c(-project_id, -ensembl_id, -sample_id), 
+    names_to = "expression_type", 
+    values_to = "expression"
+  )
+
+ggplot(plot_df) + 
+  aes(x = expression, fill = expression_type) + 
+  geom_density(alpha = 0.5) + 
+  scale_fill_brewer(palette = "Dark2") + 
+  facet_grid(
+    rows = vars(expression_type), 
+    cols = vars(project_id),
+    scales = "free_y"
+  ) +
+  theme(legend.position = "none")
+```
+
+We see big spikes at zero for pseudobulk, not surprisingly.
+Due to the different transformation approaches, the `pseudobulk_deseq` version has some negatives for fractional values, but the other quantities have a lower bound of zero.
+All around, distributions are concetrated range from their lower bound to around 20, so it's nice to know pseudobulk and bulk are definitely on the same scale.
+In the bulk counts, `SCPCP000017` seems to have a much larger peak at zero compared to other projects.
+
+  
+Let's clean up for memory here.
+```{r}
+rm(plot_df)
+gc()
+```
+
+## Relationship between quantities
+
+This section will look at the relationship among quantities:
+
+* How similar are the pseudobulk measures themselves?
+* How does each pseudobulk measure compare to bulk TPM?
+  * For these plots, we'll bin data to see the concentration of overlapping points more easily.
+* How does each pseudobulk measure compare to bulk normalized counts (not TPM)?
+  * For these plots, we'll bin data to see the concentration of overlapping points more easily.
+In all plots, the red line is `y=x`, and the blue line is the regression line.
+
+
+### Compare pseudobulk measures
+
+```{r fig.height=34, fig.width=8, message=FALSE, warning=FALSE}
+project_df_list |>
+  purrr::imap(
+    \(df, project_id) {
+      
+      ggplot(df) + 
+        aes(x = pseudobulk_deseq, y = pseudobulk_log_counts) + 
+        geom_point(alpha = 0.2, size = 0.5) + 
+        geom_smooth(method = "lm", linewidth = 0.5) +
+        geom_abline(linewidth = 0.5, color = "red") + 
+        facet_wrap(vars(sample_id), nrow = 5) +
+        ggtitle(project_id) 
+
+    }
+  ) |>
+  patchwork::wrap_plots(ncol = 1)
+```
+
+
+These quantities are exceptionally similar with these differences:
+
+* Driven by different normalization approaches, genes with very low to zero expression
+* In a handful of samples (1-2 per project), `pseudobulk_log_counts` appears to have a higher proportion of low to zero counts, and throughout has lower values than `pseudobulk_deseq`.
+
+
+
+### Compare pseudobulk to bulk
+
+Since these quantities here are so similar, these scatterplots will show only bulk comparisons to `pseudobulk_deseq`.
+
+These plots will show:
+
+* Left panel: `bulk TPM ~ pseudobulk_deseq`
+* Right panel: `bulk counts ~ pseudobulk_deseq`
+
+```{r}
+# Helper function to visualize scatterplots with geom_bin_2d()
+make_binned_scatterplots <- function(df, project_id, nbins, facet_rows) {
+  p1 <- ggplot(df) + 
+    aes(x = pseudobulk_deseq, y = bulk_tpm) + 
+    geom_bin_2d(bins = nbins) + 
+    geom_smooth(method = "lm", alpha = 0.8, linewidth = 0.5) +
+    geom_abline(alpha = 0.8, linewidth = 0.5, color = "red") + 
+    facet_wrap(vars(sample_id), nrow = facet_rows) +
+    ggtitle("bulk_tpm ~ deseq") 
+  
+  p2 <- ggplot(df) + 
+    aes(x = pseudobulk_deseq, y = bulk_counts) + 
+    geom_bin_2d(bins = nbins) + 
+    geom_smooth(method = "lm", alpha = 0.8, linewidth = 0.5) +
+    geom_abline(alpha = 0.8, linewidth = 0.5, color = "red") + 
+    facet_wrap(vars(sample_id), nrow = facet_rows) +
+    ggtitle("bulk_counts ~ deseq") 
+
+
+  patchwork::wrap_plots(p1, p2, ncol = 2) + patchwork::plot_annotation(title = project_id)
+}
+```
+
+
+
+
+```{r fig.height = 12, fig.width = 12, message=FALSE, warning=FALSE}
+make_binned_scatterplots(
+  project_df_list$SCPCP000001, 
+  project_id = "SCPCP000001",
+  nbins = 15,
+  facet_rows = 6
+)
+```
+
+
+
+```{r fig.height = 10, fig.width = 12, message=FALSE, warning=FALSE}
+make_binned_scatterplots(
+  project_df_list$SCPCP000002, 
+  project_id = "SCPCP000002",
+  nbins = 15,
+  facet_rows = 6
+)
+```
+
+
+```{r fig.height = 12, fig.width = 12, message=FALSE, warning=FALSE}
+make_binned_scatterplots(
+  project_df_list$SCPCP000006, 
+  project_id = "SCPCP000006",
+  nbins = 15,
+  facet_rows = 9
+)
+```
+
+
+```{r fig.height = 3, fig.width = 12, message=FALSE, warning=FALSE}
+make_binned_scatterplots(
+  project_df_list$SCPCP000009, 
+  project_id = "SCPCP000009",
+  nbins = 15,
+  facet_rows = 1
+)
+```
+
+
+```{r fig.height = 8, fig.width = 12, message=FALSE, warning=FALSE}
+make_binned_scatterplots(
+  project_df_list$SCPCP000017, 
+  project_id = "SCPCP000017",
+  nbins = 40,
+  facet_rows = 7
+)
+```
+
+* `bulk_counts` generally has much closer to a 1:1 relationship with pseudobulk compared to `bulk_tpm`
+  * This is nearly universally the case for `SCPCP000001`, `SCPCP000002`, and `SCPCP000006`, and while true for `SCPCP000009` and `SCPCP000017`, it is less pronounced
+* Relationships in general are weakest for `SCPCP000017`, but the situation does look better with `bulk_counts`
+
+
+#### Statistics
+
+Let's nail this down further with correlations comparing each measure for bulk with each measure for pseudobulk.
+We'll perform correlations on a per-sample basis, both parametric and non-parametric, display some correlations below both as boxplots and the full table.
+
+```{r fig.height = 10, fig.width = 6}
+
+# Helper function to run correlations
+model_samples <- function(id, df) {
+  sample_df <- df |>
+    dplyr::filter(sample_id == id) 
+  
+  #### Bulk tpm
+  df_deseq <- sample_df |>
+    dplyr::filter(is.finite(pseudobulk_deseq), is.finite(bulk_tpm))
+  r_deseq_tpm <- cor(df_deseq$bulk_tpm, df_deseq$pseudobulk_deseq, method = "spearman")
+  rho_deseq_tpm <- cor(df_deseq$bulk_tpm, df_deseq$pseudobulk_deseq, method = "pearson")
+
+  df_log_counts <- sample_df |>
+      dplyr::filter(is.finite(pseudobulk_log_counts), is.finite(bulk_tpm))
+  r_logcounts_tpm <- cor(df_deseq$bulk_tpm, df_deseq$pseudobulk_log_counts, method = "spearman")
+  rho_logcounts_tpm <- cor(df_deseq$bulk_tpm, df_deseq$pseudobulk_log_counts, method = "pearson")
+      
+  #### Bulk counts
+  df_deseq <- sample_df |>
+    dplyr::filter(is.finite(pseudobulk_deseq), is.finite(bulk_counts))
+  r_deseq_counts <- cor(df_deseq$bulk_counts, df_deseq$pseudobulk_deseq, method = "spearman")
+  rho_deseq_counts <- cor(df_deseq$bulk_counts, df_deseq$pseudobulk_deseq, method = "pearson")
+
+  df_log_counts <- sample_df |>
+      dplyr::filter(is.finite(pseudobulk_log_counts), is.finite(bulk_counts))
+  r_logcounts_counts <- cor(df_deseq$bulk_counts, df_deseq$pseudobulk_log_counts, method = "spearman")
+  rho_logcounts_counts <- cor(df_deseq$bulk_counts, df_deseq$pseudobulk_log_counts, method = "pearson")
+      
+  # Tabulate and return some fit stats
+  data.frame(
+    r =      c(r_deseq_tpm,    r_logcounts_tpm,    r_deseq_counts,   r_logcounts_counts),
+    rho =    c(rho_deseq_tpm,  rho_logcounts_tpm,  rho_deseq_counts, rho_logcounts_counts),
+    bulk =   c("bulk_tpm",    "bulk_tpm",          "bulk_counts",    "bulk_counts"), 
+    pseudo = c("deseq",       "log_counts",        "deseq",          "log_counts")
+  ) |>
+    tidyr::pivot_longer(
+      c(r, rho), 
+      names_to = "measure", 
+      values_to = "correlation"
+    )
+}
+
+stats_df <- project_df_list |>
+  purrr::map(
+    \(df) {
+      
+      # We need to map over sample ids now
+      samples <- unique(df$sample_id)
+      names(samples) <- samples
+      
+      fit_table <- samples |>
+        purrr::map(model_samples, df) |>
+        purrr::list_rbind(names_to = "sample_id")
+      
+      return(fit_table)
+
+    }
+  ) |>
+  # now, combine all projects into a single table
+  purrr::list_rbind(names_to = "project_id") |>
+  dplyr::mutate(comparison = glue::glue("{bulk}-{pseudo}")) |>
+  dplyr::select(-bulk, -pseudo)
+
+
+ggplot(stats_df) + 
+  aes(x = comparison, fill = comparison, y = correlation) + 
+  geom_boxplot(linewidth = 0.25, outlier.size = 0.25)+
+  facet_grid(
+    rows = vars(project_id), 
+    cols = vars(measure)) + 
+  theme(
+    legend.position = "none", 
+    axis.text.x = element_text(angle = 30, hjust = 1)
+  )
+```
+
+* Relationships between pseudobulk and bulk counts are exceptionally similar here, and further we are generally lying along the 1:1 line.
+* For all projects, the nonparametric approach yields marginally higher correlations, but often marginally
+* Using a nonparametric test yields stronger correlations for `bulk_counts` not but for `bulk_tpm`
+* For `SCPCP000001`, `SCPCP000002`, and `SCPCP000006`, the correlations are generally similar regardless of which quantities are being compared and which statistic is used, although there are some small differences (not likely significant)
+* For `SCPCP000009` (again, only 3 samples here!) and `SCPCP000017`, `bulk_counts` tends to outperform `bulk_tpm` for either pseudobulk measure
+
+The underlying correlations are here:
+
+
+```{r}
+stats_df
+```
+
+
+
+## Disagreeing expression
+
+Based on performances of quantities above, this section considers specifically `bulk_counts` and `pseudobulk_log_counts`.
+
+Next, we'll take a quick look at cases where one modality has zero expression and the other doesn't.
+In these cases, if expression is generally high, we have evidence of disagreement/discrepancy between bulk and single-cell that may be interesting to investigate.
+In this notebook, we'll just a sense of how much "there is there," and we'll leave the in-depth look into any such genes for a subsequent notebook.
+
+In this section, we'll also use a threshold of `1e-12` for zero here.
+
+
+### Bulk counts when single-cell is zero
+
+
+```{r fig.height=10, fig.width=12, message=FALSE, warning=FALSE}
+plot_df <- purrr::list_rbind(project_df_list, names_to = "project_id") |>
+  dplyr::filter(
+    pseudobulk_log_counts <= 1e-12, 
+    bulk_counts > 1e-12
+  )  
+  
+ggplot(plot_df) + 
+  aes(x = sample_id, y = bulk_counts) + 
+  geom_boxplot(outlier.size = 0.25) +
+  facet_wrap(vars(project_id), ncol = 1, scale = "free") +
+  theme(axis.text.x = element_blank())
+```
+
+
+
+### Single-cell when bulk counts is zero
+
+
+```{r fig.height=10, fig.width=12, message=FALSE, warning=FALSE}
+plot_df <- purrr::list_rbind(project_df_list, names_to = "project_id") |>
+  dplyr::filter(
+    bulk_counts <= 1e-12, 
+    pseudobulk_log_counts > 1e-12
+  )  
+  
+ggplot(plot_df) + 
+  aes(x = sample_id, y = pseudobulk_log_counts) + 
+  geom_boxplot(outlier.size = 0.25) +
+  facet_wrap(vars(project_id), ncol = 1, scale = "free") +
+  theme(axis.text.x = element_blank())
+```
+
+
+
+From both comparisons, there's a decent number of genes with high expression in one modality and essentially zero in the other. 
+A more careful investigation here look into what exactly these genes are, and whether they have some biological relationship that might suggest modalities are picking up different information.
+
+
+
+## Session info
+
+```{r}
+sessionInfo()
+```
