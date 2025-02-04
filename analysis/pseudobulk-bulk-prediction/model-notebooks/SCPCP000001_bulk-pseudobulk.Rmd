@@ -1,0 +1,148 @@
+---
+title: "Predict bulk from pseudobulk: SCPCP000001"
+author: Stephanie J. Spielman
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    toc: true
+    toc_depth: 3
+    code_folding: hide
+---
+
+_Introduction coming later._
+
+## Setup
+
+```{r setup}
+renv::load()
+
+library(ggplot2)
+theme_set(theme_bw())
+```
+
+
+
+```{r}
+project_id <- "SCPCP000001"
+
+# As identified in https://github.com/AlexsLemonade/scpca-paper-figures/issues/135
+exclude_samples <- c("SCPCS000003")
+```
+
+
+### Paths
+
+```{r paths}
+data_dir <- here::here("analysis", "pseudobulk-bulk-prediction", "data")
+metadata_dir <- file.path(rprojroot::find_root(rprojroot::is_renv_project), "s3_files") 
+
+sample_metadata_file <- file.path(metadata_dir, "scpca-sample-metadata.tsv")
+library_metadata_file <- file.path(metadata_dir, "scpca-library-metadata.tsv")
+
+
+bulk_counts_file <- file.path(data_dir, "scpca_data", "normalized_bulk_counts.rds")
+pseudobulk_file <- file.path(data_dir, "pseudobulk", glue::glue("{project_id}-pseudobulk.tsv"))
+```
+
+### Read and prepare input data
+
+```{r}
+bulk_counts_df <- readr::read_rds(bulk_counts_file) |>
+  purrr::pluck(project_id) |>
+  dplyr::rename(
+    bulk = bulk_counts, 
+    ensembl_id = gene_id
+  ) 
+
+pseudo_df <- readr::read_tsv(pseudobulk_file, show_col_types = FALSE) |>
+  dplyr::filter(expression_type == "pseudobulk_deseq") |>
+  dplyr::select(ensembl_id, sample_id, pseudobulk = expression)
+
+# combine bulk and pseudobulk into a single data frame
+expr_df <- dplyr::full_join(
+  pseudo_df, 
+  bulk_counts_df,
+  by = c("ensembl_id", "sample_id")
+) |>
+  dplyr::filter(!(sample_id %in% exclude_samples))
+
+# clean up
+rm(pseudo_df)
+rm(bulk_counts_df)
+```
+
+
+## Models
+
+First, we'll fit three flavors of model for `bulk ~ pseudobulk` 
+
+* `fit_plain`: simple regression with no other effects
+* `fit_additive`: add a `sample_id` additive effect
+* `fit_interaction`: add a `sample_id` interaction effect
+
+We'll have a look at model fits to determine which to proceed with. 
+
+```{r}
+models <- list(
+  fit_plain = lm(bulk ~ pseudobulk, data = expr_df),
+  fit_additive = lm(bulk ~ pseudobulk + sample_id, data = expr_df),
+  fit_interaction = lm(bulk ~ pseudobulk * sample_id, data = expr_df)
+)
+
+purrr::map(models, summary)
+```
+
+In the end, we have:
+
+| model              | $R^2$     | $\sigma$ |
+|:-------------------|:----------|:---------|
+| `fit_plain`        | $0.7291$  | $2.332$  |
+| `fit_additive`     | $0.7292$  | $2.332$  |
+| `fit_interaction`  | $0.7293$  | $2.331$  |
+
+As such, these models have essentially the same predictive power and average error, implying either that controlling for sample may be capturing noise in this project or the statistically significant coefficients have minimal effect sizes.
+Most of the additive model coefficients are significant and range between `[0.03, 0.1]`, although two samples are a bit higher.
+In the the interaction model, over half the interaction effects are not significant, so this model may be capturing noise.
+
+Let's have a look at some residuals; I expect these will look about the same too, but let's confirm.
+
+
+```{r fig.height=4, fig.width=8}
+residual_df <- models |>
+  purrr::map(
+    \(fit) {
+      res_df <- data.frame(
+        residual = unname(residuals(fit)), 
+        fitted_values = unname(fitted(fit))
+      )
+  }) |>
+  purrr::list_rbind(names_to = "model_name") |>
+  dplyr::mutate(
+    model_name = forcats::fct_relevel(model_name, "fit_plain", "fit_additive", "fit_interaction")
+  )
+
+ggplot(residual_df) + 
+  aes(x = fitted_values, y = residual) + 
+  geom_bin_2d(bins = 75) +
+  geom_hline(yintercept = 0, color = "firebrick2") + 
+  facet_wrap(vars(model_name), nrow = 1)
+```
+
+Indeed, they look about the same.
+Points are generally evenly distributed across the plot, except for the expected high concentration of points at `(0,0)`.
+On the plus side, we do seem to a decent number of candidate outlier genes in the top-left and bottom-right quadrants.
+
+Based on this initial exploration, we'll proceed with the additive model. 
+
+
+```{r}
+fit <- models$fit_additive
+rm(models)
+```
+
+
+## Session info
+
+```{r}
+sessionInfo()
+```
