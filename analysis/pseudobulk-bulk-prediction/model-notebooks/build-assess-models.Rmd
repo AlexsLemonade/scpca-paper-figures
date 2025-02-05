@@ -71,22 +71,23 @@ This chunk defines a helper function to read and combine bulk and pseudobulk dat
 ```{r}
 prepare_data <- function(pseudo_file, bulk_df, exclude_samples) {
   pseudo_df <- readr::read_tsv(pseudo_file, show_col_types = FALSE) |>
-    dplyr::filter(expression_type == "pseudobulk_deseq") |>
+    dplyr::filter(
+      expression_type == "pseudobulk_deseq", 
+      !(sample_id %in% exclude_samples)
+    ) |>
     dplyr::select(ensembl_id, sample_id, pseudobulk = expression)
     
   # make names consistent with pseudo_df
   bulk_df <- bulk_df |>
+    dplyr::filter(!(sample_id %in% exclude_samples)) |>
     dplyr::rename(bulk = bulk_counts, ensembl_id = gene_id)
 
   # combine bulk and pseudobulk into a single data frame
-  expr_df <- dplyr::full_join(
+  expr_df <- dplyr::inner_join(
     pseudo_df,
     bulk_df,
     by = c("ensembl_id", "sample_id")
-  ) |>
-    # remove low-quality samples
-    dplyr::filter(!(sample_id %in% exclude_samples))
-
+  ) 
   return(expr_df)
 }
 ```
@@ -165,7 +166,6 @@ all_models <- purrr::map2(
 
 # clean up
 rm(bulk_counts)
-gc()
 ```
 
 ### Fit statistics
