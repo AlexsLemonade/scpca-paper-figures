@@ -167,6 +167,29 @@ rm(bulk_counts)
 gc()
 ```
 
+### Fit statistics
+
+Next, we want to look at some of the fit statistics, including whether the random-effects models converged:
+
+```{r}
+all_models |>
+  purrr::map(
+    \(model_list) {
+      purrr::imap(model_list, extract_fit) |>
+        purrr::list_rbind()
+    }
+  ) |>
+  purrr::list_rbind(names_to = "project_id")
+```
+
+* Across all projects, model AIC and BIC each show improvements as model complexity increases
+* `\sigma` is roughly the same for the plain and additive models, but it is much lower for the interaction models across the board
+  * `\sigma` shows the largest relative drop from additive to interaction for `SCPCP000017`, which from previous exploration shows the weakest relationship between bulk and pseudobulk (see `../exploratory-notebooks/compare-bulk-pseudobulk.Rmd`)
+* The interaction models do not converge for projects `SCPCP000001`, `SCPCP000002`, and `SCPCP000006`
+  * These projects had the tightest relationships between bulk and pseudobulk in `../exploratory-notebooks/compare-bulk-pseudobulk.Rmd` and similarly the most similar slopes when looking at individual samples.
+  This observation is therefore somewhat consistent with previous observations
+
+
 ## Session info
 
 ```{r}
