@@ -185,7 +185,7 @@ all_models |>
 ```
 
 * Across all projects, model AIC and BIC each show improvements as model complexity increases
-* `\sigma` is roughly the same for the plain and additive models, but it is much lower for the interaction models across the board
+* $\sigma$ is roughly the same for the plain and additive models, but it is much lower for the interaction models across the board
   * `\sigma` shows the largest relative drop from additive to interaction for `SCPCP000017`, which from previous exploration shows the weakest relationship between bulk and pseudobulk (see `../exploratory-notebooks/compare-bulk-pseudobulk.Rmd`)
 * The interaction models do not converge for projects `SCPCP000001`, `SCPCP000002`, and `SCPCP000006`
   * These projects had the tightest relationships between bulk and pseudobulk in `../exploratory-notebooks/compare-bulk-pseudobulk.Rmd` and similarly the most similar slopes when looking at individual samples.
