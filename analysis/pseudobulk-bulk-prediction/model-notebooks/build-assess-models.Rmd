@@ -121,16 +121,17 @@ extract_fit <- function(fit, fit_name) {
     sigma <- summary(fit)$sigma
   } else {
     ########### lmer ##############
+    # this value only exists if the model did not converge
     grab_conv_code <- purrr::safely(
       \(fit) fit@optinfo$conv$lme4$code
     )
     code <- grab_conv_code(fit)$result
-    sigma <- unname(fit@devcomp$cmp["sigmaML"]) # not reml!
+    sigma <- unname(fit@devcomp$cmp["sigmaML"]) # use ML, not REML!
   }
   
   data.frame(
     fit_name = fit_name,
-    conv_code = ifelse(is.null(code), NA, code),
+    conv_code = ifelse(is.null(code), 0, code),
     sigma = sigma,
     aic = AIC(fit),
     bic = BIC(fit)
@@ -169,7 +170,8 @@ gc()
 
 ### Fit statistics
 
-Next, we want to look at some of the fit statistics, including whether the random-effects models converged:
+Next, we want to look at some of the fit statistics, including whether the random-effects models converged.
+In the `conv_code` column, `-1` indicates the model did not converge and `0` indicates that it did.
 
 ```{r}
 all_models |>
@@ -202,11 +204,13 @@ residuals_df <- all_models |>
   }) |>
   purrr::list_rbind(names_to = "project_id") |>
   dplyr::mutate(
-    model_name = forcats::fct_relevel("fit_plain", "fit_additive", "fit_interaction")
+    model_name = forcats::fct_relevel(
+      model_name, "fit_plain", "fit_additive", "fit_interaction"
+    )
   )
 ```
 
-```{r fig.height=8, fig.width=10}
+```{r fig.height=10, fig.width=10}
 ggplot(residuals_df) + 
   aes(x = fitted_values, y = residuals) + 
   geom_bin_2d(bins = 50) + 
