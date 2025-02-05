@@ -33,7 +33,8 @@ exclude_samples <- c("SCPCS000003")
 ### Paths
 
 ```{r paths}
-data_dir <- here::here("analysis", "pseudobulk-bulk-prediction", "data")
+analysis_dir <- here::here("analysis", "pseudobulk-bulk-prediction")
+data_dir <- file.path(analysis_dir, "data")
 metadata_dir <- file.path(rprojroot::find_root(rprojroot::is_renv_project), "s3_files") 
 
 sample_metadata_file <- file.path(metadata_dir, "scpca-sample-metadata.tsv")
@@ -44,31 +45,23 @@ bulk_counts_file <- file.path(data_dir, "scpca_data", "normalized_bulk_counts.rd
 pseudobulk_file <- file.path(data_dir, "pseudobulk", glue::glue("{project_id}-pseudobulk.tsv"))
 ```
 
+We'll also source helper functions:
+
+* `prepare_data()`: Read and prepare data frame of bulk and pseudobulk counts
+
+```{r}
+source(file.path(analysis_dir, "model-notebooks", "utils.R"))
+```
+
 ### Read and prepare input data
 
 ```{r}
-bulk_counts_df <- readr::read_rds(bulk_counts_file) |>
-  purrr::pluck(project_id) |>
-  dplyr::rename(
-    bulk = bulk_counts, 
-    ensembl_id = gene_id
-  ) 
-
-pseudo_df <- readr::read_tsv(pseudobulk_file, show_col_types = FALSE) |>
-  dplyr::filter(expression_type == "pseudobulk_deseq") |>
-  dplyr::select(ensembl_id, sample_id, pseudobulk = expression)
-
-# combine bulk and pseudobulk into a single data frame
-expr_df <- dplyr::full_join(
-  pseudo_df, 
-  bulk_counts_df,
-  by = c("ensembl_id", "sample_id")
-) |>
-  dplyr::filter(!(sample_id %in% exclude_samples))
-
-# clean up
-rm(pseudo_df)
-rm(bulk_counts_df)
+expr_df <- prepare_data(
+  bulk_counts_file, 
+  pseudobulk_file, 
+  project_id, 
+  exclude_samples
+)
 ```
 
 
