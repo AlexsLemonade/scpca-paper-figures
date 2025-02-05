@@ -189,6 +189,38 @@ all_models |>
   * These projects had the tightest relationships between bulk and pseudobulk in `../exploratory-notebooks/compare-bulk-pseudobulk.Rmd` and similarly the most similar slopes when looking at individual samples.
   This observation is therefore somewhat consistent with previous observations
 
+### Residual plots
+
+Next we'll look at the residual plots for each model to see if we can detect anything else there:
+
+```{r}
+residuals_df <- all_models |>
+  purrr::map(
+    \(model_list) {
+        purrr::map(model_list, extract_residuals) |>
+          purrr::list_rbind(names_to = "model_name") 
+  }) |>
+  purrr::list_rbind(names_to = "project_id") |>
+  dplyr::mutate(
+    model_name = forcats::fct_relevel("fit_plain", "fit_additive", "fit_interaction")
+  )
+```
+
+```{r fig.height=8, fig.width=10}
+ggplot(residuals_df) + 
+  aes(x = fitted_values, y = residuals) + 
+  geom_bin_2d(bins = 50) + 
+  geom_hline(yintercept = 0, color = "firebrick2") + 
+  facet_grid(
+    cols = vars(model_name), 
+    rows = vars(project_id), 
+    scales = "free_y"
+  )
+```
+
+
+* The lower `\sigma` for interaction models is evident in these residual plots
+* Points are generally evenly spread throughout, except for the expected high concentration of points at `(0,0)`
 
 ## Session info
 
