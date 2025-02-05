@@ -222,6 +222,11 @@ ggplot(residuals_df) +
 * The lower `\sigma` for interaction models is evident in these residual plots
 * Points are generally evenly spread throughout, except for the expected high concentration of points at `(0,0)`
 
+## Export
+
+
+We'll export the chosen models for each project in this section (forthcoming after a lil review).
+
 ## Session info
 
 ```{r}
