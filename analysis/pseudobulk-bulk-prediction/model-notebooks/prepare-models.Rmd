@@ -1,0 +1,174 @@
+---
+title: "Prepare models predicting bulk from pseudobulk"
+author: Stephanie J. Spielman
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    toc: true
+    toc_depth: 3
+    code_folding: hide
+---
+
+
+This goal of this notebook is to build models predicting bulk from pseudobulk for all projects and assess their fits.
+We build and assess the following random effects models for each project:
+
+* `fit_plain`: `bulk ~ pseudobulk`
+* `fit_additive`: `bulk ~ pseudobulk + (1|sample_id)`
+* `fit_interaction`: `bulk ~ pseudobulk + (1|sample_id) + (1|sample_id:pseudobulk)`
+
+## Setup
+
+```{r setup}
+renv::load()
+
+library(lme4)
+library(ggplot2)
+theme_set(theme_bw())
+```
+
+Define a vector of low-quality samples that we want to exclude from analysis.
+
+```{r}
+# As identified in https://github.com/AlexsLemonade/scpca-paper-figures/issues/135
+exclude_samples <- c("003", "030", "040", "178", "191", "197", "203", "608")
+exclude_samples <- glue::glue("SCPCS000{exclude_samples}")
+```
+
+
+### Paths
+
+```{r paths}
+analysis_dir <- here::here("analysis", "pseudobulk-bulk-prediction")
+data_dir <- file.path(analysis_dir, "data")
+```
+
+
+Define files to read in:
+
+```{r}
+pseudobulk_files <- list.files(
+  path = file.path(data_dir, "pseudobulk"),
+  full.names = TRUE,
+  pattern = "-pseudobulk\\.tsv$"
+)
+pseudobulk_names <- stringr::str_split_i(basename(pseudobulk_files), pattern = "-", i = 1)
+names(pseudobulk_files) <- pseudobulk_names
+
+bulk_counts_file <- file.path(data_dir, "scpca_data", "normalized_bulk_counts.rds")
+bulk_counts <- readr::read_rds(bulk_counts_file)
+
+# Make sure we have the same projects, in the same order
+stopifnot(
+  all.equal(names(pseudobulk_files), names(bulk_counts))
+)
+```
+
+
+### Functions
+
+This chunk defines a helper function to read and combine bulk and pseudobulk datasets for a single project.
+```{r}
+prepare_data <- function(pseudo_file, bulk_df, exclude_samples) {
+  pseudo_df <- readr::read_tsv(pseudo_file, show_col_types = FALSE) |>
+    dplyr::filter(expression_type == "pseudobulk_deseq") |>
+    dplyr::select(ensembl_id, sample_id, pseudobulk = expression)
+    
+  # make names consistent with pseudo_df
+  bulk_df <- bulk_df |>
+    dplyr::rename(bulk = bulk_counts, ensembl_id = gene_id)
+
+  # combine bulk and pseudobulk into a single data frame
+  expr_df <- dplyr::full_join(
+    pseudo_df,
+    bulk_df,
+    by = c("ensembl_id", "sample_id")
+  ) |>
+    # remove low-quality samples
+    dplyr::filter(!(sample_id %in% exclude_samples))
+
+  return(expr_df)
+}
+```
+
+
+This chunk defines several helper functions to support modeling.
+```{r}
+# Build and return three models for a given project, including:
+# - no random effects (`fit_plain`)
+# - additive effect for sample_id (`fit_additive`)
+# - interaction effect for sample_id (`fit_interaction`)
+# Return a list of model objects named accordingly
+model_data <- function(project_df) {
+  list(
+    fit_plain = lm(bulk ~ pseudobulk, data = project_df),
+    # we set REML = FALSE here for the next models to enable comparisons with fit_plain
+    fit_additive = lmer(bulk ~ pseudobulk + (1|sample_id), data = project_df, REML = FALSE),
+    fit_interaction = lmer(bulk ~ pseudobulk + (1|sample_id) + (1|sample_id:pseudobulk), data = project_df, REML = FALSE)
+  )
+}
+
+
+# Extract AIC, BIC, and sigma from a fitted model object
+# In addition, extract the `lme4` convergence code if relevant
+# Return a data frame of all quantities
+extract_fit <- function(fit, fit_name) {
+  
+  # Calculate sigma, which differs per model type, and extract convergence code from lmer
+  if (fit_name == "fit_plain") {
+    ########### lm #############
+    code <- NA
+    sigma <- summary(fit)$sigma
+  } else {
+    ########### lmer ##############
+    grab_conv_code <- purrr::safely(
+      \(fit) fit@optinfo$conv$lme4$code
+    )
+    code <- grab_conv_code(fit)$result
+    sigma <- unname(fit@devcomp$cmp["sigmaML"]) # not reml!
+  }
+  
+  data.frame(
+    fit_name = fit_name,
+    conv_code = ifelse(is.null(code), NA, code),
+    sigma = sigma,
+    aic = AIC(fit),
+    bic = BIC(fit)
+  )
+  
+}
+
+
+# Extract data frame of residuals and fitted values from a given model
+extract_residuals <- function(fit) {
+  data.frame(
+    residuals = unname(resid(fit)), 
+    fitted_values = unname(fitted(fit))
+  )
+}
+```
+
+
+## Perform modeling
+
+We'll now read in all datasets and build all models. 
+
+```{r, warning = FALSE}
+all_models <- purrr::map2(
+  pseudobulk_files, 
+  bulk_counts,
+  \(pseudo_file, bulk_df) {
+    prepare_data(pseudo_file, bulk_df, exclude_samples) |>
+      model_data()
+  })
+
+# clean up
+rm(bulk_counts)
+gc()
+```
+
+## Session info
+
+```{r}
+sessionInfo()
+```
