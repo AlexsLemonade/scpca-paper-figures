@@ -41,6 +41,8 @@ exclude_samples <- glue::glue("SCPCS000{exclude_samples}")
 ```{r paths}
 analysis_dir <- here::here("analysis", "pseudobulk-bulk-prediction")
 data_dir <- file.path(analysis_dir, "data")
+output_dir <- file.path(analysis_dir, "results", "models")
+fs::dir_create(output_dir)
 ```
 
 
@@ -186,16 +188,20 @@ all_models |>
 
 * Across all projects, model AIC and BIC each show improvements as model complexity increases
 * $\sigma$ is roughly the same for the plain and additive models, but it is much lower for the interaction models across the board
-  * `\sigma` shows the largest relative drop from additive to interaction for `SCPCP000017`, which from previous exploration shows the weakest relationship between bulk and pseudobulk (see `../exploratory-notebooks/compare-bulk-pseudobulk.Rmd`)
+  * $\sigma$ shows the largest relative drop from additive to interaction for `SCPCP000017`, which from previous exploration shows the weakest relationship between bulk and pseudobulk (see `../exploratory-notebooks/compare-bulk-pseudobulk.Rmd`)
 * The interaction models do not converge for projects `SCPCP000001`, `SCPCP000002`, and `SCPCP000006`
   * These projects had the tightest relationships between bulk and pseudobulk in `../exploratory-notebooks/compare-bulk-pseudobulk.Rmd` and similarly the most similar slopes when looking at individual samples.
   This observation is therefore somewhat consistent with previous observations
 
 ### Residual plots
 
-Next we'll look at the residual plots for each model to see if we can detect anything else there:
+Next we'll look at the residual plots for each model to see if we can detect anything else there.
+We'll use binning in these plots to get a sense of point density as well.
+For this, we collapse all points above the upper scale bound so that we can visualize smaller values in the binning.
 
 ```{r}
+all_models <- readr::read_rds(here::here("all_models.rds"))
+
 residuals_df <- all_models |>
   purrr::map(
     \(model_list) {
@@ -210,26 +216,42 @@ residuals_df <- all_models |>
   )
 ```
 
+
 ```{r fig.height=10, fig.width=10}
 ggplot(residuals_df) + 
   aes(x = fitted_values, y = residuals) + 
-  geom_bin_2d(bins = 50) + 
-  geom_hline(yintercept = 0, color = "firebrick2") + 
+  geom_bin_2d(binwidth = 0.25) + 
+  scale_fill_viridis_c(limits = c(0, 400), oob = scales::squish, option = "inferno") +
+  geom_hline(yintercept = 0, color = "red", linewidth = 0.25) + 
   facet_grid(
     cols = vars(model_name), 
     rows = vars(project_id), 
     scales = "free_y"
-  )
+  ) 
+
 ```
 
-
-* The lower `\sigma` for interaction models is evident in these residual plots
-* Points are generally evenly spread throughout, except for the expected high concentration of points at `(0,0)`
+* Residual plots for the plain and additive models are exceptionally similar
+* The vast majority of the points are sitting along the `y=0` line for interaction models (except for `SCPCP000009` which has only 3 samples), and for the remaining points, they appear biased above the `y=x` line compared to below
+All of this suggests these models have been overfit
+* Based on the metrics explored here, we'll move forward with the additive models
 
 ## Export
 
+We'll export the additive models as RDS files separately for each project.
 
-We'll export the chosen models for each project in this section (forthcoming after a lil review).
+```{r}
+all_models |>
+  purrr::iwalk(
+    \(model_list, project_id) {
+           
+    readr::write_rds(
+      model_list[["fit_additive"]], 
+      file.path(output_dir, glue::glue("{project_id}_bulk-pseudobulk-model.rds"))
+    )
+  }
+)
+```
 
 ## Session info
 
