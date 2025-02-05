@@ -15,6 +15,7 @@ scpca_dir="${data_dir}/scpca_data"
 tpm_dir="${data_dir}/tpm"
 pseudobulk_dir="${data_dir}/pseudobulk"
 result_dir="results"
+model_notebook_dir="model-notebooks"
 
 mkdir -p $scpca_dir
 mkdir -p $tpm_dir
@@ -52,3 +53,6 @@ for project_dir in $scpca_dir/*; do
         --output_file "${pseudobulk_file}"
     fi
 done
+
+# Step 3: Build and export models to results/models/
+Rscript -e "rmarkdown::render('${model-notebooks}/build-assess-models.Rmd')"
