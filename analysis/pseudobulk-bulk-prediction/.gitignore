@@ -2,6 +2,6 @@
 /data/*
 !/data/.gitkeep
 
-# Ignore the results/models directory (but keep it present)
-/results/models/*
+# Ignore RDS files in the results/models directory (but keep it present)
+/results/models/*rds
 !/results/models/.gitkeep
