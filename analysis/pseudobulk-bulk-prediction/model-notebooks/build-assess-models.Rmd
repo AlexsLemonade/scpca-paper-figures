@@ -31,8 +31,16 @@ Define a vector of low-quality samples that we want to exclude from analysis.
 
 ```{r}
 # As identified in https://github.com/AlexsLemonade/scpca-paper-figures/issues/135
-exclude_samples <- c("003", "030", "040", "178", "191", "197", "203", "608")
-exclude_samples <- glue::glue("SCPCS000{exclude_samples}")
+exclude_samples <- c(
+  "SCPCS000003", 
+  "SCPCS000030", 
+  "SCPCS000040", 
+  "SCPCS000178", 
+  "SCPCS000191", 
+  "SCPCS000197", 
+  "SCPCS000203", 
+  "SCPCS000608"
+)
 ```
 
 
@@ -161,8 +169,11 @@ We'll now read in all datasets and then build all models.
 project_df_list <- purrr::map2(
   pseudobulk_files, 
   bulk_counts,
-  prepare_data, 
-  exclude_samples
+  \(pseudo_file, bulk_df) {
+    prepare_data(
+      pseudo_file, bulk_df, exclude_samples = exclude_samples
+    )
+  }
 )
 
 all_models <- project_df_list |>
