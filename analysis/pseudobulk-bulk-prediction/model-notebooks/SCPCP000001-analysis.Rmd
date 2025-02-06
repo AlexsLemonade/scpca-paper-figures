@@ -1,0 +1,195 @@
+---
+title: "Analysis of SCPCP000001"
+author: Stephanie J. Spielman
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    toc: true
+    toc_depth: 3
+    code_folding: hide
+---
+
+
+This goal of this notebook is to explore `SCPCP000001` based on its additive random effects model `bulk ~ pseudobulk + (1|sample_id)`.
+
+
+## Setup
+
+```{r setup}
+renv::load()
+
+library(ggplot2)
+theme_set(theme_bw())
+```
+
+
+### Paths
+
+```{r paths}
+analysis_dir <- here::here("analysis", "pseudobulk-bulk-prediction")
+model_file <- file.path(analysis_dir, "results", "models", "SCPCP000001_bulk-pseudobulk-model.rds")
+```
+
+
+Define files to read in:
+
+```{r}
+model_data <- readr::read_rds(model_file)
+
+model_df <- model_data$data |>
+  dplyr::mutate(residuals = unname(resid(model_data$model)))
+sigma <- unname(model_data$model@devcomp$cmp["sigmaML"])
+
+n_samples <- length(unique(model_data$data$sample_id))
+```
+
+
+
+## GSEA with Hallmark gene set
+
+We'll explore the potential utility of using GSEA on residuals to identify biological patterns of outlier genes.
+For this, we'll use the Hallmark gene set from `MSigDB`. 
+
+```{r}
+hallmark_df <- msigdbr::msigdbr(species = "Homo sapiens", category = "H") # 50 gene sets
+```                     
+                      
+We'll run GSEA for each sample.    
+                          
+```{r, warning = FALSE, message = FALSE}
+hallmark_gsea <- unique(model_df$sample_id) |> 
+  purrr::set_names(unique(model_df$sample_id)) |>
+  purrr::map(
+    \(id) {
+      # arrange *decreasing*
+      ranked_residuals <- model_df |> 
+        dplyr::filter(sample_id == id) |>
+        dplyr::arrange(-residuals) |>
+        dplyr::pull(residuals, name = ensembl_id)
+
+      gsea_results <- clusterProfiler::GSEA(
+        geneList = ranked_residuals, 
+        TERM2GENE = dplyr::select(hallmark_df, gs_name, ensembl_gene)
+      )
+  })
+```
+
+Since we ran this for each sample, we'll be a little more stringent with P-values and look for significant gene sets where the adjusted P-value is less than `0.01 / <number of samples>`.
+
+```{r}
+threshold <- 0.01/length(unique(model_df$sample_id))
+
+# Find significant gene sets, both positive and negative
+sig_lists <- hallmark_gsea |>
+  purrr::map(
+    \(gsea_result) {
+      
+      sig_df <- gsea_result@result |>
+        dplyr::filter(p.adjust <= threshold)
+      
+      list(
+        neg = sig_df$ID[sig_df$NES < 0], 
+        pos = sig_df$ID[sig_df$NES > 0] 
+      )
+    }
+  )
+
+# Pluck out negative and positive to look at them separately
+neg_sig_lists <- sig_lists |> purrr::map(purrr::pluck, "neg")
+pos_sig_lists <- sig_lists |> purrr::map(purrr::pluck, "pos")
+```
+
+
+How many gene signatures were identified in either direction per sample?
+
+
+```{r}
+# Count the number of positive and negatives per sample
+gs_count_df <- purrr::map2(
+  neg_sig_lists, 
+  pos_sig_lists, 
+  \(neg_gs, pos_gs) {
+    
+    data.frame(
+      negative = length(neg_gs), 
+      positive = length(pos_gs)
+    )
+
+  }) |>
+  purrr::set_names(names(neg_sig_lists)) |>
+  purrr::list_rbind(names_to = "sample_id") |>
+  tidyr::pivot_longer(
+    !sample_id, 
+    names_to = "direction", 
+    values_to = "n_gene_sets"
+  )
+
+
+# Barplot of counts per sample
+ggplot(gs_count_df) + 
+  aes(x = sample_id, y = n_gene_sets, fill = direction) + 
+  geom_col(position = position_dodge()) +
+  geom_text(
+    aes(label = n_gene_sets, y = n_gene_sets + 1), 
+    position = position_dodge(width = 1), 
+    size = 2.5
+  ) +
+  scale_fill_brewer(palette = "Set2") + 
+  labs(
+    title = "Hallmark GSEA (n=50 genesets)", 
+    y = "Number of significant genesets in sample"
+  ) +
+  scale_y_continuous(expand = c(0,1)) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1, size = 8))
+
+```
+
+It looks like, in _all samples_, the _vast_ majority of hallmark pathways are coming back significantly positively "enriched."
+Only two samples show evidence of negative "enrichment," and only one gene set each.
+This seems like too many hallmark pathways in the positives, but we'll push forward a bit still...
+
+While there's not much overlap to see in the negative direction, what about the positive?
+Which pathways are enriched among all samples?
+
+```{r, fig.height = 8}
+ UpSetR::upset(
+   UpSetR::fromList(pos_sig_lists),
+   order.by = "degree", # order columns by number of samples
+   text.scale = 1.25,
+   nsets = 100 # make sure all sets are plotted, not only top 5
+  )
+```
+
+There are 35 pathways which are shared among all samples, again out of 50 total Hallmark gene sets.
+There are several other pathways which appear in all but 1-5 samples.
+
+Those pathways are:
+```{r}
+pos_sig_lists |>
+  purrr::reduce(intersect)
+```
+
+Let's look at one set of GSEA plots for one pathway, across all samples:
+
+
+```{r fig.height = 4}
+plot_hallmark <- "HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION"
+hallmark_gsea |>
+  purrr::map(
+    \(gsea_result) {
+      enrichplot::gseaplot(
+        gsea_result,
+        geneSetID = plot_hallmark,
+        color.line = "dodgerblue"
+      )
+  })
+```
+
+
+Indeed, these all look like reasonable plots for the conclusion of positive enrichment, but given that most pathways are coming out with this kind of significance, it's not clear how meaningful the results are.
+
+## Session info
+
+```{r}
+sessionInfo()
+```
