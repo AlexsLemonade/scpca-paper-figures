@@ -155,16 +155,18 @@ extract_residuals <- function(fit) {
 
 ## Perform modeling
 
-We'll now read in all datasets and build all models. 
+We'll now read in all datasets and then build all models. 
 
 ```{r, warning = FALSE}
-all_models <- purrr::map2(
+project_df_list <- purrr::map2(
   pseudobulk_files, 
   bulk_counts,
-  \(pseudo_file, bulk_df) {
-    prepare_data(pseudo_file, bulk_df, exclude_samples) |>
-      model_data()
-  })
+  prepare_data, 
+  exclude_samples
+)
+
+all_models <- project_df_list |>
+  purrr::map(model_data)
 
 # clean up
 rm(bulk_counts)
@@ -200,8 +202,6 @@ We'll use binning in these plots to get a sense of point density as well.
 For this, we collapse all points above the upper scale bound so that we can visualize smaller values in the binning.
 
 ```{r}
-all_models <- readr::read_rds(here::here("all_models.rds"))
-
 residuals_df <- all_models |>
   purrr::map(
     \(model_list) {
@@ -238,17 +238,21 @@ All of this suggests these models have been overfit
 
 ## Export
 
-We'll export the additive models as RDS files separately for each project.
+We'll export the underlying data (so that we retain Ensembl gene ids for next steps) and additive models as RDS files separately for each project.
 
 ```{r}
 all_models |>
   purrr::iwalk(
     \(model_list, project_id) {
            
-    readr::write_rds(
-      model_list[["fit_additive"]], 
-      file.path(output_dir, glue::glue("{project_id}_bulk-pseudobulk-model.rds"))
-    )
+      output_file <- file.path(output_dir, glue::glue("{project_id}_bulk-pseudobulk-model.rds"))
+      readr::write_rds(
+        list(
+          data = project_df_list[[project_id]],
+          model = model_list[["fit_additive"]]
+        ), 
+        output_file
+      )
   }
 )
 ```
