@@ -1,0 +1,260 @@
+---
+title: "Prepare models predicting bulk from pseudobulk"
+author: Stephanie J. Spielman
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    toc: true
+    toc_depth: 3
+    code_folding: hide
+---
+
+
+This goal of this notebook is to build models predicting bulk from pseudobulk for all projects and assess their fits.
+We build and assess the following random effects models for each project:
+
+* `fit_plain`: `bulk ~ pseudobulk`
+* `fit_additive`: `bulk ~ pseudobulk + (1|sample_id)`
+* `fit_interaction`: `bulk ~ pseudobulk + (1|sample_id) + (1|sample_id:pseudobulk)`
+
+## Setup
+
+```{r setup}
+renv::load()
+
+library(lme4)
+library(ggplot2)
+theme_set(theme_bw())
+```
+
+Define a vector of low-quality samples that we want to exclude from analysis.
+
+```{r}
+# As identified in https://github.com/AlexsLemonade/scpca-paper-figures/issues/135
+exclude_samples <- c("003", "030", "040", "178", "191", "197", "203", "608")
+exclude_samples <- glue::glue("SCPCS000{exclude_samples}")
+```
+
+
+### Paths
+
+```{r paths}
+analysis_dir <- here::here("analysis", "pseudobulk-bulk-prediction")
+data_dir <- file.path(analysis_dir, "data")
+output_dir <- file.path(analysis_dir, "results", "models")
+fs::dir_create(output_dir)
+```
+
+
+Define files to read in:
+
+```{r}
+pseudobulk_files <- list.files(
+  path = file.path(data_dir, "pseudobulk"),
+  full.names = TRUE,
+  pattern = "-pseudobulk\\.tsv$"
+)
+pseudobulk_names <- stringr::str_split_i(basename(pseudobulk_files), pattern = "-", i = 1)
+names(pseudobulk_files) <- pseudobulk_names
+
+bulk_counts_file <- file.path(data_dir, "scpca_data", "normalized_bulk_counts.rds")
+bulk_counts <- readr::read_rds(bulk_counts_file)
+
+# Make sure we have the same projects, in the same order
+stopifnot(
+  all.equal(names(pseudobulk_files), names(bulk_counts))
+)
+```
+
+
+### Functions
+
+This chunk defines a helper function to read and combine bulk and pseudobulk datasets for a single project.
+```{r}
+prepare_data <- function(pseudo_file, bulk_df, exclude_samples) {
+  pseudo_df <- readr::read_tsv(pseudo_file, show_col_types = FALSE) |>
+    dplyr::filter(
+      expression_type == "pseudobulk_deseq", 
+      !(sample_id %in% exclude_samples)
+    ) |>
+    dplyr::select(ensembl_id, sample_id, pseudobulk = expression)
+    
+  # make names consistent with pseudo_df
+  bulk_df <- bulk_df |>
+    dplyr::filter(!(sample_id %in% exclude_samples)) |>
+    dplyr::rename(bulk = bulk_counts, ensembl_id = gene_id)
+
+  # combine bulk and pseudobulk into a single data frame
+  expr_df <- dplyr::inner_join(
+    pseudo_df,
+    bulk_df,
+    by = c("ensembl_id", "sample_id")
+  ) 
+  return(expr_df)
+}
+```
+
+
+This chunk defines several helper functions to support modeling.
+```{r}
+# Build and return three models for a given project, including:
+# - no random effects (`fit_plain`)
+# - additive effect for sample_id (`fit_additive`)
+# - interaction effect for sample_id (`fit_interaction`)
+# Return a list of model objects named accordingly
+model_data <- function(project_df) {
+  list(
+    fit_plain = lm(bulk ~ pseudobulk, data = project_df),
+    # we set REML = FALSE here for the next models to enable comparisons with fit_plain
+    fit_additive = lmer(bulk ~ pseudobulk + (1|sample_id), data = project_df, REML = FALSE),
+    fit_interaction = lmer(bulk ~ pseudobulk + (1|sample_id) + (1|sample_id:pseudobulk), data = project_df, REML = FALSE)
+  )
+}
+
+
+# Extract AIC, BIC, and sigma from a fitted model object
+# In addition, extract the `lme4` convergence code if relevant
+# Return a data frame of all quantities
+extract_fit <- function(fit, fit_name) {
+  
+  # Calculate sigma, which differs per model type, and extract convergence code from lmer
+  if (fit_name == "fit_plain") {
+    ########### lm #############
+    code <- NA
+    sigma <- summary(fit)$sigma
+  } else {
+    ########### lmer ##############
+    # this value only exists if the model did not converge
+    grab_conv_code <- purrr::safely(
+      \(fit) fit@optinfo$conv$lme4$code
+    )
+    code <- grab_conv_code(fit)$result
+    sigma <- unname(fit@devcomp$cmp["sigmaML"]) # use ML, not REML!
+  }
+  
+  data.frame(
+    fit_name = fit_name,
+    conv_code = ifelse(is.null(code), 0, code),
+    sigma = sigma,
+    aic = AIC(fit),
+    bic = BIC(fit)
+  )
+  
+}
+
+
+# Extract data frame of residuals and fitted values from a given model
+extract_residuals <- function(fit) {
+  data.frame(
+    residuals = unname(resid(fit)), 
+    fitted_values = unname(fitted(fit))
+  )
+}
+```
+
+
+## Perform modeling
+
+We'll now read in all datasets and build all models. 
+
+```{r, warning = FALSE}
+all_models <- purrr::map2(
+  pseudobulk_files, 
+  bulk_counts,
+  \(pseudo_file, bulk_df) {
+    prepare_data(pseudo_file, bulk_df, exclude_samples) |>
+      model_data()
+  })
+
+# clean up
+rm(bulk_counts)
+```
+
+### Fit statistics
+
+Next, we want to look at some of the fit statistics, including whether the random-effects models converged.
+In the `conv_code` column, `-1` indicates the model did not converge and `0` indicates that it did.
+
+```{r}
+all_models |>
+  purrr::map(
+    \(model_list) {
+      purrr::imap(model_list, extract_fit) |>
+        purrr::list_rbind()
+    }
+  ) |>
+  purrr::list_rbind(names_to = "project_id")
+```
+
+* Across all projects, model AIC and BIC each show improvements as model complexity increases
+* $\sigma$ is roughly the same for the plain and additive models, but it is much lower for the interaction models across the board
+  * $\sigma$ shows the largest relative drop from additive to interaction for `SCPCP000017`, which from previous exploration shows the weakest relationship between bulk and pseudobulk (see `../exploratory-notebooks/compare-bulk-pseudobulk.Rmd`)
+* The interaction models do not converge for projects `SCPCP000001`, `SCPCP000002`, and `SCPCP000006`
+  * These projects had the tightest relationships between bulk and pseudobulk in `../exploratory-notebooks/compare-bulk-pseudobulk.Rmd` and similarly the most similar slopes when looking at individual samples.
+  This observation is therefore somewhat consistent with previous observations
+
+### Residual plots
+
+Next we'll look at the residual plots for each model to see if we can detect anything else there.
+We'll use binning in these plots to get a sense of point density as well.
+For this, we collapse all points above the upper scale bound so that we can visualize smaller values in the binning.
+
+```{r}
+all_models <- readr::read_rds(here::here("all_models.rds"))
+
+residuals_df <- all_models |>
+  purrr::map(
+    \(model_list) {
+        purrr::map(model_list, extract_residuals) |>
+          purrr::list_rbind(names_to = "model_name") 
+  }) |>
+  purrr::list_rbind(names_to = "project_id") |>
+  dplyr::mutate(
+    model_name = forcats::fct_relevel(
+      model_name, "fit_plain", "fit_additive", "fit_interaction"
+    )
+  )
+```
+
+
+```{r fig.height=10, fig.width=10}
+ggplot(residuals_df) + 
+  aes(x = fitted_values, y = residuals) + 
+  geom_bin_2d(binwidth = 0.25) + 
+  scale_fill_viridis_c(limits = c(0, 400), oob = scales::squish, option = "inferno") +
+  geom_hline(yintercept = 0, color = "red", linewidth = 0.25) + 
+  facet_grid(
+    cols = vars(model_name), 
+    rows = vars(project_id), 
+    scales = "free_y"
+  ) 
+
+```
+
+* Residual plots for the plain and additive models are exceptionally similar
+* The vast majority of the points are sitting along the `y=0` line for interaction models (except for `SCPCP000009` which has only 3 samples), and for the remaining points, they appear biased above the `y=x` line compared to below
+All of this suggests these models have been overfit
+* Based on the metrics explored here, we'll move forward with the additive models
+
+## Export
+
+We'll export the additive models as RDS files separately for each project.
+
+```{r}
+all_models |>
+  purrr::iwalk(
+    \(model_list, project_id) {
+           
+    readr::write_rds(
+      model_list[["fit_additive"]], 
+      file.path(output_dir, glue::glue("{project_id}_bulk-pseudobulk-model.rds"))
+    )
+  }
+)
+```
+
+## Session info
+
+```{r}
+sessionInfo()
+```
