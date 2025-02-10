@@ -7,6 +7,8 @@ output:
     toc: true
     toc_depth: 3
     code_folding: hide
+params:
+  filter_threshold: 0
 ---
 
 
@@ -16,6 +18,9 @@ We build and assess the following random effects models for each project:
 * `fit_plain`: `bulk ~ pseudobulk`
 * `fit_additive`: `bulk ~ pseudobulk + (1|sample_id)`
 * `fit_interaction`: `bulk ~ pseudobulk + (1|sample_id) + (1|sample_id:pseudobulk)`
+
+Before modeling, we additionally filter data so that only genes which have non-zero expression (based on raw counts) in `> r params$filter_threshold * 100`\% samples, in both bulk and pseudobulk modalities, are retained. 
+
 
 ## Setup
 
@@ -60,18 +65,37 @@ Define files to read in:
 pseudobulk_files <- list.files(
   path = file.path(data_dir, "pseudobulk"),
   full.names = TRUE,
-  pattern = "-pseudobulk\\.tsv$"
+  pattern = "_pseudobulk\\.tsv$"
 )
-pseudobulk_names <- stringr::str_split_i(basename(pseudobulk_files), pattern = "-", i = 1)
+pseudobulk_names <- stringr::str_split_i(basename(pseudobulk_files), pattern = "_", i = 1)
 names(pseudobulk_files) <- pseudobulk_names
 
-bulk_counts_file <- file.path(data_dir, "scpca_data", "normalized_bulk_counts.rds")
+bulk_counts_file <- file.path(data_dir, "normalized-bulk-counts.rds")
 bulk_counts <- readr::read_rds(bulk_counts_file)
 
 # Make sure we have the same projects, in the same order
 stopifnot(
   all.equal(names(pseudobulk_files), names(bulk_counts))
 )
+
+# also the tables with percent expressed
+bulk_percent_expr_df <- readr::read_tsv(
+  file.path(data_dir, "percent-expressed-bulk.tsv")
+) |>
+  dplyr::rename(bulk_percent_expressed = percent_samples_expressed)
+  
+named_projects <- purrr::set_names(pseudobulk_names, pseudobulk_names)
+expressed_df <- named_projects |>
+  purrr::map(
+    \(project_id) {
+      readr::read_tsv(
+        file.path(data_dir, glue::glue("{project_id}_percent-expressed-single-cell.tsv"))
+      )
+    }
+  ) |>
+  purrr::list_rbind(names_to = "project_id") |>
+  dplyr::rename(pseudobulk_percent_expressed = percent_samples_expressed) |>
+  dplyr::full_join(bulk_percent_expr_df, by = c("project_id", "ensembl_id"))
 ```
 
 
@@ -79,18 +103,32 @@ stopifnot(
 
 This chunk defines a helper function to read and combine bulk and pseudobulk datasets for a single project.
 ```{r}
-prepare_data <- function(pseudo_file, bulk_df, exclude_samples) {
+prepare_data <- function(pseudo_file, bulk_df, id, exclude_samples, expressed_df, threshold = params$filter_threshold) {
+  
+  # Find genes to _retain_ at the given threshold
+  retain_genes <- expressed_df |>
+    dplyr::filter(
+      project_id == id, 
+      pseudobulk_percent_expressed > threshold, 
+      bulk_percent_expressed > threshold
+    ) |>
+    dplyr::pull(ensembl_id)
+  
   pseudo_df <- readr::read_tsv(pseudo_file, show_col_types = FALSE) |>
     dplyr::filter(
       expression_type == "pseudobulk_deseq", 
-      !(sample_id %in% exclude_samples)
+      !(sample_id %in% exclude_samples), 
+      ensembl_id %in% retain_genes
     ) |>
     dplyr::select(ensembl_id, sample_id, pseudobulk = expression)
     
   # make names consistent with pseudo_df
   bulk_df <- bulk_df |>
-    dplyr::filter(!(sample_id %in% exclude_samples)) |>
-    dplyr::rename(bulk = bulk_counts, ensembl_id = gene_id)
+    dplyr::filter(
+      !(sample_id %in% exclude_samples), 
+      ensembl_id %in% retain_genes
+    ) |>
+    dplyr::rename(bulk = bulk_counts)
 
   # combine bulk and pseudobulk into a single data frame
   expr_df <- dplyr::inner_join(
@@ -98,6 +136,7 @@ prepare_data <- function(pseudo_file, bulk_df, exclude_samples) {
     bulk_df,
     by = c("ensembl_id", "sample_id")
   ) 
+  
   return(expr_df)
 }
 ```
@@ -165,13 +204,16 @@ extract_residuals <- function(fit) {
 
 We'll now read in all datasets and then build all models. 
 
-```{r, warning = FALSE}
-project_df_list <- purrr::map2(
-  pseudobulk_files, 
-  bulk_counts,
-  \(pseudo_file, bulk_df) {
+```{r}
+project_df_list <- named_projects |>
+  purrr::map(
+  \(project_id) {
     prepare_data(
-      pseudo_file, bulk_df, exclude_samples = exclude_samples
+      pseudobulk_files[[project_id]], 
+      bulk_counts[[project_id]],
+      project_id,
+      exclude_samples = exclude_samples, 
+      expressed_df = expressed_df
     )
   }
 )
@@ -183,10 +225,13 @@ all_models <- project_df_list |>
 rm(bulk_counts)
 ```
 
+As we see, there are some warnings that at least some of the random effects models did not converge.
+
 ### Fit statistics
 
-Next, we want to look at some of the fit statistics, including whether the random-effects models converged.
-In the `conv_code` column, `-1` indicates the model did not converge and `0` indicates that it did.
+Next, we want to look at some of the fit statistics, including whether the random effects models converged.
+In the `conv_code` column for these models, a negative value indicates the model did not converge and `0` indicates that it did.
+
 
 ```{r}
 all_models |>
@@ -202,9 +247,7 @@ all_models |>
 * Across all projects, model AIC and BIC each show improvements as model complexity increases
 * $\sigma$ is roughly the same for the plain and additive models, but it is much lower for the interaction models across the board
   * $\sigma$ shows the largest relative drop from additive to interaction for `SCPCP000017`, which from previous exploration shows the weakest relationship between bulk and pseudobulk (see `../exploratory-notebooks/compare-bulk-pseudobulk.Rmd`)
-* The interaction models do not converge for projects `SCPCP000001`, `SCPCP000002`, and `SCPCP000006`
-  * These projects had the tightest relationships between bulk and pseudobulk in `../exploratory-notebooks/compare-bulk-pseudobulk.Rmd` and similarly the most similar slopes when looking at individual samples.
-  This observation is therefore somewhat consistent with previous observations
+* The interaction model only converges for `SCPCP000009`
 
 ### Residual plots
 
@@ -232,8 +275,8 @@ residuals_df <- all_models |>
 ggplot(residuals_df) + 
   aes(x = fitted_values, y = residuals) + 
   geom_bin_2d(binwidth = 0.25) + 
-  scale_fill_viridis_c(limits = c(0, 400), oob = scales::squish, option = "inferno") +
-  geom_hline(yintercept = 0, color = "red", linewidth = 0.25) + 
+  scale_fill_viridis_c(limits = c(0, 600), oob = scales::squish, option = "inferno") +
+  geom_hline(yintercept = 0, color = "blue", linewidth = 0.25) + 
   facet_grid(
     cols = vars(model_name), 
     rows = vars(project_id), 
@@ -243,8 +286,9 @@ ggplot(residuals_df) +
 ```
 
 * Residual plots for the plain and additive models are exceptionally similar
-* The vast majority of the points are sitting along the `y=0` line for interaction models (except for `SCPCP000009` which has only 3 samples), and for the remaining points, they appear biased above the `y=x` line compared to below
-All of this suggests these models have been overfit
+* For interaction models, the vast majority of the points are sitting along the `y=0` line for most interaction models, and for the remaining points, they appear biased above the `y=x` line compared to below
+  * Only project `SCPCP000009`'s residual plot for the interaction model looks close to meeting model assumptions well enough
+  * It's very likely that interaction models have been overfit except for that project, which has only 3 samples
 * Based on the metrics explored here, we'll move forward with the additive models
 
 ## Export
