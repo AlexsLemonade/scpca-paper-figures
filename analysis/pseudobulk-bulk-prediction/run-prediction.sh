@@ -22,37 +22,40 @@ mkdir -p $tpm_dir
 mkdir -p $pseudobulk_dir
 mkdir -p $result_dir
 
-# Step 0: Sync data files from S3
+map_file="${data_dir}/bulk-library-sample-ids.tsv"
+
+
+# Sync data files from S3
 Rscript ${script_dir}/sync-data-files.R \
-  --output_dir ${scpca_dir} \
-  --map_file ${scpca_dir}/bulk_library_sample_ids.tsv
+  --output_dir "${scpca_dir}" \
+  --map_file "${map_file}"
 
 # Prepare bulk counts data for comparisons
 Rscript ${script_dir}/prepare-bulk-counts.R \
-  --input_dir ${scpca_dir} \
-  --map_file ${scpca_dir}/bulk_library_sample_ids.tsv \
-  --output_file ${scpca_dir}/normalized_bulk_counts.rds
+  --input_dir "${scpca_dir}" \
+  --map_file "${map_file}" \
+  --output_counts_file "${data_dir}/normalized-bulk-counts.rds" \
+  --output_percent_expressed_file "${data_dir}/percent-expressed-bulk.tsv"
 
 for project_dir in $scpca_dir/*; do
     project_id=$(basename $project_dir)
 
-    tpm_file="${tpm_dir}/${project_id}-tpm.tsv"
     pseudobulk_file="${pseudobulk_dir}/${project_id}-pseudobulk.tsv"
+    percent_expressed_file="${data_dir}/percent-expressed-single-cell.tsv"
 
-    # Step 1: Calculate bulk TPM for each project
-    if [ ! -f ${tpm_file} ]; then
-      Rscript ${script_dir}/calculate-tpm.R \
-        --input_dir "${scpca_dir}/${project_id}" \
-        --output_file "${tpm_file}"
-    fi
+    ###### TPMs are not currently used in the analysis ######
+    # Calculate bulk TPM for each project
+    #tpm_file="${tpm_dir}/${project_id}-tpm.tsv"
+    #Rscript ${script_dir}/calculate-tpm.R \
+    #  --input_dir "${scpca_dir}/${project_id}" \
+    #  --output_pseudobulk_file "${tpm_file}"
 
-    # Step 2: Calculate pseudobulk matrices for each project
-    if [ ! -f ${pseudobulk_file} ]; then
-      Rscript ${script_dir}/calculate-pseudobulk.R \
-        --input_dir "${scpca_dir}/${project_id}" \
-        --output_file "${pseudobulk_file}"
-    fi
+    # Calculate pseudobulk matrices for each project
+    Rscript ${script_dir}/calculate-pseudobulk.R \
+      --input_dir "${scpca_dir}/${project_id}" \
+      --output_pseudobulk_file "${pseudobulk_file}" \
+      --output_percent_expressed_file "${percent_expressed_file}"
 done
 
-# Step 3: Build and export models to results/models/
+# Build and export models to results/models/
 Rscript -e "rmarkdown::render('${model-notebooks}/build-assess-models.Rmd')"
