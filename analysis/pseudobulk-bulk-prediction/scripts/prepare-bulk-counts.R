@@ -19,21 +19,33 @@ option_list <- list(
     help = "Path to TSV file mapping bulk sample and library ids"
   ),
   make_option(
-    "--output_file",
+    "--output_counts_file",
     type = "character",
     help = "Path to output RDS containing normalized counts"
+  ),
+  make_option(
+    "--output_percent_expressed_file",
+    type = "character",
+    help = "Path to output TSV to save, per project, the percent of samples each gene is expressed in, based on raw counts"
   )
 )
 opts <- parse_args(OptionParser(option_list = option_list))
 
 
 # Checks ------------------
-stopifnot("Map file not found." = file.exists(opts$map_file))
+stopifnot(
+  "An input directory must be provided to `input_dir`." = !is.null(opts$input_dir),
+  "Map file not found." = file.exists(opts$map_file),
+  "A path to an output TSV file to save counts must be specified with `output_counts_file`." = !is.null(opts$output_counts_file),
+  "A path to an output TSV file to save percent per project of single-cell samples genes are expressed in must be specified with `output_percent_expressed_file`." = !is.null(opts$output_percent_expressed_file)
+)
+fs::dir_create(dirname(opts$output_counts_file))
+fs::dir_create(dirname(opts$output_percent_expressed_file))
 
 
 # Find and read in bulk files --------
 bulk_count_files <- list.files(
-  path = here::here("analysis", "pseudobulk-bulk-prediction", "data", "scpca_data"), 
+  path = opts$input_dir, 
   full.names = TRUE,
   pattern = "_bulk_quant\\.tsv$", 
   recursive = TRUE
@@ -51,7 +63,7 @@ sample_library_map <- readr::read_tsv(opts$map_file) |>
   )
 
 # Make a list of data frames of bulk counts, normalized by DESeq2
-bulk_counts_wide_df_list <- bulk_count_files |>
+ bulk_dat <- bulk_count_files |>
   purrr::map(
     \(counts_file) {
       
@@ -70,21 +82,38 @@ bulk_counts_wide_df_list <- bulk_count_files |>
         rlog(blind = TRUE) |>
         assay() 
       
-      bulk_counts_mat |>
+      # data frame of bulk counts 
+      bulk_counts_df <- bulk_counts_mat |>
         as.data.frame() |>
-        tibble::rownames_to_column(var = "gene_id") |>
+        tibble::rownames_to_column(var = "ensembl_id") |>
         tidyr::pivot_longer(
-          -gene_id, 
+          -ensembl_id, 
           names_to = "library_id", # library! 
           values_to = "bulk_counts"
         ) |>
         # swap to sample name
         dplyr::left_join(sample_library_map) |>
-        dplyr::select(gene_id, sample_id, bulk_counts) |>
+        dplyr::select(ensembl_id, sample_id, bulk_counts) |>
         tidyr::drop_na()
-        
+      
+      # data frame of percent of samples genes are expressed in
+      percent_expr_df <- rowMeans(counts_mat > 0) |>
+        tibble::as_tibble(rownames = "ensembl_id") |>
+        dplyr::rename(percent_samples_expressed = value) 
+      
+      return(
+        list(bulk_counts_df,  percent_expr_df)
+      )
     }
-  )
+  ) |> 
+   purrr::transpose()
 
-# Save to RDS ----------
-readr::write_rds(bulk_counts_wide_df_list, opts$output_file)
+# Export -----------
+ 
+# Save counts to RDS
+readr::write_rds(bulk_dat[[1]], opts$output_counts_file)
+
+# Save percent expressed to TSV
+bulk_dat[[2]] |> 
+  purrr::list_rbind(names_to = "project_id") |>
+  readr::write_rds(opts$output_percent_expressed_file)
