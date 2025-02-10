@@ -43,18 +43,18 @@ bulk_counts_file <- file.path(data_dir, "normalized-bulk-counts.rds")
 tpm_files <- list.files(
   path = tpm_dir,
   full.names = TRUE,
-  pattern = "-tpm\\.tsv$"
+  pattern = "_tpm\\.tsv$"
 )
-tpm_names <- stringr::str_split_i(basename(tpm_files), pattern = "-", i = 1)
+tpm_names <- stringr::str_split_i(basename(tpm_files), pattern = "_", i = 1)
 names(tpm_files) <- tpm_names
 
 
 pseudobulk_files <- list.files(
   path = pseudobulk_dir,
   full.names = TRUE,
-  pattern = "-pseudobulk\\.tsv$"
+  pattern = "_pseudobulk\\.tsv$"
 )
-pseudobulk_names <- stringr::str_split_i(basename(pseudobulk_files), pattern = "-", i = 1)
+pseudobulk_names <- stringr::str_split_i(basename(pseudobulk_files), pattern = "_", i = 1)
 names(pseudobulk_files) <- pseudobulk_names
 
 # Make sure we have the same projects, in the same order

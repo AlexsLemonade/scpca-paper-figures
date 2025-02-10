@@ -40,12 +40,12 @@ Rscript ${script_dir}/prepare-bulk-counts.R \
 for project_dir in $scpca_dir/*; do
     project_id=$(basename $project_dir)
 
-    pseudobulk_file="${pseudobulk_dir}/${project_id}-pseudobulk.tsv"
-    percent_expressed_file="${data_dir}/percent-expressed-single-cell.tsv"
+    pseudobulk_file="${pseudobulk_dir}/${project_id}_pseudobulk.tsv"
+    percent_expressed_file="${data_dir}/${project_id}_percent-expressed-single-cell.tsv"
 
     ###### TPMs are not currently used in the analysis ######
     # Calculate bulk TPM for each project
-    #tpm_file="${tpm_dir}/${project_id}-tpm.tsv"
+    #tpm_file="${tpm_dir}/${project_id}_tpm.tsv"
     #Rscript ${script_dir}/calculate-tpm.R \
     #  --input_dir "${scpca_dir}/${project_id}" \
     #  --output_pseudobulk_file "${tpm_file}"
