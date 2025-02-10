@@ -13,13 +13,16 @@ params:
 
 
 This goal of this notebook is to build models predicting bulk from pseudobulk for all projects and assess their fits.
+
+Before modeling, we additionally filter data so that only genes which have non-zero expression (based on raw counts) in `> r params$filter_threshold * 100`\% samples, in both bulk and pseudobulk modalities, are retained. 
+
+
 We build and assess the following random effects models for each project:
 
 * `fit_plain`: `bulk ~ pseudobulk`
 * `fit_additive`: `bulk ~ pseudobulk + (1|sample_id)`
-* `fit_interaction`: `bulk ~ pseudobulk + (1|sample_id) + (1|sample_id:pseudobulk)`
+* `fit_interaction`: `bulk ~ pseudobulk + (1|sample_id) + (1|sample_id:pseudobulk)`. _Only built if filtering threshold is 0._
 
-Before modeling, we additionally filter data so that only genes which have non-zero expression (based on raw counts) in `> r params$filter_threshold * 100`\% samples, in both bulk and pseudobulk modalities, are retained. 
 
 
 ## Setup
@@ -149,14 +152,19 @@ This chunk defines several helper functions to support modeling.
 # - additive effect for sample_id (`fit_additive`)
 # - interaction effect for sample_id (`fit_interaction`)
 # Return a list of model objects named accordingly
-model_data <- function(project_df) {
-  list(
+model_data <- function(project_df, threshold = params$filter_threshold) {
+  model_list <- list(
     fit_plain = lm(bulk ~ pseudobulk, data = project_df),
     # we set REML = FALSE here for the next models to enable comparisons with fit_plain
-    fit_additive = lmer(bulk ~ pseudobulk + (1|sample_id), data = project_df, REML = FALSE),
-    fit_interaction = lmer(bulk ~ pseudobulk + (1|sample_id) + (1|sample_id:pseudobulk), data = project_df, REML = FALSE)
+    fit_additive = lmer(bulk ~ pseudobulk + (1|sample_id), data = project_df, REML = FALSE)
   )
-}
+  
+  if (threshold == 0) {
+    model_list[["fit_interaction"]] = lmer(bulk ~ pseudobulk + (1|sample_id) + (1|sample_id:pseudobulk), data = project_df, REML = FALSE)
+  }
+  
+  return(model_list)
+} 
 
 
 # Extract AIC, BIC, and sigma from a fitted model object
