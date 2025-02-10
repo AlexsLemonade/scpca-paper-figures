@@ -116,4 +116,4 @@ readr::write_rds(bulk_dat[[1]], opts$output_counts_file)
 # Save percent expressed to TSV
 bulk_dat[[2]] |> 
   purrr::list_rbind(names_to = "project_id") |>
-  readr::write_rds(opts$output_percent_expressed_file)
+  readr::write_tsv(opts$output_percent_expressed_file)
