@@ -38,7 +38,7 @@ theme_set(theme_bw())
 data_dir <- here::here("analysis", "pseudobulk-bulk-prediction", "data")
 tpm_dir <- file.path(data_dir, "tpm")
 pseudobulk_dir <- file.path(data_dir, "pseudobulk")
-bulk_counts_file <- file.path(data_dir, "scpca_data", "normalized_bulk_counts.rds")
+bulk_counts_file <- file.path(data_dir, "normalized-bulk-counts.rds")
 
 tpm_files <- list.files(
   path = tpm_dir,
@@ -111,8 +111,7 @@ bulk_df_list <- readr::read_rds(bulk_counts_file) |>
   purrr::map(
     \(df) {
       df |>
-        dplyr::filter(sample_id %in% present_samples) |>
-        dplyr::rename(ensembl_id = gene_id)
+        dplyr::filter(sample_id %in% present_samples) 
     }
   )
 
