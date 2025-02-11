@@ -8,22 +8,24 @@ output:
     toc_depth: 3
     code_folding: hide
 params:
-  filter_threshold: 0
+  filter_genes: TRUE
 ---
 
 
 This goal of this notebook is to build models predicting bulk from pseudobulk for all projects and assess their fits.
-
-Before modeling, we additionally filter data so that only genes which have non-zero expression (based on raw counts) in `> r params$filter_threshold * 100`\% samples, in both bulk and pseudobulk modalities, are retained. 
-
-
 We build and assess the following random effects models for each project:
 
 * `fit_plain`: `bulk ~ pseudobulk`
 * `fit_additive`: `bulk ~ pseudobulk + (1|sample_id)`
-* `fit_interaction`: `bulk ~ pseudobulk + (1|sample_id) + (1|sample_id:pseudobulk)`. _Only built if filtering threshold is 0._
+* `fit_interaction`: `bulk ~ pseudobulk + (1|sample_id) + (1|sample_id:pseudobulk)`
 
 
+In addition, the notebook parameter `filter_genes` determines if genes are filtered from the data before modeling:
+
+* If this is `FALSE`, no filtering is performed
+* If this is `TRUE`, genes which are not expressed at least one sample in each modalities (bulk and pseudobulk) are removed
+
+In this notebook, the `filter_genes` parameter is `r as.logical(params$filter_genes)`.
 
 ## Setup
 
@@ -106,22 +108,26 @@ expressed_df <- named_projects |>
 
 This chunk defines a helper function to read and combine bulk and pseudobulk datasets for a single project.
 ```{r}
-prepare_data <- function(pseudo_file, bulk_df, id, exclude_samples, expressed_df, threshold = params$filter_threshold) {
+prepare_data <- function(pseudo_file, bulk_df, id, exclude_samples, expressed_df, filter = params$filter_genes) {
   
-  # Find genes to _retain_ at the given threshold
-  retain_genes <- expressed_df |>
-    dplyr::filter(
-      project_id == id, 
-      pseudobulk_percent_expressed > threshold, 
-      bulk_percent_expressed > threshold
+  # Find genes to keep if filtering is on
+  if (filter) {
+    keep_genes <- expressed_df |>
+      dplyr::filter(
+        project_id == id, 
+        pseudobulk_percent_expressed > 0,
+        bulk_percent_expressed > 0
     ) |>
     dplyr::pull(ensembl_id)
-  
+  } else {
+    keep_genes <- expressed_df$ensembl_id
+  } 
+ 
   pseudo_df <- readr::read_tsv(pseudo_file, show_col_types = FALSE) |>
     dplyr::filter(
       expression_type == "pseudobulk_deseq", 
       !(sample_id %in% exclude_samples), 
-      ensembl_id %in% retain_genes
+      ensembl_id %in% keep_genes
     ) |>
     dplyr::select(ensembl_id, sample_id, pseudobulk = expression)
     
@@ -129,7 +135,7 @@ prepare_data <- function(pseudo_file, bulk_df, id, exclude_samples, expressed_df
   bulk_df <- bulk_df |>
     dplyr::filter(
       !(sample_id %in% exclude_samples), 
-      ensembl_id %in% retain_genes
+      ensembl_id %in% keep_genes
     ) |>
     dplyr::rename(bulk = bulk_counts)
 
@@ -152,18 +158,13 @@ This chunk defines several helper functions to support modeling.
 # - additive effect for sample_id (`fit_additive`)
 # - interaction effect for sample_id (`fit_interaction`)
 # Return a list of model objects named accordingly
-model_data <- function(project_df, threshold = params$filter_threshold) {
-  model_list <- list(
+model_data <- function(project_df) {
+ list(
     fit_plain = lm(bulk ~ pseudobulk, data = project_df),
     # we set REML = FALSE here for the next models to enable comparisons with fit_plain
-    fit_additive = lmer(bulk ~ pseudobulk + (1|sample_id), data = project_df, REML = FALSE)
+    fit_additive = lmer(bulk ~ pseudobulk + (1|sample_id), data = project_df, REML = FALSE),
+    fit_interaction = lmer(bulk ~ pseudobulk + (1|sample_id) + (1|sample_id:pseudobulk), data = project_df, REML = FALSE)
   )
-  
-  if (threshold == 0) {
-    model_list[["fit_interaction"]] = lmer(bulk ~ pseudobulk + (1|sample_id) + (1|sample_id:pseudobulk), data = project_df, REML = FALSE)
-  }
-  
-  return(model_list)
 } 
 
 
@@ -283,7 +284,7 @@ residuals_df <- all_models |>
 ggplot(residuals_df) + 
   aes(x = fitted_values, y = residuals) + 
   geom_bin_2d(binwidth = 0.25) + 
-  scale_fill_viridis_c(limits = c(0, 600), oob = scales::squish, option = "inferno") +
+  scale_fill_viridis_c(limits = c(0, 500), oob = scales::squish, option = "inferno") +
   geom_hline(yintercept = 0, color = "blue", linewidth = 0.25) + 
   facet_grid(
     cols = vars(model_name), 
@@ -298,6 +299,9 @@ ggplot(residuals_df) +
   * Only project `SCPCP000009`'s residual plot for the interaction model looks close to meeting model assumptions well enough
   * It's very likely that interaction models have been overfit except for that project, which has only 3 samples
 * Based on the metrics explored here, we'll move forward with the additive models
+ 
+
+
 
 ## Export
 
@@ -308,7 +312,8 @@ all_models |>
   purrr::iwalk(
     \(model_list, project_id) {
            
-      output_file <- file.path(output_dir, glue::glue("{project_id}_bulk-pseudobulk-model.rds"))
+      filter_str <- ifelse(params$filter_genes, "filtered", "unfiltered")
+      output_file <- file.path(output_dir, glue::glue("{project_id}_bulk-pseudobulk-model_{filter_str}.rds"))
       readr::write_rds(
         list(
           data = project_df_list[[project_id]],
