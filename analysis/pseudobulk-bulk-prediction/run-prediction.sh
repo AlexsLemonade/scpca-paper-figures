@@ -57,5 +57,17 @@ for project_dir in $scpca_dir/*; do
       --output_percent_expressed_file "${percent_expressed_file}"
 done
 
-# Build and export models to results/models/
-Rscript -e "rmarkdown::render('${model-notebooks}/build-assess-models.Rmd')"
+# Build and export models to results/models with and without filtering unexpressed genes
+for filter_genes in 0 1; do
+
+  if [[ ${filter_genes} -eq 0 ]]; then
+    filter_str="unfiltered"
+  else
+    filter_str="filtered"
+  fi
+
+  Rscript -e "rmarkdown::render('${model_notebook_dir}/build-assess-models.Rmd',
+              params = list(filter_genes = ${filter_genes}),
+              output_file = 'build-assess-models_${filter_str}.nb.html',
+              output_dir = '${model_notebook_dir}')"
+done
