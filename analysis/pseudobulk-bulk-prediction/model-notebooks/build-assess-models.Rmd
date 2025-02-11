@@ -8,7 +8,7 @@ output:
     toc_depth: 3
     code_folding: hide
 params:
-  filter_genes: TRUE
+  expr_threshold: 0
 ---
 
 
@@ -20,12 +20,10 @@ We build and assess the following random effects models for each project:
 * `fit_interaction`: `bulk ~ pseudobulk + (1|sample_id) + (1|sample_id:pseudobulk)`
 
 
-In addition, the notebook parameter `filter_genes` determines if genes are filtered from the data before modeling:
+In addition, the notebook parameter `expr_threshold` determines how genes are filtered from the data before modeling: Only genes which are expressed in at least `2 * expr_threshold` in both modalities combined are retained.
+To turn off filtering, use a negative value.
 
-* If this is `FALSE`, no filtering is performed
-* If this is `TRUE`, genes which are not expressed at least one sample in each modalities (bulk and pseudobulk) are removed
-
-In this notebook, the `filter_genes` parameter is `r as.logical(params$filter_genes)`.
+In this notebook, the `expr_threshold` parameter is `r params$expr_threshold`.
 
 ## Setup
 
@@ -108,19 +106,15 @@ expressed_df <- named_projects |>
 
 This chunk defines a helper function to read and combine bulk and pseudobulk datasets for a single project.
 ```{r}
-prepare_data <- function(pseudo_file, bulk_df, id, exclude_samples, expressed_df, filter = params$filter_genes) {
+prepare_data <- function(pseudo_file, bulk_df, id, exclude_samples, expressed_df) {
   
-  # Find genes to keep if filtering is on
-  if (filter) {
-    keep_genes <- expressed_df |>
-      dplyr::filter(
-        project_id == id, 
-        pseudobulk_frac_expressed > 0 | bulk_frac_expressed > 0
+  # determine genes to keep
+  keep_genes <- expressed_df |>
+    dplyr::filter(
+      project_id == id, 
+      (pseudobulk_frac_expressed + bulk_frac_expressed) > (params$expr_threshold * 2)
     ) |>
     dplyr::pull(ensembl_id)
-  } else {
-    keep_genes <- expressed_df$ensembl_id
-  } 
  
   pseudo_df <- readr::read_tsv(pseudo_file, show_col_types = FALSE) |>
     dplyr::filter(
@@ -308,7 +302,7 @@ all_models |>
   purrr::iwalk(
     \(model_list, project_id) {
            
-      filter_str <- ifelse(params$filter_genes, "filtered", "unfiltered")
+      filter_str <- ifelse(params$expr_threshold < 0, "no-filter", glue::glue("{params$expr_threshold}-filter"))
       output_file <- file.path(output_dir, glue::glue("{project_id}_bulk-pseudobulk-model_{filter_str}.rds"))
       readr::write_rds(
         list(
