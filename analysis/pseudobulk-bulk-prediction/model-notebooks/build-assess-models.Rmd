@@ -301,9 +301,9 @@ We'll export the underlying data (so that we retain Ensembl gene ids for next st
 all_models |>
   purrr::iwalk(
     \(model_list, project_id) {
-           
-      filter_str <- ifelse(params$expr_threshold < 0, "no-filter", glue::glue("{params$expr_threshold}-filter"))
-      output_file <- file.path(output_dir, glue::glue("{project_id}_bulk-pseudobulk-model_{filter_str}.rds"))
+      
+      threshold_str <- ifelse(params$expr_threshold < 0, "all-genes", glue::glue("threshold-{params$expr_threshold}"))
+      output_file <- file.path(output_dir, glue::glue("{project_id}_bulk-pseudobulk-model_{threshold_str}.rds"))
       readr::write_rds(
         list(
           data = project_df_list[[project_id]],
