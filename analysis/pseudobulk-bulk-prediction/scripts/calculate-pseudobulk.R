@@ -3,7 +3,7 @@
 #  1. `pseudobulk_deseq`: Pseudobulk calculated by summing raw counts and normalizing them with DESeq2
 #  2. `pseudobulk_log_counts`: Pseudobulk calculated by summing counts and taking their log2
 #
-# The script also exports a TSV of the percent of samples each gene is expressed in
+# The script also exports a TSV of the fraction of samples each gene is expressed in
 
 renv::load()
 suppressPackageStartupMessages({
@@ -26,9 +26,9 @@ option_list <- list(
     help = "Path to output TSV to save pseudobulk calculations"
   ),
   make_option(
-    "--output_percent_expressed_file",
+    "--output_frac_expressed_file",
     type = "character",
-    help = "Path to output TSV to save percent of samples each gene is expressed in, based on raw counts"
+    help = "Path to output TSV to save fraction of samples each gene is expressed in, based on raw counts"
   )
 )
 opts <- parse_args(OptionParser(option_list = option_list))
@@ -37,10 +37,10 @@ opts <- parse_args(OptionParser(option_list = option_list))
 stopifnot(
   "An input directory must be provided to `input_dir`." = !is.null(opts$input_dir),
   "A path to an output TSV file to save pseudobulk counts must be specified with `output_pseudoulk_file`." = !is.null(opts$output_pseudobulk_file),
-  "A path to an output TSV file to save percent of single-cell samples genes are expressed in must be specified with `output_percent_expressed_file`." = !is.null(opts$output_percent_expressed_file)
+  "A path to an output TSV file to save fraction of single-cell samples genes are expressed in must be specified with `output_frac_expressed_file`." = !is.null(opts$output_frac_expressed_file)
 )
 fs::dir_create(dirname(opts$output_pseudobulk_file))
-fs::dir_create(dirname(opts$output_percent_expressed_file))
+fs::dir_create(dirname(opts$output_frac_expressed_file))
 
 
 # Read in all SCEs----------------
@@ -66,11 +66,11 @@ pseudo_raw_counts <- sce_list |>
   do.call(cbind, args = _ )
 
 
-# Export table of percent expressed based on raw counts alone
+# Export table of fraction expressed based on raw counts alone
 rowMeans(pseudo_raw_counts > 0) |>
   tibble::as_tibble(rownames = "ensembl_id") |>
-  dplyr::rename(percent_samples_expressed = value) |>
-  readr::write_tsv(opts$output_percent_expressed_file)
+  dplyr::rename(frac_samples_expressed = value) |>
+  readr::write_tsv(opts$output_frac_expressed_file)
 
 
 # Approach 1: Normalize with DESeq 2 ----------------
@@ -82,7 +82,7 @@ pseudo_deseq <- DESeqDataSetFromMatrix(
   design = ~sample) |>
   estimateSizeFactors() |>
   rlog(blind = TRUE) |>
-  assay() 
+  assay()
 
 
 # Approach 2: Sum counts and log1p (but base 2) directly ----------------
@@ -96,15 +96,15 @@ make_long <- function(pseudo_mat, label) {
     as.data.frame() |>
     tibble::rownames_to_column(var = "ensembl_id") |>
     tidyr::pivot_longer(
-      -ensembl_id, 
-      names_to = "sample_id", 
+      -ensembl_id,
+      names_to = "sample_id",
       values_to = "expression"
     ) |>
     dplyr::mutate(expression_type = label)
 }
 
 pseudo_df <- dplyr::bind_rows(
-  make_long(pseudo_deseq, "pseudobulk_deseq"), 
+  make_long(pseudo_deseq, "pseudobulk_deseq"),
   make_long(pseudo_log_counts, "pseudobulk_log_counts")
 )
 
