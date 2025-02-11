@@ -115,8 +115,7 @@ prepare_data <- function(pseudo_file, bulk_df, id, exclude_samples, expressed_df
     keep_genes <- expressed_df |>
       dplyr::filter(
         project_id == id, 
-        pseudobulk_frac_expressed > 0,
-        bulk_frac_expressed > 0
+        pseudobulk_frac_expressed > 0 | bulk_frac_expressed > 0
     ) |>
     dplyr::pull(ensembl_id)
   } else {
