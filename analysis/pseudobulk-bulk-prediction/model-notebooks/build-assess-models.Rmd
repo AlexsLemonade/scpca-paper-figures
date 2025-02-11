@@ -83,24 +83,24 @@ stopifnot(
   all.equal(names(pseudobulk_files), names(bulk_counts))
 )
 
-# also the tables with percent expressed
-bulk_percent_expr_df <- readr::read_tsv(
-  file.path(data_dir, "percent-expressed-bulk.tsv")
+# also the tables with fraction expressed
+bulk_frac_expr_df <- readr::read_tsv(
+  file.path(data_dir, "fraction-expressed-bulk.tsv")
 ) |>
-  dplyr::rename(bulk_percent_expressed = percent_samples_expressed)
+  dplyr::rename(bulk_frac_expressed = frac_samples_expressed)
   
 named_projects <- purrr::set_names(pseudobulk_names, pseudobulk_names)
 expressed_df <- named_projects |>
   purrr::map(
     \(project_id) {
       readr::read_tsv(
-        file.path(data_dir, glue::glue("{project_id}_percent-expressed-single-cell.tsv"))
+        file.path(data_dir, glue::glue("{project_id}_fraction-expressed-single-cell.tsv"))
       )
     }
   ) |>
   purrr::list_rbind(names_to = "project_id") |>
-  dplyr::rename(pseudobulk_percent_expressed = percent_samples_expressed) |>
-  dplyr::full_join(bulk_percent_expr_df, by = c("project_id", "ensembl_id"))
+  dplyr::rename(pseudobulk_frac_expressed = frac_samples_expressed) |>
+  dplyr::full_join(bulk_frac_expr_df, by = c("project_id", "ensembl_id"))
 ```
 
 
@@ -115,8 +115,8 @@ prepare_data <- function(pseudo_file, bulk_df, id, exclude_samples, expressed_df
     keep_genes <- expressed_df |>
       dplyr::filter(
         project_id == id, 
-        pseudobulk_percent_expressed > 0,
-        bulk_percent_expressed > 0
+        pseudobulk_frac_expressed > 0,
+        bulk_frac_expressed > 0
     ) |>
     dplyr::pull(ensembl_id)
   } else {
@@ -256,7 +256,7 @@ all_models |>
 * Across all projects, model AIC and BIC each show improvements as model complexity increases
 * $\sigma$ is roughly the same for the plain and additive models, but it is much lower for the interaction models across the board
   * $\sigma$ shows the largest relative drop from additive to interaction for `SCPCP000017`, which from previous exploration shows the weakest relationship between bulk and pseudobulk (see `../exploratory-notebooks/compare-bulk-pseudobulk.Rmd`)
-* The interaction model only converges for `SCPCP000009`
+* The interaction models do not usually converge - they have lots of parameters!
 
 ### Residual plots
 
@@ -297,7 +297,7 @@ ggplot(residuals_df) +
 * Residual plots for the plain and additive models are exceptionally similar
 * For interaction models, the vast majority of the points are sitting along the `y=0` line for most interaction models, and for the remaining points, they appear biased above the `y=x` line compared to below
   * Only project `SCPCP000009`'s residual plot for the interaction model looks close to meeting model assumptions well enough
-  * It's very likely that interaction models have been overfit except for that project, which has only 3 samples
+* It's very likely that interaction models are overfit
 * Based on the metrics explored here, we'll move forward with the additive models
  
 
