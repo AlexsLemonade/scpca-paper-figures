@@ -57,17 +57,17 @@ for project_dir in $scpca_dir/*; do
       --output_frac_expressed_file "${fraction_expressed_file}"
 done
 
-# Build and export models to results/models with and without filtering unexpressed genes
-for filter_genes in 0 1; do
+# Build and export models to results/models across different thresholds for expression
+for expr_threshold in -1 0; do
 
-  if [[ ${filter_genes} -eq 0 ]]; then
-    filter_str="unfiltered"
+  if [[ ${expr_threshold} -eq -1 ]]; then
+    threshold_str="all-genes"
   else
-    filter_str="filtered"
+    threshold_str="threshold-${expr_threshold}"
   fi
 
   Rscript -e "rmarkdown::render('${model_notebook_dir}/build-assess-models.Rmd',
-              params = list(filter_genes = ${filter_genes}),
-              output_file = 'build-assess-models_${filter_str}.nb.html',
+              params = list(expr_threshold = ${expr_threshold}),
+              output_file = 'build-assess-models_${threshold_str}.nb.html',
               output_dir = '${model_notebook_dir}')"
 done
