@@ -18,6 +18,11 @@ option_list <- list(
     help = "Output directory to save synced data files organized by project/sample"
   ),
   make_option(
+    "--map_file",
+    type = "character",
+    help = "Path to output TSV file mapping bulk sample and library ids",
+  ),
+  make_option(
     "--sample_metadata_file",
     type = "character",
     default = here::here("s3_files", "scpca-sample-metadata.tsv"),
@@ -39,9 +44,6 @@ stopifnot(
 )
 s3_bulk_tpm_path <- "s3://nextflow-ccdl-results/scpca-prod/checkpoints/salmon" #/library_id/quant.sf
 s3_processed_path <- "s3://nextflow-ccdl-results/scpca-prod/results" #/project_id/sample_id/library_id_processed.rds AND project_id/bulk/<project_id>_bulk_quant.tsv
-
-ids_file <- file.path(opts$output_dir, "bulk_library_sample_ids.tsv")
-
 
 fs::dir_create(opts$output_dir)
 
@@ -179,4 +181,4 @@ bulk_libraries_samples <- library_metadata |>
     seq_unit == "bulk"
   ) |>
   dplyr::select(scpca_sample_id, scpca_library_id)
-readr::write_tsv(bulk_libraries_samples, ids_file)
+readr::write_tsv(bulk_libraries_samples, opts$map_file)

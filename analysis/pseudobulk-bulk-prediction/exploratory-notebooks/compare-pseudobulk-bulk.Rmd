@@ -38,23 +38,23 @@ theme_set(theme_bw())
 data_dir <- here::here("analysis", "pseudobulk-bulk-prediction", "data")
 tpm_dir <- file.path(data_dir, "tpm")
 pseudobulk_dir <- file.path(data_dir, "pseudobulk")
-bulk_counts_file <- file.path(data_dir, "scpca_data", "normalized_bulk_counts.rds")
+bulk_counts_file <- file.path(data_dir, "normalized-bulk-counts.rds")
 
 tpm_files <- list.files(
   path = tpm_dir,
   full.names = TRUE,
-  pattern = "-tpm\\.tsv$"
+  pattern = "_tpm\\.tsv$"
 )
-tpm_names <- stringr::str_split_i(basename(tpm_files), pattern = "-", i = 1)
+tpm_names <- stringr::str_split_i(basename(tpm_files), pattern = "_", i = 1)
 names(tpm_files) <- tpm_names
 
 
 pseudobulk_files <- list.files(
   path = pseudobulk_dir,
   full.names = TRUE,
-  pattern = "-pseudobulk\\.tsv$"
+  pattern = "_pseudobulk\\.tsv$"
 )
-pseudobulk_names <- stringr::str_split_i(basename(pseudobulk_files), pattern = "-", i = 1)
+pseudobulk_names <- stringr::str_split_i(basename(pseudobulk_files), pattern = "_", i = 1)
 names(pseudobulk_files) <- pseudobulk_names
 
 # Make sure we have the same projects, in the same order
@@ -111,8 +111,7 @@ bulk_df_list <- readr::read_rds(bulk_counts_file) |>
   purrr::map(
     \(df) {
       df |>
-        dplyr::filter(sample_id %in% present_samples) |>
-        dplyr::rename(ensembl_id = gene_id)
+        dplyr::filter(sample_id %in% present_samples) 
     }
   )
 
