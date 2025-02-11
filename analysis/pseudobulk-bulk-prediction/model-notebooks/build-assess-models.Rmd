@@ -127,7 +127,7 @@ prepare_data <- function(pseudo_file, bulk_df, id, exclude_samples, expressed_df
   # make names consistent with pseudo_df
   bulk_df <- bulk_df |>
     dplyr::filter(
-      !(sample_id %in% exclude_samples), 
+      !(sample_id %in% exclude_samples),
       ensembl_id %in% keep_genes
     ) |>
     dplyr::rename(bulk = bulk_counts)
@@ -137,8 +137,7 @@ prepare_data <- function(pseudo_file, bulk_df, id, exclude_samples, expressed_df
     pseudo_df,
     bulk_df,
     by = c("ensembl_id", "sample_id")
-  ) 
-  
+  )
   return(expr_df)
 }
 ```
@@ -152,7 +151,7 @@ This chunk defines several helper functions to support modeling.
 # - interaction effect for sample_id (`fit_interaction`)
 # Return a list of model objects named accordingly
 model_data <- function(project_df) {
- list(
+  list(
     fit_plain = lm(bulk ~ pseudobulk, data = project_df),
     # we set REML = FALSE here for the next models to enable comparisons with fit_plain
     fit_additive = lmer(bulk ~ pseudobulk + (1|sample_id), data = project_df, REML = FALSE),
@@ -234,7 +233,6 @@ As we see, there are some warnings that at least some of the random effects mode
 Next, we want to look at some of the fit statistics, including whether the random effects models converged.
 In the `conv_code` column for these models, a negative value indicates the model did not converge and `0` indicates that it did.
 
-
 ```{r}
 all_models |>
   purrr::map(
@@ -301,7 +299,6 @@ We'll export the underlying data (so that we retain Ensembl gene ids for next st
 all_models |>
   purrr::iwalk(
     \(model_list, project_id) {
-      
       threshold_str <- ifelse(params$expr_threshold < 0, "all-genes", glue::glue("threshold-{params$expr_threshold}"))
       output_file <- file.path(output_dir, glue::glue("{project_id}_bulk-pseudobulk-model_{threshold_str}.rds"))
       readr::write_rds(
