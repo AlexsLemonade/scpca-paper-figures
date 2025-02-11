@@ -299,9 +299,6 @@ ggplot(residuals_df) +
   * Only project `SCPCP000009`'s residual plot for the interaction model looks close to meeting model assumptions well enough
 * It's very likely that interaction models are overfit
 * Based on the metrics explored here, we'll move forward with the additive models
- 
-
-
 
 ## Export
 
