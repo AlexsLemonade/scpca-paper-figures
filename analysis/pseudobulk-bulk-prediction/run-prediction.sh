@@ -35,13 +35,13 @@ Rscript ${script_dir}/prepare-bulk-counts.R \
   --input_dir "${scpca_dir}" \
   --map_file "${map_file}" \
   --output_counts_file "${data_dir}/normalized-bulk-counts.rds" \
-  --output_percent_expressed_file "${data_dir}/percent-expressed-bulk.tsv"
+  --output_frac_expressed_file "${data_dir}/fraction-expressed-bulk.tsv"
 
 for project_dir in $scpca_dir/*; do
     project_id=$(basename $project_dir)
 
     pseudobulk_file="${pseudobulk_dir}/${project_id}_pseudobulk.tsv"
-    percent_expressed_file="${data_dir}/${project_id}_percent-expressed-single-cell.tsv"
+    fraction_expressed_file="${data_dir}/${project_id}_fraction-expressed-single-cell.tsv"
 
     ###### TPMs are not currently used in the analysis ######
     # Calculate bulk TPM for each project
@@ -54,7 +54,7 @@ for project_dir in $scpca_dir/*; do
     Rscript ${script_dir}/calculate-pseudobulk.R \
       --input_dir "${scpca_dir}/${project_id}" \
       --output_pseudobulk_file "${pseudobulk_file}" \
-      --output_percent_expressed_file "${percent_expressed_file}"
+      --output_frac_expressed_file "${fraction_expressed_file}"
 done
 
 # Build and export models to results/models with and without filtering unexpressed genes
