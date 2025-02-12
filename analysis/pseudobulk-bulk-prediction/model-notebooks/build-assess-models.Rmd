@@ -8,7 +8,7 @@ output:
     toc_depth: 3
     code_folding: hide
 params:
-  expr_threshold: 0
+  expr_threshold: -1
 ---
 
 
@@ -33,6 +33,7 @@ renv::load()
 library(lme4)
 library(ggplot2)
 theme_set(theme_bw())
+options(readr.show_col_types = FALSE)
 ```
 
 Define a vector of low-quality samples that we want to exclude from analysis.
@@ -110,11 +111,17 @@ prepare_data <- function(pseudo_file, bulk_df, id, exclude_samples, expressed_df
   
   # determine genes to keep
   keep_genes <- expressed_df |>
+    dplyr::rowwise() |>
     dplyr::filter(
       project_id == id, 
       mean(c(pseudobulk_frac_expressed, bulk_frac_expressed)) > params$expr_threshold
     ) |>
     dplyr::pull(ensembl_id)
+  
+  stopifnot(
+    "Filtering on the given expression threshold removes all genes from at least one project. Please choose a different threshold." =
+      length(keep_genes) > 0
+  )
  
   pseudo_df <- readr::read_tsv(pseudo_file, show_col_types = FALSE) |>
     dplyr::filter(
@@ -247,7 +254,7 @@ all_models |>
 * Across all projects, model AIC and BIC each show improvements as model complexity increases
 * $\sigma$ is roughly the same for the plain and additive models, but it is much lower for the interaction models across the board
   * $\sigma$ shows the largest relative drop from additive to interaction for `SCPCP000017`, which from previous exploration shows the weakest relationship between bulk and pseudobulk (see `../exploratory-notebooks/compare-bulk-pseudobulk.Rmd`)
-* The interaction models do not usually converge - they have lots of parameters!
+* The interaction models do not always converge
 
 ### Residual plots
 
