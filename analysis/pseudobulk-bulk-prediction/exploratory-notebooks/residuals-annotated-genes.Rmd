@@ -71,8 +71,8 @@ This chunk defines a function for plotting histograms.
 ```{r}
 make_histogram <- function(df, xvar, title) {
   ggplot(df) +
-    aes(x = {{xvar}}, fill = status) + 
-    geom_histogram(alpha = 0.9, bins = 150) +
+    aes(x = {{xvar}}, y = after_stat(ndensity), fill = status) + 
+    geom_histogram(alpha = 0.5, bins = 100) +
     facet_wrap(vars(project_id), scales = "free", nrow = 1) +
     scale_fill_brewer(palette = "Set1") + 
     theme(legend.position = "bottom") + 
