@@ -68,17 +68,33 @@ read_prepare_data <- function(file_pattern, ensembl_symbol_df) {
 }
 ```
 
-This chunk defines a helper function for plotting boxplots.
+This chunk defines a helper function for plotting histograms.
 ```{r}
-make_boxplot <- function(df, yvar, title) {
+make_histogram <- function(df, xvar, title) {
   ggplot(df) +
-    aes(x = sample_id, fill = status, y = {{yvar}}) + 
-    geom_boxplot(outlier.size = 0.1, linewidth = 0.1) +
-    facet_wrap(vars(project_id), scales = "free", ncol = 1) +
-    scale_fill_brewer(palette = "Set2") + 
-    theme(axis.text.x = element_blank(), legend.position = "bottom") +
-    guides(fill = guide_legend(override.aes = list(size = 2))) + 
+    aes(x = {{xvar}}, fill = status) + 
+    geom_histogram(alpha = 0.9, bins = 150) +
+    facet_wrap(vars(project_id), scales = "free", nrow = 1) +
+    scale_fill_brewer(palette = "Set1") + 
+    theme(legend.position = "bottom") + 
     ggtitle(title)  
+}
+```
+
+This chunk defines a helper function for modeling and viewing results.
+
+```{r}
+fit_model <- function(df) {
+    
+  fit <- summary(lm(residuals ~ status * project_id, data = df))
+  diff_table <- df |>
+    split(df$project_id) |>
+    purrr::map(
+      \(df_){
+      mean(df_$residuals[df_$status == "annotated"]) - mean(df_$residuals[df_$status == "not_annotated"])
+    })
+  
+  return(list(fit, diff_table))
 }
 ```
 
@@ -95,39 +111,28 @@ unfiltered_df <- read_prepare_data("all-genes\\.rds$", ensembl_symbol_df)
 
 Do the residuals have different distributions based on annotation status?
 
-```{r, fig.height = 12, fig.width = 12}
-make_boxplot(unfiltered_df, residuals, "residual distributions across annotation status")
+```{r, fig.height = 4, fig.width = 12}
+make_histogram(unfiltered_df, residuals, "residual distributions across annotation status")
 ```
 
 
 It appears that the residuals for annotated genes are slightly higher than residuals for genes without annotations.
-Let's fit a quick linear model to check how much.
+Let's fit a quick linear model to check how much, and also look at the mean difference among projects directly.
 From the plots above, there doesn't look to be much difference among samples, so we'll fit one regression with a project interaction effect.
 
-```{r}
-fit <- lm(residuals ~ status * project_id, data = unfiltered_df)
-summary(fit)
-```
-
-We see that annotated genes have, on average, slightly higher residuals compared to genes that are not annotated, but to a different degree for each project.
-Let's calculate the per-project difference fresh here, or you can do some mental math on that summary above!
 
 ```{r}
-unfiltered_df |>
-  split(unfiltered_df$project_id) |>
-  purrr::map(
-    \(df)
-      mean(df$residuals[df$status == "annotated"]) - mean(df$residuals[df$status == "not_annotated"])
-  )
-```
-Let's contextualize this coefficient with some expression distributions too.
-
-```{r, fig.height = 12, fig.width = 12}
-make_boxplot(unfiltered_df, bulk, "pseudobulk expression distributions across annotation status")
+fit_model(unfiltered_df)
 ```
 
-```{r, fig.height = 12, fig.width = 12}
-make_boxplot(unfiltered_df, bulk, "pseudobulk expression distributions across annotation status")
+Let's contextualize these values with some expression distributions too.
+
+```{r, fig.height = 4, fig.width = 12}
+make_histogram(unfiltered_df, bulk, "pseudobulk expression distributions across annotation status")
+```
+
+```{r, fig.height = 4, fig.width = 12}
+make_histogram(unfiltered_df, bulk, "pseudobulk expression distributions across annotation status")
 ```
 
 As expected, annotated genes have generally higher expression.
@@ -149,18 +154,7 @@ filtered_df <- read_prepare_data("threshold-0\\.rds$", ensembl_symbol_df)
 ```
 
 ```{r}
-fit <- lm(residuals ~ status * project_id, data = filtered_df)
-summary(fit)
-```
-Sure seems to - and now the effects appear to be stronger than before:
-
-```{r}
-filtered_df |>
-  split(filtered_df$project_id) |>
-  purrr::map(
-    \(df)
-      mean(df$residuals[df$status == "annotated"]) - mean(df$residuals[df$status == "not_annotated"])
-  )
+fit_model(filtered_df)
 ```
 
 
@@ -196,20 +190,11 @@ This means we have reduced our share of annotated genes during the filtering, wh
 filtered_df <- read_prepare_data("threshold-0.25\\.rds$", ensembl_symbol_df) 
 ```
 
-```{r}
-fit <- lm(residuals ~ status * project_id, data = filtered_df)
-summary(fit)
-```
-
 
 ```{r}
-filtered_df |>
-  split(filtered_df$project_id) |>
-  purrr::map(
-    \(df)
-      mean(df$residuals[df$status == "annotated"]) - mean(df$residuals[df$status == "not_annotated"])
-  )
+fit_model(filtered_df)
 ```
+
 These values are even a little higher than the first threshold - we are increasingly seeing a distinction between residual distributions as we increase our filtering (based on expression) stringency.
 
 
