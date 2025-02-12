@@ -20,7 +20,7 @@ We build and assess the following random effects models for each project:
 * `fit_interaction`: `bulk ~ pseudobulk + (1|sample_id) + (1|sample_id:pseudobulk)`
 
 
-In addition, the notebook parameter `expr_threshold` determines how genes are filtered from the data before modeling: Only genes which are expressed in at least `2 * expr_threshold` in both modalities combined are retained.
+In addition, the notebook parameter `expr_threshold` determines how genes are filtered from the data before modeling: Only genes which are expressed in greater than the proportion `expr_threshold` of samples, averaged across bulk and pseudobulk modalities, are retained.
 To turn off filtering, use a negative value.
 
 In this notebook, the `expr_threshold` parameter is `r params$expr_threshold`.
@@ -112,7 +112,7 @@ prepare_data <- function(pseudo_file, bulk_df, id, exclude_samples, expressed_df
   keep_genes <- expressed_df |>
     dplyr::filter(
       project_id == id, 
-      (pseudobulk_frac_expressed + bulk_frac_expressed) > (params$expr_threshold * 2)
+      mean(c(pseudobulk_frac_expressed, bulk_frac_expressed)) > params$expr_threshold
     ) |>
     dplyr::pull(ensembl_id)
  
