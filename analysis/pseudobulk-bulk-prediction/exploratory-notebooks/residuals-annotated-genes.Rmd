@@ -73,9 +73,8 @@ make_histogram <- function(df, xvar, title) {
   ggplot(df) +
     aes(x = {{xvar}}, y = after_stat(ndensity), fill = status) + 
     geom_histogram(alpha = 0.5, bins = 100) +
-    facet_wrap(vars(project_id), scales = "free", nrow = 1) +
-    scale_fill_brewer(palette = "Set1") + 
-    theme(legend.position = "bottom") + 
+    facet_wrap(vars(project_id), scales = "free", ncol = 1) +
+    scale_fill_brewer(palette = "Set1") +
     ggtitle(title)  
 }
 ```
@@ -119,10 +118,10 @@ unfiltered_df <- read_prepare_data("all-genes\\.rds$", ensembl_symbol_df)
 ```
 
 
-Do the residuals have different distributions based on annotation status?
+Do the residuals have different distributions based on gene annotation status?
 
-```{r, fig.height = 4, fig.width = 12}
-make_histogram(unfiltered_df, residuals, "residual distributions across annotation status")
+```{r, fig.height = 12, fig.width = 5}
+make_histogram(unfiltered_df, residuals, "residual distributions")
 ```
 
 
@@ -137,12 +136,12 @@ fit_model(unfiltered_df)
 
 Let's contextualize these values with some expression distributions too.
 
-```{r, fig.height = 4, fig.width = 12}
-make_histogram(unfiltered_df, pseudobulk, "pseudobulk expression distributions across annotation status")
+```{r, fig.height = 12, fig.width = 5}
+make_histogram(unfiltered_df, pseudobulk, "pseudobulk expression")
 ```
 
-```{r, fig.height = 4, fig.width = 12}
-make_histogram(unfiltered_df, bulk, "bulk expression distributions across annotation status")
+```{r, fig.height = 12, fig.width = 5}
+make_histogram(unfiltered_df, bulk, "bulk expression")
 ```
 
 As expected, annotated genes have generally higher expression.
