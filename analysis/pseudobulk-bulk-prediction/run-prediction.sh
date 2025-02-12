@@ -58,9 +58,9 @@ for project_dir in $scpca_dir/*; do
 done
 
 # Build and export models to results/models across different thresholds for expression
-for expr_threshold in -1 0; do
+for expr_threshold in -1 0 0.25; do
 
-  if [[ ${expr_threshold} -eq -1 ]]; then
+  if [[ ${expr_threshold} == -1 ]]; then
     threshold_str="all-genes"
   else
     threshold_str="threshold-${expr_threshold}"
