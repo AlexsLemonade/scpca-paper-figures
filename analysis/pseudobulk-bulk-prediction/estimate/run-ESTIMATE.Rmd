@@ -1,0 +1,253 @@
+---
+title: "Explore use of ESTIMATE"
+author: Stephanie J. Spielman
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    toc: true
+    toc_depth: 3
+    code_folding: hide
+---
+
+This notebook does a trial run and comparison of ESTIMATE on bulk vs pseudobulk to determine whether there are different estimates between modalities.
+We use raw counts as input for both, as the method itself relies on ranks.
+
+
+```{r setup}
+renv::load()
+
+
+library(ggplot2)
+suppressPackageStartupMessages({
+  library(SingleCellExperiment)
+})
+
+theme_set(theme_bw())
+```
+
+```{r paths}
+bulk_dir <- here::here("analysis", "pseudobulk-bulk-prediction", "data", "models")
+ensembl_symbol_df <- readr::read_tsv(
+  here::here("analysis", "bulk-deconvolution", "data", "reference", "ensembl_symbol.tsv"), 
+  show_col_types = FALSE
+)
+```
+
+
+Do we have all the genes they want us to have?
+```{r}
+estimate_genes <- c(
+  tidyestimate::gene_sets$stromal_signature, 
+  tidyestimate::gene_sets$immune_signature
+)
+
+all(estimate_genes %in% ensembl_symbol_df$gene_symbol)
+```
+That's good!
+
+
+## Bulk
+
+### Read and prepare data
+
+```{r}
+bulk_count_files <- list.files(
+  path = here::here("analysis", "pseudobulk-bulk-prediction", "data", "scpca_data"),
+  full.names = TRUE,
+  pattern = "_bulk_quant\\.tsv$",
+  recursive = TRUE
+)
+stopifnot("No bulk count TSVs found" = length(bulk_count_files) > 0)
+bulk_count_names <- stringr::str_split_i(basename(bulk_count_files), pattern = "_", i = 1)
+names(bulk_count_files) <- bulk_count_names
+
+sample_library_map <- readr::read_tsv(
+  here::here("analysis", "pseudobulk-bulk-prediction", "data", "bulk-library-sample-ids.tsv")
+  ) |>
+  dplyr::rename(
+    sample_id = scpca_sample_id,
+    library_id = scpca_library_id
+  )
+
+# Make a list of data frames of bulk counts
+ bulk_dfs <- bulk_count_files |>
+  purrr::map(
+    \(counts_file) {
+
+      bulk_df <- readr::read_tsv(counts_file, show_col_types = FALSE) |>
+        dplyr::left_join(ensembl_symbol_df, by = c("gene_id" = "ensembl_id")) |>
+        tidyr::drop_na() |>
+        dplyr::select(-gene_id) |>
+        # arrange columns for input to tidyestimate
+        # this has to be named hgnc_symbol (they have a bug)
+        dplyr::select(hgnc_symbol = gene_symbol, everything()) |>
+        # we have some duplicate gene symbols because hey what are you gonna do!
+        # let's just force them to be unique, and if we are missing a lot of genes when running the analysis this can change
+        dplyr::mutate(hgnc_symbol = make.unique(hgnc_symbol)) |>
+        # dance to swap over to sample ids
+        tidyr::pivot_longer(
+          -hgnc_symbol,
+          names_to = "library_id", # library!
+          values_to = "bulk_counts"
+        ) |>
+        # swap to sample name
+        dplyr::left_join(sample_library_map) |>
+        tidyr::drop_na() |>
+        dplyr::select(hgnc_symbol, sample_id, bulk_counts) |>
+        tidyr::pivot_wider(
+          names_from = sample_id, 
+          values_from = bulk_counts
+        )
+})
+```
+
+
+### Run ESTIMATE
+
+```{r}
+bulk_estimate <- bulk_dfs |>
+  purrr::map(
+    \(df) {
+      
+      df |> 
+        tidyestimate::filter_common_genes(
+          id = "hgnc_symbol", 
+          # first column contains gene symbol
+          tidy = TRUE,
+          # tell us what genes we don't have that they want us to have
+          tell_missing = TRUE, 
+          # try to be smart about gene symbols  
+          find_alias = TRUE) |> 
+        tidyestimate::estimate_score(is_affymetrix = FALSE) # this aint no microarray
+      
+    }
+  ) |> purrr::list_rbind(names_to = "project_id")
+```
+
+Noting that 99.981% of genes that ESTIMATE is looking for are in our data, so it was almost certainly fine that we forced gene symbols to be unique.
+It likely did not affect results.
+
+## Pseudobulk
+
+
+### Read and prepare data
+
+```{r}
+projects <- c("SCPCP000001", "SCPCP000002", "SCPCP000006", "SCPCP000009", "SCPCP000017")
+names(projects) <- projects
+
+pseudobulk_dfs <- projects |>
+  purrr::map(
+    \(project_id){
+      
+      sce_path <- here::here("analysis", "pseudobulk-bulk-prediction", "data", "scpca_data", project_id)
+      
+      rds_files <- list.files(
+        path = sce_path,
+        pattern = "_processed\\.rds$",
+        recursive = TRUE
+      )
+      stopifnot(
+        "Could not find any _processed.rds files in the provided `input_dir`." = length(rds_files) > 0
+      )
+      
+      sample_ids <- stringr::str_split_i(rds_files, pattern = "/", i = 1)
+      rds_files <- file.path(sce_path, rds_files) # update to contain full path
+      names(rds_files) <- sample_ids
+      
+      purrr::map(rds_files, readr::read_rds) |>
+        # sum samples
+        purrr::map(counts) |>
+        purrr::map(rowSums) |>
+        do.call(cbind, args = _ ) |>
+        # now it's a data frame
+        tibble::as_tibble(rownames = "ensembl_id") |>
+        # bring in the gene symbols and prep for input to tidyestimate
+        dplyr::left_join(ensembl_symbol_df) |>
+        tidyr::drop_na() |>
+        dplyr::select(-ensembl_id) |>
+        dplyr::select(hgnc_symbol = gene_symbol, everything()) |>
+        dplyr::mutate(hgnc_symbol = make.unique(hgnc_symbol))
+  })
+```
+
+### Run ESTIMATE
+
+```{r}
+pseudobulk_estimate <- pseudobulk_dfs |>
+  purrr::map(
+    \(df) {
+      
+      df |> 
+        tidyestimate::filter_common_genes(
+          id = "hgnc_symbol", 
+          # first column contains gene symbol
+          tidy = TRUE,
+          # We can keep this quiet this time
+          tell_missing = FALSE, 
+          # try to be smart about gene symbols  
+          find_alias = TRUE) |> 
+        tidyestimate::estimate_score(is_affymetrix = FALSE) # this aint no microarray
+      
+    }
+  ) |> purrr::list_rbind(names_to = "project_id")
+```
+
+
+## Compare results
+
+We'll combine the data frames into one big one:
+
+```{r}
+estimate_df <- purrr::list_rbind(
+  list(
+    bulk = bulk_estimate, 
+    pseudobulk = pseudobulk_estimate
+  ), 
+  names_to = "modality"
+) 
+```
+
+Finally we'll compare the three quantities they calculate:
+
+
+```{r}
+# Define helper function for plotting
+compare_quantity <- function(estimate_df, column, title) {
+  estimate_df |>
+  dplyr::select(modality, {{column}}, project_id, sample) |>
+  tidyr::pivot_wider(
+    names_from = modality, 
+    values_from = {{column}}
+  ) |>
+  ggplot() + 
+  aes(x = bulk, y = pseudobulk) + 
+  geom_point() + 
+  facet_wrap(vars(project_id), nrow = 1) + 
+  geom_abline(color = "red") + 
+  coord_equal() +
+  ggtitle(title)
+}
+
+```
+
+```{r, fig.height = 3, fig.width = 8}
+compare_quantity(estimate_df, immune, "immune scores")
+```
+
+```{r, fig.height = 3, fig.width = 8}
+compare_quantity(estimate_df, stromal, "stromal scores")
+```
+
+```{r, fig.height = 3, fig.width = 8}
+compare_quantity(estimate_df, estimate, "tumor purity estimate")
+```
+
+
+There does not appear to be a systematic trend differentiating bulk from pseudobulk. 
+
+## Session info
+
+```{r}
+sessionInfo()
+```
