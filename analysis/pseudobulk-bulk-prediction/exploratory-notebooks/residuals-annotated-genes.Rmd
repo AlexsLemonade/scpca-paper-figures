@@ -72,7 +72,7 @@ This chunk defines a function for plotting histograms.
 make_histogram <- function(df, xvar, title) {
   ggplot(df) +
     aes(x = {{xvar}}, y = after_stat(ndensity), fill = status) + 
-    geom_histogram(alpha = 0.5, bins = 100) +
+    geom_histogram(position = "identity", alpha = 0.45, bins = 100) +
     facet_wrap(vars(project_id), scales = "free", ncol = 1) +
     scale_fill_brewer(palette = "Set1") +
     ggtitle(title)  
