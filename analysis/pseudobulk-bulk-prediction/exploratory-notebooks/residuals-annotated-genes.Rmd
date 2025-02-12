@@ -136,6 +136,12 @@ As expected, annotated genes have generally higher expression.
 ## Filtered data
 
 Does this persist after our gene filtering was applied?
+We'll look at this for the two expression thresholds we've run so far:
+
+* `0`: Averaging modalities, the gene should be expressed in at least 1 sample
+* `0.25`: Averaging modalities, the gene should be expressed in at least 25% of samples
+
+### Expression threshold: 0
 
 
 ```{r}
@@ -182,6 +188,40 @@ filtered_df |>
 
 After filtering, the ratio of `annotated:not_annotated` goes down.
 This means we have reduced our share of annotated genes during the filtering, which maybe was not in the spirit of the filtering or suggests that our current filtering strategy may need to shift.
+
+
+### Expression threshold: 0.25
+
+```{r}
+filtered_df <- read_prepare_data("threshold-0.25\\.rds$", ensembl_symbol_df) 
+```
+
+```{r}
+fit <- lm(residuals ~ status * project_id, data = filtered_df)
+summary(fit)
+```
+
+
+```{r}
+filtered_df |>
+  split(filtered_df$project_id) |>
+  purrr::map(
+    \(df)
+      mean(df$residuals[df$status == "annotated"]) - mean(df$residuals[df$status == "not_annotated"])
+  )
+```
+These values are even a little higher than the first threshold - we are increasingly seeing a distinction between residual distributions as we increase our filtering (based on expression) stringency.
+
+
+```{r}
+filtered_df |>
+  dplyr::group_by(project_id) |>
+  dplyr::count(status) |>
+  tidyr::pivot_wider(names_from = status, values_from = n) |>
+  dplyr::mutate(ratio = annotated/not_annotated)
+```
+
+But, we now again have boosted our share of annotated genes, so this more stringent filter did "enrich" back in that direction.
 
 ## Session info
 
