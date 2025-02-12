@@ -35,8 +35,7 @@ ensembl_symbol_df <- readr::read_tsv(
 
 ### Functions
 
-This chunk defines a helper function for loading and preparing residual data.
-
+This chunk defines a function for loading and preparing residual data.
 ```{r}
 read_prepare_data <- function(file_pattern, ensembl_symbol_df) {
   
@@ -55,7 +54,7 @@ read_prepare_data <- function(file_pattern, ensembl_symbol_df) {
         model_data <- readr::read_rds(model_file)
         
         residuals_df <- model_data$data |> 
-          dplyr::mutate(residuals = unname(resid(model_data$model))) |>
+          dplyr::mutate(residuals = unname(resid(model_data$model))) |> 
           dplyr::left_join(ensembl_symbol_df, by = "ensembl_id") |>
           # If the join resulted in an NA, then it's not annotated
           dplyr::mutate(status = ifelse(
@@ -68,7 +67,7 @@ read_prepare_data <- function(file_pattern, ensembl_symbol_df) {
 }
 ```
 
-This chunk defines a helper function for plotting histograms.
+This chunk defines a function for plotting histograms.
 ```{r}
 make_histogram <- function(df, xvar, title) {
   ggplot(df) +
@@ -81,8 +80,7 @@ make_histogram <- function(df, xvar, title) {
 }
 ```
 
-This chunk defines a helper function for modeling and viewing results.
-
+This chunk defines a function for modeling and viewing results.
 ```{r}
 fit_model <- function(df) {
     
@@ -98,6 +96,18 @@ fit_model <- function(df) {
 }
 ```
 
+This chunk defines a function for calculating the ratio of annotated to unannotated genes per project.
+```{r}
+calculate_ratio <- function(df) {
+  df |>
+    dplyr::select(project_id, ensembl_id, status) |>
+    dplyr::distinct() |>
+    dplyr::group_by(project_id) |>
+    dplyr::count(status) |>
+    tidyr::pivot_wider(names_from = status, values_from = n) |>
+    dplyr::mutate(ratio = annotated/not_annotated)  
+}
+```
 
 ## Unfiltered data 
 
@@ -128,11 +138,11 @@ fit_model(unfiltered_df)
 Let's contextualize these values with some expression distributions too.
 
 ```{r, fig.height = 4, fig.width = 12}
-make_histogram(unfiltered_df, bulk, "pseudobulk expression distributions across annotation status")
+make_histogram(unfiltered_df, pseudobulk, "pseudobulk expression distributions across annotation status")
 ```
 
 ```{r, fig.height = 4, fig.width = 12}
-make_histogram(unfiltered_df, bulk, "pseudobulk expression distributions across annotation status")
+make_histogram(unfiltered_df, bulk, "bulk expression distributions across annotation status")
 ```
 
 As expected, annotated genes have generally higher expression.
@@ -162,22 +172,39 @@ One wonders, what's the ratio of annotated to not annotated genes for each versi
 The unfiltered should be the same for all projects, but filtered will be different -
 
 ```{r}
-unfiltered_df |>
-  dplyr::group_by(project_id) |>
-  dplyr::count(status) |>
-  tidyr::pivot_wider(names_from = status, values_from = n) |>
-  dplyr::mutate(ratio = annotated/not_annotated)
+calculate_ratio(unfiltered_df)
 ```
 
 Ah, well that's a nice check for free!
 
+Let's also make sure these values are consistent with regards to the ensembl/symbol mapping in the first place.
+We need to only consider genes present in the data here - not all genes in `ensembl_symbol_df` are present in our data because this map was generated from an ScPCA SCE object.
+But, since bulk used a slightly different reference during mapping, only genes present in both bulk and pseudobulk went into the models, and hence are in the data we read in here. 
+Therefore, we'll bring in a third-party bulk-derived file for this check.
 
 ```{r}
-filtered_df |>
-  dplyr::group_by(project_id) |>
-  dplyr::count(status) |>
-  tidyr::pivot_wider(names_from = status, values_from = n) |>
-  dplyr::mutate(ratio = annotated/not_annotated)
+# arbitrarily pick project 1 tpm as a spot that has the expected present IDs
+bulk_ensembls <- readr::read_tsv(
+  here::here("analysis", "pseudobulk-bulk-prediction", "data", "tpm", "SCPCP000001_tpm.tsv")
+) |>
+  dplyr::distinct(ensembl_id) |>
+  dplyr::pull(ensembl_id)
+
+
+ensembl_symbol_df |>
+  dplyr::filter(ensembl_id %in% bulk_ensembls) |>
+  dplyr::summarize(
+    annotated = sum(!is.na(gene_symbol)),
+    unannotated = sum(is.na(gene_symbol)),
+    ratio = annotated/unannotated
+) 
+```
+Looking good!
+
+Now, how did filtering change this ratio?
+
+```{r}
+calculate_ratio(filtered_df)
 ```
 
 After filtering, the ratio of `annotated:not_annotated` goes down.
@@ -199,11 +226,7 @@ These values are even a little higher than the first threshold - we are increasi
 
 
 ```{r}
-filtered_df |>
-  dplyr::group_by(project_id) |>
-  dplyr::count(status) |>
-  tidyr::pivot_wider(names_from = status, values_from = n) |>
-  dplyr::mutate(ratio = annotated/not_annotated)
+calculate_ratio(filtered_df)
 ```
 
 But, we now again have boosted our share of annotated genes, so this more stringent filter did "enrich" back in that direction.
