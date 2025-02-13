@@ -1,0 +1,240 @@
+---
+title: "Are we confounded by genes that aren't real?"
+author: "Stephanie J. Spielman"
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    toc: true
+    toc_depth: 3
+    code_folding: hide
+---
+
+This notebook compares model residual distributions between gene with symbol annotations and genes without. 
+We have wondered if genes without annotation, which are less likely to be "real" genes, are biasing our downstream analyses.
+
+
+## Setup
+
+
+```{r setup}
+renv::load()
+
+library(ggplot2)
+theme_set(theme_bw())
+```
+
+### Paths
+
+```{r paths}
+model_dir <- here::here("analysis", "pseudobulk-bulk-prediction", "results", "models")
+ensembl_symbol_df <- readr::read_tsv(
+  here::here("analysis", "bulk-deconvolution", "data", "reference", "ensembl_symbol.tsv"), 
+  show_col_types = FALSE
+)
+```
+
+### Functions
+
+This chunk defines a function for loading and preparing residual data.
+```{r}
+read_prepare_data <- function(file_pattern, ensembl_symbol_df) {
+  
+  model_files <- list.files(
+    path = model_dir,
+    full.names = TRUE,
+    pattern = file_pattern
+  ) |>
+    purrr::set_names(
+      \(f) {stringr::str_split_i(basename(f), pattern = "_", i = 1)}
+    )
+  
+  model_files |>
+    purrr::map(
+      \(model_file) {
+        model_data <- readr::read_rds(model_file)
+        
+        residuals_df <- model_data$data |> 
+          dplyr::mutate(residuals = unname(resid(model_data$model))) |> 
+          dplyr::left_join(ensembl_symbol_df, by = "ensembl_id") |>
+          # If the join resulted in an NA, then it's not annotated
+          dplyr::mutate(status = ifelse(
+            is.na(gene_symbol), 
+            "not_annotated", 
+            "annotated"
+          ))
+    }) |>
+    purrr::list_rbind(names_to = "project_id")
+}
+```
+
+This chunk defines a function for plotting histograms.
+```{r}
+make_histogram <- function(df, xvar, title) {
+  ggplot(df) +
+    aes(x = {{xvar}}, y = after_stat(ndensity), fill = status) + 
+    geom_histogram(position = "identity", alpha = 0.45, bins = 100) +
+    facet_grid(rows = vars(project_id)) +
+    scale_fill_brewer(palette = "Set1") +
+    ggtitle(title)  
+}
+```
+
+This chunk defines a function for modeling and viewing results.
+```{r}
+fit_model <- function(df) {
+    
+  fit <- summary(lm(residuals ~ status * project_id, data = df))
+  diff_table <- df |>
+    split(df$project_id) |>
+    purrr::map(
+      \(df_){
+      mean(df_$residuals[df_$status == "annotated"]) - mean(df_$residuals[df_$status == "not_annotated"])
+    })
+  
+  return(list(fit, diff_table))
+}
+```
+
+This chunk defines a function for calculating the ratio of annotated to unannotated genes per project.
+```{r}
+calculate_ratio <- function(df) {
+  df |>
+    dplyr::select(project_id, ensembl_id, status) |>
+    dplyr::distinct() |>
+    dplyr::group_by(project_id) |>
+    dplyr::count(status) |>
+    tidyr::pivot_wider(names_from = status, values_from = n) |>
+    dplyr::mutate(ratio = annotated/not_annotated)  
+}
+```
+
+## Unfiltered data 
+
+We'll start by exploring this question for residuals whose models included _all_ genes.
+
+
+```{r}
+unfiltered_df <- read_prepare_data("all-genes\\.rds$", ensembl_symbol_df) 
+```
+
+
+Do the residuals have different distributions based on gene annotation status?
+
+```{r, fig.height = 12, fig.width = 5}
+make_histogram(unfiltered_df, residuals, "residual distributions") +
+  coord_cartesian(xlim= c(-15, 15))
+```
+
+
+It appears that the residuals for annotated genes are slightly higher than residuals for genes without annotations.
+Let's fit a quick linear model to check how much, and also look at the mean difference among projects directly.
+From the plots above, there doesn't look to be much difference among samples, so we'll fit one regression with a project interaction effect.
+
+
+```{r}
+fit_model(unfiltered_df)
+```
+
+Let's contextualize these values with some expression distributions too.
+
+```{r, fig.height = 12, fig.width = 10}
+list(
+  make_histogram(unfiltered_df, pseudobulk, "pseudobulk expression") +
+   coord_cartesian(xlim= c(-5, 15)),
+  make_histogram(unfiltered_df, bulk, "bulk expression") +
+    coord_cartesian(xlim= c(-5, 20))
+) |> 
+  patchwork::wrap_plots(nrow = 1, guides = 'collect')
+```
+
+As expected, annotated genes have generally higher expression.
+
+
+## Filtered data
+
+Does this persist after our gene filtering was applied?
+We'll look at this for the two expression thresholds we've run so far:
+
+* `0`: Averaging modalities, the gene should be expressed in at least 1 sample
+* `0.25`: Averaging modalities, the gene should be expressed in at least 25% of samples
+
+### Expression threshold: 0
+
+
+```{r}
+filtered_df <- read_prepare_data("threshold-0\\.rds$", ensembl_symbol_df) 
+```
+
+```{r}
+fit_model(filtered_df)
+```
+
+
+One wonders, what's the ratio of annotated to not annotated genes for each version of the data (unfiltered and filtered)?
+The unfiltered should be the same for all projects, but filtered will be different -
+
+```{r}
+calculate_ratio(unfiltered_df)
+```
+
+Ah, well that's a nice check for free!
+
+Let's also make sure these values are consistent with regards to the ensembl/symbol mapping in the first place.
+We need to only consider genes present in the data here - not all genes in `ensembl_symbol_df` are present in our data because this map was generated from an ScPCA SCE object.
+But, since bulk used a slightly different reference during mapping, only genes present in both bulk and pseudobulk went into the models, and hence are in the data we read in here. 
+Therefore, we'll bring in a third-party bulk-derived file for this check.
+
+```{r}
+# arbitrarily pick project 1 tpm as a spot that has the expected present IDs
+bulk_ensembls <- readr::read_tsv(
+  here::here("analysis", "pseudobulk-bulk-prediction", "data", "tpm", "SCPCP000001_tpm.tsv")
+) |>
+  dplyr::distinct(ensembl_id) |>
+  dplyr::pull(ensembl_id)
+
+
+ensembl_symbol_df |>
+  dplyr::filter(ensembl_id %in% bulk_ensembls) |>
+  dplyr::summarize(
+    annotated = sum(!is.na(gene_symbol)),
+    unannotated = sum(is.na(gene_symbol)),
+    ratio = annotated/unannotated
+) 
+```
+Looking good!
+
+Now, how did filtering change this ratio?
+
+```{r}
+calculate_ratio(filtered_df)
+```
+
+After filtering, the ratio of `annotated:not_annotated` goes down.
+This means we have reduced our share of annotated genes during the filtering, which maybe was not in the spirit of the filtering or suggests that our current filtering strategy may need to shift.
+
+
+### Expression threshold: 0.25
+
+```{r}
+filtered_df <- read_prepare_data("threshold-0.25\\.rds$", ensembl_symbol_df) 
+```
+
+
+```{r}
+fit_model(filtered_df)
+```
+
+These values are even a little higher than the first threshold - we are increasingly seeing a distinction between residual distributions as we increase our filtering (based on expression) stringency.
+
+
+```{r}
+calculate_ratio(filtered_df)
+```
+
+But, we now again have boosted our share of annotated genes, so this more stringent filter did "enrich" back in that direction.
+
+## Session info
+
+```{r}
+sessionInfo()
+```
