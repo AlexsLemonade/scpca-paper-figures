@@ -9,7 +9,7 @@ output:
     code_folding: hide
 params:
   msigdbr_category: "H"
-  model_expr_threshold: -1
+  model_expr_threshold: 0.25
   reps: 50
 ---
 
@@ -113,22 +113,52 @@ ranked_residuals_list <- model_files |>
 
 
 ```{r}
-msigdbr::msigdbr_collections() |>
-  dplyr::filter(gs_cat == params$msigdbr_category)
+num_genesets <- msigdbr::msigdbr_collections() |>
+  dplyr::filter(gs_cat == params$msigdbr_category) |>
+  dplyr::pull(num_genesets)
+
 geneset_df <- msigdbr::msigdbr(species = "Homo sapiens", category = params$msigdbr_category)
 ```
 
-The `r params$msigdbr_category` signature set contains `r nrow(geneset_df)` gene sets.
+The `r params$msigdbr_category` signature set contains `r num_genesets` gene sets.
 
 ## Perform GSEA
 
 Next, we'll run GSEA on this data.
 
-_code forthcoming_
+
+```{r}
+gsea_df <- ranked_residuals_list |>
+  purrr::map(
+  \(ranked_genes) {
+    
+    gsea_result <- clusterProfiler::GSEA(
+      geneList = ranked_genes, 
+      TERM2GENE = dplyr::select(geneset_df, gs_name, human_ensembl_gene)
+    )
+    gsea_result@result |>
+      dplyr::summarize(
+        bulk_enriched = sum(NES > 0), 
+        pseudobulk_enriched = sum(NES < 0)
+      )
+  }) |> purrr::list_rbind(names_to = "project_id") |>
+  # format data for plotting
+  tidyr::pivot_longer(
+    contains("enriched"), 
+    names_to = "direction", 
+    values_to = "count"
+  ) |>
+  dplyr::mutate(
+    # pseudobulk should be first
+    direction = forcats::fct_rev(direction), 
+    # calculate fraction version
+    frac = count/num_genesets
+  )
+```
+
 
 
 ## Perform GSEA with shuffled gene sets
-
 
 We'll first create `r params$reps` shuffled versions of the gene sets.
 
@@ -179,8 +209,12 @@ shuffled_gsea_df <- ranked_residuals_list |>
     names_to = "direction", 
     values_to = "count"
   ) |>
-  # pseudobulk should be first
-  dplyr::mutate(direction = forcats::fct_rev(direction))
+  dplyr::mutate(
+    # pseudobulk should be first
+    direction = forcats::fct_rev(direction), 
+    # calculate fraction version
+    frac = count/num_genesets
+  )
 ```
 
 ## Compare GSEA to shuffled GSEA results
@@ -188,19 +222,54 @@ shuffled_gsea_df <- ranked_residuals_list |>
 Finally, we'll make plots comparing these two analyses:
 
 * A bar plot of the number of significant pathways per project detected with GSEA
-* A histogram of the number of signficant pathways per project detected across the `r params$reps` replicates of shuffled GSEAs
+* A histogram of the number of significant pathways per project detected across the `r params$reps` replicates of shuffled GSEAs
 
 If the values between these plots are similar, that suggests our GSEA analysis is not capturing biologically meaningful signal.
 Note that these plots considers all results GSEA deemed to be significant; there is no further filtering by effect size or P-value at this time.
 
-Again, for context, the `r params$msigdbr_category` signature category analyzed here contains `r nrow(geneset_df)` total gene sets.
+Again, for context, the `r params$msigdbr_category` signature category analyzed here contains `r num_genesets` total gene sets.
 
-```{r, fig.width = 10, fig.height = 3, message = FALSE}
-ggplot(shuffled_gsea_df) + 
-  aes(x = count, fill = direction) + 
-  geom_histogram() + 
+
+#### GSEA results
+
+Each pair of bars in this plot represents a single GSEA result.
+The fraction represents the number of gene sets identified as significant.
+
+```{r, fig.width = 10, fig.height = 4}
+ggplot(gsea_df) +
+  aes(x = project_id, y = frac, fill = direction) + 
+  geom_col(position = position_dodge(width = 0.9)) +
+  geom_text(
+    aes(label = frac, y = frac + 0.05), 
+    position = position_dodge(width = 0.9)
+  ) +
+  scale_fill_brewer(palette = "Dark2") +
+  ylab("Fraction of gene sets\nwith significant enrichment") +
+  theme(legend.position = "bottom")
+```
+
+
+
+#### Shuffled GSEA results 
+
+This histogram depicts results from `r params$reps` GSEAs on run on shuffled gene sets.
+There are therefore `r params$reps` values in the plot for each enrichment direction. 
+This is technically an "overlaid" histogram of two categories, but the two categories tend to have low variation and lie at different ends of the axes.
+
+In this plot, the Y-axis has been scaled to 1.
+So, an `(X,Y)` coordinate can be interpreted as: `Y` percent of the shuffled GSEAs identified `X` gene sets enriched in the given direction.
+
+```{r, fig.width = 10, fig.height = 4, message = FALSE}
+ggplot(shuffled_gsea_df) +
+  aes(x = frac, fill = direction) + 
+  geom_histogram(
+    aes(y = after_stat(ndensity)), 
+    position = "identity", 
+    binwidth = 0.05
+  ) + 
   facet_wrap(vars(project_id), nrow = 1) +
   scale_fill_brewer(palette = "Dark2") +
+  ylab("Fraction of gene sets\nwith significant enrichment") +
   theme(legend.position = "bottom")
 ```
 
