@@ -256,22 +256,17 @@ This histogram depicts results from `r params$reps` GSEAs on run on shuffled gen
 There are therefore `r params$reps` values in the plot for each enrichment direction. 
 This is technically an "overlaid" histogram of two categories, but the two categories tend to have low variation and lie at different ends of the axes.
 
-In this plot, the Y-axis has been scaled to 1.
-So, an `(X,Y)` coordinate can be interpreted as: `Y*100`\% of the shuffled GSEAs found that `X*100`\% of the gene sets were enriched in the given direction.
+Each bar can be interpreted as: `X*100`\% of the gene sets were enriched in the given direction across `Y` replicates.
 
 ```{r, fig.width = 10, fig.height = 4, message = FALSE}
 ggplot(shuffled_gsea_df) +
   aes(x = frac, fill = direction) + 
-  geom_histogram(
-    aes(y = after_stat(ndensity)), 
-    position = "identity", 
-    binwidth = 0.05
-  ) + 
+  geom_histogram(binwidth = 0.05) + 
   facet_wrap(vars(project_id), nrow = 1) +
   scale_fill_brewer(palette = "Dark2") +
   labs(
     x = "Fraction of gene sets with significant enrichment", 
-    y = "Fraction of replicates"
+    y = glue::glue("Number of replicates (out of total N={params$reps})")
   ) +
   theme(legend.position = "bottom")
 ```
