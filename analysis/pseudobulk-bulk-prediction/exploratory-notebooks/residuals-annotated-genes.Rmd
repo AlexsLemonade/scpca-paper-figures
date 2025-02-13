@@ -139,8 +139,10 @@ Let's contextualize these values with some expression distributions too.
 
 ```{r, fig.height = 12, fig.width = 10}
 list(
-  make_histogram(unfiltered_df, pseudobulk, "pseudobulk expression"),
-  make_histogram(unfiltered_df, bulk, "bulk expression")
+  make_histogram(unfiltered_df, pseudobulk, "pseudobulk expression") +
+   coord_cartesian(xlim= c(-5, 15)),
+  make_histogram(unfiltered_df, bulk, "bulk expression") +
+    coord_cartesian(xlim= c(-5, 20))
 ) |> 
   patchwork::wrap_plots(nrow = 1, guides = 'collect')
 ```
