@@ -71,11 +71,10 @@ This chunk defines a function for plotting histograms.
 ```{r}
 make_histogram <- function(df, xvar, title) {
   ggplot(df) +
-    aes(x = {{xvar}}, fill = status) + 
-    geom_histogram(alpha = 0.9, bins = 150) +
-    facet_wrap(vars(project_id), scales = "free", nrow = 1) +
-    scale_fill_brewer(palette = "Set1") + 
-    theme(legend.position = "bottom") + 
+    aes(x = {{xvar}}, y = after_stat(ndensity), fill = status) + 
+    geom_histogram(position = "identity", alpha = 0.45, bins = 100) +
+    facet_grid(rows = vars(project_id)) +
+    scale_fill_brewer(palette = "Set1") +
     ggtitle(title)  
 }
 ```
@@ -119,10 +118,11 @@ unfiltered_df <- read_prepare_data("all-genes\\.rds$", ensembl_symbol_df)
 ```
 
 
-Do the residuals have different distributions based on annotation status?
+Do the residuals have different distributions based on gene annotation status?
 
-```{r, fig.height = 4, fig.width = 12}
-make_histogram(unfiltered_df, residuals, "residual distributions across annotation status")
+```{r, fig.height = 12, fig.width = 5}
+make_histogram(unfiltered_df, residuals, "residual distributions") +
+  coord_cartesian(xlim= c(-15, 15))
 ```
 
 
@@ -137,12 +137,14 @@ fit_model(unfiltered_df)
 
 Let's contextualize these values with some expression distributions too.
 
-```{r, fig.height = 4, fig.width = 12}
-make_histogram(unfiltered_df, pseudobulk, "pseudobulk expression distributions across annotation status")
-```
-
-```{r, fig.height = 4, fig.width = 12}
-make_histogram(unfiltered_df, bulk, "bulk expression distributions across annotation status")
+```{r, fig.height = 12, fig.width = 10}
+list(
+  make_histogram(unfiltered_df, pseudobulk, "pseudobulk expression") +
+   coord_cartesian(xlim= c(-5, 15)),
+  make_histogram(unfiltered_df, bulk, "bulk expression") +
+    coord_cartesian(xlim= c(-5, 20))
+) |> 
+  patchwork::wrap_plots(nrow = 1, guides = 'collect')
 ```
 
 As expected, annotated genes have generally higher expression.
