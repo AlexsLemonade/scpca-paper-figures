@@ -15,12 +15,16 @@ scpca_dir="${data_dir}/scpca_data"
 tpm_dir="${data_dir}/tpm"
 pseudobulk_dir="${data_dir}/pseudobulk"
 result_dir="results"
-model_notebook_dir="model-notebooks"
+notebook_dir="notebooks"
+model_html_dir="${notebook_dir}/model-htmls"
+gsea_html_dir="${notebook_dir}/gsea-htmls"
 
 mkdir -p $scpca_dir
 mkdir -p $tpm_dir
 mkdir -p $pseudobulk_dir
 mkdir -p $result_dir
+mkdir -p $model_html_dir
+mkdir -p $gsea_html_dir
 
 map_file="${data_dir}/bulk-library-sample-ids.tsv"
 
@@ -66,8 +70,26 @@ for expr_threshold in -1 0 0.25; do
     threshold_str="threshold-${expr_threshold}"
   fi
 
-  Rscript -e "rmarkdown::render('${model_notebook_dir}/build-assess-models.Rmd',
+  Rscript -e "rmarkdown::render('${notebook_dir}/build-assess-models.Rmd',
               params = list(expr_threshold = ${expr_threshold}),
               output_file = 'build-assess-models_${threshold_str}.nb.html',
-              output_dir = '${model_notebook_dir}')"
+              output_dir = '${model_html_dir}')"
+done
+
+# Run the GSEA analysis across gene sets and models
+reps=50
+for geneset in "H" "C8"; do
+  for expr_threshold in -1 0 0.25; do
+
+    if [[ ${expr_threshold} == -1 ]]; then
+      threshold_str="all-genes"
+    else
+      threshold_str="threshold-${expr_threshold}"
+    fi
+
+    Rscript -e "rmarkdown::render('${notebook_dir}/perform-gsea.Rmd',
+                params = list(msigdbr_category = '$geneset', reps = $reps, model_expr_threshold = ${expr_threshold}),
+                output_file = 'perform-gsea_${geneset}_${threshold_str}.nb.html',
+                output_dir = '${gsea_html_dir}')"
+  done
 done
