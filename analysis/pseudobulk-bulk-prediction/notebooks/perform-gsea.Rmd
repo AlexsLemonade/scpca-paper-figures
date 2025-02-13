@@ -152,7 +152,7 @@ gsea_df <- ranked_residuals_list |>
     # pseudobulk should be first
     direction = forcats::fct_rev(direction), 
     # calculate fraction version
-    frac = count/num_genesets
+    frac = round(count/num_genesets, 2)
   )
 ```
 
