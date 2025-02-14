@@ -47,23 +47,36 @@ ensembl_symbol_df <- readr::read_tsv(
 ### Functions
 
 
-This chunk defines a function to create a data frame with a shuffled version of genesets.
+This chunk defines a function to create a list of data frames with given number of replicates of shuffled versions of the `geneset_df`. 
 ```{r}
-generate_shuffle <- function(geneset_count_df, ensembl_ids){
-  shuffled_df <- geneset_count_df |>
-    purrr::pmap(
-    \(gs_name, n) {
-      data.frame(
-        gs_name = gs_name, 
-        ensembl_id = sample(ensembl_ids, n) # no replacement!
-      )
-  }) |>
-  purrr::list_rbind()
+generate_shuffled_genesets <- function(geneset_df, reps){
   
-  # double check the length 
-  stopifnot("Failed to shuffle genes" = nrow(shuffled_df) == nrow(geneset_df))
+  geneset_count_df <- geneset_df |>
+    dplyr::count(gs_name)
   
-  return(shuffled_df)
+  unique_ensembl_ids <- geneset_df |>
+    dplyr::distinct(human_ensembl_gene) |>
+    dplyr::pull(human_ensembl_gene)
+
+  shuffled_df_list <- 1:reps |>
+    purrr::map(
+      \(i) {
+        shuffled_df <- geneset_count_df |>
+          purrr::pmap(
+          \(gs_name, n) {
+          data.frame(
+            gs_name = gs_name, 
+            ensembl_id = sample(unique_ensembl_ids, n) # no replacement!
+          )
+        }) |>
+        purrr::list_rbind()
+        
+        stopifnot("Failed to shuffle genes" = nrow(shuffled_df) == nrow(geneset_df))
+        
+        return(shuffled_df)
+    })
+  
+  return(shuffled_df_list)
 }
 ```
 
@@ -163,17 +176,7 @@ gsea_df <- ranked_residuals_list |>
 We'll first create `r params$reps` shuffled versions of the gene sets.
 
 ```{r}
-geneset_count_df <- geneset_df |>
-  dplyr::count(gs_name)
-
-unique_ensembl_ids <- geneset_df |>
-  dplyr::distinct(human_ensembl_gene) |>
-  dplyr::pull(human_ensembl_gene)
-
-shuffled_geneset_df <- 1:params$reps |>
-  purrr::map(
-    \(i) {generate_shuffle(geneset_count_df, unique_ensembl_ids)}
-  )
+shuffled_geneset_list <- generate_shuffled_genesets(geneset_df, params$reps)
 ```
 
 
@@ -224,7 +227,6 @@ Finally, we'll make plots comparing these two analyses:
 * A bar plot of the proportion of input pathways returned as significant per project detected with GSEA
 * A histogram of the proportion of input random gene sets returned as significant per project detected across the `r params$reps` replicates of GSEA
 
-If the values between these plots are similar, that suggests our GSEA analysis is not capturing biologically meaningful signal.
 Note that these plots considers all results GSEA deemed to be significant; there is no further filtering by effect size or P-value at this time.
 
 Again, for context, the `r params$msigdbr_category` signature category analyzed here contains `r num_genesets` total gene sets.
