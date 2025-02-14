@@ -221,8 +221,8 @@ shuffled_gsea_df <- ranked_residuals_list |>
 
 Finally, we'll make plots comparing these two analyses:
 
-* A bar plot of the number of significant pathways per project detected with GSEA
-* A histogram of the number of significant pathways per project detected across the `r params$reps` replicates of shuffled GSEAs
+* A bar plot of the proportion of input pathways returned as significant per project detected with GSEA
+* A histogram of the proportion of input random gene sets returned as significant per project detected across the `r params$reps` replicates of GSEA
 
 If the values between these plots are similar, that suggests our GSEA analysis is not capturing biologically meaningful signal.
 Note that these plots considers all results GSEA deemed to be significant; there is no further filtering by effect size or P-value at this time.
