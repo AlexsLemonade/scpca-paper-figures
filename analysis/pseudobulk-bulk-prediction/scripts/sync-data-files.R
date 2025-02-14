@@ -1,9 +1,9 @@
 # This script prepares files needed for analysis:
 # 1. First, we identify samples of interest as non-multiplexed samples from solid tumors with paired bulk data
 # 2. Second, we sync all associated bulk `quant.sf` files and single-cell `_processed.rds` files from S3 needed for analysis
-# 3. Third, we sync all bulk counts from `_bulkd_quant.tsv` from S3
+# 3. Third, we sync all bulk counts files `_bulk_quant.tsv` from S3
 # All files are organized in `<project id>/<sample id>/` (except bulk counts which are only per project)
-# We also export a TSV file mapping bulk library and sample ideas to support later matching up bulk counts and TPM
+# We also export a TSV file mapping bulk library and sample ids to support later matching up bulk counts and TPM
 
 
 renv::load()
@@ -130,7 +130,7 @@ sync_bulk_counts_df <- library_metadata |>
   ) |>
   # only keep columns needed for syncing
   dplyr::select(
-    scpca_project_id, 
+    scpca_project_id,
     output_dir,
     s3_dir
   ) |>
