@@ -190,7 +190,7 @@ shuffled_gsea_df <- ranked_residuals_list |>
   \(ranked_genes) {
     
     purrr::map(
-      shuffled_geneset_df, 
+      shuffled_geneset_list, 
       \(shuffled_rep) {
         gsea_result <- clusterProfiler::GSEA(
           geneList = ranked_genes, 
