@@ -187,18 +187,18 @@ pseudo_df <- sce_list |>
 
 
 # Export RDS -----------------
-
 expr_list <- list(
   "bulk_counts" = bulk_df, 
   "bulk_tpm" = tpm_df, 
   "pseudobulk" = pseudo_df
 )
-# check that all data frames are compatible:
 
-# _bulk_ genes should be equal
+# before exporting, check data frames:
+
+# first, _bulk_ data frames should have the same genes (single-cell uses a different reference)
 stopifnot("Bulk data frames have different genes" = nrow(bulk_df) == nrow(tpm_df))
 
-# samples should match all around
+# second, all data frames shoud have the same samples
 stopifnot(
   "Data frames have different samples" = purrr::every(expr_list, \(x) all(colnames(x) == colnames(bulk_df)))
 )
