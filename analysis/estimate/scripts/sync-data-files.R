@@ -1,9 +1,9 @@
 # This script prepares files needed for analysis:
 # 1. First, we identify samples of interest as non-multiplexed samples from solid tumors with paired bulk data
 # 2. Second, we sync all associated bulk `quant.sf` files and single-cell `_processed.rds` files from S3 needed for analysis
-# 3. Third, we sync all bulk counts files `_bulk_quant.tsv` from S3
+# 3. Third, we sync all associated bulk counts from `_bulk_quant.tsv` from S3
 # All files are organized in `<project id>/<sample id>/` (except bulk counts which are only per project)
-# We also export a TSV file mapping bulk library and sample ids to support later matching up bulk counts and TPM
+# We also export a TSV mapping gene symbols to ensembl ids, since ESTIMATE uses gene symbols
 
 
 renv::load()
@@ -18,9 +18,15 @@ option_list <- list(
     help = "Output directory to save synced data files organized by project/sample"
   ),
   make_option(
-    "--map_file",
+    "--scpca_sce_file",
     type = "character",
-    help = "Path to output TSV file mapping bulk sample and library ids",
+    default = here::here("s3_files", "SCPCS000001", "SCPCL000001_processed.rds"),
+    help = "Path to an SCE file used to obtain mappings for converting ensembl ids to gene symbols"
+  ),
+  make_option(
+    "--ensembl_symbol_map_file",
+    type = "character",
+    help = "Path to output TSV file mapping ensembl ids and gene symbols",
   ),
   make_option(
     "--sample_metadata_file",
@@ -40,13 +46,13 @@ opts <- parse_args(OptionParser(option_list = option_list))
 # Define files and directories ---------
 
 stopifnot(
-  "Metadata files could not be found. Were they synced?" = all(file.exists(c(opts$library_metadata_file, opts$sample_metadata_file)))
+  "Metadata files could not be found. Were they synced?" = all(file.exists(c(opts$library_metadata_file, opts$sample_metadata_file))),
+  "The SCE file to use for id mapping could not be found. Was it synced?" = file.exists(opts$scpca_sce_file)
 )
 s3_bulk_tpm_path <- "s3://nextflow-ccdl-results/scpca-prod/checkpoints/salmon" #/library_id/quant.sf
 s3_processed_path <- "s3://nextflow-ccdl-results/scpca-prod/results" #/project_id/sample_id/library_id_processed.rds AND project_id/bulk/<project_id>_bulk_quant.tsv
 
 fs::dir_create(opts$output_dir)
-
 
 ## Determine samples of interest -----------
 
@@ -174,11 +180,10 @@ sync_bulk_counts_df |>
 )
 
 
-# Export a TSV of matching sample and library ids for bulk, since counts TSV are labeled by library, not sample
-bulk_libraries_samples <- library_metadata |>
-  dplyr::filter(
-    scpca_sample_id %in% sync_sc_df$scpca_sample_id,
-    seq_unit == "bulk"
-  ) |>
-  dplyr::select(scpca_sample_id, scpca_library_id)
-readr::write_tsv(bulk_libraries_samples, opts$map_file)
+# Export a TSV of mapping ensembl ids and gene symbols --------
+sce <- readRDS(opts$scpca_sce_file)
+data.frame(
+  ensembl_id = SingleCellExperiment::rowData(sce)$gene_ids,
+  gene_symbol = SingleCellExperiment::rowData(sce)$gene_symbol
+) |>
+  readr::write_tsv(opts$ensembl_symbol_map_file)
