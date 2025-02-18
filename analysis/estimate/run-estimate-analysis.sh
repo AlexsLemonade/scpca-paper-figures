@@ -23,11 +23,10 @@ Rscript ${script_dir}/sync-data-files.R \
   --ensembl_symbol_map_file "${ensembl_symbol_map_file}"
 
 for project_dir in $scpca_dir/*; do
+
     project_id=$(basename $project_dir)
-    
     expression_file="${data_dir}/${project_id}_expression.rds"
-    project_dir="${scpca_dir}/${project_id}"
-    
+
     # Calculate all expression quantities 
     Rscript ${script_dir}/prepare-expression-data.R \
       --project_id "${project_id}" \
