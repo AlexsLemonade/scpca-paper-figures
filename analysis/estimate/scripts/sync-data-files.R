@@ -3,9 +3,7 @@
 # 2. Second, we sync all associated bulk `quant.sf` files and single-cell `_processed.rds` files from S3 needed for analysis
 # 3. Third, we sync all associated bulk counts from `_bulk_quant.tsv` from S3
 # All files are organized in `<project id>/<sample id>/` (except bulk counts which are only per project)
-# We also export two TSV file mapping files:
-# 1. A TSV mapping bulk library and sample ids, since the raw bulk counts use library id identifiers
-# 2. A TSV mapping gene symbols to ensembl ids, since ESTIMATE uses gene symbols
+# We also export a TSV mapping gene symbols to ensembl ids, since ESTIMATE uses gene symbols
 
 
 renv::load()
@@ -24,11 +22,6 @@ option_list <- list(
     type = "character",
     default = here::here("s3_files", "SCPCS000001", "SCPCL000001_processed.rds"),
     help = "Path to an SCE file used to obtain mappings for converting ensembl ids to gene symbols"
-  ),
-  make_option(
-    "--library_sample_map_file",
-    type = "character",
-    help = "Path to output TSV file mapping bulk sample and library ids",
   ),
   make_option(
     "--ensembl_symbol_map_file",
@@ -185,19 +178,12 @@ sync_bulk_counts_df |>
       system(sync_call)
   }
 )
-# Export a TSV of mapping ensembl ids and gene symbols
+
+
+# Export a TSV of mapping ensembl ids and gene symbols --------
 sce <- readRDS(opts$scpca_sce_file)
 data.frame(
   ensembl_id = SingleCellExperiment::rowData(sce)$gene_ids,
   gene_symbol = SingleCellExperiment::rowData(sce)$gene_symbol
 ) |>
   readr::write_tsv(opts$ensembl_symbol_map_file)
-
-# Export a TSV of mapping bulk library and sample ids
-library_metadata |>
-  dplyr::filter(
-    scpca_sample_id %in% sync_sc_df$scpca_sample_id,
-    seq_unit == "bulk"
-  ) |>
-  dplyr::select(scpca_sample_id, scpca_library_id) |>
-  readr::write_tsv(opts$library_sample_map_file)
