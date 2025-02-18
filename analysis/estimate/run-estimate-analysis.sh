@@ -12,12 +12,8 @@ cd "$basedir"
 data_dir="data"
 script_dir="scripts"
 scpca_dir="${data_dir}/scpca"
-tpm_dir="${data_dir}/tpm"
-pseudobulk_dir="${data_dir}/pseudobulk"
 
 mkdir -p $scpca_dir
-mkdir -p $tpm_dir
-mkdir -p $pseudobulk_dir
 
 ensembl_symbol_map_file="${data_dir}/ensembl-symbol-map.tsv"
 
@@ -25,3 +21,15 @@ ensembl_symbol_map_file="${data_dir}/ensembl-symbol-map.tsv"
 Rscript ${script_dir}/sync-data-files.R \
   --output_dir "${scpca_dir}" \
   --ensembl_symbol_map_file "${ensembl_symbol_map_file}"
+
+for project_dir in $scpca_dir/*; do
+
+    project_id=$(basename $project_dir)
+    expression_file="${data_dir}/${project_id}_expression.rds"
+
+    # Calculate all expression quantities 
+    Rscript ${script_dir}/prepare-expression-data.R \
+      --project_id "${project_id}" \
+      --scpca_dir "${project_dir}" \
+      --output_file "${expression_file}"
+done
