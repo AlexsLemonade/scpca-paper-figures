@@ -1,0 +1,212 @@
+---
+title: "Run ESTIMATE on bulk and pseudobulk samples"
+author: "Stephanie J. Spielman"
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    toc: true
+    toc_depth: 3
+    code_folding: hide
+---
+
+The purpose of this notebook is to run ESTIMATE on the things.
+
+## Setup
+
+
+```{r setup}
+renv::load()
+
+library(ggplot2)
+library(tidyestimate)
+theme_set(theme_bw())
+```
+
+### Paths
+
+```{r paths}
+data_dir <- here::here("analysis", "estimate", "data")
+expression_files <- list.files(
+  data_dir, 
+  pattern = "_expression\\.rds$"
+) |>
+  purrr::set_names(
+    \(x) {stringr::str_split_i(x, pattern = "_", i = 1)}
+  )
+```
+
+### Read input data
+
+```{r}
+expression_data <- expression_files |>
+  purrr::map(
+    \(filename) {
+      readr::read_rds(file.path(data_dir, filename))
+})
+```
+
+## Run ESTIMATE
+
+We will now run ESTIMATE on all three types of counts for samples in each project:
+
+* bulk counts
+* bulk TPM
+* pseudobulk counts
+
+```{r, message = FALSE}
+estimate_df <- expression_data |>
+  # map over projects
+  purrr::map(
+    \(project_df_list) {
+      # map over expression types
+      
+      purrr::map(project_df_list, \(expr_df) {
+        ## Run ESTIMATE
+        expr_df |> 
+          dplyr::rename(hgnc_symbol = gene_symbol) |>
+          tidyestimate::filter_common_genes(
+            id = "hgnc_symbol", 
+            tidy = TRUE, # first column contains gene symbol
+            tell_missing = FALSE, 
+            find_alias = TRUE
+          ) |> 
+          tidyestimate::estimate_score(is_affymetrix = FALSE)
+      }) |> 
+        purrr::list_rbind(names_to = "expression_type")
+  }) |> 
+  purrr::list_rbind(names_to = "project_id") |>
+  dplyr::rename(sample_id = sample) |>
+  dplyr::select(-estimate) # this is just the sum of scores, we won't be working with it
+```
+
+
+## Visualization
+
+
+Let's begin by looking at the overall values:
+
+```{r}
+# but scale it so pseudobulk is fixed at 0.
+estimate_df |>
+  dplyr::rowwise() |>
+  dplyr::mutate()
+
+
+
+
+
+
+
+```
+
+
+```{r fig.height=4, fig.width=12}
+long_score_df <- estimate_df |>
+  tidyr::pivot_longer(
+    cols = c(stromal, immune), 
+    names_to = "score_type", 
+    values_to = "score"
+  )
+
+ggplot(long_score_df) + 
+  aes(x = score_type, y = score, color = expression_type) + 
+  geom_jitter(
+    position = position_jitterdodge(jitter.width = 0.1), 
+    size = 0.75
+  ) +
+  scale_color_brewer(palette = "Set2") +
+  facet_wrap(vars(project_id), scales = "free_x", nrow = 1) + 
+  theme(legend.position = "bottom") + 
+  guides(color = guide_legend(override.aes = list(size = 2)))
+```
+
+Do we see a difference between bulk counts and TPM?
+
+
+
+```{r fig.width=10}
+expr_wide_df <- long_score_df |>
+  tidyr::pivot_wider(
+    names_from = expression_type, 
+    values_from = score
+  )
+
+ggplot(expr_wide_df) + 
+  aes(x = bulk_counts, y = bulk_tpm) + 
+  geom_point() +
+  geom_abline(color = "darkorange2") +
+  coord_equal() +
+  facet_grid(
+    rows = vars(score_type), 
+    cols = vars(project_id)
+  ) 
+```
+
+Bulk counts do not take gene length into account, but TPM does. 
+We see that immune scores tend to be slightly higher for TPM, and by contrast stromal scores tend to be slightly lower for TPM compared to bulk.
+The effect sizes are fairly small, but the effects seem likely to be significant, which we'll check separately for `stromal` and `immune`.
+Below, we fit regressions that fix the slope to 1, so the intercept will tell us the bias from `y=x`:
+
+```{r}
+stromal_df <- expr_wide_df |>
+  dplyr::filter(score_type == "stromal")
+summary(lm(bulk_tpm ~ 1 + offset(bulk_counts), data = stromal_df))
+
+
+immune_df <- expr_wide_df |>
+  dplyr::filter(score_type == "immune")
+summary(lm(bulk_tpm ~ 1 + offset(bulk_counts), data = immune_df))
+
+```
+
+Indeed, effect sizes are not very large in the scheme of the full range of values, but they are highly significant: Immune scores are relatively higher in bulk TPM, and stromal scores are relatively lower in bulk TPM, compared to bulk counts.
+
+Let's directly compare bulk to and pseudobulk:
+
+
+```{r fig.width=10}
+compare_to_pseudo_df <- long_score_df |>
+  tidyr::pivot_wider(
+    names_from = expression_type, 
+    values_from = score
+  ) |>
+  tidyr::pivot_longer(
+    contains("bulk_"), 
+    names_to = "bulk_type", 
+    values_to = "score"
+  )
+compare_to_pseudo_df |>
+  dplyr::filter(score_type == "immune") |>
+  ggplot() + 
+    aes(x = pseudobulk, y = score) + 
+    geom_point() +
+    geom_abline(color = "darkorange2") +
+    coord_equal() +
+    facet_grid(
+      rows = vars(bulk_type), 
+      cols = vars(project_id)
+    ) +
+  labs(title ="immune scores")
+
+
+
+compare_to_pseudo_df |>
+  dplyr::filter(score_type == "stromal") |>
+  ggplot() + 
+    aes(x = pseudobulk, y = score) + 
+    geom_point() +
+    geom_abline(color = "darkorange2") +
+    coord_equal() +
+    facet_grid(
+      rows = vars(bulk_type), 
+      cols = vars(project_id)
+    ) +
+  labs(title ="stromal scores")
+```
+
+
+## Session info
+
+```{r}
+sessionInfo()
+```
