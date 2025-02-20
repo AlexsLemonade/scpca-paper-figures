@@ -53,11 +53,12 @@ expression_data <- expression_files |>
 
 ## Run ESTIMATE
 
-We will now run ESTIMATE on all three types of counts for samples in each project:
+We will now run ESTIMATE on all three types of counts for samples in each project.
+Note all values here are unnormalized/untransformed and represent raw counts (except TPM, but these values have not been _further_ transformed).
 
-* bulk counts
-* bulk TPM
-* pseudobulk counts
+* bulk counts from bulk RNA-Seq samples
+* bulk TPM from bulk RNA-Seq samples
+* pseudobulk counts from scRNA-Seq samples (sample counts summed)
 
 ```{r, message = FALSE}
 estimate_df <- expression_data |>
@@ -190,6 +191,7 @@ ggplot(compare_modalities_df) +
 ```
 
 * There does not appear to be a significant relationship between modalities for SCPCP000002 and SCPCP000006, for either score 
+  * That said, it is worth noting that all samples' immune scores, and most samples' stromal scores, for SCPCP000002 are higher in pseudobulk than in bulk
 * For SCPCP000001, immune scores tend to be higher in pseudobulk but stromal scores are about the same between modalities
 * For SCPCP000006 and SCPCP0000017, immune scores tend to be lower in pseudobulk but stromal scores are about the same between modalities
 * Note that projects SCPCP000001 and SCPCP000002 are single-cell, but the other three projects are single-nucleus
