@@ -94,39 +94,11 @@ estimate_df <- expression_data |>
 ```
 
 
-## Visualization
+## Explore the results
 
+### Compare measures derived from bulk data
 
-Let's begin by looking at the overall values:
-
-
-```{r fig.height=4, fig.width=12}
-ggplot(estimate_df) + 
-  aes(x = score_type, y = score, color = expression_type) + 
-  geom_jitter(
-    position = position_jitterdodge(jitter.height = 0, jitter.width = 0.1), 
-    size = 0.75
-  ) +
-  scale_color_brewer(palette = "Set2") +
-  facet_wrap(vars(project_id), scales = "free_x", nrow = 1) + 
-  theme(legend.position = "bottom") + 
-  guides(color = guide_legend(override.aes = list(size = 2)))
-```
-First, what do we see for immune scores?
-
-* For SCPCP000001 and SCPCP000002, pseudobulk scores tend to be higher than bulk scores
-  * However, for SCPCP000001, we have a sort of trimodal distribution of values - it would be nice if this corresponded to diagnoses?!
-* For the other three projects, pseudobulk scores appear to be somewhat lower than bulk
-
-Second, what do we see for stromal scores?
-
-* For SCPCP000001 and SCPCP000002, pseudobulk scores look either on par with bulk or _maybe_ a bit lower, but that is mostly in SCPCP000001 and one outlier in SCPCP000002
-* For the other three projects, pseudobulk and bulk scores appear highly similar
-
-
-
-The bulk distributions appear very similar to one another, so let's compare them directly next:
-
+We'll start by comparing bulk counts and bulk TPM; bulk counts do not take gene length into account, but TPM does. 
 
 
 ```{r fig.width=10}
@@ -147,7 +119,6 @@ ggplot(expr_wide_df) +
   ) 
 ```
 
-Bulk counts do not take gene length into account, but TPM does. 
 Across all projects, we see that immune scores tend to be slightly higher for TPM, and by contrast stromal scores tend to be slightly lower for TPM compared to bulk.
 The effect sizes are fairly small, but the effects seem likely to be significant, which we'll check separately for `stromal` and `immune`.
 Below, we fit regressions that fix the slope to 1, so the intercept will tell us the bias from `y=x`:
@@ -164,11 +135,47 @@ summary(lm(bulk_tpm ~ 1 + offset(bulk_counts), data = immune_df))
 
 ```
 
-Indeed, effect sizes are not very large in the scheme of the full range of values, but they are highly significant: Compared to bulk counts, immune scores are relatively higher when calculated with TPM, and stromal scores are relatively lower whem calculated with TPM.
+Indeed, effect sizes are not very large in the scheme of the full range of values, but they are highly significant: Compared to bulk counts, immune scores are relatively higher when calculated with TPM, and stromal scores are relatively lower when calculated with TPM.
 
-Let's directly compare bulk to and pseudobulk.
-Since TPM and bulk counts were very similar, we'll just visualize with the bulk _counts_ (not TPM) here:
+### Compare measures from pseudobulk and bulk
 
+Since bulk scores were very similar, we'll proceed to visualize only the bulk counts.
+
+```{r}
+estimate_sub_df <- estimate_df |>
+  dplyr::filter(expression_type != "bulk_tpm")
+```
+
+First, we'll look at both the distribution of scores, and then the relationship between pseudobulk and bulk scores.
+
+#### Score distributions
+
+```{r fig.height=4, fig.width=12}
+ggplot(estimate_sub_df) + 
+  aes(x = score_type, y = score, color = expression_type) + 
+  geom_jitter(
+    position = position_jitterdodge(jitter.height = 0, jitter.width = 0.1), 
+    size = 0.75
+  ) +
+  scale_color_brewer(palette = "Set2") +
+  facet_wrap(vars(project_id), scales = "free_x", nrow = 1) + 
+  theme(legend.position = "bottom") + 
+  guides(color = guide_legend(override.aes = list(size = 2)))
+```
+
+First, what do we see for immune scores?
+
+* For SCPCP000001 and SCPCP000002, pseudobulk scores tend to be higher than bulk scores
+  * However, for SCPCP000001, we have a sort of trimodal distribution of values - it would be nice if this corresponded to diagnoses?!
+* For the other three projects, pseudobulk scores appear to be somewhat lower than bulk
+
+Second, what do we see for stromal scores?
+
+* For SCPCP000001 and SCPCP000002, pseudobulk scores look either on par with bulk or _maybe_ a bit lower, but that is mostly in SCPCP000001 and one outlier in SCPCP000002
+* For the other three projects, pseudobulk and bulk scores appear highly similar
+
+
+#### Compare modalities
 
 ```{r fig.width=10}
 compare_modalities_df <- estimate_df |>
@@ -196,26 +203,52 @@ ggplot(compare_modalities_df) +
 * For SCPCP000006 and SCPCP0000017, immune scores tend to be lower in pseudobulk but stromal scores are about the same between modalities
 * Note that projects SCPCP000001 and SCPCP000002 are single-cell, but the other three projects are single-nucleus
 
+#### Compare across sequencing unit
+
+On the single-cell level, some projects used single-cell libraries and others used single-nucleus libraries. 
+Do we see an overarching difference based on these different sequencing units?
+
+```{r fig.width=10}
+single_metadata_df <- library_metadata_df |> 
+  dplyr::filter(seq_unit %in% c("cell", "nucleus")) |> 
+  dplyr::inner_join(
+    compare_modalities_df, 
+    by = c("scpca_sample_id" = "sample_id", "scpca_project_id" = "project_id")
+  ) 
+
+ggplot(single_metadata_df) + 
+  aes(x = bulk_counts, y = pseudobulk) + 
+  geom_point(aes(color = scpca_project_id)) +
+  geom_abline(color = "darkorange2") +
+  geom_smooth(method = "lm", color = "gray60") +
+  facet_grid(
+    rows = vars(score_type), 
+    cols = vars(seq_unit)
+  ) +
+  labs(title ="seq_unit: pseudobulk ~ bulk counts") +
+  theme(aspect.ratio = 1)
+```
+
+* For immune scores (top row): 
+  * single-cell samples tend to have higher scores in pseudobulk compared to bulk
+  * single-nucleus tend to have lower scores compared to bulk
+* For stromal scores (top row): 
+  * most single-cell samples have slightly higher scores in pseudobulk compared to bulk, but the effect seems small 
+  * single-nucleus samples have fairly similar scores in pseudobulk and bulk
+
 
 ### SCPCP000001
 
-In SCPCP000001, we seem to have have a trimodal distribution of pseudobulk immune scores.
+As observed above, SCPCP000001 seems to show a trimodal distribution of pseudobulk immune scores.
 Does any metadata variable separate these points?
 
-
 ```{r}
-library_project1 <- library_metadata_df |> 
+project1_df <- single_metadata_df |>
   dplyr::filter(
-    scpca_project_id == "SCPCP000001", 
-    seq_unit == "bulk"
-  ) |> 
-  dplyr::select(scpca_sample_id, technology, library_method)
-
-project1_df <- sample_metadata_df |>
-  dplyr::filter(scpca_project_id == "SCPCP000001") |>
-  dplyr::inner_join(library_project1) |>
-  dplyr::inner_join(compare_modalities_df, by = c("scpca_sample_id" = "sample_id")) |>
-  dplyr::filter(score_type == "immune")
+    scpca_project_id == "SCPCP000001",
+    score_type == "immune"
+  ) |>
+  dplyr::inner_join(sample_metadata_df, by = c("scpca_sample_id", "scpca_project_id"))
 ```
 
 We'll first look at diagnosis:
@@ -233,18 +266,13 @@ The sample size here is too small to really draw a conclusion, but it's possible
 Let's look at a few other variables:
 
 
-```{r fig.height=10, fig.width=10}
+```{r fig.height=6, fig.width=12}
 p1 <- ggplot(project1_df) + 
   aes(x = age, y = pseudobulk) + 
   geom_point() +
   ggtitle("pseudobulk ~ age")
 
 p2 <- ggplot(project1_df) + 
-  aes(x = technology, y = pseudobulk) + 
-  geom_jitter(width = 0.1) + 
-  ggtitle("pseudobulk ~ technology")
-
-p3 <- ggplot(project1_df) + 
   aes(x = tissue_location, y = pseudobulk) + 
   geom_jitter(width = 0.1) + 
   ggtitle("pseudobulk ~ tissue_location") +
@@ -252,7 +280,7 @@ p3 <- ggplot(project1_df) +
   theme(axis.text.x = element_text(angle = 30, hjust = 1))
 
 
-p4 <- ggplot(project1_df) + 
+p3 <- ggplot(project1_df) + 
   aes(x = disease_timing, y = pseudobulk) + 
   geom_jitter(width = 0.1) + 
   ggtitle("pseudobulk ~ disease_timing") +
@@ -260,9 +288,7 @@ p4 <- ggplot(project1_df) +
   theme(axis.text.x = element_text(angle = 30, hjust = 1))
 
 
-patchwork::wrap_plots(
-  p1, p2, p3, p4, nrow = 2
-)
+patchwork::wrap_plots(p1, p2, p3, nrow = 1)
 ```
 
 Doesn't look like there is much of a relationship here. 
