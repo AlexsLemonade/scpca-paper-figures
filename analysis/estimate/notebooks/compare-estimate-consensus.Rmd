@@ -195,7 +195,6 @@ combined_wide_df <- estimate_df |>
     values_from = score
   ) |>
   dplyr::left_join(wide_category_df)
-combined_wide_df
 ```
 
 ```{r, fig.height = 3, fig.width=12}
@@ -206,7 +205,7 @@ ggplot(combined_wide_df) +
   facet_wrap(vars(project_id), scales = "free_y", nrow = 1) +
   labs(
     title = "Immune celltypes", 
-    x = "ESTIMATE immune score", 
+    x = "ESTIMATE immune score (pseudobulk)", 
     y = "Immune cell fraction in consensus celltypes"
   )
 ```
@@ -220,7 +219,7 @@ ggplot(combined_wide_df) +
   facet_wrap(vars(project_id), scales = "free_y", nrow = 1) +
   labs(
     title = "Stromal celltypes", 
-    x = "ESTIMATE stromal score", 
+    x = "ESTIMATE stromal score (pseudobulk)", 
     y = "Stromal cell fraction in consensus celltypes"
   )
 ```
@@ -266,6 +265,78 @@ ggplot(unknown_df) +
 There isn't really a relationship here.
 
 
+## Relationship between cell types and bulk ESTIMATE scores
+
+We'll do the same comparisons here but with ESTIMATE scores estimated from bulk counts (not bulk TPM) instead of from pseudobulk.
+
+```{r}
+combined_wide_df <- estimate_df |>
+  dplyr::filter(expression_type == "bulk_counts") |>
+  dplyr::select(-expression_type) |>
+  dplyr::mutate(score_type = glue::glue("estimate_score_{score_type}")) |>
+   tidyr::pivot_wider(
+    names_from = score_type, 
+    values_from = score
+  ) |>
+  dplyr::left_join(wide_category_df)
+```
+
+
+```{r, fig.height = 3, fig.width=12}
+ggplot(combined_wide_df) + 
+  aes(x = estimate_score_immune, y = celltype_immune) + 
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  facet_wrap(vars(project_id), scales = "free_y", nrow = 1) +
+  labs(
+    title = "Immune celltypes", 
+    x = "ESTIMATE immune score (bulk)", 
+    y = "Immune cell fraction in consensus celltypes"
+  )
+
+ggplot(combined_wide_df) + 
+  aes(x = estimate_score_stromal, y = celltype_stromal) + 
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  facet_wrap(vars(project_id), scales = "free_y", nrow = 1) +
+  labs(
+    title = "Stromal celltypes", 
+    x = "ESTIMATE stromal score (bulk)", 
+    y = "Stromal cell fraction in consensus celltypes"
+  )
+```
+
+Trends are mostly the same here, except there is no relationship for stromal with SCPCP000017 with bulk-derived ESTIMATE scores as there was for pseudobulk.
+
+
+
+Is there a relationship between unknown and 
+
+```{r, fig.height = 3, fig.width=12, message = FALSE}
+unknown_df <- celltype_data |>
+  purrr::map(
+    \(cell_df) {
+        cell_df |>
+          # group to keep these columns
+          dplyr::group_by(sample_id, project_id) |>
+          dplyr::summarize(
+            is_unknown = sum(consensus_annotation == "Unknown"), 
+            frac_unknown = is_unknown / dplyr::n()
+          )
+    }
+  ) |>
+  purrr::list_rbind(names_to = "sample_id") |>
+  dplyr::inner_join(combined_wide_df) |>
+  dplyr::mutate(estimate_score = estimate_score_stromal + estimate_score_immune)
+
+ggplot(unknown_df) + 
+  aes(x = estimate_score, y = frac_unknown) + 
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  facet_wrap(~project_id)
+```
+
+Again, there is no relationship here. 
 
 ## Session info
 
