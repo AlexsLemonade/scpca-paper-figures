@@ -84,7 +84,9 @@ immune_df <- readr::read_tsv(immune_celltypes_groups_url)
 
 ### Define cell type groups
 
-First, what cell types do we have for this data?
+The first step is to group consensus cell types into "immune" and "stromal" categories to enable comparisons with ESTIMATE scores.
+
+Let's first look at what the consensus cell types that we have for this data are.
 For human readability, we'll look at the annotations, not ontologies, for this.
 
 ```{r}
@@ -97,8 +99,8 @@ all_celltypes <- celltype_data |>
 all_celltypes
 ```
 
-* We can use the `celltype_validation_groups` data frame to identify immune cells to use in comparisons
-* For stromal cells, since ESTIMATE defines stromal as non-cancer and non-immune (aka "everything else"), we'll define all non-immune and non-neural cell types as stromal
+* We can use the `celltype_validation_groups` data frame to identify immune cell types to use in comparisons
+* Since ESTIMATE defines stromal as non-cancer and non-immune (aka "everything else"), we'll define all non-immune and non-neural cell types as stromal cells
   * An important caveat to bear in mind that is that two of our projects, SCPCP000006 (Wilms tumor) and SCPCP000017 (osteosarcoma), will have cancer cell types with a high degree of similarity to several stromal cell types, which can make teasing these categories apart challenging
 
 ```{r}
@@ -119,13 +121,12 @@ stromal_celltypes <- c(
 immune_celltypes <- immune_df$consensus_annotation
 ```
   
-The following consensus cells are not currently included in this analysis:
+The following consensus cells are _not_ currently considered in either the immune or bulk group.
 
 ```{r}
-all_celltypes[!(all_celltypes %in% c(stromal_celltypes, immune_celltypes))]
+other_celltypes <- all_celltypes[!(all_celltypes %in% c(stromal_celltypes, immune_celltypes))]
+other_celltypes
 ```
-
-## Cell type group counts
 
 Next, we'll calculate proportions of these cell types across samples.
 
@@ -206,7 +207,7 @@ ggplot(combined_wide_df) +
   labs(
     title = "Immune celltypes", 
     x = "ESTIMATE immune score (pseudobulk)", 
-    y = "Immune cell fraction in consensus celltypes"
+    y = "Immune cell fraction\nin consensus celltypes"
   )
 ```
 
@@ -220,7 +221,7 @@ ggplot(combined_wide_df) +
   labs(
     title = "Stromal celltypes", 
     x = "ESTIMATE stromal score (pseudobulk)", 
-    y = "Stromal cell fraction in consensus celltypes"
+    y = "Stromal cell fraction\nin consensus celltypes"
   )
 ```
 
@@ -228,13 +229,15 @@ ggplot(combined_wide_df) +
   * SCPCP000001, SCPCP00006, and SCPCP000017 show a positive relationship between quantities
   * There is no apparent relationship for SCPCP000002 or SCPCP000009
 * Stromal plots:
-  * SCPCP00006 and SCPCP000017 show a positive relationship between quantities
+  * SCPCP00006 shows a positive relationship between quantities, and SCPCP000017 _may_ be trending towards a significant positive relationship (but that's a fairly wide +/- SE)
   * There is no apparent relationship for SCPCP000001, SCPCP000002, or SCPCP000009
 
+That said, SCPCP000006 has an outlier point that may be driving the observed positive relationships.
 
-### Relationship between `Unknown` and tumor purity
+### Relationship between other cell types and tumor purity
 
 In theory, the `Unknown` cells in our consensus annotation are more likely to be tumor cells.
+We also excluded several cell types from analysis which might also be tumor.
 Similarly in theory, the ESTIMATE score (sum of immune and stromal) is expected to be proportional to tumor purity.
 
 Is there a relationship between these quantities?
@@ -247,7 +250,7 @@ unknown_df <- celltype_data |>
           # group to keep these columns
           dplyr::group_by(sample_id, project_id) |>
           dplyr::summarize(
-            is_unknown = sum(consensus_annotation == "Unknown"), 
+            is_unknown = sum(consensus_annotation %in% other_celltypes), 
             frac_unknown = is_unknown / dplyr::n()
           )
     }
@@ -260,10 +263,13 @@ ggplot(unknown_df) +
   aes(x = estimate_score, y = frac_unknown) + 
   geom_point() + 
   geom_smooth(method = "lm") +
-  facet_wrap(~project_id)
+  facet_wrap(vars(project_id), nrow = 1) +
+  labs(
+    x = "ESTIMATE score (pseudobulk)", 
+    y = "Fraction of non-immune/non-stromal\ncell types"
+  )
 ```
-There isn't really a relationship here.
-
+There appears to be a negative relationship for SCPCP000001 and SCPCP000017, a very weak negative relationship for SCPCP000006 (possibly outlier driven?), and no relationship for SCPCP000002 or SCPCP000009.
 
 ## Relationship between cell types and bulk ESTIMATE scores
 
@@ -291,7 +297,7 @@ ggplot(combined_wide_df) +
   labs(
     title = "Immune celltypes", 
     x = "ESTIMATE immune score (bulk)", 
-    y = "Immune cell fraction in consensus celltypes"
+    y = "Immune cell fraction\nin consensus celltypes"
   )
 
 ggplot(combined_wide_df) + 
@@ -302,15 +308,14 @@ ggplot(combined_wide_df) +
   labs(
     title = "Stromal celltypes", 
     x = "ESTIMATE stromal score (bulk)", 
-    y = "Stromal cell fraction in consensus celltypes"
+    y = "Stromal cell fraction\nin consensus celltypes"
   )
 ```
 
-Trends are mostly the same here, except there is no relationship for stromal with SCPCP000017 with bulk-derived ESTIMATE scores as there was for pseudobulk.
+We mostly see the same trends as observed with pseudobulk-derived ESTIMATE scores, except there is no relationship for stromal with SCPCP000017 with bulk-derived ESTIMATE scores as there was for pseudobulk.
 
 
-
-Is there a relationship between unknown and 
+Let's compare now the other cell types to a tumor purity proxy (sum of ESTIMATE scores):
 
 ```{r, fig.height = 3, fig.width=12, message = FALSE}
 unknown_df <- celltype_data |>
@@ -320,7 +325,7 @@ unknown_df <- celltype_data |>
           # group to keep these columns
           dplyr::group_by(sample_id, project_id) |>
           dplyr::summarize(
-            is_unknown = sum(consensus_annotation == "Unknown"), 
+            is_unknown = sum(consensus_annotation %in% other_celltypes), 
             frac_unknown = is_unknown / dplyr::n()
           )
     }
@@ -333,10 +338,14 @@ ggplot(unknown_df) +
   aes(x = estimate_score, y = frac_unknown) + 
   geom_point() + 
   geom_smooth(method = "lm") +
-  facet_wrap(~project_id)
+  facet_wrap(vars(project_id), nrow = 1) +
+  labs(
+    x = "ESTIMATE score (bulk)", 
+    y = "Fraction of non-immune/non-stromal\ncell types"
+  )
 ```
 
-Again, there is no relationship here. 
+We see the same trends as observed with pseudobulk-derived ESTIMATE scores.
 
 ## Session info
 
