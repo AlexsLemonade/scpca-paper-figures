@@ -178,12 +178,6 @@ Second, what do we see for stromal scores?
 #### Compare modalities
 
 ```{r fig.width=10}
-compare_modalities_df <- estimate_df |>
-  tidyr::pivot_wider(
-    names_from = expression_type, 
-    values_from = score
-  ) 
-
 ggplot(compare_modalities_df) + 
   aes(x = bulk_counts, y = pseudobulk) + 
   geom_point() +
@@ -197,7 +191,7 @@ ggplot(compare_modalities_df) +
   theme(aspect.ratio = 1)
 ```
 
-* There does not appear to be a significant relationship between modalities for SCPCP000002 and SCPCP000006, for either score 
+* There does not appear to be a significant relationship between modalities for SCPCP000002 and SCPCP000009, for either score 
   * That said, it is worth noting that all samples' immune scores, and most samples' stromal scores, for SCPCP000002 are higher in pseudobulk than in bulk
 * For SCPCP000001, immune scores tend to be higher in pseudobulk but stromal scores are about the same between modalities
 * For SCPCP000006 and SCPCP0000017, immune scores tend to be lower in pseudobulk but stromal scores are about the same between modalities
