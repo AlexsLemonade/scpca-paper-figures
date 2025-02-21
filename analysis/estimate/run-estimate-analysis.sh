@@ -42,3 +42,6 @@ done
 # Run ESTIMATE and visualize results
 # results are saved to results/
 Rscript -e "rmarkdown::render('${notebook_dir}/run-estimate.Rmd')"
+
+# Explore relationship between ESTIMATE scores and consensus cell types
+Rscript -e "rmarkdown::render('${notebook_dir}/compare-estimate-consensus.Rmd')"
