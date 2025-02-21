@@ -149,7 +149,7 @@ celltype_category_df <- celltype_data |>
   purrr::list_rbind(names_to = "sample_id") |>
   # we need to add in project ids
   dplyr::inner_join(dplyr::select(id_df, project_id, sample_id)) |>
-  dplyr::mutate(estimate_category = forcats::fct_relevel(estimate_category, "immune", "stromal", "other"))
+  dplyr::mutate(estimate_category = forcats::fct_relevel(estimate_category, "other", "stromal", "immune"))
 ```
 
 What do we have?
@@ -159,7 +159,8 @@ What do we have?
 ggplot(celltype_category_df) + 
   aes(x = sample_id, y = frac, fill = estimate_category) +
   geom_col() + 
-  scale_fill_brewer(palette = "Set2") + 
+  # bright color to help make stromal more visible
+  scale_fill_manual(values = c("gray85", "chartreuse", "dodgerblue")) + 
   facet_wrap(vars(project_id), scales = "free", ncol = 1) + 
   scale_y_continuous(expand = c(0,0)) +
   labs(y = "fraction of cells in sample") +
@@ -206,7 +207,7 @@ ggplot(combined_wide_df) +
   facet_wrap(vars(project_id), scales = "free_y", nrow = 1) +
   labs(
     title = "Immune celltypes", 
-    x = "ESTIMATE immune score (pseudobulk)", 
+    x = "ESTIMATE immune score", 
     y = "Immune cell fraction\nin consensus celltypes"
   )
 ```
@@ -220,7 +221,7 @@ ggplot(combined_wide_df) +
   facet_wrap(vars(project_id), scales = "free_y", nrow = 1) +
   labs(
     title = "Stromal celltypes", 
-    x = "ESTIMATE stromal score (pseudobulk)", 
+    x = "ESTIMATE stromal score", 
     y = "Stromal cell fraction\nin consensus celltypes"
   )
 ```
@@ -233,6 +234,7 @@ ggplot(combined_wide_df) +
   * There is no apparent relationship for SCPCP000001, SCPCP000002, or SCPCP000009
 
 That said, SCPCP000006 has an outlier point that may be driving the observed positive relationships.
+
 
 ### Relationship between other cell types and tumor purity
 
@@ -265,7 +267,7 @@ ggplot(unknown_df) +
   geom_smooth(method = "lm") +
   facet_wrap(vars(project_id), nrow = 1) +
   labs(
-    x = "ESTIMATE score (pseudobulk)", 
+    x = "ESTIMATE score", 
     y = "Fraction of non-immune/non-stromal\ncell types"
   )
 ```
@@ -273,6 +275,60 @@ ggplot(unknown_df) +
 There appears to be a negative relationship for SCPCP000001 and SCPCP000017, a very weak negative relationship for SCPCP000006 (possibly outlier driven?), and no relationship for SCPCP000002 or SCPCP000009.
 
 This may reflect that the genes in ESTIMATE do not comprehensively capture all non-cancer genes, and/or include genes that are highly expressed in some of our tumor cells.
+
+
+### All projects together
+
+
+We'll next visualize the same results, but pooling all projects together. 
+We'll also color points based on whether the pseudobulk was derived from single-cell or single-nuclei experiment.
+
+Again, note that score shown in the the third plot with the "other" celltypes is the ESTIMATE score, which is the sum of stromal and immune.
+
+```{r fig.height=4, fig.width=12}
+combined_wide_df <- combined_wide_df |>
+  dplyr::mutate(
+    seq_unit = ifelse(
+      project_id %in% c("SCPCP000001", "SCPCP000002"), 
+      "single-cell", 
+      "single-nuclei"
+    ), 
+     estimate_score = estimate_score_stromal + estimate_score_immune
+  )
+
+make_scatterplot <- function(combined_wide_df, estimate_col, celltype_col, type, annotate_x, annotate_y) {
+  r <- cor(combined_wide_df[[estimate_col]], combined_wide_df[[celltype_col]]) |> round(2)
+  rho <- cor(combined_wide_df[[estimate_col]], combined_wide_df[[celltype_col]], method = "spearman") |> round(2)
+  
+  plot_df <- combined_wide_df |>
+    dplyr::select(all_of(c(estimate_col, celltype_col, "seq_unit")))
+  colnames(plot_df) <- c("estimate", "celltype", "seq_unit")
+  
+  ggplot(plot_df) + 
+  aes(x = estimate, y = celltype) + 
+  geom_point(aes(color = seq_unit)) + 
+  geom_smooth(method = "lm") +
+  labs(
+    title = glue::glue("{type} celltypes"), 
+    x = glue::glue("ESTIMATE {type} score"), 
+    y = glue::glue("{type} cell fraction\nin consensus celltypes")
+  ) + 
+  annotate(
+    geom = "text", 
+    x = annotate_x, 
+    y = annotate_y, 
+    label = glue::glue("R = {r}\nRho = {rho}")
+  )
+}
+patchwork::wrap_plots(
+  make_scatterplot(combined_wide_df, "estimate_score_immune", "celltype_immune", "immune", -1700, 0.75),
+  make_scatterplot(combined_wide_df, "estimate_score_stromal", "celltype_stromal", "stromal", -1800, 0.25),
+  make_scatterplot(combined_wide_df, "estimate_score", "celltype_other", "other", -3000, 0.6), 
+  guides = "collect"
+)
+```
+
+We see the strongest correlation for immune celltypes as expected, this plot also emphasizes the trend that single-cell show higher fractions of immune cells than do single-nuclei samples.
 
 ## Session info
 
