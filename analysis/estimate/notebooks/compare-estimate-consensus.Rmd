@@ -1,0 +1,357 @@
+---
+title: "Compare ESTIMATE results to consensus cell types"
+author: "Stephanie J. Spielman"
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    toc: true
+    toc_depth: 3
+    code_folding: hide
+---
+
+The purpose of this notebook is to compare ESTIMATE scores to consensus cell types, which were identified in [this `OpenScPCA-nf` pipeline module](https://github.com/AlexsLemonade/OpenScPCA-nf/tree/bc147c0ded5460db30a8ebbaf7854eb2f47e386d/modules/cell-type-consensus).
+
+## Setup
+
+
+```{r setup}
+renv::load()
+
+library(ggplot2)
+theme_set(theme_bw())
+options(readr.show_col_types = FALSE)
+```
+
+### Paths
+
+```{r paths}
+data_dir <- here::here("analysis", "estimate", "data")
+celltype_dir <- file.path(data_dir, "consensus-celltypes")
+
+library_metadata_file <- here::here("s3_files", "scpca-library-metadata.tsv")
+estimate_file <- here::here("analysis", "estimate", "results", "estimate_results.tsv")
+immune_celltypes_groups_url <- "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-consensus/references/consensus-immune-cell-types.tsv"
+
+
+# we'll name these by library id to start, and then swap to sample later
+celltype_files <- list.files(
+  celltype_dir, 
+  pattern = "_processed_consensus-cell-types\\.tsv\\.gz$", 
+  full.names = TRUE, 
+  recursive = TRUE
+) |>
+    purrr::set_names(
+    \(x) {stringr::str_split_i(basename(x), pattern = "_", i = 1)}
+  )
+```
+
+### Read input data
+
+```{r warning = FALSE}
+estimate_df <- readr::read_tsv(estimate_file)
+library_metadata_df <- readr::read_tsv(library_metadata_file)
+
+id_df <- estimate_df |>
+  dplyr::inner_join(
+    library_metadata_df |>
+      dplyr::filter(seq_unit %in% c("cell", "nucleus")) |>
+      dplyr::select(scpca_sample_id, scpca_library_id),
+    by = c("sample_id" = "scpca_sample_id")
+  ) |>
+  dplyr::select(project_id, sample_id, library_id = scpca_library_id) |>
+  dplyr::distinct()
+
+library_sample_c <- id_df$sample_id |>
+  purrr::set_names(id_df$library_id)
+
+celltype_data <- celltype_files |>
+  # only keep libraries of interest
+  purrr::keep_at(
+    \(library_id) library_id %in% names(library_sample_c)
+  ) |> 
+  purrr::map(
+    \(f) {
+      readr::read_tsv(f) |>
+        dplyr::select(project_id, sample_id, consensus_annotation, consensus_ontology)
+  })
+
+# update names to sample ids
+sample_names <- library_sample_c[names(celltype_data)] |> unname()
+names(celltype_data) <- sample_names
+
+immune_df <- readr::read_tsv(immune_celltypes_groups_url)
+```
+
+### Define cell type groups
+
+The first step is to group consensus cell types into "immune" and "stromal" categories to enable comparisons with ESTIMATE scores.
+
+Let's first look at what the consensus cell types that we have for this data are.
+For human readability, we'll look at the annotations, not ontologies, for this.
+
+```{r}
+all_celltypes <- celltype_data |>
+  purrr::map(
+    \(cell_df) dplyr::pull(cell_df, consensus_annotation) |> unique()
+  ) |>
+  purrr::reduce(union)
+
+# print in alphabetical order
+sort(all_celltypes)
+```
+
+* We can use the `immune_df` data frame to identify immune cell types to use in comparisons
+* Since ESTIMATE defines stromal as non-cancer and non-immune (aka "everything else"), we'll define all non-immune and non-neural cell types as stromal cells
+  * An important caveat to bear in mind that is that two of our projects, SCPCP000006 (Wilms tumor) and SCPCP000017 (osteosarcoma), will have cancer cell types with a high degree of similarity to several stromal cell types, which can make teasing these categories apart challenging.
+  This is particularly relevant for mesangial cells in SCPCP000006; we are classifying these cell types as "stromal" but they may be highly similar to the cancer cells in those samples
+
+```{r}
+stromal_celltypes <- c(
+  "chondrocyte", 
+  "adipocyte", 
+  "endothelial cell",
+  "epithelial cell",              
+  "smooth muscle cell", 
+  "muscle cell", 
+  "blood vessel endothelial cell", 
+  "stromal cell", 
+  "pericyte",                     
+  "mesangial cell", 
+  "fibroblast"
+)
+
+immune_celltypes <- immune_df$consensus_annotation
+```
+  
+The following consensus cells are _not_ currently considered in either the immune or bulk group.
+
+```{r}
+other_celltypes <- all_celltypes[!(all_celltypes %in% c(stromal_celltypes, immune_celltypes))]
+sort(other_celltypes)
+```
+
+Next, we'll calculate proportions of these cell types across samples.
+
+```{r}
+celltype_category_df <- celltype_data |>
+  purrr::map(
+    \(cell_df) {
+        cell_df |>
+        dplyr::mutate(
+          estimate_category = dplyr::case_when(
+            consensus_annotation %in% immune_celltypes ~ "immune",
+            consensus_annotation %in% stromal_celltypes ~ "stromal", 
+            .default = "other"
+          )) |>
+        dplyr::count(estimate_category) |>
+        dplyr::mutate(frac = n/sum(n)) |>
+        dplyr::select(-n)
+    }
+  ) |>
+  purrr::list_rbind(names_to = "sample_id") |>
+  # we need to add in project ids
+  dplyr::inner_join(dplyr::select(id_df, project_id, sample_id)) |>
+  dplyr::mutate(estimate_category = forcats::fct_relevel(estimate_category, "other", "stromal", "immune"))
+```
+
+What do we have?
+
+
+```{r fig.height=12, fig.width=8}
+ggplot(celltype_category_df) + 
+  aes(x = sample_id, y = frac, fill = estimate_category) +
+  geom_col() + 
+  # bright color to help make stromal more visible
+  scale_fill_manual(values = c("gray85", "navy", "dodgerblue")) + 
+  facet_wrap(vars(project_id), scales = "free", ncol = 1) + 
+  scale_y_continuous(expand = c(0,0)) +
+  labs(y = "fraction of cells in sample") +
+  theme(axis.text.x = element_blank()) 
+```
+
+* SCPCP000006 and SCPCP000009 show the highest proportion of "other" cells
+* Most samples show some amount of immune cells, in particular projects SCPCP000001, SCPCP000002, and SCPCP000017.
+  * The first two projects are single-cell, which we expect to come back with a higher immune proportion compared to single-nuclei.
+  * There is substantial heterogeneity in the fraction of immune cells among samples in the first two projects ranging from ~0-0.75
+  * SCPCP000017 still has some heterogeneity as well but relatively less
+* Nearly all samples across SCPCP000001, SCPCP000002, and SCPCP000009 lack "stromal cells" 
+  * From the plot, it appears only 1 sample in SCPCP000001 and 1 sample in SCPCP000009 have a stromal fraction and very little of it; if other samples have, it's a vanishingly small proportion
+* Only SCPCP000006 and SCPCP000017 have samples with truly visible levels of "stromal cells", particularly SCPCP000006
+  * It is more challenging in these cancer types (wilms and osteo, respectively) to distinguish among stromal and cancer cells, so the stromal proportions here are not necessarily definitive
+
+
+## Relationship between cell types and pseudobulk ESTIMATE scores
+
+Next, we'll directly look at the relationships between fractions of these cell type groups and ESTIMATE scores.
+We'll do this now with pseudobulk ESTIMATE scores, which is from the same underlying modality as the consensus cell types.
+
+```{r}
+wide_category_df <- celltype_category_df |>
+  dplyr::mutate(estimate_category = glue::glue("celltype_{estimate_category}")) |>
+  tidyr::pivot_wider(
+    names_from = estimate_category, 
+    values_from = frac, 
+    values_fill = 0
+  )
+
+combined_wide_df <- estimate_df |>
+  dplyr::filter(expression_type == "pseudobulk") |>
+  dplyr::select(-expression_type) |>
+  dplyr::mutate(score_type = glue::glue("estimate_score_{score_type}")) |>
+   tidyr::pivot_wider(
+    names_from = score_type, 
+    values_from = score
+  ) |>
+  dplyr::left_join(wide_category_df)
+```
+
+```{r, fig.height = 3, fig.width=12}
+ggplot(combined_wide_df) + 
+  aes(x = estimate_score_immune, y = celltype_immune) + 
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  facet_wrap(vars(project_id), scales = "free_y", nrow = 1) +
+  labs(
+    title = "Immune celltypes", 
+    x = "ESTIMATE immune score", 
+    y = "Immune cell fraction\nin consensus celltypes"
+  )
+```
+
+
+```{r, fig.height = 3, fig.width=12}
+ggplot(combined_wide_df) + 
+  aes(x = estimate_score_stromal, y = celltype_stromal) + 
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  facet_wrap(vars(project_id), scales = "free_y", nrow = 1) +
+  labs(
+    title = "Stromal celltypes", 
+    x = "ESTIMATE stromal score", 
+    y = "Stromal cell fraction\nin consensus celltypes"
+  )
+```
+
+* Immune plots:
+  * SCPCP000001, SCPCP00006, and SCPCP000017 show a positive relationship between quantities
+  * There is no apparent relationship for SCPCP000002 or SCPCP000009
+* Stromal plots:
+  * SCPCP00006 shows a positive relationship between quantities, and SCPCP000017 _may_ be trending towards a significant positive relationship (but that's a fairly wide +/- SE, so we can't say there is definitely a positive relationship here).
+    * That said, SCPCP000006 has an outlier point that may be driving some/much of the observed positive relationship
+  * There is no apparent relationship for SCPCP000001, SCPCP000002, or SCPCP000009
+  * Again, we emphasize that these stromal scores may be less informative than the immune scores due to additional challenges distinguishing cancer cells from stromal cells
+vs from immune cells
+
+
+
+### Relationship between other cell types and tumor purity
+
+In theory, the `Unknown` cells in our consensus annotation are more likely to be tumor cells.
+We also excluded several cell types from analysis which might also be tumor.
+Similarly in theory, the ESTIMATE score (sum of immune and stromal) is expected to be proportional to tumor purity where higher ESTIMATE scores correspond to lower tumor purity. 
+Therefore we expect there to be a negative correlation between fractions of cells that are non-immune/non-stromal and the ESTIMATE score. 
+
+Is there a relationship between these quantities?
+
+```{r, fig.height = 3, fig.width=12, message = FALSE}
+unknown_df <- celltype_data |>
+  purrr::map(
+    \(cell_df) {
+        cell_df |>
+          # group to keep these columns
+          dplyr::group_by(sample_id, project_id) |>
+          dplyr::summarize(
+            is_unknown = sum(consensus_annotation %in% other_celltypes), 
+            frac_unknown = is_unknown / dplyr::n()
+          )
+    }
+  ) |>
+  purrr::list_rbind(names_to = "sample_id") |>
+  dplyr::inner_join(combined_wide_df) |>
+  dplyr::mutate(estimate_score = estimate_score_stromal + estimate_score_immune)
+
+ggplot(unknown_df) + 
+  aes(x = estimate_score, y = frac_unknown) + 
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  facet_wrap(vars(project_id), nrow = 1) +
+  labs(
+    x = "ESTIMATE score", 
+    y = "Fraction of non-immune/non-stromal\ncell types"
+  )
+```
+
+There appears to be a negative relationship for SCPCP000001 and SCPCP000017, a very weak negative relationship for SCPCP000006 (possibly outlier driven?), and no relationship for SCPCP000002 or SCPCP000009.
+
+While it's nice to see some negative correlations here, the lack of robust negative relationship may indicate that:
+
+* Genes included in ESTIMATE do not comprehensively capture all non-cancer genes
+* Genes included in ESTIMATE are highly expressed in some of our tumor cells
+* Stromal cells are hard to distinguish from tumor
+
+
+### All projects together
+
+
+We'll next visualize the same results, but pooling all projects together and with correlation coefficients (both $R$ and $\rho$).
+We'll also color points based on whether the pseudobulk was derived from single-cell or single-nuclei experiment.
+
+Again, note that the score shown in the the third plot with the "other" celltypes is the ESTIMATE score, which is the sum of stromal and immune.
+
+```{r fig.height=4, fig.width=12}
+combined_wide_df <- combined_wide_df |>
+  dplyr::mutate(
+    seq_unit = ifelse(
+      project_id %in% c("SCPCP000001", "SCPCP000002"), 
+      "single-cell", 
+      "single-nuclei"
+    ), 
+     estimate_score = estimate_score_stromal + estimate_score_immune
+  )
+
+
+# Helper function to make scatterplots showing correlation coefficients
+make_scatterplot <- function(combined_wide_df, estimate_col, celltype_col, type, annotate_x, annotate_y) {
+  r <- cor(combined_wide_df[[estimate_col]], combined_wide_df[[celltype_col]]) |> round(2)
+  rho <- cor(combined_wide_df[[estimate_col]], combined_wide_df[[celltype_col]], method = "spearman") |> round(2)
+  
+  plot_df <- combined_wide_df |>
+    dplyr::select(all_of(c(estimate_col, celltype_col, "seq_unit")))
+  colnames(plot_df) <- c("estimate", "celltype", "seq_unit")
+  
+  ggplot(plot_df) + 
+  aes(x = estimate, y = celltype) + 
+  geom_point(aes(color = seq_unit)) + 
+  geom_smooth(method = "lm") +
+  labs(
+    title = glue::glue("{type} celltypes"), 
+    x = glue::glue("ESTIMATE {type} score"), 
+    y = glue::glue("{type} cell fraction\nin consensus celltypes")
+  ) + 
+  annotate(
+    geom = "text", 
+    x = annotate_x, 
+    y = annotate_y, 
+    label = glue::glue("R = {r}\nRho = {rho}")
+  )
+}
+patchwork::wrap_plots(
+  make_scatterplot(combined_wide_df, "estimate_score_immune", "celltype_immune", "immune", -1700, 0.75),
+  make_scatterplot(combined_wide_df, "estimate_score_stromal", "celltype_stromal", "stromal", -1800, 0.25),
+  make_scatterplot(combined_wide_df, "estimate_score", "celltype_other", "", -3000, 0.6), 
+  guides = "collect"
+)
+```
+
+* We see a middle-to-strong positive correlation for immune cell fractions and the ESTIMATE immune score.
+  * This agreement between methods suggests that we have done a reasonable job capturing immune cells with our consensus labels 
+  * We also see a clear separation of points where the single-cell samples have higher immune fractions/scores compared to single-nuclei samples, which is consistent with our expectations for these sequencing units.
+* We see a positive, but somewhat weaker, relationship for stromal, and virtually all of the variation in stromal _cell type fractions_ is from the single-nuclei samples
+* We see a negative but still decent correlation for other cell fractions and the ESTIMATE score, which is consistent with expectations but given challenges of distinguishing between stromal and tumor, we don't expect this correlation to be exceptionally strong
+
+
+## Session info
+
+```{r}
+sessionInfo()
+```
