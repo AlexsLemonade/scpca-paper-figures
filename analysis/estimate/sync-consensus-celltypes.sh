@@ -20,5 +20,5 @@ mkdir -p $consensus_dir
 
 for project in SCPCP000001 SCPCP000002 SCPCP000006 SCPCP000009 SCPCP000017; do
   mkdir -p ${consensus_dir}/${project}
-  aws s3 cp s3://openscpca-nf-workflow-results-staging/2024-11-25/cell-type-consensus/${project}/ ${consensus_dir}/${project} --profile ${aws_profile} --recursive
+  aws s3 cp s3://openscpca-nf-workflow-results/2024-11-25/cell-type-consensus/${project}/ ${consensus_dir}/${project} --profile ${aws_profile} --recursive
 done
