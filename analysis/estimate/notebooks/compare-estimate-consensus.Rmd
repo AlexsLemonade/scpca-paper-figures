@@ -171,8 +171,8 @@ ggplot(celltype_category_df) +
 
 * Nearly all samples across SCPCP000001, SCPCP000002, and SCPCP000006 lack "stromal cells" 
   * From the plot, it appears only 1 sample in SCPCP000001 and 1 sample in SCPCP000006 have stromal; if other samples have, it's an exceedingly small proportion
-* Only SCPCP000006 and SCPCP000009 have samples with truly visible levels of "stromal cells", particularly SCPCP000009
-  * It is more challenging in these cancer types (wilms and osteo, respectively) to distinguish among stromal and cancer cells get, so the stromal proportions here are not necessarily definitive
+* Only SCPCP000006 and SCPCP000017 have samples with truly visible levels of "stromal cells", particularly SCPCP000009
+  * It is more challenging in these cancer types (wilms and osteo, respectively) to distinguish among stromal and cancer cells, so the stromal proportions here are not necessarily definitive
 
 ## Relationship between cell types and pseudobulk ESTIMATE scores
 
@@ -241,7 +241,8 @@ That said, SCPCP000006 has an outlier point that may be driving the observed pos
 
 In theory, the `Unknown` cells in our consensus annotation are more likely to be tumor cells.
 We also excluded several cell types from analysis which might also be tumor.
-Similarly in theory, the ESTIMATE score (sum of immune and stromal) is expected to be proportional to tumor purity.
+Similarly in theory, the ESTIMATE score (sum of immune and stromal) is expected to be proportional to tumor purity where higher ESTIMATE scores correspond to lower tumor purity. 
+Therefore we expect there to be a negative correlation between fractions of cells that are non-immune/non-stromal and the ESTIMATE score. 
 
 Is there a relationship between these quantities?
 
@@ -284,7 +285,7 @@ This may reflect that the genes in ESTIMATE do not comprehensively capture all n
 We'll next visualize the same results, but pooling all projects together and with correlation coefficients (both $R$ and $\rho$).
 We'll also color points based on whether the pseudobulk was derived from single-cell or single-nuclei experiment.
 
-Again, note that score shown in the the third plot with the "other" celltypes is the ESTIMATE score, which is the sum of stromal and immune.
+Again, note that the score shown in the the third plot with the "other" celltypes is the ESTIMATE score, which is the sum of stromal and immune.
 
 ```{r fig.height=4, fig.width=12}
 combined_wide_df <- combined_wide_df |>
