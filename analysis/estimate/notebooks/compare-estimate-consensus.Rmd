@@ -234,7 +234,7 @@ combined_wide_df <- estimate_df |>
   dplyr::left_join(wide_category_df)
 ```
 
-```{r, fig.height = 3, fig.width=12}
+```{r, fig.height = 4, fig.width=12}
 ggplot(combined_wide_df) + 
   aes(x = estimate_score_immune, y = celltype_immune) + 
   geom_point(aes(shape = sample_quality)) + 
@@ -245,11 +245,12 @@ ggplot(combined_wide_df) +
     title = "Immune celltypes", 
     x = "ESTIMATE immune score", 
     y = "Immune cell fraction\nin consensus celltypes"
-  )
+  ) +
+  theme(legend.position = "bottom")
 ```
 
 
-```{r, fig.height = 3, fig.width=12}
+```{r, fig.height = 4, fig.width=12}
 ggplot(combined_wide_df) + 
   aes(x = estimate_score_stromal, y = celltype_stromal) + 
   geom_point(aes(shape = sample_quality)) + 
@@ -260,13 +261,14 @@ ggplot(combined_wide_df) +
     title = "Stromal celltypes", 
     x = "ESTIMATE stromal score", 
     y = "Stromal cell fraction\nin consensus celltypes"
-  )
+  ) +
+  theme(legend.position = "bottom")
 ```
 
 * Immune plots:
   * SCPCP000001, SCPCP00006, and SCPCP000017 show a positive relationship between quantities
   * There is no apparent relationship for SCPCP000002 or SCPCP000009
-  * Except for SCPCP000017, low-quality samples tend to fall outside the confidence interval (CI), although this is a bit tricky to tell for SCPCP000006 from the plot alone
+  * Most, but not all, low-quality samples tend to to fall outside the given project's confidence interval (CI)
 * Stromal plots:
   * SCPCP00006 shows a positive relationship between quantities, and SCPCP000017 _may_ be trending towards a significant positive relationship (but that's a fairly wide CI, so we can't say there is definitely a positive relationship here).
     * That said, SCPCP000006 has an outlier point that may be driving some/much of the observed positive relationship
@@ -285,7 +287,7 @@ Therefore we expect there to be a negative correlation between fractions of cell
 
 Is there a relationship between these quantities?
 
-```{r, fig.height = 3, fig.width=12, message = FALSE}
+```{r, fig.height = 4, fig.width=12, message = FALSE}
 unknown_df <- celltype_data |>
   purrr::map(
     \(cell_df) {
@@ -311,7 +313,8 @@ ggplot(unknown_df) +
   labs(
     x = "ESTIMATE score", 
     y = "Fraction of non-immune/non-stromal\ncell types"
-  )
+  ) +
+  theme(legend.position = "bottom")
 ```
 
 There appears to be a negative relationship for SCPCP000001 and SCPCP000017, a very weak negative relationship for SCPCP000006 (possibly outlier driven?), and no relationship for SCPCP000002 or SCPCP000009.
@@ -371,14 +374,15 @@ make_scatterplot <- function(combined_wide_df, estimate_col, celltype_col, type,
       x = annotate_x, 
       y = annotate_y, 
       label = glue::glue("R = {r}\nRho = {rho}")
-    )
+    ) +
+  theme(legend.position = "bottom")
 }
 patchwork::wrap_plots(
   make_scatterplot(combined_wide_df, "estimate_score_immune", "celltype_immune", "immune", -1700, 0.75),
   make_scatterplot(combined_wide_df, "estimate_score_stromal", "celltype_stromal", "stromal", -1800, 0.25),
   make_scatterplot(combined_wide_df, "estimate_score", "celltype_other", "", -3000, 0.6), 
   guides = "collect"
-)
+) & theme(legend.position = "bottom")
 ```
 
 * We see a strong positive correlation for immune cell fractions and the ESTIMATE immune score.
