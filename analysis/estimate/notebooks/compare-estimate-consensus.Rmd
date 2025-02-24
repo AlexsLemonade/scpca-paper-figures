@@ -175,7 +175,7 @@ ggplot(celltype_category_df) +
   * There is substantial heterogeneity in the fraction of immune cells among samples in the first two projects ranging from ~0-0.75
   * SCPCP000017 still has some heterogeneity as well but relatively less
 * Nearly all samples across SCPCP000001, SCPCP000002, and SCPCP000009 lack "stromal cells" 
-  * From the plot, it appears only 1 sample in SCPCP000001 and 1 sample in SCPCP000009 have stromal; if other samples have, it's an exceedingly small proportion
+  * From the plot, it appears only 1 sample in SCPCP000001 and 1 sample in SCPCP000009 have a stromal fraction and very little of it; if other samples have, it's a vanishingly small proportion
 * Only SCPCP000006 and SCPCP000017 have samples with truly visible levels of "stromal cells", particularly SCPCP000006
   * It is more challenging in these cancer types (wilms and osteo, respectively) to distinguish among stromal and cancer cells, so the stromal proportions here are not necessarily definitive
 
