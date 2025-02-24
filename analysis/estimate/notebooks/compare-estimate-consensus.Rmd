@@ -207,11 +207,6 @@ These tend to have low immune and stromal fractions and very high "other" fracti
   * It is more challenging in these cancer types (wilms and osteo, respectively) to distinguish among stromal and cancer cells, so the stromal proportions here are not necessarily definitive
 
 
-We  several low-quality samples which we removed from other analyses. 
-Let's look at where those samples fall in these plots using a shape aesthetic; open points are low-quality.
-
-
-
 ## Relationship between cell types and pseudobulk ESTIMATE scores
 
 Next, we'll directly look at the relationships between fractions of these cell type groups and ESTIMATE scores.
@@ -391,9 +386,6 @@ patchwork::wrap_plots(
   * We also see a separation of points where the single-cell samples usually have higher immune fractions/scores compared to single-nuclei samples, which is consistent with our expectations for these sequencing units.
 * We see a positive, but somewhat weaker, relationship for stromal, and virtually all of the variation in stromal _cell type fractions_ is from the single-nuclei samples
 * We see a negative but still decent correlation for other cell fractions and the ESTIMATE score, which is consistent with expectations but given challenges of distinguishing between stromal and tumor, we don't expect this correlation to be exceptionally strong
-
-
-
 
 
 ## Session info
