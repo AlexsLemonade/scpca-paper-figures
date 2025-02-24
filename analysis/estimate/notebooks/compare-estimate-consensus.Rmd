@@ -169,11 +169,11 @@ ggplot(celltype_category_df) +
   theme(axis.text.x = element_blank()) 
 ```
 
-
+* SCPCP000006 and SCPCP000009 show the highest proportion of "other" cells
 * Most samples show some amount of immune cells, in particular projects SCPCP000001, SCPCP000002, and SCPCP000017.
   * The first two projects are single-cell, which we expect to come back with a higher immune proportion compared to single-nuclei.
-  * There is substantial heterogeneity in the fraction of immune cells among samples in the first two projects ranging from ~0-0.75.
-  * SCPCP000017 still has some heterogeneity but relatively less.
+  * There is substantial heterogeneity in the fraction of immune cells among samples in the first two projects ranging from ~0-0.75
+  * SCPCP000017 still has some heterogeneity as well but relatively less
 * Nearly all samples across SCPCP000001, SCPCP000002, and SCPCP000009 lack "stromal cells" 
   * From the plot, it appears only 1 sample in SCPCP000001 and 1 sample in SCPCP000009 have stromal; if other samples have, it's an exceedingly small proportion
 * Only SCPCP000006 and SCPCP000017 have samples with truly visible levels of "stromal cells", particularly SCPCP000006
@@ -343,13 +343,11 @@ patchwork::wrap_plots(
 )
 ```
 
-We'll focus on the "immune" and "other" celltype plots:
-
 * We see a middle-to-strong positive correlation for immune cell fractions and the ESTIMATE immune score.
   * This agreement between methods suggests that we have done a reasonable job capturing immune cells with our consensus labels 
   * We also see a clear separation of points where the single-cell samples have higher immune fractions/scores compared to single-nuclei samples, which is consistent with our expectations for these sequencing units.
 * We see a positive, but somewhat weaker, relationship for stromal, and virtually all of the variation in stromal _cell type fractions_ is from the single-nuclei samples
-* We see a negative but still decent correlation for other cell fractions and the ESTIMATE score, which is consistent with expectations
+* We see a negative but still decent correlation for other cell fractions and the ESTIMATE score, which is consistent with expectations but given challenges of distinguishing between stromal and tumor, we don't expect this correlation to be exceptionally strong
 
 
 ## Session info
