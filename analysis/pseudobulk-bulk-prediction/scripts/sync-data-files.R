@@ -60,6 +60,9 @@ cellhash_samples <- library_metadata |>
   stringr::str_split(pattern = ";") |>
   purrr::reduce(union)
 
+# but keep SCPCS000144!
+cellhash_samples <- cellhash_samples[cellhash_samples != "SCPCS000144"]
+
 # all possible samples of interest
 all_bulk_samples <- library_metadata |>
   dplyr::filter(
@@ -68,7 +71,6 @@ all_bulk_samples <- library_metadata |>
   ) |>
   dplyr::pull(scpca_sample_id) |>
   unique()
-
 
 # keep only solid tumors with directly paired single-cell and bulk
 solid_bulk_samples <- sample_metadata |>
@@ -96,7 +98,9 @@ sync_sc_df <- library_metadata |>
     scpca_library_id,
     output_dir,
     s3_dir
-  )
+  ) |>
+  # needed for SCPCS000144
+  dplyr::distinct()
 
 
 # Create data frame to iterate over for syncing bulk TPM files
