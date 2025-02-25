@@ -111,7 +111,7 @@ consenus_panglao_df <- consensus_ref_df |>
   dplyr::distinct() 
 
 # For each consensus group, determine the (unique) panglao marker genes that fed into it.
-# This creates a table with columns `gene_set_name` and `ensembl_id`
+# This creates a table with columns `cell_type_name` and `ensembl_id`
 consensus_genesets_df <- split(consenus_panglao_df, consenus_panglao_df$consensus_annotation) |>
   purrr::map(
     \(df) {
@@ -125,7 +125,7 @@ consensus_genesets_df <- split(consenus_panglao_df, consenus_panglao_df$consensu
     }
   ) |>
   # Convert to TSV for human-readable export
-  purrr::list_rbind(names_to = "gene_set_name")
+  purrr::list_rbind(names_to = "cell_type_name")
 
 
 # Export tsv file ------------------------------
