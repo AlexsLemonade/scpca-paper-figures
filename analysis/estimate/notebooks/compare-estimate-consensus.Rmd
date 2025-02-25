@@ -234,54 +234,75 @@ combined_wide_df <- estimate_df |>
 ```
 
 ```{r, fig.height = 6, fig.width=12}
-ggplot(combined_wide_df) + 
-  aes(x = estimate_score_immune, y = celltype_immune) + 
-  geom_point(aes(shape = sample_quality)) + 
-  scale_shape_manual(values = c(19, 21)) +
-  geom_smooth(method = "lm") +
-  facet_grid(
-    rows = vars(expression_type),
-    cols = vars(project_id), 
-    scales = "free"
+# Use patchwork to plot to preserve the axis ranges in each expression type
+unique(combined_wide_df$expression_type) |>
+  purrr::map(
+    \(type) {
+      combined_wide_df |>
+        dplyr::filter(expression_type == type) |>
+        ### plot
+        ggplot() + 
+        aes(x = estimate_score_immune, y = celltype_immune) + 
+        geom_point(aes(shape = sample_quality)) + 
+        scale_shape_manual(values = c(19, 21)) +
+        geom_smooth(method = "lm") +
+        facet_wrap(vars(project_id), scales = "free_y", nrow = 1) +
+        labs(
+          title = glue::glue("ESTIMATE from {type}"),
+          x = "ESTIMATE immune score", 
+          y = "Immune cell fraction\nin consensus celltypes"
+        ) +
+        theme(legend.position = "bottom")
+    }
+  ) |>
+  patchwork::wrap_plots(
+    nrow = 2, 
+    guides="collect",
+    axis_title="collect"
   ) +
-  labs(
-    title = "Immune celltypes", 
-    x = "ESTIMATE immune score", 
-    y = "Immune cell fraction\nin consensus celltypes"
-  ) +
-  theme(legend.position = "bottom")
+  patchwork::plot_annotation(title = "Immune celltypes") & theme(legend.position = "bottom")
 ```
 
 
 ```{r, fig.height = 6, fig.width=12}
-ggplot(combined_wide_df) + 
-  aes(x = estimate_score_stromal, y = celltype_stromal) + 
-  geom_point(aes(shape = sample_quality)) + 
-  scale_shape_manual(values = c(19, 21)) +
-  geom_smooth(method = "lm") +
-  facet_grid(
-    rows = vars(expression_type),
-    cols = vars(project_id), 
-    scales = "free"
+# Use patchwork to plot to preserve the axis ranges in each expression type
+unique(combined_wide_df$expression_type) |>
+  purrr::map(
+    \(type) {
+      combined_wide_df |>
+        dplyr::filter(expression_type == type) |>
+        ### plot
+        ggplot() + 
+        aes(x = estimate_score_stromal, y = celltype_stromal) + 
+        geom_point(aes(shape = sample_quality)) + 
+        scale_shape_manual(values = c(19, 21)) +
+        geom_smooth(method = "lm") +
+        facet_wrap(vars(project_id), scales = "free_y", nrow = 1) +
+        labs(
+          title = glue::glue("ESTIMATE from {type}"),
+          x = "ESTIMATE stromal score", 
+          y = "Stromal cell fraction\nin consensus celltypes"
+        ) +
+        theme(legend.position = "bottom")
+    }
+  ) |>
+  patchwork::wrap_plots(
+    nrow = 2, 
+    guides="collect",
+    axis_title="collect"
   ) +
-  labs(
-    title = "Stromal celltypes", 
-    x = "ESTIMATE stromal score", 
-    y = "Stromal cell fraction\nin consensus celltypes"
-  ) +
-  theme(legend.position = "bottom")
+  patchwork::plot_annotation(title = "Stromal celltypes") & theme(legend.position = "bottom")
 ```
 
 * Immune plots:
-  * SCPCP000001, SCPCP00006 (although very weak), and SCPCP000017 show a positive relationship between quantities for both modalities
+  * SCPCP000001, SCPCP00006 (although possibly outlier-driven), and SCPCP000017 show a positive relationship between quantities for both modalities
   * There is no apparent relationship for SCPCP000002 or SCPCP000009
   * Most, but not all, low-quality samples tend to to fall outside the given project's confidence interval (CI)
 * Stromal plots:
   * SCPCP00006 shows a positive relationship between quantities for both modalities
-    * That said, SCPCP000006 has an outlier point that may be driving some/much of the observed positive relationship
+    * Again, SCPCP000006 has an outlier point that may be driving some/much of the observed positive relationship
   * There is no apparent relationship for the other projects, in either modality
   * Again, we emphasize that these stromal scores may be less informative than the immune scores due to additional challenges distinguishing cancer cells from stromal cells
-vs from immune cells
 
 
 
@@ -392,32 +413,24 @@ combined_wide_df <- combined_wide_df |>
     estimate_score = estimate_score_stromal + estimate_score_immune
   )
 
-pseudo_wide_df <- combined_wide_df |>
-  dplyr::filter(expression_type == "pseudobulk")
+unique(combined_wide_df$expression_type) |>
+  purrr::map(
+    \(type) {
+      
+      plot_df <- combined_wide_df |>
+        dplyr::filter(expression_type == type) 
 
-
-patchwork::wrap_plots(
-  make_scatterplot(pseudo_wide_df, "estimate_score_immune", "celltype_immune", "immune", -1700, 0.75),
-  make_scatterplot(pseudo_wide_df, "estimate_score_stromal", "celltype_stromal", "stromal", -1800, 0.25),
-  make_scatterplot(pseudo_wide_df, "estimate_score", "celltype_other", "", -3000, 0.6), 
-  guides = "collect"
-) +
-  patchwork::plot_annotation(title = "ESTIMATE from pseudobulk") & theme(legend.position = "bottom")
+      patchwork::wrap_plots(
+        make_scatterplot(plot_df, "estimate_score_immune", "celltype_immune", "immune", -1700, 0.75),
+        make_scatterplot(plot_df, "estimate_score_stromal", "celltype_stromal", "stromal", -1800, 0.25),
+        make_scatterplot(plot_df, "estimate_score", "celltype_other", "", -3000, 0.6), 
+        guides = "collect"
+      ) +
+        patchwork::plot_annotation(title = glue::glue("ESTIMATE from {type}")) & theme(legend.position = "bottom")
+    }
+  )
 ```
 
-```{r fig.height=5, fig.width=12}
-bulk_wide_df <- combined_wide_df |>
-  dplyr::filter(expression_type == "bulk_counts")
-
-
-patchwork::wrap_plots(
-  make_scatterplot(bulk_wide_df, "estimate_score_immune", "celltype_immune", "immune", -1700, 0.75),
-  make_scatterplot(bulk_wide_df, "estimate_score_stromal", "celltype_stromal", "stromal", -1800, 0.25),
-  make_scatterplot(bulk_wide_df, "estimate_score", "celltype_other", "", -3000, 0.6), 
-  guides = "collect"
-) +
-  patchwork::plot_annotation(title = "ESTIMATE from bulk") & theme(legend.position = "bottom")
-```
 * We see the same trends for comparisons with both bulk and pseudobulk ESTIMATE scores, although the correlations are somewhat weaker when measured from bulk data. 
 * We see a strong positive correlation for immune cell fractions and the ESTIMATE immune score.
   * This agreement between methods suggests that we have done a reasonable job capturing immune cells with our consensus labels 
