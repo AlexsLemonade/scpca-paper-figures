@@ -3,7 +3,8 @@
 # 2. Second, we sync all associated bulk `quant.sf` files and single-cell `_processed.rds` files from S3 needed for analysis
 # 3. Third, we sync all bulk counts files `_bulk_quant.tsv` from S3
 # All files are organized in `<project id>/<sample id>/` (except bulk counts which are only per project)
-# We also export a TSV file mapping bulk library and sample ids to support later matching up bulk counts and TPM
+# In addition, we sync PanglaoDB marker gene files used for cell type annotation for our projects of interest.
+# Finally, we also export a TSV mapping gene symbols to ensembl ids, since ESTIMATE uses gene symbols
 
 
 renv::load()
@@ -15,7 +16,12 @@ option_list <- list(
   make_option(
     "--output_dir",
     type = "character",
-    help = "Output directory to save synced data files organized by project/sample"
+    help = "Output directory to save synced ScPCA data files organized by project/sample"
+  ),
+  make_option(
+    "--reference_dir",
+    type = "character",
+    help = "Output directory to save synced PanglaoDB cell type reference files"
   ),
   make_option(
     "--map_file",
@@ -46,6 +52,7 @@ s3_bulk_tpm_path <- "s3://nextflow-ccdl-results/scpca-prod/checkpoints/salmon" #
 s3_processed_path <- "s3://nextflow-ccdl-results/scpca-prod/results" #/project_id/sample_id/library_id_processed.rds AND project_id/bulk/<project_id>_bulk_quant.tsv
 
 fs::dir_create(opts$output_dir)
+fs::dir_create(opts$reference_dir)
 
 
 ## Determine samples of interest -----------
@@ -174,7 +181,23 @@ sync_bulk_counts_df |>
 )
 
 
-# Export a TSV of matching sample and library ids for bulk, since counts TSV are labeled by library, not sample
+# Sync Panglao gene sets -------------------------
+# from https://github.com/AlexsLemonade/ScPCA-admin/blob/a2b2daf0caac336f391bac974bc1b808f29d5853/sample_info/scpca-project-celltype-metadata.tsv, we need:
+# - `brain-compartment` for SCPCP000001, SCPCP000002, and SCPCP000009
+# - `kidney-compartment` for SCPCP000006
+# - `bone-and-soft-tissue` for SCPCP000017
+
+c("brain-compartment", "kidney-compartment", "bone-and-soft-tissue") |>
+  purrr::walk(
+    \(compartment) {
+      sync_call <- glue::glue("aws s3 sync 's3://scpca-references/celltype/cellassign_references/' '{opts$reference_dir}' --exclude '*' --include '{compartment}_PanglaoDB_2020-03-27.tsv'")
+      system(sync_call)
+    }
+  )
+
+
+# Finally, export a TSV of matching sample and library ids for bulk ------------
+# we do this for later mapping because bulk counts TSV are labeled by library, not sample, ids
 bulk_libraries_samples <- library_metadata |>
   dplyr::filter(
     scpca_sample_id %in% sync_sc_df$scpca_sample_id,
