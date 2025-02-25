@@ -12,7 +12,7 @@
 set -euo pipefail
 
 # controls whether to run the GSEA analysis, which is very time-consuming
-RUN_GSEA=${RUN_GSEA:-0} 
+RUN_GSEA=${RUN_GSEA:-0}
 
 # Run script from its location
 basedir=$(dirname "${BASH_SOURCE[0]}")
@@ -63,8 +63,8 @@ for project_dir in $scpca_dir/*; do
 
     pseudobulk_file="${pseudobulk_dir}/${project_id}_pseudobulk.tsv"
     fraction_expressed_file="${data_dir}/${project_id}_fraction-expressed-single-cell.tsv"
-    geneset_file="${data_dir}/${project_id}_panglao_genesets.tsv"
-    
+    geneset_file="${data_dir}/${project_id}_panglao-genesets.tsv"
+
     ###### TPMs are not currently used in the analysis ######
     # Calculate bulk TPM for each project
     #tpm_file="${tpm_dir}/${project_id}_tpm.tsv"
@@ -77,7 +77,7 @@ for project_dir in $scpca_dir/*; do
       --input_dir "${scpca_dir}/${project_id}" \
       --output_pseudobulk_file "${pseudobulk_file}" \
       --output_frac_expressed_file "${fraction_expressed_file}"
-      
+
     # Prepare gene set lists for over-representation analysis
     case ${project_id} in
          "SCPCP000001" | "SCPCP000002" | "SCPCP000009")
@@ -96,7 +96,7 @@ for project_dir in $scpca_dir/*; do
       --map_file "${map_file}" \
       --panglao_geneset_file "${ref_dir}/${panglao_file}" \
       --output_file "${geneset_file}"
- 
+
 done
 
 
@@ -118,17 +118,17 @@ done
 
 # Run the GSEA analysis across gene sets and models
 if [[ ${RUN_GSEA} -eq 1 ]]; then
-  
+
   reps=50
   for geneset in "H" "C8"; do
     for expr_threshold in -1 0 0.25; do
-  
+
       if [[ ${expr_threshold} == -1 ]]; then
         threshold_str="all-genes"
       else
         threshold_str="threshold-${expr_threshold}"
       fi
-  
+
       Rscript -e "rmarkdown::render('${notebook_dir}/perform-gsea.Rmd',
                   params = list(msigdbr_category = '$geneset', reps = $reps, model_expr_threshold = ${expr_threshold}),
                   output_file = 'perform-gsea_${geneset}_${threshold_str}.nb.html',
