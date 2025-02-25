@@ -38,6 +38,10 @@ mkdir -p $result_dir
 mkdir -p $model_html_dir
 mkdir -p $gsea_html_dir
 
+
+# this is in a different analysis directory
+consensus_celltype_dir="../estimate/data/consensus-celltypes"
+
 map_file="${data_dir}/bulk-library-sample-ids.tsv"
 
 
@@ -59,7 +63,8 @@ for project_dir in $scpca_dir/*; do
 
     pseudobulk_file="${pseudobulk_dir}/${project_id}_pseudobulk.tsv"
     fraction_expressed_file="${data_dir}/${project_id}_fraction-expressed-single-cell.tsv"
-
+    geneset_file="${data_dir}/${project_id}_panglao_genesets.tsv"
+    
     ###### TPMs are not currently used in the analysis ######
     # Calculate bulk TPM for each project
     #tpm_file="${tpm_dir}/${project_id}_tpm.tsv"
@@ -72,7 +77,28 @@ for project_dir in $scpca_dir/*; do
       --input_dir "${scpca_dir}/${project_id}" \
       --output_pseudobulk_file "${pseudobulk_file}" \
       --output_frac_expressed_file "${fraction_expressed_file}"
+      
+    # Prepare gene set lists for over-representation analysis
+    case ${project_id} in
+         "SCPCP000001" | "SCPCP000002" | "SCPCP000009")
+          panglao_file="brain-compartment_PanglaoDB_2020-03-27.tsv"
+          ;;
+        "SCPCP000006")
+          panglao_file="kidney-compartment_PanglaoDB_2020-03-27.tsv"
+          ;;
+        "SCPCP000017")
+          panglao_file="bone-and-soft-tissue_PanglaoDB_2020-03-27.tsv"
+          ;;
+      esac
+
+    Rscript ${script_dir}/prepare-ora-gene-sets.R \
+      --celltype_dir "${consensus_celltype_dir}/${project_id}" \
+      --map_file "${map_file}" \
+      --panglao_geneset_file "${ref_dir}/${panglao_file}" \
+      --output_file "${geneset_file}"
+ 
 done
+
 
 # Build and export models to results/models across different thresholds for expression
 for expr_threshold in -1 0 0.25; do
@@ -88,6 +114,7 @@ for expr_threshold in -1 0 0.25; do
               output_file = 'build-assess-models_${threshold_str}.nb.html',
               output_dir = '${model_html_dir}')"
 done
+
 
 # Run the GSEA analysis across gene sets and models
 if [[ ${RUN_GSEA} -eq 1 ]]; then
