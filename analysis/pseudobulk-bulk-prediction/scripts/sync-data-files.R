@@ -54,14 +54,15 @@ library_metadata <- readr::read_tsv(opts$library_metadata_file, show_col_types =
 sample_metadata <- readr::read_tsv(opts$sample_metadata_file, show_col_types = FALSE)
 
 # we can't include multiplexed in this analysis, so we'll find those for removal
+# we search for these based on presence of multiple samples per library, not technology
 cellhash_samples <- library_metadata |>
-  dplyr::filter(stringr::str_detect(technology, "cellhash")) |>
+  dplyr::filter(
+    stringr::str_detect(scpca_sample_id, ";"),
+    seq_unit %in% c("cell", "nucleus")
+  ) |>
   dplyr::pull(scpca_sample_id) |>
   stringr::str_split(pattern = ";") |>
   purrr::reduce(union)
-
-# but keep SCPCS000144!
-cellhash_samples <- cellhash_samples[cellhash_samples != "SCPCS000144"]
 
 # all possible samples of interest
 all_bulk_samples <- library_metadata |>
