@@ -52,11 +52,15 @@ Rscript ${script_dir}/sync-data-files.R \
   --map_file "${map_file}"
 
 # Prepare bulk counts data for comparisons
-Rscript ${script_dir}/prepare-bulk-counts.R \
-  --input_dir "${scpca_dir}" \
-  --map_file "${map_file}" \
-  --output_counts_file "${data_dir}/normalized-bulk-counts.rds" \
-  --output_frac_expressed_file "${data_dir}/fraction-expressed-bulk.tsv"
+bulk_counts_file="${data_dir}/normalized-bulk-counts.rds"
+bulk_expressed_file="${data_dir}/fraction-expressed-bulk.tsv"
+if [ ! -f ${bulk_counts_file} ]; then
+  Rscript ${script_dir}/prepare-bulk-counts.R \
+    --input_dir "${scpca_dir}" \
+    --map_file "${map_file}" \
+    --output_counts_file "${bulk_counts_file}" \
+    --output_frac_expressed_file "${bulk_expressed_file}"
+fi
 
 for project_dir in $scpca_dir/*; do
     project_id=$(basename $project_dir)
@@ -73,10 +77,12 @@ for project_dir in $scpca_dir/*; do
     #  --output_pseudobulk_file "${tpm_file}"
 
     # Calculate pseudobulk matrices for each project
-    Rscript ${script_dir}/calculate-pseudobulk.R \
-      --input_dir "${scpca_dir}/${project_id}" \
-      --output_pseudobulk_file "${pseudobulk_file}" \
-      --output_frac_expressed_file "${fraction_expressed_file}"
+    if [ ! -f ${pseudobulk_file} ]; then
+      Rscript ${script_dir}/calculate-pseudobulk.R \
+        --input_dir "${scpca_dir}/${project_id}" \
+        --output_pseudobulk_file "${pseudobulk_file}" \
+        --output_frac_expressed_file "${fraction_expressed_file}"
+    fi
 
     # Prepare gene set lists for over-representation analysis
     case ${project_id} in
@@ -92,8 +98,8 @@ for project_dir in $scpca_dir/*; do
       esac
 
     Rscript ${script_dir}/prepare-ora-gene-sets.R \
+      --project_id "${project_id}" \
       --celltype_dir "${consensus_celltype_dir}/${project_id}" \
-      --map_file "${map_file}" \
       --panglao_geneset_file "${ref_dir}/${panglao_file}" \
       --output_file "${geneset_file}"
 
