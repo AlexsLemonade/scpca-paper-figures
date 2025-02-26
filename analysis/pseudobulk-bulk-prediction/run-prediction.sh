@@ -1,8 +1,18 @@
 #!/bin/bash
 
 # This script runs the analysis predicting bulk from pseudobulk
+#
+# Default usage:
+# ./run-prediction.sh
+#
+# To also run the GSEA analysis, use:
+# RUN_GSEA=1 ./run-prediction.sh
+#
 
 set -euo pipefail
+
+# controls whether to run the GSEA analysis, which is very time-consuming
+RUN_GSEA=${RUN_GSEA:-0}
 
 # Run script from its location
 basedir=$(dirname "${BASH_SOURCE[0]}")
@@ -12,6 +22,7 @@ cd "$basedir"
 data_dir="data"
 script_dir="scripts"
 scpca_dir="${data_dir}/scpca_data"
+ref_dir="${data_dir}/references"
 tpm_dir="${data_dir}/tpm"
 pseudobulk_dir="${data_dir}/pseudobulk"
 result_dir="results"
@@ -20,11 +31,16 @@ model_html_dir="${notebook_dir}/model-htmls"
 gsea_html_dir="${notebook_dir}/gsea-htmls"
 
 mkdir -p $scpca_dir
+mkdir -p $ref_dir
 mkdir -p $tpm_dir
 mkdir -p $pseudobulk_dir
 mkdir -p $result_dir
 mkdir -p $model_html_dir
 mkdir -p $gsea_html_dir
+
+
+# this is in a different analysis directory
+consensus_celltype_dir="../estimate/data/consensus-celltypes"
 
 map_file="${data_dir}/bulk-library-sample-ids.tsv"
 
@@ -32,6 +48,7 @@ map_file="${data_dir}/bulk-library-sample-ids.tsv"
 # Sync data files from S3
 Rscript ${script_dir}/sync-data-files.R \
   --output_dir "${scpca_dir}" \
+  --reference_dir "${ref_dir}" \
   --map_file "${map_file}"
 
 # Prepare bulk counts data for comparisons
@@ -41,11 +58,13 @@ Rscript ${script_dir}/prepare-bulk-counts.R \
   --output_counts_file "${data_dir}/normalized-bulk-counts.rds" \
   --output_frac_expressed_file "${data_dir}/fraction-expressed-bulk.tsv"
 
+
 for project_dir in $scpca_dir/*; do
     project_id=$(basename $project_dir)
 
     pseudobulk_file="${pseudobulk_dir}/${project_id}_pseudobulk.tsv"
     fraction_expressed_file="${data_dir}/${project_id}_fraction-expressed-single-cell.tsv"
+    geneset_file="${data_dir}/${project_id}_panglao-genesets.tsv"
 
     ###### TPMs are not currently used in the analysis ######
     # Calculate bulk TPM for each project
@@ -59,7 +78,29 @@ for project_dir in $scpca_dir/*; do
       --input_dir "${scpca_dir}/${project_id}" \
       --output_pseudobulk_file "${pseudobulk_file}" \
       --output_frac_expressed_file "${fraction_expressed_file}"
+
+
+    # Prepare gene set lists for over-representation analysis
+    case ${project_id} in
+         "SCPCP000001" | "SCPCP000002" | "SCPCP000009")
+          panglao_file="brain-compartment_PanglaoDB_2020-03-27.tsv"
+          ;;
+        "SCPCP000006")
+          panglao_file="kidney-compartment_PanglaoDB_2020-03-27.tsv"
+          ;;
+        "SCPCP000017")
+          panglao_file="bone-and-soft-tissue_PanglaoDB_2020-03-27.tsv"
+          ;;
+      esac
+
+    Rscript ${script_dir}/prepare-ora-gene-sets.R \
+      --project_id "${project_id}" \
+      --celltype_dir "${consensus_celltype_dir}/${project_id}" \
+      --panglao_geneset_file "${ref_dir}/${panglao_file}" \
+      --output_file "${geneset_file}"
+
 done
+
 
 # Build and export models to results/models across different thresholds for expression
 for expr_threshold in -1 0 0.25; do
@@ -76,20 +117,25 @@ for expr_threshold in -1 0 0.25; do
               output_dir = '${model_html_dir}')"
 done
 
+
 # Run the GSEA analysis across gene sets and models
-reps=50
-for geneset in "H" "C8"; do
-  for expr_threshold in -1 0 0.25; do
+if [[ ${RUN_GSEA} -eq 1 ]]; then
 
-    if [[ ${expr_threshold} == -1 ]]; then
-      threshold_str="all-genes"
-    else
-      threshold_str="threshold-${expr_threshold}"
-    fi
+  reps=50
+  for geneset in "H" "C8"; do
+    for expr_threshold in -1 0 0.25; do
 
-    Rscript -e "rmarkdown::render('${notebook_dir}/perform-gsea.Rmd',
-                params = list(msigdbr_category = '$geneset', reps = $reps, model_expr_threshold = ${expr_threshold}),
-                output_file = 'perform-gsea_${geneset}_${threshold_str}.nb.html',
-                output_dir = '${gsea_html_dir}')"
+      if [[ ${expr_threshold} == -1 ]]; then
+        threshold_str="all-genes"
+      else
+        threshold_str="threshold-${expr_threshold}"
+      fi
+
+      Rscript -e "rmarkdown::render('${notebook_dir}/perform-gsea.Rmd',
+                  params = list(msigdbr_category = '$geneset', reps = $reps, model_expr_threshold = ${expr_threshold}),
+                  output_file = 'perform-gsea_${geneset}_${threshold_str}.nb.html',
+                  output_dir = '${gsea_html_dir}')"
+    done
   done
-done
+
+fi
