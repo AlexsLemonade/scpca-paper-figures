@@ -12,6 +12,11 @@ library(optparse)
 # Parse options --------
 option_list <- list(
   make_option(
+    "--project_id",
+    type = "character",
+    help = "Project being prepared"
+  ),
+  make_option(
     "--celltype_dir",
     type = "character",
     help = "Directory with consensus cell types for the given project"
@@ -21,11 +26,6 @@ option_list <- list(
     type = "character",
     help = "Path to gene set file used to cell type the given project"
   ), 
-  make_option(
-    "--map_file",
-    type = "character",
-    help = "Path to TSV file mapping bulk sample and library ids, which is needed because not all samples are used in all projects"
-  ),
   make_option(
     "--output_file",
     type = "character",
@@ -49,8 +49,7 @@ opts <- parse_args(OptionParser(option_list = option_list))
 # Checks---------
 stopifnot(
   "Panglao gene set file not found" = file.exists(opts$panglao_geneset_file), 
-  "Library metadata file not found" = file.exists(opts$library_metadata_file), 
-  "ID map file not found" = file.exists(opts$map_file)
+  "Library metadata file not found" = file.exists(opts$library_metadata_file)
 )
 
 # Prepare input files  -----------------
@@ -73,18 +72,25 @@ celltype_files <- list.files(
     \(x) {stringr::str_split_i(basename(x), pattern = "_", i = 1)}
   )
 
+library_metadata <- readr::read_tsv(opts$library_metadata_file)
+
 # determine libraries to keep from the consensus cell types
 # we need to take this step because some projects don't use all their single-cell libraries
-keep_libraries <- readr::read_tsv(opts$map_file) |>
-  dplyr::select(scpca_sample_id) |>
-  dplyr::inner_join(
-    readr::read_tsv(opts$library_metadata_file)
-  ) |>
+bulk_samples <- library_metadata |>
   dplyr::filter(
-    seq_unit %in% c("nucleus", "cell"), 
-    scpca_library_id %in% names(celltype_files)
+    scpca_project_id == opts$project_id,
+    seq_unit == "bulk"
   ) |>
-  dplyr::pull(scpca_library_id)
+  dplyr::pull(scpca_sample_id)
+
+keep_libraries <- library_metadata |>
+  dplyr::filter(
+    scpca_sample_id %in% bulk_samples,
+    !stringr::str_detect(scpca_sample_id, ";"),
+    seq_unit %in% c("cell", "nucleus")
+  ) |>
+  dplyr::pull(scpca_library_id) |>
+  unique()
 
 
 # Find consensus cell type files for this project ---------------
