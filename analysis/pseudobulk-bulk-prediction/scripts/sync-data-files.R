@@ -61,8 +61,12 @@ library_metadata <- readr::read_tsv(opts$library_metadata_file, show_col_types =
 sample_metadata <- readr::read_tsv(opts$sample_metadata_file, show_col_types = FALSE)
 
 # we can't include multiplexed in this analysis, so we'll find those for removal
+# we search for these based on presence of multiple samples per library, not technology
 cellhash_samples <- library_metadata |>
-  dplyr::filter(stringr::str_detect(technology, "cellhash")) |>
+  dplyr::filter(
+    stringr::str_detect(scpca_sample_id, ";"),
+    seq_unit %in% c("cell", "nucleus")
+  ) |>
   dplyr::pull(scpca_sample_id) |>
   stringr::str_split(pattern = ";") |>
   purrr::reduce(union)
@@ -75,7 +79,6 @@ all_bulk_samples <- library_metadata |>
   ) |>
   dplyr::pull(scpca_sample_id) |>
   unique()
-
 
 # keep only solid tumors with directly paired single-cell and bulk
 solid_bulk_samples <- sample_metadata |>
@@ -103,7 +106,9 @@ sync_sc_df <- library_metadata |>
     scpca_library_id,
     output_dir,
     s3_dir
-  )
+  ) |>
+  # needed for SCPCS000144
+  dplyr::distinct()
 
 
 # Create data frame to iterate over for syncing bulk TPM files

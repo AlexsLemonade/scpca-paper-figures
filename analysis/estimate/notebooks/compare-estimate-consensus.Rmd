@@ -207,10 +207,10 @@ These tend to have low immune and stromal fractions and very high "other" fracti
   * It is more challenging in these cancer types (wilms and osteo, respectively) to distinguish among stromal and cancer cells, so the stromal proportions here are not necessarily definitive
 
 
-## Relationship between cell types and pseudobulk ESTIMATE scores
+## Relationship between cell types and ESTIMATE scores
 
 Next, we'll directly look at the relationships between fractions of these cell type groups and ESTIMATE scores.
-We'll do this now with pseudobulk ESTIMATE scores, which is from the same underlying modality as the consensus cell types.
+We'll do this comparison with both bulk- and pseudobulk-derived ESTIMATE scores.
 
 Low-quality samples are shown as open points, and samples of acceptable quality are shown as closed points.
 
@@ -224,8 +224,7 @@ wide_category_df <- celltype_category_df |>
   )
 
 combined_wide_df <- estimate_df |>
-  dplyr::filter(expression_type == "pseudobulk") |>
-  dplyr::select(-expression_type) |>
+  dplyr::filter(expression_type != "bulk_tpm") |>
   dplyr::mutate(score_type = glue::glue("estimate_score_{score_type}")) |>
    tidyr::pivot_wider(
     names_from = score_type, 
@@ -234,47 +233,76 @@ combined_wide_df <- estimate_df |>
   dplyr::left_join(wide_category_df)
 ```
 
-```{r, fig.height = 4, fig.width=12}
-ggplot(combined_wide_df) + 
-  aes(x = estimate_score_immune, y = celltype_immune) + 
-  geom_point(aes(shape = sample_quality)) + 
-  scale_shape_manual(values = c(19, 21)) +
-  geom_smooth(method = "lm") +
-  facet_wrap(vars(project_id), scales = "free_y", nrow = 1) +
-  labs(
-    title = "Immune celltypes", 
-    x = "ESTIMATE immune score", 
-    y = "Immune cell fraction\nin consensus celltypes"
+```{r, fig.height = 6, fig.width=12}
+# Use patchwork to plot to preserve the axis ranges in each expression type
+unique(combined_wide_df$expression_type) |>
+  purrr::map(
+    \(type) {
+      combined_wide_df |>
+        dplyr::filter(expression_type == type) |>
+        ### plot
+        ggplot() + 
+        aes(x = estimate_score_immune, y = celltype_immune) + 
+        geom_point(aes(shape = sample_quality)) + 
+        scale_shape_manual(values = c(19, 21)) +
+        geom_smooth(method = "lm") +
+        facet_wrap(vars(project_id), scales = "free_y", nrow = 1) +
+        labs(
+          title = glue::glue("ESTIMATE from {type}"),
+          x = "ESTIMATE immune score", 
+          y = "Immune cell fraction\nin consensus celltypes"
+        ) +
+        theme(legend.position = "bottom")
+    }
+  ) |>
+  patchwork::wrap_plots(
+    nrow = 2, 
+    guides="collect",
+    axis_title="collect"
   ) +
-  theme(legend.position = "bottom")
+  patchwork::plot_annotation(title = "Immune celltypes") & theme(legend.position = "bottom")
 ```
 
 
-```{r, fig.height = 4, fig.width=12}
-ggplot(combined_wide_df) + 
-  aes(x = estimate_score_stromal, y = celltype_stromal) + 
-  geom_point(aes(shape = sample_quality)) + 
-  scale_shape_manual(values = c(19, 21)) +
-  geom_smooth(method = "lm") +
-  facet_wrap(vars(project_id), scales = "free_y", nrow = 1) +
-  labs(
-    title = "Stromal celltypes", 
-    x = "ESTIMATE stromal score", 
-    y = "Stromal cell fraction\nin consensus celltypes"
+```{r, fig.height = 6, fig.width=12}
+# Use patchwork to plot to preserve the axis ranges in each expression type
+unique(combined_wide_df$expression_type) |>
+  purrr::map(
+    \(type) {
+      combined_wide_df |>
+        dplyr::filter(expression_type == type) |>
+        ### plot
+        ggplot() + 
+        aes(x = estimate_score_stromal, y = celltype_stromal) + 
+        geom_point(aes(shape = sample_quality)) + 
+        scale_shape_manual(values = c(19, 21)) +
+        geom_smooth(method = "lm") +
+        facet_wrap(vars(project_id), scales = "free_y", nrow = 1) +
+        labs(
+          title = glue::glue("ESTIMATE from {type}"),
+          x = "ESTIMATE stromal score", 
+          y = "Stromal cell fraction\nin consensus celltypes"
+        ) +
+        theme(legend.position = "bottom")
+    }
+  ) |>
+  patchwork::wrap_plots(
+    nrow = 2, 
+    guides="collect",
+    axis_title="collect"
   ) +
-  theme(legend.position = "bottom")
+  patchwork::plot_annotation(title = "Stromal celltypes") & theme(legend.position = "bottom")
 ```
 
 * Immune plots:
-  * SCPCP000001, SCPCP00006, and SCPCP000017 show a positive relationship between quantities
+  * SCPCP000001, SCPCP00006 (although possibly outlier-driven), and SCPCP000017 show a positive relationship between quantities for both modalities
   * There is no apparent relationship for SCPCP000002 or SCPCP000009
   * Most, but not all, low-quality samples tend to to fall outside the given project's confidence interval (CI)
 * Stromal plots:
-  * SCPCP00006 shows a positive relationship between quantities, and SCPCP000017 _may_ be trending towards a significant positive relationship (but that's a fairly wide CI, so we can't say there is definitely a positive relationship here).
-    * That said, SCPCP000006 has an outlier point that may be driving some/much of the observed positive relationship
-  * There is no apparent relationship for SCPCP000001, SCPCP000002, or SCPCP000009
+  * SCPCP00006 shows a positive relationship between quantities for both modalities
+    * Again, SCPCP000006 has an outlier point that may be driving some/much of the observed positive relationship
+  * There is no apparent relationship for the other projects, in either modality
   * Again, we emphasize that these stromal scores may be less informative than the immune scores due to additional challenges distinguishing cancer cells from stromal cells
-vs from immune cells
 
 
 
@@ -287,7 +315,7 @@ Therefore we expect there to be a negative correlation between fractions of cell
 
 Is there a relationship between these quantities?
 
-```{r, fig.height = 4, fig.width=12, message = FALSE}
+```{r, fig.height = 6, fig.width=12, message = FALSE}
 unknown_df <- celltype_data |>
   purrr::map(
     \(cell_df) {
@@ -309,7 +337,11 @@ ggplot(unknown_df) +
   geom_point(aes(shape = sample_quality)) + 
   scale_shape_manual(values = c(19, 21)) +
   geom_smooth(method = "lm") +
-  facet_wrap(vars(project_id), nrow = 1) +
+  facet_grid(
+    rows = vars(expression_type),
+    cols = vars(project_id), 
+    scales = "free"
+  ) +
   labs(
     x = "ESTIMATE score", 
     y = "Fraction of non-immune/non-stromal\ncell types"
@@ -318,6 +350,7 @@ ggplot(unknown_df) +
 ```
 
 There appears to be a negative relationship for SCPCP000001 and SCPCP000017, a very weak negative relationship for SCPCP000006 (possibly outlier driven?), and no relationship for SCPCP000002 or SCPCP000009.
+This is consistent between modalities.
 
 While it's nice to see some negative correlations here, the lack of robust negative relationship may indicate that:
 
@@ -337,19 +370,7 @@ For these statistics and plots, we'll _remove_ low-quality samples entirely.
 Again, note that the score shown in the the third plot with the "other" celltypes is the ESTIMATE score, which is the sum of stromal and immune, and is expected to negatively correlate with tumor purity.
 
 
-```{r fig.height=4, fig.width=12}
-combined_wide_df <- combined_wide_df |>
-  dplyr::filter(sample_quality == "acceptable quality") |>
-  dplyr::mutate(
-    seq_unit = ifelse(
-      project_id %in% c("SCPCP000001", "SCPCP000002"), 
-      "single-cell", 
-      "single-nuclei"
-    ), 
-    estimate_score = estimate_score_stromal + estimate_score_immune
-  )
-
-
+```{r}
 # Helper function to make scatterplots showing correlation coefficients
 make_scatterplot <- function(combined_wide_df, estimate_col, celltype_col, type, annotate_x, annotate_y) {
   r <- cor(combined_wide_df[[estimate_col]], combined_wide_df[[celltype_col]]) |> round(2)
@@ -377,17 +398,43 @@ make_scatterplot <- function(combined_wide_df, estimate_col, celltype_col, type,
     ) +
   theme(legend.position = "bottom")
 }
-patchwork::wrap_plots(
-  make_scatterplot(combined_wide_df, "estimate_score_immune", "celltype_immune", "immune", -1700, 0.75),
-  make_scatterplot(combined_wide_df, "estimate_score_stromal", "celltype_stromal", "stromal", -1800, 0.25),
-  make_scatterplot(combined_wide_df, "estimate_score", "celltype_other", "", -3000, 0.6), 
-  guides = "collect"
-) & theme(legend.position = "bottom")
 ```
 
+
+```{r fig.height=5, fig.width=12}
+combined_wide_df <- combined_wide_df |>
+  dplyr::filter(sample_quality == "acceptable quality") |>
+  dplyr::mutate(
+    seq_unit = ifelse(
+      project_id %in% c("SCPCP000001", "SCPCP000002"), 
+      "single-cell", 
+      "single-nuclei"
+    ), 
+    estimate_score = estimate_score_stromal + estimate_score_immune
+  )
+
+unique(combined_wide_df$expression_type) |>
+  purrr::map(
+    \(type) {
+      
+      plot_df <- combined_wide_df |>
+        dplyr::filter(expression_type == type) 
+
+      patchwork::wrap_plots(
+        make_scatterplot(plot_df, "estimate_score_immune", "celltype_immune", "immune", -1700, 0.75),
+        make_scatterplot(plot_df, "estimate_score_stromal", "celltype_stromal", "stromal", -1800, 0.25),
+        make_scatterplot(plot_df, "estimate_score", "celltype_other", "", -3000, 0.6), 
+        guides = "collect"
+      ) +
+        patchwork::plot_annotation(title = glue::glue("ESTIMATE from {type}")) & theme(legend.position = "bottom")
+    }
+  )
+```
+
+* We see the same trends for comparisons with both bulk and pseudobulk ESTIMATE scores, although the correlations are somewhat weaker when measured from bulk data. 
 * We see a strong positive correlation for immune cell fractions and the ESTIMATE immune score.
   * This agreement between methods suggests that we have done a reasonable job capturing immune cells with our consensus labels 
-  * We also see a separation of points where the single-cell samples usually have higher immune fractions/scores compared to single-nuclei samples, which is consistent with our expectations for these sequencing units.
+  * For pseudobulk, we also see a separation of points where the single-cell samples usually have higher immune fractions/scores compared to single-nuclei samples, which is consistent with our expectations for these sequencing units within that modality. 
 * We see a positive, but somewhat weaker, relationship for stromal, and virtually all of the variation in stromal _cell type fractions_ is from the single-nuclei samples
 * We see a negative but still decent correlation for other cell fractions and the ESTIMATE score, which is consistent with expectations but given challenges of distinguishing between stromal and tumor, we don't expect this correlation to be exceptionally strong
 
