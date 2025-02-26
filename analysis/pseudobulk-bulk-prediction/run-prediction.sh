@@ -29,6 +29,7 @@ result_dir="results"
 notebook_dir="notebooks"
 model_html_dir="${notebook_dir}/model-htmls"
 gsea_html_dir="${notebook_dir}/gsea-htmls"
+ora_html_dir="${notebook_dir}/ora-htmls"
 
 mkdir -p $scpca_dir
 mkdir -p $ref_dir
@@ -37,6 +38,7 @@ mkdir -p $pseudobulk_dir
 mkdir -p $result_dir
 mkdir -p $model_html_dir
 mkdir -p $gsea_html_dir
+mkdir -p $ora_html_dir
 
 
 # this is in a different analysis directory
@@ -121,7 +123,7 @@ done
 # Run the GSEA analysis across gene sets and models
 if [[ ${RUN_GSEA} -eq 1 ]]; then
 
-  reps=50
+  gsea_reps=50
   for geneset in "H" "C8"; do
     for expr_threshold in -1 0 0.25; do
 
@@ -132,10 +134,23 @@ if [[ ${RUN_GSEA} -eq 1 ]]; then
       fi
 
       Rscript -e "rmarkdown::render('${notebook_dir}/perform-gsea.Rmd',
-                  params = list(msigdbr_category = '$geneset', reps = $reps, model_expr_threshold = ${expr_threshold}),
+                  params = list(msigdbr_category = '$geneset', reps = ${gsea_reps}, model_expr_threshold = ${expr_threshold}),
                   output_file = 'perform-gsea_${geneset}_${threshold_str}.nb.html',
                   output_dir = '${gsea_html_dir}')"
     done
   done
 
 fi
+
+# Run the ORA analysis across gene sets using the model with genes present in at least one modality per sample
+ora_reps=1000
+summary_function="median" # use median of residuals when summarizing project
+sd_threshold=2.5 # outliers are >2.5 sd
+for project_dir in $scpca_dir/*; do
+  project_id=$(basename $project_dir)
+
+  Rscript -e "rmarkdown::render('${notebook_dir}/perform-ora.Rmd',
+                    params = list(project_id = '$project_id', reps = ${ora_reps}, summary_function = '${summary_function}', sd_threshold = ${sd_threshold}),
+                    output_file = 'perform-ora_${project_id}.nb.html',
+                    output_dir = '${ora_html_dir}')"
+done
