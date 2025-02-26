@@ -382,7 +382,7 @@ ggplot(stats_df) +
 * For all projects, the nonparametric approach yields marginally higher correlations, but often marginally
 * Using a nonparametric test yields stronger correlations for `bulk_counts` not but for `bulk_tpm`
 * For `SCPCP000001`, `SCPCP000002`, and `SCPCP000006`, the correlations are generally similar regardless of which quantities are being compared and which statistic is used, although there are some small differences (not likely significant)
-* For `SCPCP000009` (again, only 3 samples here!) and `SCPCP000017`, `bulk_counts` tends to outperform `bulk_tpm` for either pseudobulk measure
+* For `SCPCP000009` (again, only 4 samples here!) and `SCPCP000017`, `bulk_counts` tends to outperform `bulk_tpm` for either pseudobulk measure
 
 The underlying correlations are here:
 
