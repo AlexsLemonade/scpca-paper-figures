@@ -271,11 +271,8 @@ permutation_pvalues <- geneset_names |>
         values_to = "p_value"
       ) |>
       dplyr::mutate(
-        # first ensure minimum p-value is 1/(params$reps+1)
-        p_value = ifelse(
-          p_value < 1/(params$reps + 1), 
-          1/(params$reps + 1), 
-          p_value), 
+        # first ensure p-value is at least 1/(params$reps+1)
+        p_value = max(p_value, 1/(params$reps + 1)),
         q_value = p.adjust(p_value, method = "BH")
       )
   }) |>
