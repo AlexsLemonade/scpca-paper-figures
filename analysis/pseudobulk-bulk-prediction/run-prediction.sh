@@ -143,7 +143,7 @@ if [[ ${RUN_GSEA} -eq 1 ]]; then
 fi
 
 # Run the ORA analysis across gene sets using the model with genes present in at least one modality per sample
-ora_reps=1000
+ora_reps=10000
 summary_function="median" # use median of residuals when summarizing project
 sd_threshold=2.5 # outliers are >2.5 sd
 for project_dir in $scpca_dir/*; do
