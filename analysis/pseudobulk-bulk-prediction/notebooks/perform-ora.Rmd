@@ -78,21 +78,6 @@ output_file <- file.path(
 ### Functions
 
 ```{r}
-# Function to calculate our odds ratio of interest from a data frame with expected columns:
-# in_geneset (logical), outlier (logical), n (integer)
-calculate_or <- function(df) {
-  # (in geneset & outlier) / (in geneset & not outlier) 
-  # divided by
-  # (not in geneset & outlier) / (not in geneset & not outlier) 
-  # This is:
-  # The odds a cell type marker gene is an outlier compared to non-cell-type marker genes  
-  odds_num <- (dplyr::filter(df, in_geneset, outlier) |> dplyr::pull(n)) / (dplyr::filter(df, in_geneset, !outlier) |> dplyr::pull(n))
-  odds_denom <- (dplyr::filter(df, !in_geneset, outlier) |> dplyr::pull(n)) / (dplyr::filter(df, !in_geneset, !outlier) |> dplyr::pull(n))
-  
-  return(odds_num / odds_denom)
-}
-
-
 # This function establishes a contingency table of outlier/in geneset for a given data frame of residuals
 #  and calculates odds ratios in both bulk and pseudobulk directions
 analyze_outliers <- function(residual_df, geneset_ensembl_ids, outlier_threshold = params$sd_threshold) {
@@ -100,12 +85,12 @@ analyze_outliers <- function(residual_df, geneset_ensembl_ids, outlier_threshold
   ## Positive outliers: bulk direction
   or_bulk <- residual_df |>
     dplyr::mutate(
-      outlier = summary_residual > outlier_threshold,
+      outlier = scaled_summary_residual > outlier_threshold,
       in_geneset = ensembl_id %in% geneset_ensembl_ids
     ) |>
     dplyr::summarize(
-      odds_num = sum(in_geneset & outlier) / sum(in_geneset & !outlier)
-      odds_denom = sum(!in_geneset & outlier) / sum(!in_genset & !outlier)
+      odds_num = sum(in_geneset & outlier) / sum(in_geneset & !outlier),
+      odds_denom = sum(!in_geneset & outlier) / sum(!in_geneset & !outlier),
       odds_ratio = odds_num / odds_denom
     ) |>
     dplyr::pull(odds_ratio)
@@ -114,13 +99,16 @@ analyze_outliers <- function(residual_df, geneset_ensembl_ids, outlier_threshold
       
   ## Negative outliers: pseudobulk direction
   or_pseudobulk <- residual_df |>
-    dplyr::count(
-      outlier = summary_residual < (-1*outlier_threshold), 
+    dplyr::mutate(
+      outlier = scaled_summary_residual < (-1*outlier_threshold), 
       in_geneset = ensembl_id %in% geneset_ensembl_ids
     ) |>
-    # fill in any missing groups
-    tidyr::complete(outlier, in_geneset, fill = list(n = 0)) |>
-    calculate_or()      
+    dplyr::summarize(
+      odds_num = sum(in_geneset & outlier) / sum(in_geneset & !outlier),
+      odds_denom = sum(!in_geneset & outlier) / sum(!in_geneset & !outlier),
+      odds_ratio = odds_num / odds_denom
+    ) |>
+    dplyr::pull(odds_ratio)
   
   data.frame(or_bulk = or_bulk, or_pseudobulk = or_pseudobulk)
 
@@ -153,9 +141,8 @@ summary_residual_df <- model_data |>
   dplyr::summarize(
     summary_residual = do.call(params$summary_function, list(residual))
   ) |>
-  # zscore for outlier detection, but have to name separately due to how scale() works
-  dplyr::mutate(scale(summary_residual)) |>
-  dplyr::rename(scaled_summary_residual = `scale(summary_residual)`)
+  # zscore for outlier detection
+  dplyr::mutate(scaled_summary_residual = scale(summary_residual)) 
 
 # Calculate ORs on real data
 baseline_or_df <- geneset_list |>
@@ -182,7 +169,7 @@ shuffled_or_df <- 1:params$reps |>
     
     shuffled_df <- data.frame(
       ensembl_id = summary_residual_df$ensembl_id, 
-      summary_residual = sample(summary_residual_df$summary_residual, nrow(summary_residual_df))   
+      scaled_summary_residual = sample(summary_residual_df$scaled_summary_residual, nrow(summary_residual_df))   
     )
     
     geneset_list |>
@@ -256,7 +243,7 @@ permutation_pvalues <- geneset_names |>
       
     shuffled_or_df |>
       dplyr::filter(geneset_cell_type == geneset_name) |>
-      # Calculate P-value as fraction of shuffled ORs >= baseline OR
+      # Calculate P-value as fraction of shuffled ORs >= baseline OR?
       dplyr::summarize(
         bulk = (sum(shuffled_or_bulk >= baseline_bulk_or) + 1) / (params$reps + 1), 
         pseudobulk = (sum(shuffled_or_pseudobulk >= baseline_pseudobulk_or) + 1) / (params$reps + 1)
@@ -267,6 +254,7 @@ permutation_pvalues <- geneset_names |>
         names_to = "modality", 
         values_to = "p_value"
       ) |>
+      dplyr::mutate(p_adj_bh = p.adjust(p_value, method = "BH"))
   }) |>
   purrr::list_rbind(names_to = "geneset_cell_type")
 ```
