@@ -26,13 +26,10 @@ This notebook performs over-representation analysis (ORA) across gene sets compr
 
 We use an odds ratio as our test statistic from this contingency table:
 
-```markdown
-|---------------------------------| Gene is outlier | Gene is not outlier |
-|---------------------------------|-----------------|---------------------|
+|                                 | Gene is outlier | Gene is not outlier |
+|--------------------------------:|:---------------:|:-------------------:|
 |Gene is cell type marker gene    |       A         |       B             |
 |Gene is not cell type marker gene|       C         |       D             |
-|---------------------------------|-----------------|---------------------|
-```
 
 (Here, "is cell type marker gene" is equivalent to "in the given gene set.")
 
@@ -102,13 +99,17 @@ analyze_outliers <- function(residual_df, geneset_ensembl_ids, outlier_threshold
   
   ## Positive outliers: bulk direction
   or_bulk <- residual_df |>
-    dplyr::count(
-      outlier = summary_residual > outlier_threshold, 
+    dplyr::mutate(
+      outlier = summary_residual > outlier_threshold,
       in_geneset = ensembl_id %in% geneset_ensembl_ids
     ) |>
-    # fill in any missing groups
-    tidyr::complete(outlier, in_geneset, fill = list(n = 0)) |>
-    calculate_or()
+    dplyr::summarize(
+      odds_num = sum(in_geneset & outlier) / sum(in_geneset & !outlier)
+      odds_denom = sum(!in_geneset & outlier) / sum(!in_genset & !outlier)
+      odds_ratio = odds_num / odds_denom
+    ) |>
+    dplyr::pull(odds_ratio)
+    
     
       
   ## Negative outliers: pseudobulk direction
@@ -144,17 +145,13 @@ geneset_names <- names(geneset_list)
 # Summarize residuals to get one value per gene
 summary_residual_df <- model_data |>
   purrr::pluck("data") |>
-   dplyr::mutate(
+  dplyr::mutate(
     residual = unname(resid(model_data$model))
   ) |>
   dplyr::group_by(ensembl_id) |>
   # summarize based on parameter
   dplyr::summarize(
-    summary_residual = ifelse(
-      params$summary_function == "mean",
-      mean(residual), 
-      median(residual)
-    ) 
+    summary_residual = do.call(params$summary_function, list(residual))
   ) |>
   # zscore for outlier detection, but have to name separately due to how scale() works
   dplyr::mutate(scale(summary_residual)) |>
@@ -261,8 +258,8 @@ permutation_pvalues <- geneset_names |>
       dplyr::filter(geneset_cell_type == geneset_name) |>
       # Calculate P-value as fraction of shuffled ORs >= baseline OR
       dplyr::summarize(
-        bulk = sum(shuffled_or_bulk >= baseline_bulk_or) / params$reps, 
-        pseudobulk = sum(shuffled_or_pseudobulk >= baseline_pseudobulk_or) / params$reps
+        bulk = (sum(shuffled_or_bulk >= baseline_bulk_or) + 1) / (params$reps + 1), 
+        pseudobulk = (sum(shuffled_or_pseudobulk >= baseline_pseudobulk_or) + 1) / (params$reps + 1)
       ) |>
       # Correct for multiple testing with FDR
       tidyr::pivot_longer(
@@ -270,11 +267,6 @@ permutation_pvalues <- geneset_names |>
         names_to = "modality", 
         values_to = "p_value"
       ) |>
-      dplyr::mutate(
-        # first ensure p-value is at least 1/(params$reps+1)
-        p_value = max(p_value, 1/(params$reps + 1)),
-        p_adj_bh = p.adjust(p_value, method = "BH")
-      )
   }) |>
   purrr::list_rbind(names_to = "geneset_cell_type")
 ```
@@ -293,7 +285,6 @@ What are those gene sets (cell types), if any?
 ```{r}
 # wrangle a bit to make this easily human-readable
 permutation_pvalues |>
-  dplyr::select(-p_value) |>
   dplyr::filter(p_adj_bh <= 0.05) |>
   dplyr::group_by(modality) |>
   dplyr::arrange(p_adj_bh, .by_group = TRUE)
