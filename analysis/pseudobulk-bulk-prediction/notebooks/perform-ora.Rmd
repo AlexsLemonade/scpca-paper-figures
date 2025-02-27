@@ -280,7 +280,7 @@ permutation_pvalues <- geneset_names |>
 ```
 
 
-How many gene sets (cell types) are significant per modality, considering the q-value (FDR corrected p-value)?
+How many gene sets (cell types) are significant per modality, considering the BH-adjusted p-value?
 
 ```{r}
 permutation_pvalues |>
