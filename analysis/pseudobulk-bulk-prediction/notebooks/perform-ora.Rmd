@@ -306,7 +306,7 @@ permutation_pvalues |>
 ## Export
 
 
-We'll export a data frame of the P-values and odds ratios.
+We'll export this data frame along with the odds ratios.
 
 ```{r}
 permutation_pvalues |>
