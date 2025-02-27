@@ -1,5 +1,5 @@
 ---
-title: "`r glue::glue('ORA with consensus cell types {params$project_id}')`"
+title: "`r glue::glue('ORA with consensus cell types: {params$project_id}')`"
 author: "Stephanie J. Spielman"
 date: "`r Sys.Date()`"
 output:
