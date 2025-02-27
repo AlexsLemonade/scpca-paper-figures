@@ -1,5 +1,5 @@
 ---
-title: "Over-representation analysis with consensus cell types"
+title: "`r glue::glue('ORA with consensus cell types {params$project_id}')`"
 author: "Stephanie J. Spielman"
 date: "`r Sys.Date()`"
 output:
@@ -58,7 +58,7 @@ calculate_or <- function(df) {
   # divided by
   # (not in geneset & outlier) / (not in geneset & not outlier) 
   # This is:
-  # The odds a cell type marker gene is an outlier compared to non-cell-type marker genes
+  # The odds a cell type marker gene is an outlier compared to non-cell-type marker genes  
   odds_num <- (dplyr::filter(df, in_geneset, outlier) |> dplyr::pull(n)) / (dplyr::filter(df, in_geneset, !outlier) |> dplyr::pull(n))
   odds_denom <- (dplyr::filter(df, !in_geneset, outlier) |> dplyr::pull(n)) / (dplyr::filter(df, !in_geneset, !outlier) |> dplyr::pull(n))
   
@@ -211,7 +211,7 @@ ggplot(shuffled_or_df) +
 
 
 Next, we can calculate P-values for each gene set.
-We'll also multiply each final P-value by 2 since we are performing 2 tests per cell type.
+We'll also adjust P-values for multiple testing using FDR (Benjamini-Hochberg).
 
 ```{r}
 permutation_pvalues <- geneset_names |>
@@ -231,24 +231,46 @@ permutation_pvalues <- geneset_names |>
       dplyr::filter(geneset_cell_type == geneset_name) |>
       # Calculate P-value as fraction of shuffled ORs >= baseline OR
       dplyr::summarize(
-        bulk_pvalue = sum(shuffled_or_bulk >= baseline_bulk_or) / params$reps, 
-        pseudobulk_pvalue = sum(shuffled_or_pseudobulk >= baseline_pseudobulk_or) / params$reps
+        bulk = sum(shuffled_or_bulk >= baseline_bulk_or) / params$reps, 
+        pseudobulk = sum(shuffled_or_pseudobulk >= baseline_pseudobulk_or) / params$reps
       ) |>
-      # correct pvalue for 2 tests, capping it at 1
+      # Correct for multiple testing with FDR
+      tidyr::pivot_longer(
+        everything(),
+        names_to = "modality", 
+        values_to = "p_value"
+      ) |>
       dplyr::mutate(
-        bulk_pvalue = min(2*bulk_pvalue, 1),
-        pseudobulk_pvalue = min(2*pseudobulk_pvalue, 1),
+        p_value = ifelse(
+          p_value < 1/(params$reps + 1), 
+          1/(params$reps + 1), 
+          p_value), 
+        q_value = p.adjust(p_value, method = "BH")
       )
-    }) |>
-    purrr::list_rbind(names_to = "geneset_cell_type")
+  }) |>
+  purrr::list_rbind(names_to = "geneset_cell_type")
 ```
 
-Finally, let's see if there are any rows that have a significant P-value at 0.05:
+
+How many gene sets (cell types) are significant per modality, considering the q-value (FDR corrected p-value)?
 
 ```{r}
 permutation_pvalues |>
-  dplyr::filter(bulk_pvalue <= 0.05 | pseudobulk_pvalue <= 0.05)
+  dplyr::filter(q_value <= 0.05) |>
+  dplyr::count(modality)
 ```
+
+What are those gene sets (cell types), if any?
+
+```{r}
+# wrangle a bit to make this easily human-readable
+permutation_pvalues |>
+  dplyr::select(-p_value) |>
+  dplyr::filter(q_value <= 0.05) |>
+  dplyr::group_by(modality) |>
+  dplyr::arrange(q_value, .by_group = TRUE)
+```
+
 
 
 ## Export
