@@ -273,7 +273,7 @@ permutation_pvalues <- geneset_names |>
       dplyr::mutate(
         # first ensure p-value is at least 1/(params$reps+1)
         p_value = max(p_value, 1/(params$reps + 1)),
-        q_value = p.adjust(p_value, method = "BH")
+        p_adj_bh = p.adjust(p_value, method = "BH")
       )
   }) |>
   purrr::list_rbind(names_to = "geneset_cell_type")
@@ -284,7 +284,7 @@ How many gene sets (cell types) are significant per modality, considering the q-
 
 ```{r}
 permutation_pvalues |>
-  dplyr::filter(q_value <= 0.05) |>
+  dplyr::filter(p_adj_bh <= 0.05) |>
   dplyr::count(modality)
 ```
 
@@ -294,9 +294,9 @@ What are those gene sets (cell types), if any?
 # wrangle a bit to make this easily human-readable
 permutation_pvalues |>
   dplyr::select(-p_value) |>
-  dplyr::filter(q_value <= 0.05) |>
+  dplyr::filter(p_adj_bh <= 0.05) |>
   dplyr::group_by(modality) |>
-  dplyr::arrange(q_value, .by_group = TRUE)
+  dplyr::arrange(p_adj_bh, .by_group = TRUE)
 ```
 
 
