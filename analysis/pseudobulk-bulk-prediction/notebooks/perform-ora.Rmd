@@ -14,6 +14,36 @@ params:
   reps: 1000
 ---
 
+## Introduction
+
+This notebook performs over-representation analysis (ORA) across gene sets comprised of cell-type--specific marker genes on the model residuals of `bulk ~ pseudobulk + (1+sample)` model for project `r params$project_id`.
+
+* We use permutation testing with `r params$reps` replicates to assess significance, using an FDR correction for multiple testing. 
+* We take the `r params$summary_function` of residuals across samples to have one value per gene
+* Test for both bulk and pseudobulk over-representation by testing if genes outlier status is associated with being a cell type marker gene. 
+  * Outliers in the bulk direction are identified as `r params$sd_threshold` standard deviations above the mean
+  * Outliers in the pseudobulk are identified as `r -1*params$sd_threshold` standard deviations below the mean 
+
+We use an odds ratio as our test statistic from this contingency table:
+
+```markdown
+|---------------------------------| Gene is outlier | Gene is not outlier |
+|---------------------------------|-----------------|---------------------|
+|Gene is cell type marker gene    |       A         |       B             |
+|Gene is not cell type marker gene|       C         |       D             |
+|---------------------------------|-----------------|---------------------|
+```
+
+(Here, "is cell type marker gene" is equivalent to "in the given gene set.")
+
+We can calculate this odds ratio as either:
+
+* `(A/B) / (C/D)`: The odds an outlier is a cell-type marker gene compared to non-outlier
+* `(A/C) / (B/D)`: The odds an cell type marker gene is an outlier compared to other genes
+
+These are mathematically equivalent.
+
+
 ## Setup
 
 
