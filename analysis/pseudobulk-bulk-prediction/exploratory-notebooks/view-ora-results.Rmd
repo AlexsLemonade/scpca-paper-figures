@@ -74,8 +74,8 @@ Next, we'll plot the odds ratios, colored by `-log10(adjusted pvalue)`.
 ```{r fig.height = 4.5, fig.width = 12}
 ggplot(signif_df) +
   aes(
-    x = tidytext::reorder_within(geneset_cell_type, or_bulk, within = project_id),
-    y = or_bulk, 
+    x = tidytext::reorder_within(geneset_cell_type, odds_ratio, within = project_id),
+    y = odds_ratio, 
     fill = -log10(p_adj_bh)
   ) +
   geom_col() +
@@ -97,6 +97,15 @@ Each individual odds ratio can be interpreted as, for example considering monocy
 
 * The odds a monocyte marker gene is an bulk-direction outlier are ~8x higher than the odds another gene is an outlier.
 * The odds a bulk-direction outlier is a monocyte marker gene are ~8x higher than the odds a non-outlier is a monocyte marker gene.
+
+
+Noting for a publication-type figure, we'd want to include information like:
+
+* How many samples were included in each project
+* How many total gene sets were tested for each project
+* Potentially, how many marker genes are in each gene set
+
+Some of this information may be better suited for a table.
 
 ## Session info
 
