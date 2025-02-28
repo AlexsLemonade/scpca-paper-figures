@@ -243,7 +243,7 @@ permutation_pvalues <- geneset_names |>
       
     shuffled_or_df |>
       dplyr::filter(geneset_cell_type == geneset_name) |>
-      # Calculate P-value as fraction of shuffled ORs >= baseline OR?
+      # Calculate P-value as fraction of shuffled ORs >= baseline OR (with +1 correction on numerator & denominator to avoid p=0)
       dplyr::summarize(
         bulk = (sum(shuffled_or_bulk >= baseline_bulk_or) + 1) / (params$reps + 1), 
         pseudobulk = (sum(shuffled_or_pseudobulk >= baseline_pseudobulk_or) + 1) / (params$reps + 1)
@@ -265,7 +265,7 @@ permutation_results <- baseline_or_df |>
     names_to = "modality", 
     values_to = "odds_ratio"
   ) |>
-  dplyr::mutate(modality = stringr::str_remove(modality, "or_")) |>
+  dplyr::mutate(modality = stringr::str_remove(modality, "^or_")) |>
   # and join in the pvalues
   dplyr::left_join(permutation_pvalues)
 
