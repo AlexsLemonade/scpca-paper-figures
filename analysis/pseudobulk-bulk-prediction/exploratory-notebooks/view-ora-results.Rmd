@@ -11,7 +11,8 @@ output:
 
 This notebook visualizes the odds ratios from over-representation analysis (ORA) performed in `../notebooks/perform-ora.Rmd`, where adjusted p-values were calculated using BH-correction following a permutation test with 10,000 replicates.
 
-Each odds ratio can be interpreted interchangably as follows, where "outlier" indicates that the gene is in the model residual outliers in either the positive (bulk) or negative (pseudobulk) direction.
+Each odds ratio can be interpreted interchangeably as follows, where "outlier" indicates that the gene is in the model residual outliers in either the positive (bulk) or negative (pseudobulk) direction.
+A bulk outlier is defined as $> 2.5\sigma_{summarized\_residual}$ , and a pseudobulk outlier is defined as $< -2.5\sigma_{summarized\_residual}$ , where the `summarized_residual` values are the median residuals for each gene.  
 
 * The odds an outlier is a cell-type marker gene compared to non-outlier
 * The odds an cell type marker gene is an outlier compared to other genes
@@ -57,10 +58,10 @@ Filter to significant results, and arrange by _descending_ adjusted p for only v
 
 ```{r}
 # all are in bulk direction
-signig_df <- odds_df |>
+signif_df <- odds_df |>
   dplyr::filter(p_adj_bh <= 0.05)
 
-dplyr::arrange(signig_df, -p_adj_bh)
+dplyr::arrange(signif_df, -p_adj_bh)
 ```
 
 The modality for all significant results is `bulk`.
@@ -71,7 +72,7 @@ Next, we'll plot the odds ratios, colored by `-log10(adjusted pvalue)`.
 
 
 ```{r fig.height = 4.5, fig.width = 12}
-ggplot(signig_df) +
+ggplot(signif_df) +
   aes(
     x = tidytext::reorder_within(geneset_cell_type, or_bulk, within = project_id),
     y = or_bulk, 
