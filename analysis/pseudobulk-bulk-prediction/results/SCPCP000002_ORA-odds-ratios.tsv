@@ -1,0 +1,53 @@
+geneset_cell_type	modality	odds_ratio	p_value	p_adj_bh
+astrocyte	bulk	13.936150805716023	9.999000099990002e-5	1.9998000199980003e-4
+astrocyte	pseudobulk	0	1	1
+B cell	bulk	0	1	1
+B cell	pseudobulk	0	1	1
+CD4-positive, alpha-beta T cell	bulk	0	1	1
+CD4-positive, alpha-beta T cell	pseudobulk	0	1	1
+dendritic cell	bulk	0	1	1
+dendritic cell	pseudobulk	0	1	1
+endothelial cell	bulk	19.46411363769904	9.999000099990002e-5	1.9998000199980003e-4
+endothelial cell	pseudobulk	0	1	1
+glial cell	bulk	4.684338089711204	0.0022997700229977	0.0045995400459954
+glial cell	pseudobulk	0	1	1
+innate lymphoid cell	bulk	0	1	1
+innate lymphoid cell	pseudobulk	0	1	1
+lymphocyte of B lineage	bulk	0	1	1
+lymphocyte of B lineage	pseudobulk	0	1	1
+macrophage	bulk	0.8143678467809402	0.708029197080292	1
+macrophage	pseudobulk	0	1	1
+mature alpha-beta T cell	bulk	4.271754304327594	0.2226777322267773	0.4453554644535546
+mature alpha-beta T cell	pseudobulk	0	1	1
+mature B cell	bulk	0	1	1
+mature B cell	pseudobulk	0	1	1
+mature T cell	bulk	3.1278005464480874	0.0760923907609239	0.1521847815218478
+mature T cell	pseudobulk	0.5040342244092743	0.8620137986201379	0.8620137986201379
+memory B cell	bulk	0	1	1
+memory B cell	pseudobulk	0	1	1
+memory T cell	bulk	2.7675835444565084	0.31416858314168583	0.6283371662833717
+memory T cell	pseudobulk	0	1	1
+monocyte	bulk	1.5235325400518511	0.47925207479252074	0.9585041495850415
+monocyte	pseudobulk	0	1	1
+mononuclear phagocyte	bulk	0.636167487959019	0.7921207879212079	1
+mononuclear phagocyte	pseudobulk	0	1	1
+myeloid leukocyte	bulk	1.582661430700032	0.21607839216078392	0.43215678432156784
+myeloid leukocyte	pseudobulk	0	1	1
+naive B cell	bulk	0	1	1
+naive B cell	pseudobulk	0	1	1
+natural killer cell	bulk	0	1	1
+natural killer cell	pseudobulk	0.9328786202941297	0.6666333366663334	1
+neuron	bulk	2.742858871943839	0.0030996900309969004	0.006199380061993801
+neuron	pseudobulk	0.11707197785616916	0.9997000299970003	0.9997000299970003
+neuron associated cell	bulk	9.007347163287758	3.9996000399960006e-4	7.999200079992001e-4
+neuron associated cell	pseudobulk	0	1	1
+neutrophil	bulk	2.19711630580571	0.3752624737526247	0.7505249475052495
+neutrophil	pseudobulk	0	1	1
+pericyte	bulk	22.657283950617284	9.999000099990002e-5	1.9998000199980003e-4
+pericyte	pseudobulk	0	1	1
+plasma cell	bulk	0	1	1
+plasma cell	pseudobulk	0	1	1
+regulatory T cell	bulk	7.478013029315961	0.1366863313668633	0.2733726627337266
+regulatory T cell	pseudobulk	0	1	1
+T cell	bulk	2.184914841849148	0.23517648235176483	0.47035296470352966
+T cell	pseudobulk	0.5333474039679189	0.847015298470153	0.847015298470153

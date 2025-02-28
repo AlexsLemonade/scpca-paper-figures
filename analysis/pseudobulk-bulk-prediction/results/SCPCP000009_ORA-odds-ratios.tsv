@@ -1,0 +1,27 @@
+geneset_cell_type	modality	odds_ratio	p_value	p_adj_bh
+astrocyte	bulk	1.6738317757009344	0.3434656534346565	0.686931306869313
+astrocyte	pseudobulk	0	1	1
+endothelial cell	bulk	0.6564990512333966	0.8035196480351965	1
+endothelial cell	pseudobulk	0	1	1
+macrophage	bulk	1.4846705165165701	0.33466653334666535	0.6693330666933307
+macrophage	pseudobulk	0	1	1
+mature B cell	bulk	0.9615950686544422	0.6571342865713429	1
+mature B cell	pseudobulk	0	1	1
+mature T cell	bulk	0.6119383230759049	0.8042195780421958	1
+mature T cell	pseudobulk	0	1	1
+memory T cell	bulk	1.6572433947635234	0.45835416458354167	0.9167083291670833
+memory T cell	pseudobulk	0	1	1
+monocyte	bulk	3.783546244251405	0.023397660233976603	0.046795320467953205
+monocyte	pseudobulk	0	1	1
+mononuclear phagocyte	bulk	1.5454748353978351	0.25917408259174085	0.5183481651834817
+mononuclear phagocyte	pseudobulk	0	1	1
+myeloid leukocyte	bulk	1.128560515115137	0.44635536446355367	0.8927107289271073
+myeloid leukocyte	pseudobulk	0.16693235060582	0.9976002399760024	0.9976002399760024
+naive B cell	bulk	1.315714691673771	0.535946405359464	1
+naive B cell	pseudobulk	0	1	1
+natural killer cell	bulk	0	1	1
+natural killer cell	pseudobulk	0	1	1
+neuron	bulk	0.5733210345564362	0.916108389161084	1
+neuron	pseudobulk	0	1	1
+neuron associated cell	bulk	5.358493478428648	0.0016998300169983002	0.0033996600339966003
+neuron associated cell	pseudobulk	0	1	1

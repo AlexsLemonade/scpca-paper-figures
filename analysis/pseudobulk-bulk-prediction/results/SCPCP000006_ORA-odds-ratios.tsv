@@ -1,0 +1,47 @@
+geneset_cell_type	modality	odds_ratio	p_value	p_adj_bh
+B cell	bulk	2.767721309668173	0.3076692330766923	0.6153384661533846
+B cell	pseudobulk	0	1	1
+dendritic cell	bulk	0	1	1
+dendritic cell	pseudobulk	0	1	1
+endothelial cell	bulk	0.9495909962231206	0.6513348665133487	1
+endothelial cell	pseudobulk	0	1	1
+epithelial cell	bulk	0	1	1
+epithelial cell	pseudobulk	0	1	1
+granulocyte	bulk	3.4599199779249448	0.12168783121687832	0.24337566243375663
+granulocyte	pseudobulk	0	1	1
+lymphocyte of B lineage	bulk	2.5966521558872304	0.1805819418058194	0.3611638836116388
+lymphocyte of B lineage	pseudobulk	0	1	1
+macrophage	bulk	3.929589598997494	0.10318968103189681	0.20637936206379362
+macrophage	pseudobulk	0	1	1
+mature B cell	bulk	0	1	1
+mature B cell	pseudobulk	0	1	1
+mature T cell	bulk	1.780112144225992	0.4273572642735726	0.8547145285471452
+mature T cell	pseudobulk	0	1	1
+memory B cell	bulk	0	1	1
+memory B cell	pseudobulk	0	1	1
+memory T cell	bulk	4.821723277681826	0.18708129187081293	0.37416258374162586
+memory T cell	pseudobulk	0	1	1
+mesangial cell	bulk	0	1	1
+mesangial cell	pseudobulk	0	1	1
+monocyte	bulk	8.214986910994764	0.006799320067993201	0.013598640135986401
+monocyte	pseudobulk	0	1	1
+mononuclear phagocyte	bulk	3.3754803046985598	0.06529347065293471	0.13058694130586943
+mononuclear phagocyte	pseudobulk	0	1	1
+myeloid leukocyte	bulk	3.018960444589735	0.030596940305969402	0.061193880611938804
+myeloid leukocyte	pseudobulk	0	1	1
+naive B cell	bulk	0	1	1
+naive B cell	pseudobulk	0	1	1
+natural killer cell	bulk	3.2942218141273694	0.26647335266473354	0.5329467053294671
+natural killer cell	pseudobulk	0	1	1
+neutrophil	bulk	3.82794879609875	0.23357664233576642	0.46715328467153283
+neutrophil	pseudobulk	0	1	1
+pericyte	bulk	2.343042524389675	0.3464653534646535	0.692930706929307
+pericyte	pseudobulk	0	1	1
+plasma cell	bulk	6.458976337448559	0.0425957404259574	0.0851914808519148
+plasma cell	pseudobulk	0	1	1
+regulatory T cell	bulk	0	1	1
+regulatory T cell	pseudobulk	0	1	1
+stem cell	bulk	0	1	1
+stem cell	pseudobulk	0	1	1
+T cell	bulk	3.814552919708029	0.10038996100389962	0.20077992200779923
+T cell	pseudobulk	0	1	1

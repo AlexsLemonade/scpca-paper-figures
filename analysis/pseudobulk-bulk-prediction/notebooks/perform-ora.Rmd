@@ -1,0 +1,311 @@
+---
+title: "`r glue::glue('ORA with consensus cell types: {params$project_id}')`"
+author: "Stephanie J. Spielman"
+date: "`r Sys.Date()`"
+output:
+  html_notebook:
+    toc: true
+    toc_depth: 3
+    code_folding: hide
+params:
+  project_id: "SCPCP000001"
+  summary_function: "median"
+  sd_threshold: 2.5
+  reps: 10000
+---
+
+## Introduction
+
+This notebook performs over-representation analysis (ORA) across gene sets comprised of cell-type--specific marker genes on the model residuals of `bulk ~ pseudobulk + (1+sample)` model for project `r params$project_id`.
+
+* We use permutation testing with `r params$reps` replicates to assess significance, using an FDR correction for multiple testing. 
+* We take the `r params$summary_function` of residuals across samples to have one value per gene
+* Test for both bulk and pseudobulk over-representation by testing if genes outlier status is associated with being a cell type marker gene. 
+  * Outliers in the bulk direction are identified as `r params$sd_threshold` standard deviations above the mean
+  * Outliers in the pseudobulk are identified as `r -1*params$sd_threshold` standard deviations below the mean 
+
+We use an odds ratio as our test statistic from this contingency table:
+
+|                                 | Gene is outlier | Gene is not outlier |
+|--------------------------------:|:---------------:|:-------------------:|
+|Gene is cell type marker gene    |       A         |       B             |
+|Gene is not cell type marker gene|       C         |       D             |
+
+(Here, "is cell type marker gene" is equivalent to "in the given gene set.")
+
+We can calculate this odds ratio as either:
+
+* `(A/B) / (C/D)`: The odds an outlier is a cell-type marker gene compared to non-outlier
+* `(A/C) / (B/D)`: The odds an cell type marker gene is an outlier compared to other genes
+
+These are mathematically equivalent.
+
+
+## Setup
+
+
+```{r setup}
+renv::load()
+
+library(ggplot2)
+theme_set(theme_bw())
+
+set.seed(2025)
+```
+
+### Paths
+
+```{r paths}
+result_dir <- here::here("analysis", "pseudobulk-bulk-prediction", "results")
+model_dir <- here::here(result_dir, "models")
+data_dir <- here::here("analysis", "pseudobulk-bulk-prediction", "data")
+
+model_data_file <- file.path(
+  model_dir, 
+  glue::glue("{params$project_id}_bulk-pseudobulk-model_threshold-0.rds")
+) 
+geneset_file <- file.path(
+  data_dir, 
+  glue::glue("{params$project_id}_panglao-genesets.tsv")
+) 
+
+output_file <- file.path(
+  result_dir, 
+  glue::glue("{params$project_id}_ORA-odds-ratios.tsv")
+)
+```
+
+### Functions
+
+```{r}
+# This function establishes a contingency table of outlier/in geneset for a given data frame of residuals
+#  and calculates odds ratios in both bulk and pseudobulk directions
+analyze_outliers <- function(residual_df, geneset_ensembl_ids, outlier_threshold = params$sd_threshold) {
+  
+  ## Positive outliers: bulk direction
+  or_bulk <- residual_df |>
+    dplyr::mutate(
+      outlier = scaled_summary_residual > outlier_threshold,
+      in_geneset = ensembl_id %in% geneset_ensembl_ids
+    ) |>
+    dplyr::summarize(
+      odds_num = sum(in_geneset & outlier) / sum(in_geneset & !outlier),
+      odds_denom = sum(!in_geneset & outlier) / sum(!in_geneset & !outlier),
+      odds_ratio = odds_num / odds_denom
+    ) |>
+    dplyr::pull(odds_ratio)
+    
+    
+      
+  ## Negative outliers: pseudobulk direction
+  or_pseudobulk <- residual_df |>
+    dplyr::mutate(
+      outlier = scaled_summary_residual < (-1*outlier_threshold), 
+      in_geneset = ensembl_id %in% geneset_ensembl_ids
+    ) |>
+    dplyr::summarize(
+      odds_num = sum(in_geneset & outlier) / sum(in_geneset & !outlier),
+      odds_denom = sum(!in_geneset & outlier) / sum(!in_geneset & !outlier),
+      odds_ratio = odds_num / odds_denom
+    ) |>
+    dplyr::pull(odds_ratio)
+  
+  data.frame(or_bulk = or_bulk, or_pseudobulk = or_pseudobulk)
+
+}
+```
+
+## Read in data 
+
+
+
+```{r}
+model_data <- readr::read_rds(model_data_file)
+geneset_df <- readr::read_tsv(geneset_file)
+geneset_list <- split(geneset_df, geneset_df$cell_type_name)
+geneset_names <- names(geneset_list)
+```
+
+
+## Calculate odds ratios  
+
+```{r}
+# Summarize residuals to get one value per gene
+summary_residual_df <- model_data |>
+  purrr::pluck("data") |>
+  dplyr::mutate(
+    residual = unname(resid(model_data$model))
+  ) |>
+  dplyr::group_by(ensembl_id) |>
+  # summarize based on parameter
+  dplyr::summarize(
+    summary_residual = do.call(params$summary_function, list(residual))
+  ) |>
+  # zscore for outlier detection
+  dplyr::mutate(scaled_summary_residual = scale(summary_residual)) 
+
+# Calculate ORs on real data
+baseline_or_df <- geneset_list |>
+  purrr::map(
+    \(gs_df) analyze_outliers(summary_residual_df, gs_df$ensembl_id)
+  ) |>
+  purrr::list_rbind(names_to = "geneset_cell_type")
+```
+
+Here are the odds ratios calculated directly from the data:
+
+```{r}
+baseline_or_df
+```
+
+## Permutation test 
+
+To calculate P-values here, we shuffle the residual/gene_id relationship and perform a permutation test.
+
+```{r}
+shuffled_or_df <- 1:params$reps |>
+  purrr::set_names(1:params$reps) |>
+  purrr::map(\(i) {
+    
+    shuffled_df <- data.frame(
+      ensembl_id = summary_residual_df$ensembl_id, 
+      scaled_summary_residual = sample(summary_residual_df$scaled_summary_residual, nrow(summary_residual_df))   
+    )
+    
+    geneset_list |>
+      purrr::map(
+        \(gs_df) analyze_outliers(shuffled_df, gs_df$ensembl_id)
+      ) |>
+      purrr::list_rbind(names_to = "geneset_cell_type") |>
+      # rename columns to with shuffled_ prefix for code clarity
+      dplyr::rename(
+        shuffled_or_bulk = or_bulk, 
+        shuffled_or_pseudobulk = or_pseudobulk
+      ) 
+  }) |> purrr::list_rbind(names_to = "replicate")
+```
+
+
+Below, we visualize the shuffled odds ratio distributions, with a red line representing the odds ratio calculated from the real data.
+
+```{r fig.height=10, fig.width=10}
+ggplot(shuffled_or_df) + 
+  aes(x = shuffled_or_bulk) + 
+  geom_histogram(binwidth = 0.5, fill = "gray65") +
+  facet_wrap(vars(geneset_cell_type), scales = "free_x") +
+  geom_vline(
+    data = baseline_or_df, 
+    aes(xintercept = or_bulk), 
+    color = "firebrick", 
+    linewidth = 0.75
+  ) + 
+  labs(
+    title = "Odds ratio distributions in the bulk direction", 
+    x = "Shuffled bulk-direction odds ratios"
+  )
+```
+
+
+```{r fig.height=10, fig.width=10}
+ggplot(shuffled_or_df) + 
+  aes(x = shuffled_or_pseudobulk) + 
+  geom_histogram(binwidth = 0.5, fill = "gray65") +
+  facet_wrap(vars(geneset_cell_type), scales = "free_x") +
+  geom_vline(
+    data = baseline_or_df, 
+    aes(xintercept = or_pseudobulk), 
+    color = "firebrick", 
+    linewidth = 0.75
+  ) + 
+  labs(
+    title = "Odds ratio distributions in the pseudobulk direction", 
+    x = "Shuffled pseudobulk-direction odds ratios"
+  )
+```
+
+
+Next, we can calculate P-values for each gene set.
+We'll also adjust P-values for multiple testing using FDR (Benjamini-Hochberg).
+
+```{r}
+permutation_pvalues <- geneset_names |>
+  purrr::set_names(geneset_names) |>
+  purrr::map(
+    \(geneset_name) {
+      
+    # This will have one row for the given geneset
+    geneset_baseline_df <- baseline_or_df |>
+      dplyr::filter(geneset_cell_type == geneset_name)
+    
+    # Define these variables for code clarity
+    baseline_bulk_or <- geneset_baseline_df$or_bulk
+    baseline_pseudobulk_or <- geneset_baseline_df$or_pseudobulk
+      
+    shuffled_or_df |>
+      dplyr::filter(geneset_cell_type == geneset_name) |>
+      # Calculate P-value as fraction of shuffled ORs >= baseline OR (with +1 correction on numerator & denominator to avoid p=0)
+      dplyr::summarize(
+        bulk = (sum(shuffled_or_bulk >= baseline_bulk_or) + 1) / (params$reps + 1), 
+        pseudobulk = (sum(shuffled_or_pseudobulk >= baseline_pseudobulk_or) + 1) / (params$reps + 1)
+      ) |>
+      # Correct for multiple testing with FDR
+      tidyr::pivot_longer(
+        everything(),
+        names_to = "modality", 
+        values_to = "p_value"
+      ) |>
+      dplyr::mutate(p_adj_bh = p.adjust(p_value, method = "BH"))
+  }) |>
+  purrr::list_rbind(names_to = "geneset_cell_type") 
+
+# Join the odds ratios in with their pvalues, all in long format
+permutation_results <- baseline_or_df |>
+  tidyr::pivot_longer(
+    starts_with("or_"), 
+    names_to = "modality", 
+    values_to = "odds_ratio"
+  ) |>
+  dplyr::mutate(modality = stringr::str_remove(modality, "^or_")) |>
+  # and join in the pvalues
+  dplyr::left_join(permutation_pvalues)
+
+```
+
+
+
+
+How many gene sets (cell types) are significant per modality, considering the BH-adjusted p-value?
+
+```{r}
+permutation_results |>
+  dplyr::filter(p_adj_bh <= 0.05) |>
+  dplyr::count(modality)
+```
+
+What are those gene sets (cell types), if any?
+
+```{r}
+# wrangle a bit to make this easily human-readable
+permutation_results |>
+  dplyr::filter(p_adj_bh <= 0.05) |>
+  dplyr::group_by(modality) |>
+  dplyr::arrange(p_adj_bh, .by_group = TRUE)
+```
+
+
+
+## Export
+
+
+We'll export the odds ratios and p-values to a data frame.
+
+```{r}
+readr::write_tsv(permutation_results, output_file)
+```
+
+
+## Session info
+
+```{r}
+sessionInfo()
+```
