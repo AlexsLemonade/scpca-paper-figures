@@ -11,7 +11,7 @@ params:
   project_id: "SCPCP000001"
   summary_function: "median"
   sd_threshold: 2.5
-  reps: 1000
+  reps: 10000
 ---
 
 ## Introduction
@@ -191,7 +191,7 @@ Below, we visualize the shuffled odds ratio distributions, with a red line repre
 ```{r fig.height=10, fig.width=10}
 ggplot(shuffled_or_df) + 
   aes(x = shuffled_or_bulk) + 
-  geom_histogram(binwidth = 0.2, fill = "gray65") +
+  geom_histogram(binwidth = 0.5, fill = "gray65") +
   facet_wrap(vars(geneset_cell_type), scales = "free_x") +
   geom_vline(
     data = baseline_or_df, 
@@ -209,7 +209,7 @@ ggplot(shuffled_or_df) +
 ```{r fig.height=10, fig.width=10}
 ggplot(shuffled_or_df) + 
   aes(x = shuffled_or_pseudobulk) + 
-  geom_histogram(binwidth = 0.2, fill = "gray65") +
+  geom_histogram(binwidth = 0.5, fill = "gray65") +
   facet_wrap(vars(geneset_cell_type), scales = "free_x") +
   geom_vline(
     data = baseline_or_df, 
@@ -256,14 +256,28 @@ permutation_pvalues <- geneset_names |>
       ) |>
       dplyr::mutate(p_adj_bh = p.adjust(p_value, method = "BH"))
   }) |>
-  purrr::list_rbind(names_to = "geneset_cell_type")
+  purrr::list_rbind(names_to = "geneset_cell_type") 
+
+# Join the odds ratios in with their pvalues, all in long format
+permutation_results <- baseline_or_df |>
+  tidyr::pivot_longer(
+    starts_with("or_"), 
+    names_to = "modality", 
+    values_to = "odds_ratio"
+  ) |>
+  dplyr::mutate(modality = stringr::str_remove(modality, "or_")) |>
+  # and join in the pvalues
+  dplyr::left_join(permutation_pvalues)
+
 ```
+
+
 
 
 How many gene sets (cell types) are significant per modality, considering the BH-adjusted p-value?
 
 ```{r}
-permutation_pvalues |>
+permutation_results |>
   dplyr::filter(p_adj_bh <= 0.05) |>
   dplyr::count(modality)
 ```
@@ -272,7 +286,7 @@ What are those gene sets (cell types), if any?
 
 ```{r}
 # wrangle a bit to make this easily human-readable
-permutation_pvalues |>
+permutation_results |>
   dplyr::filter(p_adj_bh <= 0.05) |>
   dplyr::group_by(modality) |>
   dplyr::arrange(p_adj_bh, .by_group = TRUE)
@@ -283,12 +297,10 @@ permutation_pvalues |>
 ## Export
 
 
-We'll export this data frame along with the odds ratios.
+We'll export the odds ratios and p-values to a data frame.
 
 ```{r}
-permutation_pvalues |>
-  dplyr::left_join(baseline_or_df) |>
-  readr::write_tsv(output_file)
+readr::write_tsv(permutation_results, output_file)
 ```
 
 
