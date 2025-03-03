@@ -69,17 +69,6 @@ Comparison of delta median statistic obtained from running `SingleR` with differ
 - A. UMAP displaying cell type annotations from `CellAssign` for an example ScPCA library.
 - B. Heatmap comparing submitter provided annotations to `CellAssign` annotations for an example ScPCA library.
 
-**Supplemental Figure 6**
-
-- A. Diagnostic plot for cell type annotations from `SingleR`.
-- B. Diagnostic plot for cell type annotations from `CellAssign`.
-
-
-**Supplemental Figure 7**
-
-Comparison between submitter provided annotations and automated annotations from `SingleR` and `CellAssign`.
-
-
 **Table S1**
 
 Summary of libraries and types of libraries found on the Portal.
