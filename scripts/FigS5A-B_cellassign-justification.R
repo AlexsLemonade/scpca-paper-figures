@@ -63,9 +63,7 @@ celltype_df <- celltype_df |>
                   forcats::fct_lump_n(5, other_level = "All remaining cell types", ties.method = "first") |>
                   forcats::fct_infreq() |>
                   forcats::fct_relevel("Unknown cell type", "All remaining cell types", after = Inf)
-  ) |> 
-  # add number of cells per cellassign cell type
-  dplyr::add_count(cellassign_celltype_annotation)
+  ) 
 
 # faceted UMAP
 faceted_umap <- ggplot(
