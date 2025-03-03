@@ -50,7 +50,7 @@ names(odds_files) <- odds_names
 
 ```{r}
 odds_df <- odds_files |>
-  purrr::map(readr::read_tsv)  |>
+  purrr::map(readr::read_tsv, show_col_types = FALSE)  |>
   purrr::list_rbind(names_to = "project_id") 
 ```
 
@@ -61,7 +61,7 @@ Filter to significant results, and arrange by _descending_ adjusted p for only v
 signif_df <- odds_df |>
   dplyr::filter(p_adj_bh <= 0.05)
 
-dplyr::arrange(signif_df, -p_adj_bh)
+dplyr::arrange(signif_df, desc(p_adj_bh))
 ```
 
 The modality for all significant results is `bulk`.
