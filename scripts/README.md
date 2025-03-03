@@ -84,8 +84,12 @@ Before running this script, you must run both `figure_setup/sync-data-files.R` a
 12. `FigS5A-B_cellassign-justification.R`: This script is used to generate supplemental Figure 7A-B, which includes a UMAP summarizing cell type annotations using `CellAssign` and a heatmap comparing the `CellAssign` annotations to submitter-provided annotations.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
 
-13. `FigS6A-B_celltype-diagnostic-plots.R`: This script is used to generate supplemental Figure 4A-B, which includes examples of the diagnostic plots for annotating cell types with `SingleR` and `CellAssign`.
+## Old figures
+
+The `old_figures` folder contains the scripts used to generate figures present in previous versions of the manuscript. 
+
+1. `FigS6A-B_celltype-diagnostic-plots.R`: This script is used to generate supplemental Figure 4A-B, which includes examples of the diagnostic plots for annotating cell types with `SingleR` and `CellAssign`.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
 
-14. `FigS7_submitter-celltypes-heatmap.R`: This script is used to generate supplemental Figure 5, which includes an example heatmap comparing submitter provided annotations to automated annotations from `SingleR` and `CellAssign`.
+2. `FigS7_submitter-celltypes-heatmap.R`: This script is used to generate supplemental Figure 5, which includes an example heatmap comparing submitter provided annotations to automated annotations from `SingleR` and `CellAssign`.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
