@@ -81,7 +81,7 @@ ggplot(signif_df) +
   geom_col() +
   scale_fill_viridis_c() +
   tidytext::scale_x_reordered() + # gets the labels back to only geneset_cell_type
-  facet_wrap(vars(project_id), scales = "free", nrow = 1) +
+  facet_wrap(vars(project_id), scales = "free_x", nrow = 1) +
   labs(
     x = "Gene set (cell type)", 
     y = "Odds ratio", 
