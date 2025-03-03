@@ -20,7 +20,7 @@ A bulk outlier is defined as $> 2.5\sigma_{summarized\_residual}$ , and a pseudo
 ## Setup
 
 ```{r setup}
-renv::load() # needed in case run from command line
+renv::load(quiet=TRUE) # needed in case run from command line
 
 library(ggplot2)
 theme_set(theme_bw())
