@@ -1,6 +1,21 @@
 #!/usr/bin/env Rscript
 
-# function to generat dot plots for a given set of samples 
+# This file contains helper functions for plotting consensus cell types 
+
+# packages required for functions
+library(ggplot2)
+library(patchwork)
+library(data.table)
+
+#' Dot plot showing expression of marker genes across assigned cell types
+#'
+#' @param sample_ids Character vector of ScPCA sample ids to include in plot
+#' @param consensus_results_dir Directory where results from cell-type-consensus module of OpenScPCA-nf lives
+#' @param validation_groups_dt Data frame assigning consensus cell types to broader validation groups
+#' @param markers_dt Data frame with marker genes for each cell type
+#' @param celltype_colors Named vector of colors to use for each broader validation group
+#'
+#' @returns Dot plot with summarized expression of marker genes for consensus cell types
 marker_gene_dotplot <- function(
     sample_ids,
     consensus_results_dir,
@@ -9,8 +24,7 @@ marker_gene_dotplot <- function(
     celltype_colors
 ){
   
-  # list consensus results 
-  # cell type assignments 
+  # list all cell type assignments files
   consensus_results_files <- list.files(consensus_results_dir, pattern = "_processed_consensus-cell-types\\.tsv\\.gz$", recursive = TRUE, full.names = TRUE) 
   celltype_files <- consensus_results_files[basename(dirname(consensus_results_files)) %in% sample_ids]
   
@@ -27,6 +41,7 @@ marker_gene_dotplot <- function(
     purrr::map(fread) |> 
     data.table::rbindlist(fill = TRUE, use.names = TRUE)
   
+  # Join all consensus results and marker gene info
   consensus_dt <- consensus_dt |> 
     # add in broad cell type group which is used for plotting
     # groups similar cell types together 
@@ -37,6 +52,7 @@ marker_gene_dotplot <- function(
     dplyr::left_join(markers_dt, by = "ensembl_gene_id", relationship = "many-to-many") |> 
     dplyr::mutate(detected = logcounts > 0)
   
+  # remove extra data frame
   rm(gene_exp_dt)
   
   # prep for plots 
@@ -87,13 +103,6 @@ marker_gene_dotplot <- function(
   # no longer need this and it takes up space 
   rm(consensus_dt)
   
-  # make a data frame that just has the unique genes 
-  # unique genes are those that are only observed in one cell type based on observance in Cell Marker 
-  # this was determined when creating the marker gene table from Cell Marker 
-  unique_gene_df <- group_stats_df |> 
-    # keep all 6 HPC genes 
-    dplyr::filter(gene_observed_count == 1 | validation_group_annotation == "hematopoietic precursor cell")
-  
   # get list of celltypes to keep and assign colors 
   celltype_groups <- group_stats_df |> 
     dplyr::pull(broad_celltype_group) |> 
@@ -101,27 +110,21 @@ marker_gene_dotplot <- function(
     as.character()
   
   # filter markers to those that are actually relevant 
-  # we will only plot the marker genes for cell types that are part of the assigned broad validation group for this project
+  # we will only plot the marker genes for cell types that are part of the assigned broad validation group for this group of samples
   # we don't care about plotting marker genes for cell types that aren't present here 
-  # note that we will use this for both the dotplot and the heatmap
   filtered_markers_df <- markers_dt |> 
     dplyr::filter(validation_group_annotation %in% celltype_groups,
                   gene_symbol %in% group_stats_df$gene_symbol)
-  
-  # now only keep unique markers for the dotplot
-  # except for hematopoietic precursor cells, where there are no unique markers
-  unique_markers_df <- filtered_markers_df |> 
-    dplyr::filter(gene_observed_count == 1 | validation_group_annotation == "hematopoietic precursor cell")
-  
+
   # specify x axis order for dotplot
-  marker_gene_order <- unique_markers_df |> 
+  marker_gene_order <- filtered_markers_df |> 
     dplyr::pull(gene_symbol)
   
   # set order for cell types 
-  celltype_order <- unique(unique_markers_df$validation_group_annotation)
+  celltype_order <- unique(filtered_markers_df$validation_group_annotation)
   
   # filter out low expressed genes
-  dotplot_df <- unique_gene_df |> 
+  dotplot_df <- group_stats_df |> 
     dplyr::filter(mean_exp > 0, percent_exp > 10) |> 
     dplyr::arrange(broad_celltype_group) |> 
     # add a label for the plot 

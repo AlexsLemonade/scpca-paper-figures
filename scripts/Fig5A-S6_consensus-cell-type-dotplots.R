@@ -69,17 +69,20 @@ celltype_colors <- c(
 pdf_dir <- here::here("figures", "pdfs")
 # Define paths to individual files 
 output_pdf_files <- c(
-  "Brain and CNS" = file.path(pdf_dir, "Fig5A_brain-dotplot.pdf"),
+  "Brain and CNS" = file.path(pdf_dir, "Fig5A_brain-dotplot.pdf")
   #"Leukemia" = file.path(pdf_dir, "FigS6A_leukemia-dotplot.pdf"),
-  "Sarcoma" = file.path(pdf_dir, "FigS6B_sarcoma-dotplot.pdf"),
-  "Other solid tumors" = file.path(pdf_dir, "FigS6C_other-solid-tumors-dotplot.pdf")
+  #"Sarcoma" = file.path(pdf_dir, "FigS6B_sarcoma-dotplot.pdf"),
+  #"Other solid tumors" = file.path(pdf_dir, "FigS6C_other-solid-tumors-dotplot.pdf")
 )
 
 # read in project metadata file and filter to project whitelist 
 project_whitelist <- readLines(project_whitelist_file)
 
 # read in validation markers as data.tables
-markers_dt <- fread(marker_gene_table_url)
+markers_dt <- fread(marker_gene_table_url) |> 
+  # only keep genes unique to a single cell type except HPC which doesn't have any unique genes
+  # for HPC we keep all 6 marker genes
+  dplyr::filter(gene_observed_count == 1 | validation_group_annotation == "hematopoietic precursor cell")
 
 validation_groups_dt <- fread(validation_group_url) |> 
   # rename final assigned group to avoid conflicts when merging in marker gene expression 
