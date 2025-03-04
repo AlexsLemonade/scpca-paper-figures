@@ -11,6 +11,8 @@ library(ggplot2)
 library(patchwork)
 library(data.table)
 
+# Set up paths -----------------------------------------------------------------
+
 celltype_plotting_functions <- here::here("scripts", "utils", "consensus-celltype-plotting-functions.R")
 source(celltype_plotting_functions)
 
@@ -75,6 +77,8 @@ output_pdf_files <- c(
   #"Other solid tumors" = file.path(pdf_dir, "FigS6C_other-solid-tumors-dotplot.pdf")
 )
 
+# Read in metadata -------------------------------------------------------------
+
 # read in project metadata file and filter to project whitelist 
 project_whitelist <- readLines(project_whitelist_file)
 
@@ -105,6 +109,7 @@ non_multiplex_samples <- readr::read_tsv(library_metadata_file) |>
                 seq_unit %in% c("cell", "nucleus")) |> 
   dplyr::pull(scpca_sample_id)
 
+# Create dot plots -------------------------------------------------------------
 plot_list <- output_pdf_files |> 
   purrr::iwalk(\(file, group){
     
