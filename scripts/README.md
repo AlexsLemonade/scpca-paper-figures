@@ -84,6 +84,11 @@ Before running this script, you must run both `figure_setup/sync-data-files.R` a
 12. `FigS5A-B_cellassign-justification.R`: This script is used to generate supplemental Figure 7A-B, which includes a UMAP summarizing cell type annotations using `CellAssign` and a heatmap comparing the `CellAssign` annotations to submitter-provided annotations.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
 
+13. `Fig5A-S6_consensus-cell-type-dotplots.R`: This script is used to generate Figure 5A and supplemental figure 6A-C.
+Figure 5A includes a dot plot summarizing marker gene expression across all consensus cell types in the Brain and CNS samples. 
+Supplemental Figure 6A-C include dot plots summarizing marker gene expression across all consensus cell types in the other diagnosis groups, leukemia, sarcoma, and other solid tumors. 
+Before running this script, you must run `figure_setup/sync-consensus-celltype-results.R`. 
+
 ## Old figures
 
 The `old_figures` folder contains the scripts used to generate figures present in previous versions of the manuscript. 
