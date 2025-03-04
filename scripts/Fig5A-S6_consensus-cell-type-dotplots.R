@@ -35,8 +35,8 @@ celltype_colors <- c(
   # lymphocytes
   "B cell" = "#AA0DFE",
   "plasma cell" = "#782AB6",
-  "T cell" = "#565656",
-  "innate lymphoid cell" = "#E2E2E2",
+  "T cell" = "#3283FE",
+  "innate lymphoid cell" = "#325A9B",
   # myeloid
   "dendritic cell" = "#16FF32",
   "macrophage" = "#1C8356",
@@ -58,11 +58,11 @@ celltype_colors <- c(
   "pericyte" = "#F8A19F",
   "stromal cell" = "#C4451C",
   # neural cells
-  "neuron" = "#3283FE",
-  "astrocyte" = "#325A9B",
-  "glial cell" = "#1CFFCE",
+  "neuron" = "#1CFFCE",
+  "astrocyte" = "#2ED9FF",
+  "glial cell" = "#565656",
   # other 
-  "mesangial cell" = "#2ED9FF"
+  "mesangial cell" = "#E2E2E2"
 )
 
 # output files 
@@ -70,7 +70,7 @@ pdf_dir <- here::here("figures", "pdfs")
 # Define paths to individual files 
 output_pdf_files <- c(
   "Brain and CNS" = file.path(pdf_dir, "Fig5A_brain-dotplot.pdf"),
-  "Leukemia" = file.path(pdf_dir, "FigS6A_leukemia-dotplot.pdf"),
+  #"Leukemia" = file.path(pdf_dir, "FigS6A_leukemia-dotplot.pdf"),
   "Sarcoma" = file.path(pdf_dir, "FigS6B_sarcoma-dotplot.pdf"),
   "Other solid tumors" = file.path(pdf_dir, "FigS6C_other-solid-tumors-dotplot.pdf")
 )
