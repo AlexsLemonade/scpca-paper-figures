@@ -71,10 +71,10 @@ celltype_colors <- c(
 pdf_dir <- here::here("figures", "pdfs")
 # Define paths to individual files 
 output_pdf_files <- c(
-  "Brain and CNS" = file.path(pdf_dir, "Fig5A_brain-dotplot.pdf")
+  "Brain and CNS" = file.path(pdf_dir, "Fig5A_brain-dotplot.pdf"),
   #"Leukemia" = file.path(pdf_dir, "FigS6A_leukemia-dotplot.pdf"),
-  #"Sarcoma" = file.path(pdf_dir, "FigS6B_sarcoma-dotplot.pdf"),
-  #"Other solid tumors" = file.path(pdf_dir, "FigS6C_other-solid-tumors-dotplot.pdf")
+  "Sarcoma" = file.path(pdf_dir, "FigS6B_sarcoma-dotplot.pdf"),
+  "Other solid tumors" = file.path(pdf_dir, "FigS6C_other-solid-tumors-dotplot.pdf")
 )
 
 # Read in metadata -------------------------------------------------------------
