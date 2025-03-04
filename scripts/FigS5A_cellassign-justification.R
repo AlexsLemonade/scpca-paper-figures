@@ -1,15 +1,10 @@
-# This script is used to generate the supplemental figure for CellAssign
-# panel A is a faceted UMAP showing the assigned cell types
-# panel B is a heatmap comparing CellAssign annotations to submitter annotations
-
+# This script is used to generate panel A of the supplemental figure for CellAssign
+# the output is a faceted UMAP showing the assigned cell types
 # load project
 renv::load()
 
 library(SingleCellExperiment)
 library(ggplot2)
-
-# Set heatmap padding option
-ComplexHeatmap::ht_opt(TITLE_PADDING = grid::unit(0.2, "in"))
 
 # Set default ggplot theme
 theme_set(
@@ -44,10 +39,6 @@ processed_sce <- readr::read_rds(processed_sce_file)
 # use png for UMAP 
 png_dir <- here::here("figures", "pngs")
 umap_png_file <- file.path(png_dir, "FigS5A_cellassign-umap.png")
-
-# use pdf for heatmap 
-pdf_dir <- here::here("figures", "pdfs")
-heatmap_pdf_file <- file.path(pdf_dir, "FigS5B_cellassign-submitter-heatmap.pdf")
 
 # source in helper functions for plotting
 function_file <- here::here("scripts", "utils", "celltype-plot-helper-functions.R")
@@ -102,61 +93,3 @@ faceted_umap <- ggplot(
   theme(legend.position = "bottom")
 
 ggsave(umap_png_file, faceted_umap, width = 8, height = 8)
-
-# Heatmap ----------------------------------------------------------------------
-
-# get jaccard similarity index
-jaccard_submitter_matrix <- make_jaccard_matrix(
-  celltype_df,
-  "submitter_celltype_annotation",
-  "cellassign_celltype_annotation"
-) |> 
-  # sort so that all tumors are first 
-  as.data.frame() |> 
-  tibble::rownames_to_column("submitter_celltype") |> 
-  dplyr::mutate(group = dplyr::if_else(stringr::str_detect("tumor", submitter_celltype), "tumor", "non-tumor")) |> 
-  dplyr::group_by(group) |> 
-  dplyr::arrange(desc(submitter_celltype), .by_group = TRUE) |> 
-  dplyr::ungroup() |> 
-  dplyr::select(-group) |> 
-  tibble::column_to_rownames("submitter_celltype") |> 
-  as.matrix()
-
-# heatmap comparing cellassign to submitter annotations
-heatmap <- ComplexHeatmap::Heatmap(
-  # transpose so submitter will be columns
-  t(jaccard_submitter_matrix),
-  col = circlize::colorRamp2(c(0, 1), colors = c("white", "darkslateblue")),
-  border = TRUE,
-  ## Row parameters
-  cluster_rows = FALSE,
-  row_title = "CellAssign annotations",
-  row_title_gp = grid::gpar(fontsize = 12),
-  row_title_side = "right",
-  row_names_side = "left",
-  row_names_gp = grid::gpar(fontsize = 10),
-  ## Column parameters
-  cluster_columns = FALSE,
-  column_title = "Submitter-provided annotations",
-  column_title_gp = grid::gpar(fontsize = 12),
-  column_names_side = "bottom",
-  column_names_gp = grid::gpar(fontsize = 10),
-  # ensure column labels fit in PDF export
-  column_names_max_height = grid::unit(8, "cm"),
-  ## Legend parameters
-  heatmap_legend_param = list(
-    title = "Jaccard index",
-    direction = "vertical",
-    legend_width = grid::unit(1.5, "in")
-  )
-) |>
-  ComplexHeatmap::draw(
-    heatmap_legend_side = "right", 
-    # add a margin to the heatmap so labels don't get cut off
-    padding = unit(c(2, 20, 2, 2), "mm")
-  )
-
-# save heatmap to pdf
-pdf(heatmap_pdf_file, width = 9, height = 9, useDingbats = FALSE)
-ComplexHeatmap::draw(heatmap)
-dev.off()

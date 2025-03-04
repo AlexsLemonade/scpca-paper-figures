@@ -78,14 +78,21 @@ Before running this script, you must run `figure_setup/sync-data-files.R`.
 10. `TableS2_cellassign-ref-summary.R`: This script is used to generate supplemental Table 2, which includes one row for each ScPCA project on the Portal and the associated diagnoses, reference used from `PanglaoDB`, and list of organs used to construct the reference.
 Before running this script, you must run `figure_setup/sync-metadata.R`.
 
-11. `FigS4_celldex-ref-comparison.R`: This script is used to generate supplemental Figure 6, which compares the delta median statistic calculated from running `SingleR` on a subset of ScPCA libraries with 4 different `celldex` references.
+11. `FigS4_celldex-ref-comparison.R`: This script is used to generate supplemental Figure 4, which compares the delta median statistic calculated from running `SingleR` on a subset of ScPCA libraries with 4 different `celldex` references.
 Before running this script, you must run both `figure_setup/sync-data-files.R` and `figure_setup/sync-metadata.R`.
 
-12. `FigS5A-B_cellassign-justification.R`: This script is used to generate supplemental Figure 7A-B, which includes a UMAP summarizing cell type annotations using `CellAssign` and a heatmap comparing the `CellAssign` annotations to submitter-provided annotations.
+12. `FigS5A-B_cellassign-justification.R`: This script is used to generate supplemental Figure 5A, which includes a UMAP summarizing cell type annotations using `CellAssign`. 
 Before running this script, you must run `figure_setup/sync-data-files.R`.
 
-13. `FigS6A-B_celltype-diagnostic-plots.R`: This script is used to generate supplemental Figure 4A-B, which includes examples of the diagnostic plots for annotating cell types with `SingleR` and `CellAssign`.
+13. `FigS5B_submitter-celltypes-heatmap.R`: This script is used to generate supplemental Figure 5B, which includes a heatmap comparing the `CellAssign` and `SingleR` annotations to submitter-provided annotations for an example library.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
 
-14. `FigS7_submitter-celltypes-heatmap.R`: This script is used to generate supplemental Figure 5, which includes an example heatmap comparing submitter provided annotations to automated annotations from `SingleR` and `CellAssign`.
+## Old figures
+
+The `old_figures` folder contains the scripts used to generate figures present in previous versions of the manuscript. 
+
+1. `FigS5B_cellassign-heatmap.R`: This script is used to generate a previous version of supplemental Figure 5B, which included an example heatmap comparing submitter provided annotations to automated annotations from `CellAssign`.
+Before running this script, you must run `figure_setup/sync-data-files.R`.
+
+2. `FigS6A-B_celltype-diagnostic-plots.R`: This script is used to generate a previous version of supplemental Figure 6A-B, which included examples of the diagnostic plots for annotating cell types with `SingleR` and `CellAssign`.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
