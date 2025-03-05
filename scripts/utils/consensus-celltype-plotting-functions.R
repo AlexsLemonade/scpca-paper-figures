@@ -54,6 +54,7 @@ marker_gene_dotplot <- function(
   
   # remove extra data frame
   rm(gene_exp_dt)
+  gc()
   
   # prep for plots 
   # get total number of cells per final annotation group 
@@ -102,6 +103,7 @@ marker_gene_dotplot <- function(
   
   # no longer need this and it takes up space 
   rm(consensus_dt)
+  gc()
   
   # get list of celltypes to keep and assign colors 
   celltype_groups <- group_stats_df |> 
@@ -137,14 +139,20 @@ marker_gene_dotplot <- function(
       validation_group_annotation = factor(validation_group_annotation, levels = celltype_order)
     )
   
+  
   # make dotplot with marker gene exp
   dotplot <- ggplot(dotplot_df, aes(y = forcats::fct_rev(y_label), x = gene_symbol, color = mean_exp, size = percent_exp)) +
     geom_point() +
     scale_color_viridis_c(option = "magma") +
+    facet_grid(cols = vars(validation_group_annotation), scales = "free", space = "free") +
     theme_classic() +
     theme(
+      strip.background = element_blank(),
+      strip.text.x = element_blank(), 
       axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-      text = element_text(size = 14)
+      axis.ticks.x = element_blank(),
+      text = element_text(size = 14),
+      panel.spacing = unit(0.5, "lines") # Adjust spacing between facets
     ) +
     labs(
       x = "",
@@ -157,12 +165,19 @@ marker_gene_dotplot <- function(
   # add annotation bar aligning marker genes with validation group 
   color_bar <- ggplot(dotplot_df, aes(x = gene_symbol, y = 1, fill = validation_group_annotation)) + 
     geom_tile() + 
+    facet_grid(cols = vars(validation_group_annotation), scales = "free", space = "free", switch = "x") +
     scale_fill_manual(values = celltype_colors, breaks = levels(dotplot_df$validation_group_annotation)) +
     ggmap::theme_nothing() +
-    theme(legend.position = "bottom") +
+    theme(
+      strip.background = element_blank(),
+      strip.placement = "outside",
+      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 12),
+      #strip.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 12),
+      legend.position = "none"
+      ) +
     labs(fill = "")
   
-  combined_plot <- dotplot + color_bar +
+  combined_plot <- dotplot / color_bar +
     patchwork::plot_layout(ncol = 1, heights = c(4, 0.1)) 
   
   return(combined_plot)
