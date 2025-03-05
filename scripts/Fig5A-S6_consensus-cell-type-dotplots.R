@@ -14,7 +14,7 @@ library(data.table)
 # Set up paths -----------------------------------------------------------------
 
 celltype_plotting_functions <- here::here("scripts", "utils", "consensus-celltype-plotting-functions.R")
-source(celltype_plotting_functions)
+source(celltype_plotting_functions) # imports `marker_gene_dotplot()`
 
 # all metadata files 
 sample_info_dir <- here::here("sample-info")
