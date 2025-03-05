@@ -147,7 +147,8 @@ marker_gene_dotplot <- function(
     facet_grid(cols = vars(validation_group_annotation), scales = "free", space = "free") +
     theme_classic() +
     theme(
-      strip.background = element_blank(),
+      strip.background = element_rect(fill = "transparent", color = NA),
+      #strip.placement = "outside",
       strip.text.x = element_blank(), 
       axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
       axis.ticks.x = element_blank(),
@@ -165,21 +166,20 @@ marker_gene_dotplot <- function(
   # add annotation bar aligning marker genes with validation group 
   color_bar <- ggplot(dotplot_df, aes(x = gene_symbol, y = 1, fill = validation_group_annotation)) + 
     geom_tile() + 
-    facet_grid(cols = vars(validation_group_annotation), scales = "free", space = "free", switch = "x") +
+    facet_grid(cols = vars(validation_group_annotation), scales = "free", space = "free") +
     scale_fill_manual(values = celltype_colors, breaks = levels(dotplot_df$validation_group_annotation)) +
     ggmap::theme_nothing() +
     theme(
-      strip.background = element_blank(),
-      strip.placement = "outside",
-      #axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 12),
-      strip.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 12),
+      strip.background = element_rect(fill = "transparent", color = NA),
+      strip.text.x = element_text(angle = 60, hjust = 0, vjust = 0.5, size = 12),
       legend.position = "none",
-      panel.spacing = unit(0.5, "lines")
+      panel.spacing = unit(0.5, "lines"),
+      strip.clip = "off"
       ) +
     labs(fill = "")
   
-  combined_plot <- dotplot / color_bar +
-    patchwork::plot_layout(ncol = 1, heights = c(4, 0.1)) 
-  
+  combined_plot <- color_bar / dotplot +
+    patchwork::plot_layout(ncol = 1, heights = c(0.1, 4)) 
+
   return(combined_plot)
 }
