@@ -152,7 +152,7 @@ marker_gene_dotplot <- function(
       axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
       axis.ticks.x = element_blank(),
       text = element_text(size = 14),
-      panel.spacing = unit(0.5, "lines") # Adjust spacing between facets
+      panel.spacing = unit(0.5, "lines") # adjust spacing and match with annotation bar
     ) +
     labs(
       x = "",
@@ -171,9 +171,10 @@ marker_gene_dotplot <- function(
     theme(
       strip.background = element_blank(),
       strip.placement = "outside",
-      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 12),
-      #strip.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 12),
-      legend.position = "none"
+      #axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 12),
+      strip.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 12),
+      legend.position = "none",
+      panel.spacing = unit(0.5, "lines")
       ) +
     labs(fill = "")
   
