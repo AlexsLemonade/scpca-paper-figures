@@ -11,10 +11,20 @@ library(ggplot2)
 library(patchwork)
 library(data.table)
 
-# Set up paths -----------------------------------------------------------------
-
 celltype_plotting_functions <- here::here("scripts", "utils", "consensus-celltype-plotting-functions.R")
 source(celltype_plotting_functions) # imports `marker_gene_dotplot()`
+
+# Set up paths -----------------------------------------------------------------
+
+# output files 
+pdf_dir <- here::here("figures", "pdfs")
+# Define paths to individual files 
+output_pdf_files <- c(
+  #"Brain and CNS" = file.path(pdf_dir, "Fig5A_brain-dotplot.pdf"),
+  "Leukemia" = file.path(pdf_dir, "FigS6A_leukemia-dotplot.pdf")
+  #"Sarcoma" = file.path(pdf_dir, "FigS6B_sarcoma-dotplot.pdf"),
+  #"Other solid tumors" = file.path(pdf_dir, "FigS6C_other-solid-tumors-dotplot.pdf")
+)
 
 # all metadata files 
 sample_info_dir <- here::here("sample-info")
@@ -31,51 +41,10 @@ consensus_results_dir <- file.path(s3_dir, "cell-type-consensus-results")
 validation_group_url <- "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-consensus/references/consensus-validation-groups.tsv"
 marker_gene_table_url <- "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-consensus/references/validation-markers.tsv"
 
-# color palette
-# TODO: Turn this into a TSV that's saved in the repo 
-celltype_colors <- c(
-  # lymphocytes
-  "B cell" = "#AA0DFE",
-  "plasma cell" = "#782AB6",
-  "T cell" = "#3283FE",
-  "innate lymphoid cell" = "#325A9B",
-  # myeloid
-  "dendritic cell" = "#16FF32",
-  "macrophage" = "#1C8356",
-  "monocyte" = "#1CBE4F",
-  "myeloid" = "#90AD1C",
-  "natural killer cell" = "#FBE426",
-  # hpsc 
-  "hematopoietic precursor cell" = "#FEAF16",
-  # stem cell
-  "stem cell" = "#F7E1A0",
-  # stromal cells
-  "adipocyte" = "#FA0087",
-  "chondrocyte" = "#B00068",
-  "endothelial cell" = "#FC1CBF",
-  "epithelial cell" = "#C075A6",
-  "fibroblast" = "#B10DA1",
-  "melanocyte" = "#FE00FA",
-  "muscle cell" = "#F6222E",
-  "pericyte" = "#F8A19F",
-  "stromal cell" = "#C4451C",
-  # neural cells
-  "neuron" = "#1CFFCE",
-  "astrocyte" = "#2ED9FF",
-  "glial cell" = "#565656",
-  # other 
-  "mesangial cell" = "#E2E2E2"
-)
-
-# output files 
-pdf_dir <- here::here("figures", "pdfs")
-# Define paths to individual files 
-output_pdf_files <- c(
-  "Brain and CNS" = file.path(pdf_dir, "Fig5A_brain-dotplot.pdf"),
-  #"Leukemia" = file.path(pdf_dir, "FigS6A_leukemia-dotplot.pdf"),
-  "Sarcoma" = file.path(pdf_dir, "FigS6B_sarcoma-dotplot.pdf"),
-  "Other solid tumors" = file.path(pdf_dir, "FigS6C_other-solid-tumors-dotplot.pdf")
-)
+# define color palette
+color_palette_file <- here::here("palettes", "validation-group-palette.tsv")
+celltype_colors <- readr::read_tsv(color_palette_file) |> 
+  tibble::deframe()
 
 # Read in metadata -------------------------------------------------------------
 
@@ -130,7 +99,7 @@ plot_list <- output_pdf_files |>
     )
     
     # save plot 
-    ggsave(file, plot = combined_plot, width = 18, height = 10)
+    ggsave(file, plot = combined_plot, width = 23, height = 10)
     
   })
 

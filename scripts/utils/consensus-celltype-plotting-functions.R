@@ -148,7 +148,7 @@ marker_gene_dotplot <- function(
     theme_classic() +
     theme(
       strip.background = element_rect(fill = "transparent", color = NA),
-      #strip.placement = "outside",
+      strip.placement = "outside",
       strip.text.x = element_blank(), 
       axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
       axis.ticks.x = element_blank(),
@@ -171,7 +171,8 @@ marker_gene_dotplot <- function(
     ggmap::theme_nothing() +
     theme(
       strip.background = element_rect(fill = "transparent", color = NA),
-      strip.text.x = element_text(angle = 60, hjust = 0, vjust = 0.5, size = 12),
+      strip.text.x = element_text(angle = 90, hjust = 0, vjust = 0.5, size = 12),
+      strip.placement = "outside",
       legend.position = "none",
       panel.spacing = unit(0.5, "lines"),
       strip.clip = "off"
