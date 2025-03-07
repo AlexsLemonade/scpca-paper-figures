@@ -67,12 +67,15 @@ make_group_stats_dt <- function(
       purrr::map(fread) |> 
       data.table::rbindlist(fill = TRUE, use.names = TRUE) 
     
+    message(glue::glue("Read in celltype files for {broad_group}"))
+    
     # prep for plots 
     # get total number of cells per final annotation group 
-    total_cells_df <- consensus_dt |> 
+    total_cells <- consensus_dt |> 
       dplyr::select(library_id, barcodes, broad_celltype_group) |> 
       dplyr::distinct() |> 
-      dplyr::count(broad_celltype_group, name = "total_cells") 
+      dplyr::pull(barcodes) |> 
+      length()
     
     # table with one row per unique broad cell type/ marker gene combination 
     # first all cells in with the same broad_celltype_group (determined based on consensus_annotation) are grouped together
@@ -82,34 +85,24 @@ make_group_stats_dt <- function(
     group_stats_df <- consensus_dt |> 
       # for each assigned cell type/marker gene combo get total detected and mean expression
       # group by both broad group and validation group to account for genes that are expressed in more than one cell type
-      dplyr::group_by(broad_celltype_group, ensembl_gene_id, validation_group_annotation) |>
+      dplyr::group_by(broad_celltype_group, ensembl_gene_id, gene_symbol, validation_group_annotation) |>
       dplyr::summarize(
         detected_count = sum(detected),
-        mean_exp = mean(logcounts)
+        mean_exp = mean(logcounts),
+        .groups = "drop"
       ) |> 
-      # add in validation group for marker genes
-      # this includes all possible marker genes and all possible validation group assignments 
-      dplyr::left_join(markers_dt, by = c("ensembl_gene_id", "validation_group_annotation"), relationship = "many-to-many") |>
-      # now get the mean expression/ mean percentage across all marker genes for a given validation group
-      # here the broad_celltype_group is the final assigned annotation for that group of cells 
-      # the validation_group_annotation refers to the cell type that marker gene is associated with 
-      dplyr::group_by(broad_celltype_group, validation_group_annotation) |> 
-      dplyr::mutate(
-        # calculate mean expression/detected across all markers for a specific group 
-        all_markers_mean_exp = mean(mean_exp),
-        all_markers_detected_count = mean(detected_count)
-      ) |>  # add total cells
-      dplyr::left_join(total_cells_df, by = c("broad_celltype_group")) |> 
+      dplyr::mutate(total_cells = total_cells) |> 
       # for plotting we're only going to look at any cell types with > 50 cells otherwise these plots can get wild 
       dplyr::filter(total_cells > 50) |> 
       dplyr::rowwise() |> 
       dplyr::mutate(
         # get total percent expressed
-        percent_exp = (detected_count/total_cells) * 100,
-        all_markers_percent_exp = (all_markers_detected_count/total_cells) * 100
+        percent_exp = (detected_count/total_cells) * 100
       ) 
     
     readr::write_tsv(group_stats_df, output_file)
+    
+    message(glue::glue("Exported stats files for {broad_group}"))
     
     return(output_file)
     
