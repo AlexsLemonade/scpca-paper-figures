@@ -20,10 +20,10 @@ source(celltype_plotting_functions) # imports `marker_gene_dotplot()`
 pdf_dir <- here::here("figures", "pdfs")
 # Define paths to individual files 
 output_pdf_files <- c(
-  "Brain and CNS" = file.path(pdf_dir, "Fig5A_brain-dotplot.pdf"),
-  #"Leukemia" = file.path(pdf_dir, "FigS6A_leukemia-dotplot.pdf")
-  "Sarcoma" = file.path(pdf_dir, "FigS6B_sarcoma-dotplot.pdf"),
-  "Other solid tumors" = file.path(pdf_dir, "FigS6C_other-solid-tumors-dotplot.pdf")
+  #"Brain and CNS" = file.path(pdf_dir, "Fig5A_brain-dotplot.pdf"),
+  "Leukemia" = file.path(pdf_dir, "FigS6A_leukemia-dotplot.pdf")
+  #"Sarcoma" = file.path(pdf_dir, "FigS6B_sarcoma-dotplot.pdf"),
+  #"Other solid tumors" = file.path(pdf_dir, "FigS6C_other-solid-tumors-dotplot.pdf")
 )
 
 # all metadata files 
@@ -79,6 +79,8 @@ non_multiplex_samples <- readr::read_tsv(library_metadata_file) |>
   dplyr::pull(scpca_sample_id)
 
 # Create dot plots -------------------------------------------------------------
+# read in all group stats files and
+
 plot_list <- output_pdf_files |> 
   purrr::iwalk(\(file, group){
     
@@ -87,11 +89,15 @@ plot_list <- output_pdf_files |>
       dplyr::filter(diagnosis_group == group, scpca_sample_id %in% non_multiplex_samples) |> 
       dplyr::pull(scpca_sample_id)
     
+    scratch_dir <- here::here("scratch", group)
+    fs::dir_create(scratch_dir)
+    
     message(glue::glue("Creating dot plot for {group}"))
     
     # create plot
     combined_plot <- marker_gene_dotplot(
       sample_ids = ids,
+      scratch_dir, 
       consensus_results_dir,
       validation_groups_dt,
       markers_dt,

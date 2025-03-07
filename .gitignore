@@ -14,4 +14,4 @@ s3_files
 *.ai
 
 # scratch directory 
-scripts/scratch/*
+scratch/*
