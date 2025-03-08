@@ -43,10 +43,17 @@ marker_gene_dotplot <- function(
     data.table::rbindlist(fill = TRUE, use.names = TRUE) |>
     as_duckdb_tibble(prudence = "thrifty")
   
-  gene_exp_df <- gene_exp_files |> 
-    purrr::map(fread) |>
-    data.table::rbindlist(fill = TRUE, use.names = TRUE) |>
-    as_duckdb_tibble(prudence = "thrifty") |>
+  
+  gene_exp_csv <- tempfile(fileext = ".csv")
+  on.exit(unlink(gene_exp_csv), add = TRUE)
+  csv_append = FALSE
+  for (f in gene_exp_files){
+    gene_exp_df <- fread(f)
+    fwrite(gene_exp_df, gene_exp_csv, append = csv_append)
+    csv_append = TRUE # after the first, append
+  }
+
+  gene_exp_df <- read_csv_duckdb(gene_exp_csv)|>
     mutate(detected = logcounts > 0)
   
   # Join all consensus results and marker gene info
