@@ -5,6 +5,7 @@
 # packages required for functions
 library(ggplot2)
 library(patchwork)
+library(data.table)
 library(duckplyr)
 
 #' Dot plot showing expression of marker genes across assigned cell types
@@ -33,21 +34,20 @@ marker_gene_dotplot <- function(
   gene_exp_files <- gene_exp_files[basename(dirname(gene_exp_files)) %in% sample_ids]
   
   # convert to duckdb
-  validation_groups_df <- as_tibble(validation_groups_df) |>  as_duckdb_tibble()
+  validation_groups_df <- validation_groups_df |>  as_duckdb_tibble()
   markers_df <- as_tibble(markers_df) |> as_duckdb_tibble()
   
   # read in files 
   consensus_df <- celltype_files |> 
-    purrr::map(readr::read_tsv, show_col_types = FALSE) |>
-    purrr::list_rbind() |>
-    as_tibble() |>
-    as_duckdb_tibble()
+    purrr::map(fread) |>
+    data.table::rbindlist(fill = TRUE, use.names = TRUE) |>
+    as_duckdb_tibble(prudence = "thrifty")
   
   gene_exp_df <- gene_exp_files |> 
-    purrr::map(readr::read_tsv, show_col_types = FALSE) |>
-    purrr::list_rbind() |>
-    as_tibble() |>
-    as_duckdb_tibble()
+    purrr::map(fread) |>
+    data.table::rbindlist(fill = TRUE, use.names = TRUE) |>
+    as_duckdb_tibble(prudence = "thrifty") |>
+    mutate(detected = logcounts > 0)
   
   # Join all consensus results and marker gene info
   consensus_df <- consensus_df |> 
@@ -57,8 +57,7 @@ marker_gene_dotplot <- function(
     left_join(gene_exp_df, by = c("barcodes", "library_id")) |> 
     # add marker gene information (associated validation group annotation, gene observed count, percent tissues)
     # account for the same gene being present in multiple cell types 
-    left_join(markers_df, by = "ensembl_gene_id", relationship = "many-to-many") |> 
-    mutate(detected = logcounts > 0)
+    left_join(markers_df, by = "ensembl_gene_id", relationship = "many-to-many")
   
   # remove extra data frame
   rm(gene_exp_df)
@@ -79,8 +78,8 @@ marker_gene_dotplot <- function(
   group_stats_df <- consensus_df |> 
     # for each assigned cell type/marker gene combo get total detected and mean expression
     # group by both broad group and validation group to account for genes that are expressed in more than one cell type
-    group_by(broad_celltype_group, ensembl_gene_id, validation_group_annotation) |>
     summarize(
+      .by = c("broad_celltype_group", "ensembl_gene_id", "validation_group_annotation"),
       detected_count = sum(detected),
       mean_exp = mean(logcounts)
     ) |> 
@@ -90,8 +89,8 @@ marker_gene_dotplot <- function(
     # now get the mean expression/ mean percentage across all marker genes for a given validation group
     # here the broad_celltype_group is the final assigned annotation for that group of cells 
     # the validation_group_annotation refers to the cell type that marker gene is associated with 
-    group_by(broad_celltype_group, validation_group_annotation) |> 
     mutate(
+      .by = c("broad_celltype_group", "validation_group_annotation"),
       # calculate mean expression/detected across all markers for a specific group 
       all_markers_mean_exp = mean(mean_exp),
       all_markers_detected_count = mean(detected_count)
@@ -99,7 +98,6 @@ marker_gene_dotplot <- function(
     left_join(total_cells_df, by = c("broad_celltype_group")) |> 
     # for plotting we're only going to look at any cell types with > 50 cells otherwise these plots can get wild 
     filter(total_cells > 50) |> 
-    rowwise() |> 
     mutate(
       # get total percent expressed
       percent_exp = (detected_count/total_cells) * 100,
