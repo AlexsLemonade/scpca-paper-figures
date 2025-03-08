@@ -41,7 +41,7 @@ marker_gene_dotplot <- function(
   )
   gene_exp_files <- gene_exp_files[basename(dirname(gene_exp_files)) %in% sample_ids]
 
-  # convert to duckdb
+  # convert to duckdb (intermediate tibble to avoid duckdb error)
   validation_groups_df <- as_tibble(validation_groups_df) |> as_duckdb_tibble()
   markers_df <- as_tibble(markers_df) |> as_duckdb_tibble()
 
