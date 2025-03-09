@@ -42,7 +42,7 @@ marker_gene_dotplot <- function(
   # Use DuckDB for dplyr functions
   suppressMessages(duckplyr::methods_overwrite())
   
-  # # convert to duckdb (intermediate tibble to avoid duckdb error with readr objects)
+  # convert to duckdb (intermediate data frame to avoid duckdb error with readr objects)
   validation_groups_df <- as.data.frame(validation_groups_df) |> duckplyr::as_duckdb_tibble()
   markers_df <- as.data.frame(markers_df) |> duckplyr::as_duckdb_tibble()
 
