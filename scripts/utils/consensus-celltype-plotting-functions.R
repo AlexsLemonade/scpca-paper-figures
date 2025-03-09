@@ -5,7 +5,6 @@
 # packages required for functions
 library(ggplot2)
 library(patchwork)
-library(duckplyr)
 
 #' Dot plot showing expression of marker genes across assigned cell types
 #'
@@ -40,33 +39,36 @@ marker_gene_dotplot <- function(
   )
   gene_exp_files <- gene_exp_files[basename(dirname(gene_exp_files)) %in% sample_ids]
 
-  # convert to duckdb (intermediate tibble to avoid duckdb error)
-  validation_groups_df <- as_tibble(validation_groups_df) |> as_duckdb_tibble()
-  markers_df <- as_tibble(markers_df) |> as_duckdb_tibble()
+  # Use DuckDB for dplyr functions
+  suppressMessages(duckplyr::methods_overwrite())
+  
+  # # convert to duckdb (intermediate tibble to avoid duckdb error with readr objects)
+  validation_groups_df <- as.data.frame(validation_groups_df) |> duckplyr::as_duckdb_tibble()
+  markers_df <- as.data.frame(markers_df) |> duckplyr::as_duckdb_tibble()
 
   # read in files directly to duckdb tables
   # specify all varchar for consensus to avoid parsing error
-  consensus_df <- read_csv_duckdb(celltype_files, options = list(sep = "\t", union_by_name = TRUE)) 
+  consensus_df <- duckplyr::read_csv_duckdb(celltype_files, options = list(sep = "\t", union_by_name = TRUE)) 
 
-  gene_exp_df <- read_csv_duckdb(gene_exp_files, options = list(sep = "\t", union_by_name = TRUE)) |>
-    mutate(detected = logcounts > 0)
+  gene_exp_df <- duckplyr::read_csv_duckdb(gene_exp_files, options = list(sep = "\t", union_by_name = TRUE)) |>
+    dplyr::mutate(detected = logcounts > 0)
 
   # Join all consensus results and marker gene info
   consensus_df <- consensus_df |>
     # add in broad cell type group which is used for plotting
     # groups similar cell types together
-    left_join(validation_groups_df, by = "consensus_annotation") |>
-    left_join(gene_exp_df, by = c("barcodes", "library_id")) |>
+    dplyr::left_join(validation_groups_df, by = "consensus_annotation") |>
+    dplyr::left_join(gene_exp_df, by = c("barcodes", "library_id")) |>
     # add marker gene information (associated validation group annotation, gene observed count, percent tissues)
     # account for the same gene being present in multiple cell types
-    left_join(markers_df, by = "ensembl_gene_id", relationship = "many-to-many")
+    dplyr::left_join(markers_df, by = "ensembl_gene_id", relationship = "many-to-many")
 
   # prep for plots
   # get total number of cells per final annotation group
   total_cells_df <- consensus_df |>
-    select(library_id, barcodes, broad_celltype_group) |>
-    distinct() |>
-    count(broad_celltype_group, name = "total_cells")
+    dplyr::select(library_id, barcodes, broad_celltype_group) |>
+    dplyr::distinct() |>
+    dplyr::count(broad_celltype_group, name = "total_cells")
 
   # table with one row per unique broad cell type/ marker gene combination
   # first all cells in with the same broad_celltype_group (determined based on consensus_annotation) are grouped together
@@ -76,27 +78,27 @@ marker_gene_dotplot <- function(
   group_stats_df <- consensus_df |>
     # for each assigned cell type/marker gene combo get total detected and mean expression
     # group by both broad group and validation group to account for genes that are expressed in more than one cell type
-    summarize(
+    dplyr::summarize(
       .by = c("broad_celltype_group", "ensembl_gene_id", "validation_group_annotation"),
       detected_count = sum(detected),
       mean_exp = mean(logcounts)
     ) |>
     # add in validation group for marker genes
     # this includes all possible marker genes and all possible validation group assignments
-    left_join(markers_df, by = c("ensembl_gene_id", "validation_group_annotation"), relationship = "many-to-many") |>
+    dplyr::left_join(markers_df, by = c("ensembl_gene_id", "validation_group_annotation"), relationship = "many-to-many") |>
     # now get the mean expression/ mean percentage across all marker genes for a given validation group
     # here the broad_celltype_group is the final assigned annotation for that group of cells
     # the validation_group_annotation refers to the cell type that marker gene is associated with
-    mutate(
+    dplyr::mutate(
       .by = c("broad_celltype_group", "validation_group_annotation"),
       # calculate mean expression/detected across all markers for a specific group
       all_markers_mean_exp = mean(mean_exp),
       all_markers_detected_count = mean(detected_count)
     ) |> # add total cells
-    left_join(total_cells_df, by = c("broad_celltype_group")) |>
+    dplyr::left_join(total_cells_df, by = c("broad_celltype_group")) |>
     # for plotting we're only going to look at any cell types with > 50 cells otherwise these plots can get wild
-    filter(total_cells > 50) |>
-    mutate(
+    dplyr::filter(total_cells > 50) |>
+    dplyr::mutate(
       # get total percent expressed
       percent_exp = (detected_count / total_cells) * 100,
       all_markers_percent_exp = (all_markers_detected_count / total_cells) * 100,
@@ -107,7 +109,7 @@ marker_gene_dotplot <- function(
 
   # get list of celltypes to keep and assign colors
   celltype_groups <- group_stats_df |>
-    pull(broad_celltype_group) |>
+    dplyr::pull(broad_celltype_group) |>
     unique() |>
     as.character()
 
@@ -115,32 +117,31 @@ marker_gene_dotplot <- function(
   # we will only plot the marker genes for cell types that are part of the assigned broad validation group for this group of samples
   # we don't care about plotting marker genes for cell types that aren't present here
   filtered_markers_df <- markers_df |>
-    filter(
+    dplyr::filter(
       validation_group_annotation %in% celltype_groups,
       gene_symbol %in% group_stats_df$gene_symbol
     )
 
   # specify x axis order for dotplot
   marker_gene_order <- filtered_markers_df |>
-    pull(gene_symbol)
+    dplyr::pull(gene_symbol)
 
   # set order for cell types
   celltype_order <- unique(filtered_markers_df$validation_group_annotation)
 
   # filter out low expressed genes
   dotplot_df <- group_stats_df |>
-    filter(mean_exp > 0, percent_exp > 10) |>
-    arrange(broad_celltype_group) |>
+    dplyr::filter(mean_exp > 0, percent_exp > 10) |>
+    dplyr::arrange(broad_celltype_group) |>
     # add a label for the plot
-    mutate(y_label = as.factor(glue::glue("{broad_celltype_group} ({total_cells})"))) |>
+    dplyr::mutate(y_label = as.factor(glue::glue("{broad_celltype_group} ({total_cells})"))) |>
     # remove marker genes that aren't present in final annotations and set x axis order
-    filter(gene_symbol %in% marker_gene_order) |>
-    mutate(
+    dplyr::filter(gene_symbol %in% marker_gene_order) |>
+    dplyr::mutate(
       # set orders of gene symbol and validation groups
       gene_symbol = factor(gene_symbol, levels = marker_gene_order),
       validation_group_annotation = factor(validation_group_annotation, levels = celltype_order)
-    ) |>
-    as_tibble()
+    )
 
 
   # make dotplot with marker gene exp
@@ -185,5 +186,6 @@ marker_gene_dotplot <- function(
   combined_plot <- color_bar / dotplot +
     patchwork::plot_layout(ncol = 1, heights = c(0.1, 4))
 
+  suppressMessages(duckplyr::methods_restore()) # back to dplyr outside the function
   return(combined_plot)
 }
