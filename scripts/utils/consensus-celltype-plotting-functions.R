@@ -5,7 +5,6 @@
 # packages required for functions
 library(ggplot2)
 library(patchwork)
-library(data.table)
 library(duckplyr)
 
 #' Dot plot showing expression of marker genes across assigned cell types
