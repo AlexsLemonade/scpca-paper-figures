@@ -45,23 +45,11 @@ marker_gene_dotplot <- function(
   validation_groups_df <- as_tibble(validation_groups_df) |> as_duckdb_tibble()
   markers_df <- as_tibble(markers_df) |> as_duckdb_tibble()
 
-  # read in files
-  consensus_df <- celltype_files |>
-    purrr::map(fread) |>
-    data.table::rbindlist(fill = TRUE, use.names = TRUE) |>
-    as_duckdb_tibble(prudence = "thrifty")
+  # read in files directly to duckdb tables
+  # specify all varchar for consensus to avoid parsing error
+  consensus_df <- read_csv_duckdb(celltype_files, options = list(sep = "\t", union_by_name = TRUE)) 
 
-
-  # use a tempfile and read_csv_duckdb() to reduce memory usage for reading in gene expression files
-  gene_exp_csv <- tempfile(fileext = ".csv")
-  on.exit(unlink(gene_exp_csv), add = TRUE)
-  csv_append <- FALSE
-  for (f in gene_exp_files) {
-    gene_exp_df <- fread(f)
-    fwrite(gene_exp_df, gene_exp_csv, append = csv_append)
-    csv_append <- TRUE # after the first, append
-  }
-  gene_exp_df <- read_csv_duckdb(gene_exp_csv) |>
+  gene_exp_df <- read_csv_duckdb(gene_exp_files, options = list(sep = "\t", union_by_name = TRUE)) |>
     mutate(detected = logcounts > 0)
 
   # Join all consensus results and marker gene info
