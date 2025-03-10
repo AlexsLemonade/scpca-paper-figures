@@ -124,7 +124,8 @@ consensus_cell_types <- consensus_ref_df |>
   dplyr::select(consensus_annotation, original_panglao_name) |>
   dplyr::distinct()
 
-# Create the consensus gene sets 
+# For each consensus group, determine the (unique) panglao marker genes that fed into it.
+# This creates a table with columns `cell_type_name`, `ensembl_id`, and `observed_in_singlecell`
 consensus_genesets_df <- split(consensus_cell_types, consensus_cell_types$consensus_annotation) |>
   purrr::map(
     \(df) {
