@@ -300,21 +300,34 @@ ggplot(residuals_df) +
 
 ## Export
 
-We'll export the underlying data (so that we retain Ensembl gene ids for next steps) and additive models as RDS files separately for each project.
+We'll export both the additive model objects as RDS files and the underlying data, including Ensembl IDs and residuals, as TSV files separately for each project.
 
 ```{r}
 all_models |>
   purrr::iwalk(
     \(model_list, project_id) {
+      
       threshold_str <- ifelse(params$expr_threshold < 0, "all-genes", glue::glue("threshold-{params$expr_threshold}"))
-      output_file <- file.path(output_dir, glue::glue("{project_id}_bulk-pseudobulk-model_{threshold_str}.rds"))
+      
+      # Export model to rds file
+      fit <- model_list[["fit_additive"]]
       readr::write_rds(
-        list(
-          data = project_df_list[[project_id]],
-          model = model_list[["fit_additive"]]
-        ), 
-        output_file
+        fit, 
+        file.path(
+          output_dir, 
+          glue::glue("{project_id}_bulk-pseudobulk-model_{threshold_str}.rds")
+        )
       )
+
+      # Prepare and export data to tsv file
+      output_data <- project_df_list[[project_id]] |>
+        dplyr::mutate(residual = resid(fit)) |>
+        readr::write_tsv(
+          file.path(
+            output_dir, 
+            glue::glue("{project_id}_bulk-pseudobulk-data_{threshold_str}.tsv")
+          )
+        )
   }
 )
 ```
