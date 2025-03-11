@@ -21,6 +21,7 @@ marker_gene_dotplot <- function(
     validation_groups_df,
     markers_df,
     celltype_colors) {
+  
   # list all cell type assignments files
   consensus_results_files <- list.files(
     consensus_results_dir,
@@ -85,23 +86,13 @@ marker_gene_dotplot <- function(
     ) |>
     # add in validation group for marker genes
     # this includes all possible marker genes and all possible validation group assignments
-    dplyr::left_join(markers_df, by = c("ensembl_gene_id", "validation_group_annotation"), relationship = "many-to-many") |>
-    # now get the mean expression/ mean percentage across all marker genes for a given validation group
-    # here the broad_celltype_group is the final assigned annotation for that group of cells
-    # the validation_group_annotation refers to the cell type that marker gene is associated with
-    dplyr::mutate(
-      .by = c("broad_celltype_group", "validation_group_annotation"),
-      # calculate mean expression/detected across all markers for a specific group
-      all_markers_mean_exp = mean(mean_exp),
-      all_markers_detected_count = mean(detected_count)
-    ) |> # add total cells
+    dplyr::left_join(markers_df, by = c("ensembl_gene_id", "validation_group_annotation"), relationship = "many-to-many") |> # add total cells
     dplyr::left_join(total_cells_df, by = c("broad_celltype_group")) |>
     # for plotting we're only going to look at any cell types with > 50 cells otherwise these plots can get wild
     dplyr::filter(total_cells > 50) |>
     dplyr::mutate(
       # get total percent expressed
       percent_exp = (detected_count / total_cells) * 100,
-      all_markers_percent_exp = (all_markers_detected_count / total_cells) * 100,
       # account for NA/unknowns and set axes order
       broad_celltype_group = tidyr::replace_na(broad_celltype_group, "unknown") |>
         factor(levels = c(unique(markers_df$validation_group_annotation), "unknown"))
@@ -139,6 +130,7 @@ marker_gene_dotplot <- function(
     dplyr::filter(gene_symbol %in% marker_gene_order) |>
     dplyr::mutate(
       # set orders of gene symbol and validation groups
+      y_label = factor(y_label, levels = unique(y_label)),
       gene_symbol = factor(gene_symbol, levels = marker_gene_order),
       validation_group_annotation = factor(validation_group_annotation, levels = celltype_order)
     )
