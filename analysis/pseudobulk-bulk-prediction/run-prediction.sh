@@ -44,6 +44,7 @@ mkdir -p $ora_html_dir
 # These files are in the top-level s3_files directory
 consensus_celltype_dir="../../s3_files/cell-type-consensus-results"
 
+# This convenience file keeps track of the bulk library & sample ids used
 map_file="${data_dir}/bulk-library-sample-ids.tsv"
 
 
@@ -103,7 +104,6 @@ for project_dir in $scpca_dir/*; do
 
 done
 
-
 # Build and export models to results/models across different thresholds for expression
 for expr_threshold in -1 0 0.25; do
 
@@ -146,11 +146,16 @@ fi
 ora_reps=10000
 summary_function="median" # use median of residuals when summarizing project
 sd_threshold=2.5 # outliers are >2.5 sd
+use_observed_only=0 # use all genesets, not only those for observed cell types
 for project_dir in $scpca_dir/*; do
   project_id=$(basename $project_dir)
 
   Rscript -e "rmarkdown::render('${notebook_dir}/perform-ora.Rmd',
-                    params = list(project_id = '$project_id', reps = ${ora_reps}, summary_function = '${summary_function}', sd_threshold = ${sd_threshold}),
+                    params = list(project_id = '$project_id',
+                                  reps = ${ora_reps},
+                                  summary_function = '${summary_function}',
+                                  sd_threshold = ${sd_threshold},
+                                  use_observed_only = ${use_observed_only}),
                     output_file = 'perform-ora_${project_id}.nb.html',
                     output_dir = '${ora_html_dir}')"
 done
