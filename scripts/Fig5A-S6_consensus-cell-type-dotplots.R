@@ -4,9 +4,6 @@
 # in consensus cell types 
 # one png file will be saved for each of the 4 diagnoses groups 
 
-# load project
-renv::load()
-
 library(ggplot2)
 library(patchwork)
 

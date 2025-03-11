@@ -111,7 +111,12 @@ marker_gene_dotplot <- function(
     dplyr::filter(
       validation_group_annotation %in% celltype_groups,
       gene_symbol %in% group_stats_df$gene_symbol
-    )
+    ) |> 
+    # ensure order matches the order of the legend
+    dplyr::mutate(
+      validation_group_annotation = factor(validation_group_annotation, levels = names(celltype_colors))
+    ) |> 
+    dplyr::arrange(validation_group_annotation)
 
   # specify x axis order for dotplot
   marker_gene_order <- filtered_markers_df |>
