@@ -3,24 +3,48 @@ astrocyte	bulk	7.101451566996616	6.999300069993001e-4	0.0013998600139986002
 astrocyte	pseudobulk	0	1	1
 B cell	bulk	0	1	1
 B cell	pseudobulk	0	1	1
+blood vessel endothelial cell	bulk	7.030355186981693	0.0028997100289971	0.0057994200579942
+blood vessel endothelial cell	pseudobulk	0	1	1
+CD4-positive, alpha-beta T cell	bulk	0	1	1
+CD4-positive, alpha-beta T cell	pseudobulk	0	1	1
 dendritic cell	bulk	0	1	1
 dendritic cell	pseudobulk	0	1	1
+ecto-epithelial cell	bulk	3.6021022225788335	0.05469453054694531	0.10938906109389061
+ecto-epithelial cell	pseudobulk	0	1	1
 endothelial cell	bulk	14.981593038821956	9.999000099990002e-5	1.9998000199980003e-4
 endothelial cell	pseudobulk	0	1	1
+eosinophil	bulk	0	1	1
+eosinophil	pseudobulk	0	1	1
+epithelial cell	bulk	3.6021022225788335	0.05469453054694531	0.10938906109389061
+epithelial cell	pseudobulk	0	1	1
+extracellular matrix secreting cell	bulk	19.35440860215054	0.006199380061993801	0.012398760123987601
+extracellular matrix secreting cell	pseudobulk	0	1	1
+glial cell	bulk	3.7433391798212643	0.012198780121987801	0.024397560243975602
+glial cell	pseudobulk	0	1	1
+granulocyte	bulk	0	1	1
+granulocyte	pseudobulk	0	1	1
 innate lymphoid cell	bulk	0	1	1
 innate lymphoid cell	pseudobulk	0	1	1
 lymphocyte of B lineage	bulk	0	1	1
 lymphocyte of B lineage	pseudobulk	0	1	1
+macroglial cell	bulk	0	1	1
+macroglial cell	pseudobulk	0	1	1
 macrophage	bulk	0.7877110677701052	0.720927907209279	1
 macrophage	pseudobulk	0	1	1
+mature alpha-beta T cell	bulk	0	1	1
+mature alpha-beta T cell	pseudobulk	0	1	1
 mature B cell	bulk	0	1	1
 mature B cell	pseudobulk	0	1	1
 mature T cell	bulk	2.0103046594982077	0.26677332266773324	0.5335466453354665
 mature T cell	pseudobulk	0.4486388384754991	0.8853114688531147	0.8853114688531147
+megakaryocyte	bulk	3.143296518943101	0.2786721327867213	0.5573442655734426
+megakaryocyte	pseudobulk	0	1	1
 memory B cell	bulk	0	1	1
 memory B cell	pseudobulk	0	1	1
 memory T cell	bulk	2.6771465999761817	0.3193680631936806	0.5602439756024398
 memory T cell	pseudobulk	1.2071420836040718	0.5602439756024398	0.5602439756024398
+microvascular endothelial cell	bulk	9.64608788853162	0.10118988101189881	0.20237976202379762
+microvascular endothelial cell	pseudobulk	0	1	1
 monocyte	bulk	2.987495843032923	0.15378462153784622	0.30756924307569244
 monocyte	pseudobulk	0	1	1
 mononuclear phagocyte	bulk	1.2399556970787762	0.48405159484051596	0.9681031896810319
@@ -37,9 +61,13 @@ neuron associated cell	bulk	8.711416162556226	2.9997000299970003e-4	5.9994000599
 neuron associated cell	pseudobulk	0	1	1
 neutrophil	bulk	0	1	1
 neutrophil	pseudobulk	0	1	1
+pericyte	bulk	15.74159663865546	9.999000099990002e-5	1.9998000199980003e-4
+pericyte	pseudobulk	0	1	1
 plasma cell	bulk	0	1	1
 plasma cell	pseudobulk	0	1	1
 regulatory T cell	bulk	7.6146556100863085	0.12918708129187081	0.25837416258374163
 regulatory T cell	pseudobulk	0	1	1
+somatic stem cell	bulk	0	1	1
+somatic stem cell	pseudobulk	0	1	1
 T cell	bulk	2.1289373814041745	0.24947505249475052	0.49895010498950104
 T cell	pseudobulk	0.47492209843343153	0.8743125687431257	0.8743125687431257
