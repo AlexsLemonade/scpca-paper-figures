@@ -9,7 +9,8 @@ renv::load()
 
 library(ggplot2)
 library(patchwork)
-library(data.table)
+
+options(readr.show_col_types = FALSE)
 
 celltype_plotting_functions <- here::here("scripts", "utils", "consensus-celltype-plotting-functions.R")
 source(celltype_plotting_functions) # imports `marker_gene_dotplot()`
@@ -21,7 +22,7 @@ pdf_dir <- here::here("figures", "pdfs")
 # Define paths to individual files 
 output_pdf_files <- c(
   "Brain and CNS" = file.path(pdf_dir, "Fig5A_brain-dotplot.pdf"),
-  # "Leukemia" = file.path(pdf_dir, "FigS6A_leukemia-dotplot.pdf")
+  "Leukemia" = file.path(pdf_dir, "FigS6A_leukemia-dotplot.pdf"),
   "Sarcoma" = file.path(pdf_dir, "FigS6B_sarcoma-dotplot.pdf"),
   "Other solid tumors" = file.path(pdf_dir, "FigS6C_other-solid-tumors-dotplot.pdf")
 )
@@ -52,12 +53,12 @@ celltype_colors <- readr::read_tsv(color_palette_file) |>
 project_whitelist <- readLines(project_whitelist_file)
 
 # read in validation markers as data.tables
-markers_dt <- fread(marker_gene_table_url) |> 
+markers_df <- readr::read_tsv(marker_gene_table_url) |> 
   # only keep genes unique to a single cell type except HPC which doesn't have any unique genes
   # for HPC we keep all 6 marker genes
   dplyr::filter(gene_observed_count == 1 | validation_group_annotation == "hematopoietic precursor cell")
 
-validation_groups_dt <- fread(validation_group_url) |> 
+validation_groups_df <- readr::read_tsv(validation_group_url) |> 
   # rename final assigned group to avoid conflicts when merging in marker gene expression 
   # we want to separate the marker gene group from the actual cell type annotation
   dplyr::select(consensus_annotation, broad_celltype_group = validation_group_annotation)
@@ -93,14 +94,14 @@ plot_list <- output_pdf_files |>
     combined_plot <- marker_gene_dotplot(
       sample_ids = ids,
       consensus_results_dir,
-      validation_groups_dt,
-      markers_dt,
+      validation_groups_df,
+      markers_df,
       celltype_colors
     )
     
     # save plot 
     ggsave(file, plot = combined_plot, width = 23, height = 10)
-    
+    gc() # clean up after each run
   })
 
 
