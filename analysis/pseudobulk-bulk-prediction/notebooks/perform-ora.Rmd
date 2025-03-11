@@ -12,6 +12,7 @@ params:
   summary_function: "median"
   sd_threshold: 2.5
   reps: 10000
+  use_observed_only: FALSE
 ---
 
 ## Introduction
@@ -62,7 +63,7 @@ data_dir <- here::here("analysis", "pseudobulk-bulk-prediction", "data")
 
 model_data_file <- file.path(
   model_dir, 
-  glue::glue("{params$project_id}_bulk-pseudobulk-model_threshold-0.rds")
+  glue::glue("{params$project_id}_bulk-pseudobulk-data_threshold-0.tsv")
 ) 
 geneset_file <- file.path(
   data_dir, 
@@ -73,6 +74,13 @@ output_file <- file.path(
   result_dir, 
   glue::glue("{params$project_id}_ORA-odds-ratios.tsv")
 )
+if (params$use_observed_only) {
+  output_file <- stringr::str_replace(
+    output_file,
+    ".tsv", 
+    "_observed-genesets-only.tsv"
+  )
+}
 ```
 
 ### Functions
@@ -120,8 +128,13 @@ analyze_outliers <- function(residual_df, geneset_ensembl_ids, outlier_threshold
 
 
 ```{r}
-model_data <- readr::read_rds(model_data_file)
+model_data <- readr::read_tsv(model_data_file)
 geneset_df <- readr::read_tsv(geneset_file)
+
+if (params$use_observed_only) {
+  geneset_df <- geneset_df |>
+    dplyr::filter(observed_in_singlecell)
+} 
 geneset_list <- split(geneset_df, geneset_df$cell_type_name)
 geneset_names <- names(geneset_list)
 ```
@@ -132,10 +145,6 @@ geneset_names <- names(geneset_list)
 ```{r}
 # Summarize residuals to get one value per gene
 summary_residual_df <- model_data |>
-  purrr::pluck("data") |>
-  dplyr::mutate(
-    residual = unname(resid(model_data$model))
-  ) |>
   dplyr::group_by(ensembl_id) |>
   # summarize based on parameter
   dplyr::summarize(
