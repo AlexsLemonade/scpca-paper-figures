@@ -42,6 +42,10 @@ Below is a summary of all figures and tables in the paper.
 - A. Overview of cell type annotation workflow.
 - B. Comparison of cell type annotations obtained using `SingleR` and `CellAssign`.
 
+**Figure 5**
+
+- A. Dot plot summarizing marker gene expression in consensus cell types in Brain and CNS samples. 
+
 **Supplemental Figure 1**
 
 - A. Comparison of run time and peak memory usage between Alevin-fry and Cell Ranger.
@@ -68,6 +72,13 @@ Comparison of delta median statistic obtained from running `SingleR` with differ
 
 - A. UMAP displaying cell type annotations from `CellAssign` for an example ScPCA library.
 - B. Heatmap comparing submitter provided annotations to `CellAssign` and `SingleR` annotations for an example ScPCA library.
+
+**Supplemental Figure 6**
+
+- A. Dot plot summarizing marker gene expression in consensus cell types in Leukemia samples. 
+- B. Dot plot summarizing marker gene expression in consensus cell types in Sarcoma samples. 
+- C. Dot plot summarizing marker gene expression in consensus cell types in Other solid tumor samples. 
+
 
 **Table S1**
 
