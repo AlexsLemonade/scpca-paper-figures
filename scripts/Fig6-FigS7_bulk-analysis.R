@@ -21,6 +21,7 @@ si_projects   <- c("SCPCP000006", "SCPCP000017")
 analysis_dir <- here::here("analysis", "pseudobulk-bulk-prediction")
 result_dir <- file.path(analysis_dir, "results")
 tables_dir <- here::here("manuscript-numbers")
+pdf_dir <- here::here("figures", "pdfs")
 sample_metadata_file <- here::here("s3_files", "scpca-library-metadata.tsv")
 
 # This file contains all samples which were _initially_ considered before 
@@ -61,11 +62,28 @@ data_files <- list.files(
 
 # Output files
 bulk_numbers_tsv <- file.path(tables_dir, "bulk-analysis-counts.tsv")
-
+main_pdf <- file.path(pdf_dir, "Fig6_bulk-results.pdf")
+si_pdf <- file.path(pdf_dir, "FigS8_bulk-results.pdf")
 
 # Functions --------------------------------------------------------------------
 
-# Function to plot the odds ratio barplot
+
+# Function to plot the bulk ~ pseudobulk scatterplot panels
+plot_scatterplot <- function(df) {
+  ggplot(df) + 
+    aes(x = pseudobulk, y = bulk) + 
+    geom_bin_2d(binwidth = 0.25) + 
+    scale_fill_viridis_c(limits = c(0, 800), oob = scales::squish, option = "inferno") +
+    geom_smooth(method = "lm", color = "paleturquoise", linewidth = 0.75) + 
+    facet_wrap(vars(project_facet)) +
+    labs(
+      x = "Pseudobulk expression", 
+      y = "Bulk expression", 
+      fill = "Point density"
+    )
+}
+
+# Function to plot the odds ratio barplot panels
 plot_odds_ratios <- function(df) {
   ggplot(df) +
     aes(
@@ -74,18 +92,22 @@ plot_odds_ratios <- function(df) {
       fill = -log10(p_adj_bh)
     ) +
     geom_col() +
+    geom_text(
+      aes(
+        label = round(odds_ratio, 2), 
+        y = odds_ratio + 0.75
+      ), 
+      size = 2.5
+    ) +
     scale_fill_viridis_c() +
     tidytext::scale_x_reordered() + # gets the labels back to only geneset_cell_type
     facet_wrap(vars(project_facet), scales = "free_x", nrow = 1) +
     labs(
-      x = "Gene set (cell type)", 
+      x = "Consensus cell type", 
       y = "Odds ratio", 
-      fill = "-Log10 adjusted p-value (BH)"
+      fill = "-Log10(P)"
     ) +
-    theme(
-      legend.position = "bottom", 
-      axis.text.x = element_text(angle = 30, hjust = 1, size = 8)
-    )
+    theme(axis.text.x = element_text(angle = 30, hjust = 1, size = 7))
 }
 
 
@@ -154,8 +176,41 @@ bulk_table <- bulk_table |>
     n_ora_genesets        = NA_integer_ # the sum of this quantity isn't relevant
   )
 
+# Scatterplot panels -----------------------------------------------------------
 
-# Odds ratio panels -----------------------------------------------------------------
+# Read in data
+model_data_df <- data_files |>
+  purrr::map(readr::read_tsv) |>
+  purrr::list_rbind(names_to = "scpca_project_id") |>
+  dplyr::select(scpca_project_id, bulk, pseudobulk)
+
+# Prepare data frame for plotting
+model_data_df <- model_data_df |>
+  # join with the number of samples in each project
+  dplyr::inner_join(
+    dplyr::select(bulk_table, scpca_project_id, n_samples_used)
+  ) |>
+  # create faceting columns with the sample count info
+  dplyr::mutate(
+    project_facet = glue::glue("{scpca_project_id} (N={n_samples_used})")
+  )
+
+
+# Main text panel:
+scatter_panel_main <- model_data_df |>
+  dplyr::filter(scpca_project_id %in% main_projects) |>
+  plot_scatterplot()
+  
+
+# SI panel:
+scatter_panel_si <- model_data_df |>
+  dplyr::filter(scpca_project_id %in% si_projects) |>
+  plot_scatterplot()
+
+
+
+
+# Odds ratio panels ------------------------------------------------------------
 
 # Read in odds ratio results and filter to significant only
 odds_df <- odds_files |>
@@ -175,7 +230,7 @@ odds_df <- odds_df |>
     # faceting with the sample count info
     project_facet = glue::glue("{scpca_project_id} (N={n_samples_used})"), 
     # wrapped gene set names for space
-    geneset_cell_type = stringr::str_wrap(geneset_cell_type, 25)
+    geneset_cell_type = stringr::str_wrap(geneset_cell_type, 20)
   )
 
 # Main text panel:
@@ -191,6 +246,23 @@ odds_panel_si <- odds_df |>
 
 
 
+# Combine panels ---------------------------------------------------------------
+
+main_figure <- patchwork::wrap_plots(
+  scatter_panel_main, 
+  odds_panel_main, 
+  ncol = 1
+) 
+
+si_figure <- patchwork::wrap_plots(
+  scatter_panel_si, 
+  odds_panel_si, 
+  ncol = 1
+) 
+
 
 # Export -----------------------------------------------------------------------
+ggsave(main_pdf, main_figure, width = 13, height = 7)
+ggsave(si_pdf, si_figure, width = 10, height = 7)
+
 readr::write_tsv(bulk_table, bulk_numbers_tsv)
