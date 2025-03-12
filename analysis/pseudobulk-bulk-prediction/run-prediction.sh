@@ -41,8 +41,8 @@ mkdir -p $gsea_html_dir
 mkdir -p $ora_html_dir
 
 
-# this is in a different analysis directory
-consensus_celltype_dir="../estimate/data/consensus-celltypes"
+# These files are in the top-level s3_files directory
+consensus_celltype_dir="../../s3_files/cell-type-consensus-results"
 
 map_file="${data_dir}/bulk-library-sample-ids.tsv"
 
