@@ -1,0 +1,7 @@
+scpca_project_id	n_samples_total	n_samples_low_quality	n_samples_used	n_ora_genesets
+SCPCP000001	18	1	17	36
+SCPCP000002	20	2	18	36
+SCPCP000006	39	4	35	31
+SCPCP000009	4	0	4	36
+SCPCP000017	24	1	23	37
+total	105	8	97	NA
