@@ -1,8 +1,10 @@
 # This script prepares gene sets for input to over-representation analysis (ORA) for a given ScPCA project as follows:
-# 1. Identify all unique consensus cell types across the project 
+#
+# 1. Identify all possible consensus cell types which _could_ have been called for the project
 # 2. Identify the PanglaoDB cell types that contributed to those consensus labels
 # 3. Using the scpca-nf PanglaoDB cell type reference for the given project, determine the genes in those PanglaoDB cell types
 # 4. These (unique) genes define the gene set for a given consensus cell type to test in ORA
+# 5. We include an indicator column `observed_in_singlecell` for whether the given gene set was observed in the project's consensus cell types
 
 
 renv::load()
@@ -25,18 +27,18 @@ option_list <- list(
     "--panglao_geneset_file",
     type = "character",
     help = "Path to gene set file used to cell type the given project"
-  ), 
+  ),
   make_option(
     "--output_file",
     type = "character",
     help = "Path to output TSV file to save gene sets."
-  ), 
+  ),
   make_option(
     "--consensus_reference_url",
     type = "character",
-    default = "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv",
+    default = "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv",
     help = "URL with map between consensus cell types and PanglaoDB gene set labels"
-  ), 
+  ),
   make_option(
     "--library_metadata_file",
     type = "character",
@@ -48,7 +50,7 @@ opts <- parse_args(OptionParser(option_list = option_list))
 
 # Checks---------
 stopifnot(
-  "Panglao gene set file not found" = file.exists(opts$panglao_geneset_file), 
+  "Panglao gene set file not found" = file.exists(opts$panglao_geneset_file),
   "Library metadata file not found" = file.exists(opts$library_metadata_file)
 )
 
@@ -57,15 +59,15 @@ consensus_ref_df <- readr::read_tsv(opts$consensus_reference_url)
 
 panglao_df <- readr::read_tsv(opts$panglao_geneset_file) |>
   tidyr::pivot_longer(
-    -ensembl_id, 
-    names_to = "panglao_celltype", 
+    -ensembl_id,
+    names_to = "panglao_celltype",
     values_to = "gene_present"
   )
 
 celltype_files <- list.files(
-  opts$celltype_dir, 
-  pattern = "_processed_consensus-cell-types\\.tsv\\.gz$", 
-  full.names = TRUE, 
+  opts$celltype_dir,
+  pattern = "_processed_consensus-cell-types\\.tsv\\.gz$",
+  full.names = TRUE,
   recursive = TRUE
 ) |>
   purrr::set_names(
@@ -92,11 +94,9 @@ keep_libraries <- library_metadata |>
   dplyr::pull(scpca_library_id) |>
   unique()
 
-
-# Find consensus cell type files for this project ---------------
-
-# nb, "Unknown" will still be included here, but it won't make it through the rest of the code
-present_celltypes <- celltype_files |>
+# Find all the _observed_ consensus cell type files for this project
+# we can use these to add an indicator to the final gene set list
+observed_celltypes <- celltype_files |>
   # only keep relevant libraries
   purrr::keep_at(
     \(library_id) library_id %in% keep_libraries
@@ -104,26 +104,34 @@ present_celltypes <- celltype_files |>
   purrr::map(
     \(f) {
       readr::read_tsv(f) |>
-        dplyr::pull(consensus_annotation) 
-  }) |>
+        dplyr::pull(consensus_annotation)
+    }) |>
   purrr::reduce(c) |>
   unique()
+observed_celltypes <- observed_celltypes[observed_celltypes != "Unknown"]
 
-# Combine these annotations with the consensus map to get their
-# original panglao names
-consenus_panglao_df <- consensus_ref_df |>
-  dplyr::filter(consensus_annotation %in% present_celltypes) |>
+
+# Determine consensus gene sets -------------------
+
+# Find all panglao cell types in the Panglao reference
+panglao_celltypes <- unique(panglao_df$panglao_celltype)
+panglao_celltypes <- panglao_celltypes[panglao_celltypes != "other"]
+
+
+# Determine the consensus cell types they contribute to
+consensus_cell_types <- consensus_ref_df |>
+  dplyr::filter(original_panglao_name %in% panglao_celltypes) |>
   dplyr::select(consensus_annotation, original_panglao_name) |>
-  dplyr::distinct() 
+  dplyr::distinct()
 
 # For each consensus group, determine the (unique) panglao marker genes that fed into it.
-# This creates a table with columns `cell_type_name` and `ensembl_id`
-consensus_genesets_df <- split(consenus_panglao_df, consenus_panglao_df$consensus_annotation) |>
+# This creates a table with columns `cell_type_name`, `ensembl_id`, and `observed_in_singlecell`
+consensus_genesets_df <- split(consensus_cell_types, consensus_cell_types$consensus_annotation) |>
   purrr::map(
     \(df) {
       panglao_df |>
         dplyr::filter(
-          panglao_celltype %in% df$original_panglao_name, 
+          panglao_celltype %in% df$original_panglao_name,
           gene_present == 1
         ) |>
         dplyr::select(ensembl_id) |>
@@ -131,7 +139,10 @@ consensus_genesets_df <- split(consenus_panglao_df, consenus_panglao_df$consensu
     }
   ) |>
   # Convert to TSV for human-readable export
-  purrr::list_rbind(names_to = "cell_type_name")
+  purrr::list_rbind(names_to = "cell_type_name") |>
+  # Now, add an indicator column for whether the gene set (cell type) was observed
+  dplyr::mutate(observed_in_singlecell = cell_type_name %in% observed_celltypes)
+
 
 
 # Export tsv file ------------------------------

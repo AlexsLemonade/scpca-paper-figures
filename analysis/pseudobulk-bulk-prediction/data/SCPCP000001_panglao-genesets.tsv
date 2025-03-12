@@ -1,0 +1,4420 @@
+cell_type_name	ensembl_id	observed_in_singlecell
+astrocyte	ENSG00000106484	TRUE
+astrocyte	ENSG00000134438	TRUE
+astrocyte	ENSG00000160307	TRUE
+astrocyte	ENSG00000110436	TRUE
+astrocyte	ENSG00000131095	TRUE
+astrocyte	ENSG00000112578	TRUE
+astrocyte	ENSG00000144908	TRUE
+astrocyte	ENSG00000101017	TRUE
+astrocyte	ENSG00000079215	TRUE
+astrocyte	ENSG00000068078	TRUE
+astrocyte	ENSG00000121742	TRUE
+astrocyte	ENSG00000171885	TRUE
+astrocyte	ENSG00000166033	TRUE
+astrocyte	ENSG00000143546	TRUE
+astrocyte	ENSG00000134873	TRUE
+astrocyte	ENSG00000162267	TRUE
+astrocyte	ENSG00000101198	TRUE
+astrocyte	ENSG00000164398	TRUE
+astrocyte	ENSG00000103740	TRUE
+astrocyte	ENSG00000255690	TRUE
+astrocyte	ENSG00000135744	TRUE
+astrocyte	ENSG00000170075	TRUE
+astrocyte	ENSG00000080493	TRUE
+astrocyte	ENSG00000169006	TRUE
+astrocyte	ENSG00000132164	TRUE
+astrocyte	ENSG00000126803	TRUE
+astrocyte	ENSG00000147100	TRUE
+astrocyte	ENSG00000131018	TRUE
+astrocyte	ENSG00000211448	TRUE
+astrocyte	ENSG00000130876	TRUE
+astrocyte	ENSG00000054179	TRUE
+astrocyte	ENSG00000004776	TRUE
+astrocyte	ENSG00000164050	TRUE
+astrocyte	ENSG00000213398	TRUE
+astrocyte	ENSG00000146070	TRUE
+astrocyte	ENSG00000166091	TRUE
+astrocyte	ENSG00000170989	TRUE
+astrocyte	ENSG00000148482	TRUE
+astrocyte	ENSG00000187398	TRUE
+astrocyte	ENSG00000170899	TRUE
+astrocyte	ENSG00000155287	TRUE
+astrocyte	ENSG00000164209	TRUE
+astrocyte	ENSG00000108379	TRUE
+astrocyte	ENSG00000180340	TRUE
+astrocyte	ENSG00000187079	TRUE
+astrocyte	ENSG00000140522	TRUE
+astrocyte	ENSG00000109107	TRUE
+astrocyte	ENSG00000152661	TRUE
+astrocyte	ENSG00000130203	TRUE
+astrocyte	ENSG00000148346	TRUE
+astrocyte	ENSG00000125398	TRUE
+astrocyte	ENSG00000026025	TRUE
+astrocyte	ENSG00000126353	TRUE
+astrocyte	ENSG00000129673	TRUE
+astrocyte	ENSG00000164434	TRUE
+astrocyte	ENSG00000184557	TRUE
+astrocyte	ENSG00000182253	TRUE
+astrocyte	ENSG00000140382	TRUE
+astrocyte	ENSG00000072736	TRUE
+astrocyte	ENSG00000167720	TRUE
+astrocyte	ENSG00000105143	TRUE
+astrocyte	ENSG00000134954	TRUE
+astrocyte	ENSG00000187122	TRUE
+astrocyte	ENSG00000101298	TRUE
+astrocyte	ENSG00000110944	TRUE
+astrocyte	ENSG00000169860	TRUE
+astrocyte	ENSG00000266524	TRUE
+astrocyte	ENSG00000152578	TRUE
+astrocyte	ENSG00000198822	TRUE
+astrocyte	ENSG00000175899	TRUE
+astrocyte	ENSG00000185920	TRUE
+astrocyte	ENSG00000179604	TRUE
+astrocyte	ENSG00000204347	TRUE
+astrocyte	ENSG00000171476	TRUE
+astrocyte	ENSG00000123607	TRUE
+astrocyte	ENSG00000165478	TRUE
+astrocyte	ENSG00000169554	TRUE
+astrocyte	ENSG00000014123	TRUE
+astrocyte	ENSG00000021645	TRUE
+astrocyte	ENSG00000165240	TRUE
+astrocyte	ENSG00000185963	TRUE
+astrocyte	ENSG00000103260	TRUE
+astrocyte	ENSG00000089041	TRUE
+astrocyte	ENSG00000146648	TRUE
+astrocyte	ENSG00000155511	TRUE
+astrocyte	ENSG00000273079	TRUE
+astrocyte	ENSG00000198785	TRUE
+astrocyte	ENSG00000110887	TRUE
+astrocyte	ENSG00000150093	TRUE
+astrocyte	ENSG00000007402	TRUE
+astrocyte	ENSG00000038427	TRUE
+astrocyte	ENSG00000102760	TRUE
+astrocyte	ENSG00000179520	TRUE
+astrocyte	ENSG00000186479	TRUE
+astrocyte	ENSG00000181195	TRUE
+astrocyte	ENSG00000148926	TRUE
+astrocyte	ENSG00000136546	TRUE
+astrocyte	ENSG00000102195	TRUE
+astrocyte	ENSG00000149295	TRUE
+astrocyte	ENSG00000050767	TRUE
+astrocyte	ENSG00000106689	TRUE
+astrocyte	ENSG00000105894	TRUE
+astrocyte	ENSG00000188517	TRUE
+astrocyte	ENSG00000117592	TRUE
+astrocyte	ENSG00000103316	TRUE
+astrocyte	ENSG00000162998	TRUE
+astrocyte	ENSG00000169474	TRUE
+astrocyte	ENSG00000115461	TRUE
+astrocyte	ENSG00000092969	TRUE
+B cell	ENSG00000101017	TRUE
+B cell	ENSG00000126353	TRUE
+B cell	ENSG00000116824	TRUE
+B cell	ENSG00000110448	TRUE
+B cell	ENSG00000156738	TRUE
+B cell	ENSG00000117322	TRUE
+B cell	ENSG00000012124	TRUE
+B cell	ENSG00000104921	TRUE
+B cell	ENSG00000110848	TRUE
+B cell	ENSG00000125726	TRUE
+B cell	ENSG00000105369	TRUE
+B cell	ENSG00000007312	TRUE
+B cell	ENSG00000121594	TRUE
+B cell	ENSG00000114013	TRUE
+B cell	ENSG00000049249	TRUE
+B cell	ENSG00000115884	TRUE
+B cell	ENSG00000117586	TRUE
+B cell	ENSG00000240505	TRUE
+B cell	ENSG00000159958	TRUE
+B cell	ENSG00000188389	TRUE
+B cell	ENSG00000211898	TRUE
+B cell	ENSG00000211899	TRUE
+B cell	ENSG00000152689	TRUE
+B cell	ENSG00000204287	TRUE
+B cell	ENSG00000227507	TRUE
+B cell	ENSG00000196735	TRUE
+B cell	ENSG00000151702	TRUE
+B cell	ENSG00000170458	TRUE
+B cell	ENSG00000137872	TRUE
+B cell	ENSG00000167613	TRUE
+B cell	ENSG00000119917	TRUE
+B cell	ENSG00000128322	TRUE
+B cell	ENSG00000107447	TRUE
+B cell	ENSG00000196549	TRUE
+B cell	ENSG00000197471	TRUE
+B cell	ENSG00000177455	TRUE
+B cell	ENSG00000272398	TRUE
+B cell	ENSG00000139193	TRUE
+B cell	ENSG00000109956	TRUE
+B cell	ENSG00000137101	TRUE
+B cell	ENSG00000196092	TRUE
+B cell	ENSG00000132465	TRUE
+B cell	ENSG00000170476	TRUE
+B cell	ENSG00000167656	TRUE
+B cell	ENSG00000162894	TRUE
+B cell	ENSG00000153064	TRUE
+B cell	ENSG00000134109	TRUE
+B cell	ENSG00000128218	TRUE
+B cell	ENSG00000110777	TRUE
+B cell	ENSG00000184164	TRUE
+B cell	ENSG00000099958	TRUE
+B cell	ENSG00000116191	TRUE
+B cell	ENSG00000137478	TRUE
+B cell	ENSG00000175482	TRUE
+B cell	ENSG00000048462	TRUE
+B cell	ENSG00000122986	TRUE
+B cell	ENSG00000132185	TRUE
+B cell	ENSG00000088298	TRUE
+B cell	ENSG00000095585	TRUE
+B cell	ENSG00000153066	TRUE
+B cell	ENSG00000186265	TRUE
+B cell	ENSG00000084070	TRUE
+B cell	ENSG00000134285	TRUE
+B cell	ENSG00000058262	TRUE
+B cell	ENSG00000129128	TRUE
+B cell	ENSG00000269404	TRUE
+B cell	ENSG00000145088	TRUE
+B cell	ENSG00000121966	TRUE
+B cell	ENSG00000023445	TRUE
+B cell	ENSG00000211677	TRUE
+B cell	ENSG00000211679	TRUE
+B cell	ENSG00000211675	TRUE
+B cell	ENSG00000103522	TRUE
+B cell	ENSG00000211592	TRUE
+B cell	ENSG00000169575	TRUE
+B cell	ENSG00000172578	TRUE
+B cell	ENSG00000162739	TRUE
+B cell	ENSG00000109743	TRUE
+B cell	ENSG00000204410	TRUE
+B cell	ENSG00000146094	TRUE
+B cell	ENSG00000112182	TRUE
+B cell	ENSG00000168297	TRUE
+B cell	ENSG00000211896	TRUE
+B cell	ENSG00000211897	TRUE
+B cell	ENSG00000211892	TRUE
+B cell	ENSG00000004468	TRUE
+B cell	ENSG00000081237	TRUE
+B cell	ENSG00000164330	TRUE
+B cell	ENSG00000119866	TRUE
+B cell	ENSG00000196352	TRUE
+B cell	ENSG00000019582	TRUE
+B cell	ENSG00000169442	TRUE
+B cell	ENSG00000239732	TRUE
+B cell	ENSG00000133789	TRUE
+B cell	ENSG00000137309	TRUE
+blood vessel endothelial cell	ENSG00000170456	FALSE
+blood vessel endothelial cell	ENSG00000125378	FALSE
+blood vessel endothelial cell	ENSG00000010704	FALSE
+blood vessel endothelial cell	ENSG00000065320	FALSE
+blood vessel endothelial cell	ENSG00000101000	FALSE
+blood vessel endothelial cell	ENSG00000164867	FALSE
+blood vessel endothelial cell	ENSG00000178726	FALSE
+blood vessel endothelial cell	ENSG00000113083	FALSE
+blood vessel endothelial cell	ENSG00000198844	FALSE
+blood vessel endothelial cell	ENSG00000169418	FALSE
+blood vessel endothelial cell	ENSG00000203883	FALSE
+blood vessel endothelial cell	ENSG00000068001	FALSE
+blood vessel endothelial cell	ENSG00000064989	FALSE
+blood vessel endothelial cell	ENSG00000265107	FALSE
+blood vessel endothelial cell	ENSG00000138061	FALSE
+blood vessel endothelial cell	ENSG00000010327	FALSE
+blood vessel endothelial cell	ENSG00000013016	FALSE
+blood vessel endothelial cell	ENSG00000102010	FALSE
+blood vessel endothelial cell	ENSG00000161638	FALSE
+blood vessel endothelial cell	ENSG00000179104	FALSE
+blood vessel endothelial cell	ENSG00000126368	FALSE
+blood vessel endothelial cell	ENSG00000160447	FALSE
+blood vessel endothelial cell	ENSG00000196502	FALSE
+blood vessel endothelial cell	ENSG00000133687	FALSE
+blood vessel endothelial cell	ENSG00000169291	FALSE
+blood vessel endothelial cell	ENSG00000198542	FALSE
+blood vessel endothelial cell	ENSG00000001561	FALSE
+blood vessel endothelial cell	ENSG00000198792	FALSE
+blood vessel endothelial cell	ENSG00000176692	FALSE
+blood vessel endothelial cell	ENSG00000139549	FALSE
+blood vessel endothelial cell	ENSG00000107821	FALSE
+blood vessel endothelial cell	ENSG00000154783	FALSE
+blood vessel endothelial cell	ENSG00000026103	FALSE
+blood vessel endothelial cell	ENSG00000132470	FALSE
+blood vessel endothelial cell	ENSG00000138080	FALSE
+blood vessel endothelial cell	ENSG00000133816	FALSE
+blood vessel endothelial cell	ENSG00000119919	FALSE
+blood vessel endothelial cell	ENSG00000168952	FALSE
+blood vessel endothelial cell	ENSG00000171992	FALSE
+blood vessel endothelial cell	ENSG00000074370	FALSE
+blood vessel endothelial cell	ENSG00000133574	FALSE
+blood vessel endothelial cell	ENSG00000174600	FALSE
+blood vessel endothelial cell	ENSG00000144668	FALSE
+blood vessel endothelial cell	ENSG00000137834	FALSE
+blood vessel endothelial cell	ENSG00000125266	FALSE
+blood vessel endothelial cell	ENSG00000174804	FALSE
+blood vessel endothelial cell	ENSG00000175906	FALSE
+blood vessel endothelial cell	ENSG00000135547	FALSE
+blood vessel endothelial cell	ENSG00000079150	FALSE
+blood vessel endothelial cell	ENSG00000167693	FALSE
+blood vessel endothelial cell	ENSG00000065485	FALSE
+blood vessel endothelial cell	ENSG00000138613	FALSE
+blood vessel endothelial cell	ENSG00000166272	FALSE
+blood vessel endothelial cell	ENSG00000172037	FALSE
+blood vessel endothelial cell	ENSG00000136213	FALSE
+blood vessel endothelial cell	ENSG00000110811	FALSE
+blood vessel endothelial cell	ENSG00000129451	FALSE
+blood vessel endothelial cell	ENSG00000144063	FALSE
+blood vessel endothelial cell	ENSG00000150048	FALSE
+blood vessel endothelial cell	ENSG00000155254	FALSE
+blood vessel endothelial cell	ENSG00000111077	FALSE
+blood vessel endothelial cell	ENSG00000119787	FALSE
+blood vessel endothelial cell	ENSG00000144476	FALSE
+blood vessel endothelial cell	ENSG00000081052	FALSE
+blood vessel endothelial cell	ENSG00000169031	FALSE
+blood vessel endothelial cell	ENSG00000049246	FALSE
+blood vessel endothelial cell	ENSG00000120915	FALSE
+blood vessel endothelial cell	ENSG00000129455	FALSE
+blood vessel endothelial cell	ENSG00000182240	FALSE
+blood vessel endothelial cell	ENSG00000153162	FALSE
+blood vessel endothelial cell	ENSG00000137573	FALSE
+blood vessel endothelial cell	ENSG00000104324	FALSE
+blood vessel endothelial cell	ENSG00000164530	FALSE
+blood vessel endothelial cell	ENSG00000139211	FALSE
+blood vessel endothelial cell	ENSG00000149177	FALSE
+blood vessel endothelial cell	ENSG00000132481	FALSE
+blood vessel endothelial cell	ENSG00000071282	FALSE
+blood vessel endothelial cell	ENSG00000172572	FALSE
+blood vessel endothelial cell	ENSG00000198732	FALSE
+blood vessel endothelial cell	ENSG00000177685	FALSE
+blood vessel endothelial cell	ENSG00000109610	FALSE
+blood vessel endothelial cell	ENSG00000196344	FALSE
+blood vessel endothelial cell	ENSG00000163710	FALSE
+blood vessel endothelial cell	ENSG00000124212	FALSE
+blood vessel endothelial cell	ENSG00000159640	FALSE
+blood vessel endothelial cell	ENSG00000172986	FALSE
+blood vessel endothelial cell	ENSG00000170891	FALSE
+CD4-positive, alpha-beta T cell	ENSG00000117586	FALSE
+CD4-positive, alpha-beta T cell	ENSG00000188389	FALSE
+CD4-positive, alpha-beta T cell	ENSG00000066294	FALSE
+CD4-positive, alpha-beta T cell	ENSG00000160683	FALSE
+CD4-positive, alpha-beta T cell	ENSG00000089041	FALSE
+CD4-positive, alpha-beta T cell	ENSG00000091972	FALSE
+CD4-positive, alpha-beta T cell	ENSG00000117090	FALSE
+CD4-positive, alpha-beta T cell	ENSG00000163600	FALSE
+CD4-positive, alpha-beta T cell	ENSG00000010610	FALSE
+CD4-positive, alpha-beta T cell	ENSG00000167286	FALSE
+CD4-positive, alpha-beta T cell	ENSG00000113916	FALSE
+CD4-positive, alpha-beta T cell	ENSG00000160712	FALSE
+CD4-positive, alpha-beta T cell	ENSG00000102245	FALSE
+dendritic cell	ENSG00000160307	TRUE
+dendritic cell	ENSG00000101017	TRUE
+dendritic cell	ENSG00000143546	TRUE
+dendritic cell	ENSG00000126353	TRUE
+dendritic cell	ENSG00000117322	TRUE
+dendritic cell	ENSG00000012124	TRUE
+dendritic cell	ENSG00000121594	TRUE
+dendritic cell	ENSG00000114013	TRUE
+dendritic cell	ENSG00000204287	TRUE
+dendritic cell	ENSG00000196735	TRUE
+dendritic cell	ENSG00000170458	TRUE
+dendritic cell	ENSG00000128322	TRUE
+dendritic cell	ENSG00000132465	TRUE
+dendritic cell	ENSG00000170476	TRUE
+dendritic cell	ENSG00000099958	TRUE
+dendritic cell	ENSG00000095585	TRUE
+dendritic cell	ENSG00000186265	TRUE
+dendritic cell	ENSG00000269404	TRUE
+dendritic cell	ENSG00000121966	TRUE
+dendritic cell	ENSG00000081237	TRUE
+dendritic cell	ENSG00000119866	TRUE
+dendritic cell	ENSG00000239732	TRUE
+dendritic cell	ENSG00000134061	TRUE
+dendritic cell	ENSG00000158481	TRUE
+dendritic cell	ENSG00000072694	TRUE
+dendritic cell	ENSG00000140968	TRUE
+dendritic cell	ENSG00000179344	TRUE
+dendritic cell	ENSG00000185291	TRUE
+dendritic cell	ENSG00000179639	TRUE
+dendritic cell	ENSG00000169896	TRUE
+dendritic cell	ENSG00000140678	TRUE
+dendritic cell	ENSG00000039068	TRUE
+dendritic cell	ENSG00000169508	TRUE
+dendritic cell	ENSG00000136244	TRUE
+dendritic cell	ENSG00000112149	TRUE
+dendritic cell	ENSG00000158477	TRUE
+dendritic cell	ENSG00000090659	TRUE
+dendritic cell	ENSG00000078081	TRUE
+dendritic cell	ENSG00000158485	TRUE
+dendritic cell	ENSG00000095970	TRUE
+dendritic cell	ENSG00000170323	TRUE
+dendritic cell	ENSG00000163220	TRUE
+dendritic cell	ENSG00000118520	TRUE
+dendritic cell	ENSG00000242574	TRUE
+dendritic cell	ENSG00000204257	TRUE
+dendritic cell	ENSG00000132514	TRUE
+dendritic cell	ENSG00000196126	TRUE
+dendritic cell	ENSG00000231389	TRUE
+dendritic cell	ENSG00000223865	TRUE
+dendritic cell	ENSG00000163687	TRUE
+dendritic cell	ENSG00000197992	TRUE
+dendritic cell	ENSG00000131042	TRUE
+dendritic cell	ENSG00000139083	TRUE
+dendritic cell	ENSG00000177575	TRUE
+dendritic cell	ENSG00000169429	TRUE
+dendritic cell	ENSG00000155659	TRUE
+dendritic cell	ENSG00000119508	TRUE
+dendritic cell	ENSG00000056558	TRUE
+dendritic cell	ENSG00000104856	TRUE
+dendritic cell	ENSG00000123685	TRUE
+dendritic cell	ENSG00000102962	TRUE
+dendritic cell	ENSG00000026751	TRUE
+dendritic cell	ENSG00000173578	TRUE
+dendritic cell	ENSG00000161921	TRUE
+dendritic cell	ENSG00000161929	TRUE
+dendritic cell	ENSG00000146192	TRUE
+dendritic cell	ENSG00000276600	TRUE
+dendritic cell	ENSG00000138744	TRUE
+dendritic cell	ENSG00000101336	TRUE
+dendritic cell	ENSG00000010704	TRUE
+dendritic cell	ENSG00000121807	TRUE
+dendritic cell	ENSG00000196218	TRUE
+dendritic cell	ENSG00000083457	TRUE
+dendritic cell	ENSG00000196189	TRUE
+dendritic cell	ENSG00000197635	TRUE
+dendritic cell	ENSG00000158714	TRUE
+dendritic cell	ENSG00000186810	TRUE
+dendritic cell	ENSG00000122025	TRUE
+dendritic cell	ENSG00000164342	TRUE
+dendritic cell	ENSG00000183484	TRUE
+dendritic cell	ENSG00000135074	TRUE
+dendritic cell	ENSG00000152056	TRUE
+dendritic cell	ENSG00000130707	TRUE
+dendritic cell	ENSG00000159618	TRUE
+dendritic cell	ENSG00000119714	TRUE
+dendritic cell	ENSG00000157404	TRUE
+dendritic cell	ENSG00000117009	TRUE
+dendritic cell	ENSG00000078589	TRUE
+dendritic cell	ENSG00000137502	TRUE
+dendritic cell	ENSG00000130584	TRUE
+dendritic cell	ENSG00000196154	TRUE
+dendritic cell	ENSG00000172243	TRUE
+dendritic cell	ENSG00000204472	TRUE
+dendritic cell	ENSG00000204482	TRUE
+dendritic cell	ENSG00000163131	TRUE
+dendritic cell	ENSG00000174837	TRUE
+dendritic cell	ENSG00000102970	TRUE
+dendritic cell	ENSG00000116031	TRUE
+dendritic cell	ENSG00000153563	TRUE
+dendritic cell	ENSG00000168329	TRUE
+dendritic cell	ENSG00000054219	TRUE
+dendritic cell	ENSG00000197646	TRUE
+dendritic cell	ENSG00000198053	TRUE
+dendritic cell	ENSG00000203747	TRUE
+dendritic cell	ENSG00000087086	TRUE
+dendritic cell	ENSG00000197249	TRUE
+dendritic cell	ENSG00000167601	TRUE
+dendritic cell	ENSG00000167641	TRUE
+dendritic cell	ENSG00000105492	TRUE
+dendritic cell	ENSG00000153071	TRUE
+dendritic cell	ENSG00000038427	TRUE
+dendritic cell	ENSG00000090382	TRUE
+dendritic cell	ENSG00000135046	TRUE
+dendritic cell	ENSG00000182985	TRUE
+dendritic cell	ENSG00000145349	TRUE
+dendritic cell	ENSG00000131981	TRUE
+dendritic cell	ENSG00000131400	TRUE
+dendritic cell	ENSG00000121316	TRUE
+dendritic cell	ENSG00000169413	TRUE
+dendritic cell	ENSG00000145287	TRUE
+dendritic cell	ENSG00000018280	TRUE
+dendritic cell	ENSG00000162493	TRUE
+dendritic cell	ENSG00000178562	TRUE
+dendritic cell	ENSG00000118898	TRUE
+dendritic cell	ENSG00000126233	TRUE
+dendritic cell	ENSG00000206503	TRUE
+dendritic cell	ENSG00000234745	TRUE
+dendritic cell	ENSG00000204525	TRUE
+dendritic cell	ENSG00000198502	TRUE
+dendritic cell	ENSG00000170542	TRUE
+dendritic cell	ENSG00000167748	TRUE
+dendritic cell	ENSG00000182566	TRUE
+dendritic cell	ENSG00000100453	TRUE
+dendritic cell	ENSG00000111249	TRUE
+dendritic cell	ENSG00000124507	TRUE
+dendritic cell	ENSG00000128604	TRUE
+dendritic cell	ENSG00000185507	TRUE
+dendritic cell	ENSG00000107968	TRUE
+dendritic cell	ENSG00000056736	TRUE
+dendritic cell	ENSG00000010610	TRUE
+dendritic cell	ENSG00000239961	TRUE
+dendritic cell	ENSG00000198178	TRUE
+dendritic cell	ENSG00000102871	TRUE
+dendritic cell	ENSG00000123329	TRUE
+dendritic cell	ENSG00000125869	TRUE
+dendritic cell	ENSG00000169967	TRUE
+dendritic cell	ENSG00000102524	TRUE
+dendritic cell	ENSG00000171611	TRUE
+dendritic cell	ENSG00000178607	TRUE
+dendritic cell	ENSG00000196664	TRUE
+dendritic cell	ENSG00000140563	TRUE
+dendritic cell	ENSG00000179603	TRUE
+dendritic cell	ENSG00000154229	TRUE
+dendritic cell	ENSG00000132357	TRUE
+dendritic cell	ENSG00000132386	TRUE
+dendritic cell	ENSG00000135916	TRUE
+dendritic cell	ENSG00000196628	TRUE
+dendritic cell	ENSG00000066827	TRUE
+dendritic cell	ENSG00000099250	TRUE
+dendritic cell	ENSG00000139370	TRUE
+dendritic cell	ENSG00000173585	TRUE
+dendritic cell	ENSG00000130303	TRUE
+ecto-epithelial cell	ENSG00000160307	FALSE
+ecto-epithelial cell	ENSG00000131095	FALSE
+ecto-epithelial cell	ENSG00000171885	FALSE
+ecto-epithelial cell	ENSG00000126803	FALSE
+ecto-epithelial cell	ENSG00000147100	FALSE
+ecto-epithelial cell	ENSG00000129673	FALSE
+ecto-epithelial cell	ENSG00000140287	FALSE
+ecto-epithelial cell	ENSG00000006128	FALSE
+ecto-epithelial cell	ENSG00000118271	FALSE
+ecto-epithelial cell	ENSG00000133116	FALSE
+ecto-epithelial cell	ENSG00000171243	FALSE
+ecto-epithelial cell	ENSG00000159212	FALSE
+ecto-epithelial cell	ENSG00000144290	FALSE
+ecto-epithelial cell	ENSG00000147246	FALSE
+ecto-epithelial cell	ENSG00000240583	FALSE
+ecto-epithelial cell	ENSG00000164889	FALSE
+ecto-epithelial cell	ENSG00000188687	FALSE
+ecto-epithelial cell	ENSG00000136868	FALSE
+ecto-epithelial cell	ENSG00000165376	FALSE
+ecto-epithelial cell	ENSG00000164707	FALSE
+ecto-epithelial cell	ENSG00000164638	FALSE
+ecto-epithelial cell	ENSG00000113494	FALSE
+ecto-epithelial cell	ENSG00000163347	FALSE
+ecto-epithelial cell	ENSG00000146411	FALSE
+ecto-epithelial cell	ENSG00000173714	FALSE
+ecto-epithelial cell	ENSG00000089057	FALSE
+ecto-epithelial cell	ENSG00000181045	FALSE
+ecto-epithelial cell	ENSG00000131165	FALSE
+ecto-epithelial cell	ENSG00000169908	FALSE
+ecto-epithelial cell	ENSG00000129654	FALSE
+ecto-epithelial cell	ENSG00000206557	FALSE
+ecto-epithelial cell	ENSG00000138083	FALSE
+ecto-epithelial cell	ENSG00000184979	FALSE
+ecto-epithelial cell	ENSG00000143126	FALSE
+ecto-epithelial cell	ENSG00000151023	FALSE
+ecto-epithelial cell	ENSG00000179813	FALSE
+ecto-epithelial cell	ENSG00000171346	FALSE
+ecto-epithelial cell	ENSG00000158428	FALSE
+ecto-epithelial cell	ENSG00000174844	FALSE
+ecto-epithelial cell	ENSG00000215187	FALSE
+ecto-epithelial cell	ENSG00000114473	FALSE
+ecto-epithelial cell	ENSG00000152582	FALSE
+ecto-epithelial cell	ENSG00000041515	FALSE
+ecto-epithelial cell	ENSG00000177989	FALSE
+ecto-epithelial cell	ENSG00000196576	FALSE
+ecto-epithelial cell	ENSG00000167858	FALSE
+ecto-epithelial cell	ENSG00000183765	FALSE
+ecto-epithelial cell	ENSG00000058453	FALSE
+ecto-epithelial cell	ENSG00000181322	FALSE
+ecto-epithelial cell	ENSG00000188931	FALSE
+ecto-epithelial cell	ENSG00000197889	FALSE
+ecto-epithelial cell	ENSG00000181378	FALSE
+ecto-epithelial cell	ENSG00000010626	FALSE
+ecto-epithelial cell	ENSG00000163060	FALSE
+ecto-epithelial cell	ENSG00000129007	FALSE
+ecto-epithelial cell	ENSG00000173947	FALSE
+ecto-epithelial cell	ENSG00000127377	FALSE
+ecto-epithelial cell	ENSG00000248485	FALSE
+ecto-epithelial cell	ENSG00000168589	FALSE
+ecto-epithelial cell	ENSG00000179029	FALSE
+ecto-epithelial cell	ENSG00000178796	FALSE
+ecto-epithelial cell	ENSG00000186329	FALSE
+ecto-epithelial cell	ENSG00000160188	FALSE
+ecto-epithelial cell	ENSG00000248712	FALSE
+ecto-epithelial cell	ENSG00000140057	FALSE
+ecto-epithelial cell	ENSG00000106538	FALSE
+ecto-epithelial cell	ENSG00000100362	FALSE
+ecto-epithelial cell	ENSG00000136859	FALSE
+ecto-epithelial cell	ENSG00000188596	FALSE
+ecto-epithelial cell	ENSG00000133115	FALSE
+ecto-epithelial cell	ENSG00000100979	FALSE
+ecto-epithelial cell	ENSG00000108947	FALSE
+ecto-epithelial cell	ENSG00000118513	FALSE
+ecto-epithelial cell	ENSG00000087903	FALSE
+ecto-epithelial cell	ENSG00000004838	FALSE
+ecto-epithelial cell	ENSG00000165695	FALSE
+ecto-epithelial cell	ENSG00000206530	FALSE
+ecto-epithelial cell	ENSG00000157005	FALSE
+ecto-epithelial cell	ENSG00000162992	FALSE
+ecto-epithelial cell	ENSG00000187094	FALSE
+ecto-epithelial cell	ENSG00000122585	FALSE
+ecto-epithelial cell	ENSG00000154146	FALSE
+ecto-epithelial cell	ENSG00000149575	FALSE
+ecto-epithelial cell	ENSG00000145824	FALSE
+ecto-epithelial cell	ENSG00000129167	FALSE
+ecto-epithelial cell	ENSG00000133256	FALSE
+ecto-epithelial cell	ENSG00000168959	FALSE
+ecto-epithelial cell	ENSG00000131771	FALSE
+ecto-epithelial cell	ENSG00000163539	FALSE
+ecto-epithelial cell	ENSG00000221946	FALSE
+ecto-epithelial cell	ENSG00000011332	FALSE
+ecto-epithelial cell	ENSG00000181195	FALSE
+ecto-epithelial cell	ENSG00000144040	FALSE
+ecto-epithelial cell	ENSG00000205476	FALSE
+ecto-epithelial cell	ENSG00000124788	FALSE
+ecto-epithelial cell	ENSG00000181656	FALSE
+ecto-epithelial cell	ENSG00000112541	FALSE
+ecto-epithelial cell	ENSG00000140526	FALSE
+ecto-epithelial cell	ENSG00000152377	FALSE
+ecto-epithelial cell	ENSG00000172260	FALSE
+ecto-epithelial cell	ENSG00000133878	FALSE
+ecto-epithelial cell	ENSG00000242173	FALSE
+ecto-epithelial cell	ENSG00000164099	FALSE
+ecto-epithelial cell	ENSG00000163536	FALSE
+ecto-epithelial cell	ENSG00000125820	FALSE
+ecto-epithelial cell	ENSG00000196433	FALSE
+ecto-epithelial cell	ENSG00000043591	FALSE
+ecto-epithelial cell	ENSG00000130561	FALSE
+ecto-epithelial cell	ENSG00000127928	FALSE
+ecto-epithelial cell	ENSG00000167083	FALSE
+ecto-epithelial cell	ENSG00000149489	FALSE
+ecto-epithelial cell	ENSG00000105392	FALSE
+ecto-epithelial cell	ENSG00000070729	FALSE
+ecto-epithelial cell	ENSG00000198515	FALSE
+ecto-epithelial cell	ENSG00000095464	FALSE
+ecto-epithelial cell	ENSG00000131389	FALSE
+ecto-epithelial cell	ENSG00000170214	FALSE
+ecto-epithelial cell	ENSG00000069696	FALSE
+ecto-epithelial cell	ENSG00000080644	FALSE
+ecto-epithelial cell	ENSG00000117971	FALSE
+ecto-epithelial cell	ENSG00000102001	FALSE
+ecto-epithelial cell	ENSG00000127588	FALSE
+ecto-epithelial cell	ENSG00000095794	FALSE
+ecto-epithelial cell	ENSG00000124225	FALSE
+endothelial cell	ENSG00000131095	TRUE
+endothelial cell	ENSG00000170075	TRUE
+endothelial cell	ENSG00000134954	TRUE
+endothelial cell	ENSG00000152689	TRUE
+endothelial cell	ENSG00000151702	TRUE
+endothelial cell	ENSG00000196352	TRUE
+endothelial cell	ENSG00000170456	TRUE
+endothelial cell	ENSG00000213316	TRUE
+endothelial cell	ENSG00000163453	TRUE
+endothelial cell	ENSG00000125378	TRUE
+endothelial cell	ENSG00000125968	TRUE
+endothelial cell	ENSG00000240583	TRUE
+endothelial cell	ENSG00000164707	TRUE
+endothelial cell	ENSG00000089057	TRUE
+endothelial cell	ENSG00000170323	TRUE
+endothelial cell	ENSG00000163687	TRUE
+endothelial cell	ENSG00000010704	TRUE
+endothelial cell	ENSG00000197635	TRUE
+endothelial cell	ENSG00000145287	TRUE
+endothelial cell	ENSG00000162493	TRUE
+endothelial cell	ENSG00000065320	TRUE
+endothelial cell	ENSG00000261371	TRUE
+endothelial cell	ENSG00000090339	TRUE
+endothelial cell	ENSG00000259207	TRUE
+endothelial cell	ENSG00000007908	TRUE
+endothelial cell	ENSG00000162692	TRUE
+endothelial cell	ENSG00000076706	TRUE
+endothelial cell	ENSG00000101000	TRUE
+endothelial cell	ENSG00000120156	TRUE
+endothelial cell	ENSG00000037280	TRUE
+endothelial cell	ENSG00000171388	TRUE
+endothelial cell	ENSG00000110799	TRUE
+endothelial cell	ENSG00000164867	TRUE
+endothelial cell	ENSG00000178726	TRUE
+endothelial cell	ENSG00000130300	TRUE
+endothelial cell	ENSG00000213088	TRUE
+endothelial cell	ENSG00000139155	TRUE
+endothelial cell	ENSG00000166292	TRUE
+endothelial cell	ENSG00000069122	TRUE
+endothelial cell	ENSG00000118777	TRUE
+endothelial cell	ENSG00000128567	TRUE
+endothelial cell	ENSG00000163072	TRUE
+endothelial cell	ENSG00000168389	TRUE
+endothelial cell	ENSG00000139567	TRUE
+endothelial cell	ENSG00000065534	TRUE
+endothelial cell	ENSG00000105538	TRUE
+endothelial cell	ENSG00000066056	TRUE
+endothelial cell	ENSG00000134817	TRUE
+endothelial cell	ENSG00000118257	TRUE
+endothelial cell	ENSG00000154734	TRUE
+endothelial cell	ENSG00000177519	TRUE
+endothelial cell	ENSG00000277494	TRUE
+endothelial cell	ENSG00000115641	TRUE
+endothelial cell	ENSG00000113083	TRUE
+endothelial cell	ENSG00000167748	TRUE
+endothelial cell	ENSG00000128271	TRUE
+endothelial cell	ENSG00000120318	TRUE
+endothelial cell	ENSG00000198844	TRUE
+endothelial cell	ENSG00000100065	TRUE
+endothelial cell	ENSG00000176435	TRUE
+endothelial cell	ENSG00000128917	TRUE
+endothelial cell	ENSG00000164283	TRUE
+endothelial cell	ENSG00000196329	TRUE
+endothelial cell	ENSG00000187513	TRUE
+endothelial cell	ENSG00000173269	TRUE
+endothelial cell	ENSG00000204301	TRUE
+endothelial cell	ENSG00000169418	TRUE
+endothelial cell	ENSG00000027075	TRUE
+endothelial cell	ENSG00000154133	TRUE
+endothelial cell	ENSG00000074660	TRUE
+endothelial cell	ENSG00000203883	TRUE
+endothelial cell	ENSG00000171056	TRUE
+endothelial cell	ENSG00000183018	TRUE
+endothelial cell	ENSG00000136114	TRUE
+endothelial cell	ENSG00000178878	TRUE
+endothelial cell	ENSG00000134531	TRUE
+endothelial cell	ENSG00000135218	TRUE
+endothelial cell	ENSG00000129538	TRUE
+endothelial cell	ENSG00000068001	TRUE
+endothelial cell	ENSG00000182566	TRUE
+endothelial cell	ENSG00000166856	TRUE
+endothelial cell	ENSG00000185010	TRUE
+endothelial cell	ENSG00000162444	TRUE
+endothelial cell	ENSG00000064989	TRUE
+endothelial cell	ENSG00000103241	TRUE
+endothelial cell	ENSG00000130940	TRUE
+endothelial cell	ENSG00000165269	TRUE
+endothelial cell	ENSG00000125878	TRUE
+endothelial cell	ENSG00000161649	TRUE
+endothelial cell	ENSG00000165810	TRUE
+endothelial cell	ENSG00000106511	TRUE
+endothelial cell	ENSG00000157554	TRUE
+endothelial cell	ENSG00000186834	TRUE
+endothelial cell	ENSG00000257780	TRUE
+endothelial cell	ENSG00000138722	TRUE
+endothelial cell	ENSG00000112936	TRUE
+endothelial cell	ENSG00000122679	TRUE
+endothelial cell	ENSG00000150630	TRUE
+endothelial cell	ENSG00000265107	TRUE
+endothelial cell	ENSG00000164683	TRUE
+endothelial cell	ENSG00000172602	TRUE
+endothelial cell	ENSG00000145734	TRUE
+endothelial cell	ENSG00000117335	TRUE
+endothelial cell	ENSG00000005102	TRUE
+endothelial cell	ENSG00000172724	TRUE
+endothelial cell	ENSG00000099866	TRUE
+endothelial cell	ENSG00000138061	TRUE
+endothelial cell	ENSG00000177508	TRUE
+endothelial cell	ENSG00000110330	TRUE
+endothelial cell	ENSG00000133800	TRUE
+endothelial cell	ENSG00000153993	TRUE
+endothelial cell	ENSG00000164035	TRUE
+endothelial cell	ENSG00000103175	TRUE
+endothelial cell	ENSG00000162618	TRUE
+endothelial cell	ENSG00000179403	TRUE
+endothelial cell	ENSG00000117298	TRUE
+endothelial cell	ENSG00000127329	TRUE
+endothelial cell	ENSG00000184113	TRUE
+endothelial cell	ENSG00000184058	TRUE
+endothelial cell	ENSG00000138623	TRUE
+endothelial cell	ENSG00000137273	TRUE
+endothelial cell	ENSG00000100311	TRUE
+endothelial cell	ENSG00000249751	TRUE
+endothelial cell	ENSG00000111145	TRUE
+endothelial cell	ENSG00000179776	TRUE
+endothelial cell	ENSG00000178209	TRUE
+endothelial cell	ENSG00000010327	TRUE
+endothelial cell	ENSG00000163513	TRUE
+endothelial cell	ENSG00000125810	TRUE
+endothelial cell	ENSG00000163739	TRUE
+endothelial cell	ENSG00000143248	TRUE
+endothelial cell	ENSG00000232995	TRUE
+endothelial cell	ENSG00000103257	TRUE
+endothelial cell	ENSG00000106991	TRUE
+endothelial cell	ENSG00000128052	TRUE
+endothelial cell	ENSG00000117394	TRUE
+endothelial cell	ENSG00000172889	TRUE
+endothelial cell	ENSG00000102755	TRUE
+endothelial cell	ENSG00000116016	TRUE
+endothelial cell	ENSG00000136160	TRUE
+endothelial cell	ENSG00000121361	TRUE
+endothelial cell	ENSG00000085117	TRUE
+endothelial cell	ENSG00000175264	TRUE
+endothelial cell	ENSG00000127324	TRUE
+endothelial cell	ENSG00000174059	TRUE
+endothelial cell	ENSG00000117707	TRUE
+endothelial cell	ENSG00000013016	TRUE
+endothelial cell	ENSG00000122862	TRUE
+endothelial cell	ENSG00000197747	TRUE
+endothelial cell	ENSG00000169504	TRUE
+endothelial cell	ENSG00000130307	TRUE
+endothelial cell	ENSG00000111046	TRUE
+endothelial cell	ENSG00000138315	TRUE
+endothelial cell	ENSG00000115008	TRUE
+endothelial cell	ENSG00000125845	TRUE
+endothelial cell	ENSG00000173918	TRUE
+endothelial cell	ENSG00000113555	TRUE
+endothelial cell	ENSG00000099260	TRUE
+endothelial cell	ENSG00000133110	TRUE
+endothelial cell	ENSG00000102010	TRUE
+endothelial cell	ENSG00000017483	TRUE
+endothelial cell	ENSG00000158125	TRUE
+endothelial cell	ENSG00000113140	TRUE
+endothelial cell	ENSG00000074416	TRUE
+endothelial cell	ENSG00000065054	TRUE
+endothelial cell	ENSG00000102760	TRUE
+endothelial cell	ENSG00000108622	TRUE
+endothelial cell	ENSG00000111341	TRUE
+endothelial cell	ENSG00000152583	TRUE
+endothelial cell	ENSG00000169908	TRUE
+endothelial cell	ENSG00000148671	TRUE
+endothelial cell	ENSG00000010278	TRUE
+endothelial cell	ENSG00000101955	TRUE
+endothelial cell	ENSG00000117318	TRUE
+endothelial cell	ENSG00000105974	TRUE
+endothelial cell	ENSG00000127920	TRUE
+endothelial cell	ENSG00000142798	TRUE
+endothelial cell	ENSG00000276409	TRUE
+endothelial cell	ENSG00000165682	TRUE
+endothelial cell	ENSG00000160339	TRUE
+endothelial cell	ENSG00000189171	TRUE
+endothelial cell	ENSG00000142748	TRUE
+endothelial cell	ENSG00000145708	TRUE
+endothelial cell	ENSG00000165949	TRUE
+endothelial cell	ENSG00000274736	TRUE
+endothelial cell	ENSG00000118515	TRUE
+endothelial cell	ENSG00000113594	TRUE
+endothelial cell	ENSG00000267107	TRUE
+endothelial cell	ENSG00000129757	TRUE
+endothelial cell	ENSG00000241644	TRUE
+endothelial cell	ENSG00000107317	TRUE
+endothelial cell	ENSG00000100234	TRUE
+endothelial cell	ENSG00000150625	TRUE
+endothelial cell	ENSG00000183615	TRUE
+endothelial cell	ENSG00000136011	TRUE
+endothelial cell	ENSG00000161638	TRUE
+endothelial cell	ENSG00000179104	TRUE
+endothelial cell	ENSG00000126368	TRUE
+endothelial cell	ENSG00000160447	TRUE
+endothelial cell	ENSG00000196502	TRUE
+endothelial cell	ENSG00000133687	TRUE
+endothelial cell	ENSG00000169291	TRUE
+endothelial cell	ENSG00000198542	TRUE
+endothelial cell	ENSG00000001561	TRUE
+endothelial cell	ENSG00000198792	TRUE
+endothelial cell	ENSG00000176692	TRUE
+endothelial cell	ENSG00000139549	TRUE
+endothelial cell	ENSG00000107821	TRUE
+endothelial cell	ENSG00000154783	TRUE
+endothelial cell	ENSG00000026103	TRUE
+endothelial cell	ENSG00000132470	TRUE
+endothelial cell	ENSG00000138080	TRUE
+endothelial cell	ENSG00000133816	TRUE
+endothelial cell	ENSG00000119919	TRUE
+endothelial cell	ENSG00000168952	TRUE
+endothelial cell	ENSG00000171992	TRUE
+endothelial cell	ENSG00000074370	TRUE
+endothelial cell	ENSG00000133574	TRUE
+endothelial cell	ENSG00000174600	TRUE
+endothelial cell	ENSG00000144668	TRUE
+endothelial cell	ENSG00000137834	TRUE
+endothelial cell	ENSG00000125266	TRUE
+endothelial cell	ENSG00000174804	TRUE
+endothelial cell	ENSG00000175906	TRUE
+endothelial cell	ENSG00000135547	TRUE
+endothelial cell	ENSG00000079150	TRUE
+endothelial cell	ENSG00000167693	TRUE
+endothelial cell	ENSG00000065485	TRUE
+endothelial cell	ENSG00000138613	TRUE
+endothelial cell	ENSG00000166272	TRUE
+endothelial cell	ENSG00000172037	TRUE
+endothelial cell	ENSG00000136213	TRUE
+endothelial cell	ENSG00000110811	TRUE
+endothelial cell	ENSG00000129451	TRUE
+endothelial cell	ENSG00000144063	TRUE
+endothelial cell	ENSG00000150048	TRUE
+endothelial cell	ENSG00000155254	TRUE
+endothelial cell	ENSG00000111077	TRUE
+endothelial cell	ENSG00000119787	TRUE
+endothelial cell	ENSG00000144476	TRUE
+endothelial cell	ENSG00000081052	TRUE
+endothelial cell	ENSG00000169031	TRUE
+endothelial cell	ENSG00000049246	TRUE
+endothelial cell	ENSG00000120915	TRUE
+endothelial cell	ENSG00000129455	TRUE
+endothelial cell	ENSG00000182240	TRUE
+endothelial cell	ENSG00000153162	TRUE
+endothelial cell	ENSG00000137573	TRUE
+endothelial cell	ENSG00000104324	TRUE
+endothelial cell	ENSG00000164530	TRUE
+endothelial cell	ENSG00000139211	TRUE
+endothelial cell	ENSG00000149177	TRUE
+endothelial cell	ENSG00000132481	TRUE
+endothelial cell	ENSG00000071282	TRUE
+endothelial cell	ENSG00000172572	TRUE
+endothelial cell	ENSG00000198732	TRUE
+endothelial cell	ENSG00000177685	TRUE
+endothelial cell	ENSG00000109610	TRUE
+endothelial cell	ENSG00000196344	TRUE
+endothelial cell	ENSG00000163710	TRUE
+endothelial cell	ENSG00000124212	TRUE
+endothelial cell	ENSG00000159640	TRUE
+endothelial cell	ENSG00000172986	TRUE
+endothelial cell	ENSG00000170891	TRUE
+endothelial cell	ENSG00000173638	TRUE
+endothelial cell	ENSG00000188338	TRUE
+endothelial cell	ENSG00000127863	TRUE
+endothelial cell	ENSG00000146072	TRUE
+endothelial cell	ENSG00000183770	TRUE
+endothelial cell	ENSG00000164379	TRUE
+endothelial cell	ENSG00000138795	TRUE
+endothelial cell	ENSG00000112033	TRUE
+endothelial cell	ENSG00000156925	TRUE
+endothelial cell	ENSG00000170017	TRUE
+eosinophil	ENSG00000104921	FALSE
+eosinophil	ENSG00000110848	FALSE
+eosinophil	ENSG00000183625	FALSE
+eosinophil	ENSG00000213316	FALSE
+eosinophil	ENSG00000163751	FALSE
+eosinophil	ENSG00000163220	FALSE
+eosinophil	ENSG00000186810	FALSE
+eosinophil	ENSG00000171860	FALSE
+eosinophil	ENSG00000196371	FALSE
+eosinophil	ENSG00000197405	FALSE
+eosinophil	ENSG00000163823	FALSE
+eosinophil	ENSG00000122223	FALSE
+eosinophil	ENSG00000183134	FALSE
+eosinophil	ENSG00000105366	FALSE
+eosinophil	ENSG00000142512	FALSE
+eosinophil	ENSG00000008438	FALSE
+eosinophil	ENSG00000121053	FALSE
+eosinophil	ENSG00000169397	FALSE
+eosinophil	ENSG00000169385	FALSE
+eosinophil	ENSG00000113525	FALSE
+eosinophil	ENSG00000186652	FALSE
+eosinophil	ENSG00000156575	FALSE
+eosinophil	ENSG00000030419	FALSE
+eosinophil	ENSG00000172156	FALSE
+eosinophil	ENSG00000271503	FALSE
+eosinophil	ENSG00000164400	FALSE
+eosinophil	ENSG00000091181	FALSE
+epithelial cell	ENSG00000160307	FALSE
+epithelial cell	ENSG00000131095	FALSE
+epithelial cell	ENSG00000171885	FALSE
+epithelial cell	ENSG00000126803	FALSE
+epithelial cell	ENSG00000147100	FALSE
+epithelial cell	ENSG00000129673	FALSE
+epithelial cell	ENSG00000140287	FALSE
+epithelial cell	ENSG00000006128	FALSE
+epithelial cell	ENSG00000118271	FALSE
+epithelial cell	ENSG00000133116	FALSE
+epithelial cell	ENSG00000171243	FALSE
+epithelial cell	ENSG00000159212	FALSE
+epithelial cell	ENSG00000144290	FALSE
+epithelial cell	ENSG00000147246	FALSE
+epithelial cell	ENSG00000240583	FALSE
+epithelial cell	ENSG00000164889	FALSE
+epithelial cell	ENSG00000188687	FALSE
+epithelial cell	ENSG00000136868	FALSE
+epithelial cell	ENSG00000165376	FALSE
+epithelial cell	ENSG00000164707	FALSE
+epithelial cell	ENSG00000164638	FALSE
+epithelial cell	ENSG00000113494	FALSE
+epithelial cell	ENSG00000163347	FALSE
+epithelial cell	ENSG00000146411	FALSE
+epithelial cell	ENSG00000173714	FALSE
+epithelial cell	ENSG00000089057	FALSE
+epithelial cell	ENSG00000181045	FALSE
+epithelial cell	ENSG00000131165	FALSE
+epithelial cell	ENSG00000169908	FALSE
+epithelial cell	ENSG00000129654	FALSE
+epithelial cell	ENSG00000206557	FALSE
+epithelial cell	ENSG00000138083	FALSE
+epithelial cell	ENSG00000184979	FALSE
+epithelial cell	ENSG00000143126	FALSE
+epithelial cell	ENSG00000151023	FALSE
+epithelial cell	ENSG00000179813	FALSE
+epithelial cell	ENSG00000171346	FALSE
+epithelial cell	ENSG00000158428	FALSE
+epithelial cell	ENSG00000174844	FALSE
+epithelial cell	ENSG00000215187	FALSE
+epithelial cell	ENSG00000114473	FALSE
+epithelial cell	ENSG00000152582	FALSE
+epithelial cell	ENSG00000041515	FALSE
+epithelial cell	ENSG00000177989	FALSE
+epithelial cell	ENSG00000196576	FALSE
+epithelial cell	ENSG00000167858	FALSE
+epithelial cell	ENSG00000183765	FALSE
+epithelial cell	ENSG00000058453	FALSE
+epithelial cell	ENSG00000181322	FALSE
+epithelial cell	ENSG00000188931	FALSE
+epithelial cell	ENSG00000197889	FALSE
+epithelial cell	ENSG00000181378	FALSE
+epithelial cell	ENSG00000010626	FALSE
+epithelial cell	ENSG00000163060	FALSE
+epithelial cell	ENSG00000129007	FALSE
+epithelial cell	ENSG00000173947	FALSE
+epithelial cell	ENSG00000127377	FALSE
+epithelial cell	ENSG00000248485	FALSE
+epithelial cell	ENSG00000168589	FALSE
+epithelial cell	ENSG00000179029	FALSE
+epithelial cell	ENSG00000178796	FALSE
+epithelial cell	ENSG00000186329	FALSE
+epithelial cell	ENSG00000160188	FALSE
+epithelial cell	ENSG00000248712	FALSE
+epithelial cell	ENSG00000140057	FALSE
+epithelial cell	ENSG00000106538	FALSE
+epithelial cell	ENSG00000100362	FALSE
+epithelial cell	ENSG00000136859	FALSE
+epithelial cell	ENSG00000188596	FALSE
+epithelial cell	ENSG00000133115	FALSE
+epithelial cell	ENSG00000100979	FALSE
+epithelial cell	ENSG00000108947	FALSE
+epithelial cell	ENSG00000118513	FALSE
+epithelial cell	ENSG00000087903	FALSE
+epithelial cell	ENSG00000004838	FALSE
+epithelial cell	ENSG00000165695	FALSE
+epithelial cell	ENSG00000206530	FALSE
+epithelial cell	ENSG00000157005	FALSE
+epithelial cell	ENSG00000162992	FALSE
+epithelial cell	ENSG00000187094	FALSE
+epithelial cell	ENSG00000122585	FALSE
+epithelial cell	ENSG00000154146	FALSE
+epithelial cell	ENSG00000149575	FALSE
+epithelial cell	ENSG00000145824	FALSE
+epithelial cell	ENSG00000129167	FALSE
+epithelial cell	ENSG00000133256	FALSE
+epithelial cell	ENSG00000168959	FALSE
+epithelial cell	ENSG00000131771	FALSE
+epithelial cell	ENSG00000163539	FALSE
+epithelial cell	ENSG00000221946	FALSE
+epithelial cell	ENSG00000011332	FALSE
+epithelial cell	ENSG00000181195	FALSE
+epithelial cell	ENSG00000144040	FALSE
+epithelial cell	ENSG00000205476	FALSE
+epithelial cell	ENSG00000124788	FALSE
+epithelial cell	ENSG00000181656	FALSE
+epithelial cell	ENSG00000112541	FALSE
+epithelial cell	ENSG00000140526	FALSE
+epithelial cell	ENSG00000152377	FALSE
+epithelial cell	ENSG00000172260	FALSE
+epithelial cell	ENSG00000133878	FALSE
+epithelial cell	ENSG00000242173	FALSE
+epithelial cell	ENSG00000164099	FALSE
+epithelial cell	ENSG00000163536	FALSE
+epithelial cell	ENSG00000125820	FALSE
+epithelial cell	ENSG00000196433	FALSE
+epithelial cell	ENSG00000043591	FALSE
+epithelial cell	ENSG00000130561	FALSE
+epithelial cell	ENSG00000127928	FALSE
+epithelial cell	ENSG00000167083	FALSE
+epithelial cell	ENSG00000149489	FALSE
+epithelial cell	ENSG00000105392	FALSE
+epithelial cell	ENSG00000070729	FALSE
+epithelial cell	ENSG00000198515	FALSE
+epithelial cell	ENSG00000095464	FALSE
+epithelial cell	ENSG00000131389	FALSE
+epithelial cell	ENSG00000170214	FALSE
+epithelial cell	ENSG00000069696	FALSE
+epithelial cell	ENSG00000080644	FALSE
+epithelial cell	ENSG00000117971	FALSE
+epithelial cell	ENSG00000102001	FALSE
+epithelial cell	ENSG00000127588	FALSE
+epithelial cell	ENSG00000095794	FALSE
+epithelial cell	ENSG00000124225	FALSE
+extracellular matrix secreting cell	ENSG00000107317	FALSE
+extracellular matrix secreting cell	ENSG00000176692	FALSE
+extracellular matrix secreting cell	ENSG00000156925	FALSE
+extracellular matrix secreting cell	ENSG00000054598	FALSE
+extracellular matrix secreting cell	ENSG00000101144	FALSE
+extracellular matrix secreting cell	ENSG00000152977	FALSE
+extracellular matrix secreting cell	ENSG00000128918	FALSE
+extracellular matrix secreting cell	ENSG00000052850	FALSE
+extracellular matrix secreting cell	ENSG00000167244	FALSE
+extracellular matrix secreting cell	ENSG00000109072	FALSE
+extracellular matrix secreting cell	ENSG00000115457	FALSE
+extracellular matrix secreting cell	ENSG00000011465	FALSE
+extracellular matrix secreting cell	ENSG00000139329	FALSE
+extracellular matrix secreting cell	ENSG00000134853	FALSE
+extracellular matrix secreting cell	ENSG00000137033	FALSE
+extracellular matrix secreting cell	ENSG00000053438	FALSE
+extracellular matrix secreting cell	ENSG00000142494	FALSE
+glial cell	ENSG00000160307	FALSE
+glial cell	ENSG00000131095	FALSE
+glial cell	ENSG00000101017	FALSE
+glial cell	ENSG00000079215	FALSE
+glial cell	ENSG00000171885	FALSE
+glial cell	ENSG00000143546	FALSE
+glial cell	ENSG00000170075	FALSE
+glial cell	ENSG00000126803	FALSE
+glial cell	ENSG00000147100	FALSE
+glial cell	ENSG00000166091	FALSE
+glial cell	ENSG00000109107	FALSE
+glial cell	ENSG00000167613	FALSE
+glial cell	ENSG00000103522	FALSE
+glial cell	ENSG00000134061	FALSE
+glial cell	ENSG00000213316	FALSE
+glial cell	ENSG00000169896	FALSE
+glial cell	ENSG00000140678	FALSE
+glial cell	ENSG00000140287	FALSE
+glial cell	ENSG00000277632	FALSE
+glial cell	ENSG00000275302	FALSE
+glial cell	ENSG00000245848	FALSE
+glial cell	ENSG00000169508	FALSE
+glial cell	ENSG00000089041	FALSE
+glial cell	ENSG00000179242	FALSE
+glial cell	ENSG00000170370	FALSE
+glial cell	ENSG00000118271	FALSE
+glial cell	ENSG00000133116	FALSE
+glial cell	ENSG00000171243	FALSE
+glial cell	ENSG00000159212	FALSE
+glial cell	ENSG00000144290	FALSE
+glial cell	ENSG00000147246	FALSE
+glial cell	ENSG00000240583	FALSE
+glial cell	ENSG00000164889	FALSE
+glial cell	ENSG00000188687	FALSE
+glial cell	ENSG00000136868	FALSE
+glial cell	ENSG00000165376	FALSE
+glial cell	ENSG00000164707	FALSE
+glial cell	ENSG00000164638	FALSE
+glial cell	ENSG00000113494	FALSE
+glial cell	ENSG00000163347	FALSE
+glial cell	ENSG00000146411	FALSE
+glial cell	ENSG00000173714	FALSE
+glial cell	ENSG00000089057	FALSE
+glial cell	ENSG00000181045	FALSE
+glial cell	ENSG00000131165	FALSE
+glial cell	ENSG00000095970	FALSE
+glial cell	ENSG00000163220	FALSE
+glial cell	ENSG00000132514	FALSE
+glial cell	ENSG00000204472	FALSE
+glial cell	ENSG00000163131	FALSE
+glial cell	ENSG00000168329	FALSE
+glial cell	ENSG00000162692	FALSE
+glial cell	ENSG00000085117	FALSE
+glial cell	ENSG00000169908	FALSE
+glial cell	ENSG00000107317	FALSE
+glial cell	ENSG00000132470	FALSE
+glial cell	ENSG00000197405	FALSE
+glial cell	ENSG00000129654	FALSE
+glial cell	ENSG00000206557	FALSE
+glial cell	ENSG00000138083	FALSE
+glial cell	ENSG00000184979	FALSE
+glial cell	ENSG00000143126	FALSE
+glial cell	ENSG00000151023	FALSE
+glial cell	ENSG00000179813	FALSE
+glial cell	ENSG00000171346	FALSE
+glial cell	ENSG00000158428	FALSE
+glial cell	ENSG00000174844	FALSE
+glial cell	ENSG00000215187	FALSE
+glial cell	ENSG00000114473	FALSE
+glial cell	ENSG00000152582	FALSE
+glial cell	ENSG00000041515	FALSE
+glial cell	ENSG00000177989	FALSE
+glial cell	ENSG00000196576	FALSE
+glial cell	ENSG00000167858	FALSE
+glial cell	ENSG00000183765	FALSE
+glial cell	ENSG00000058453	FALSE
+glial cell	ENSG00000181322	FALSE
+glial cell	ENSG00000188931	FALSE
+glial cell	ENSG00000197889	FALSE
+glial cell	ENSG00000181378	FALSE
+glial cell	ENSG00000010626	FALSE
+glial cell	ENSG00000163060	FALSE
+glial cell	ENSG00000129007	FALSE
+glial cell	ENSG00000173947	FALSE
+glial cell	ENSG00000127377	FALSE
+glial cell	ENSG00000248485	FALSE
+glial cell	ENSG00000168589	FALSE
+glial cell	ENSG00000179029	FALSE
+glial cell	ENSG00000178796	FALSE
+glial cell	ENSG00000186329	FALSE
+glial cell	ENSG00000160188	FALSE
+glial cell	ENSG00000248712	FALSE
+glial cell	ENSG00000140057	FALSE
+glial cell	ENSG00000106538	FALSE
+glial cell	ENSG00000100362	FALSE
+glial cell	ENSG00000136859	FALSE
+glial cell	ENSG00000188596	FALSE
+glial cell	ENSG00000133115	FALSE
+glial cell	ENSG00000100979	FALSE
+glial cell	ENSG00000108947	FALSE
+glial cell	ENSG00000118513	FALSE
+glial cell	ENSG00000087903	FALSE
+glial cell	ENSG00000004838	FALSE
+glial cell	ENSG00000165695	FALSE
+glial cell	ENSG00000206530	FALSE
+glial cell	ENSG00000117632	FALSE
+glial cell	ENSG00000007372	FALSE
+glial cell	ENSG00000074181	FALSE
+glial cell	ENSG00000198400	FALSE
+glial cell	ENSG00000122585	FALSE
+glial cell	ENSG00000124785	FALSE
+glial cell	ENSG00000160791	FALSE
+glial cell	ENSG00000171659	FALSE
+glial cell	ENSG00000106799	FALSE
+glial cell	ENSG00000137491	FALSE
+glial cell	ENSG00000087253	FALSE
+glial cell	ENSG00000163106	FALSE
+glial cell	ENSG00000100055	FALSE
+glial cell	ENSG00000182578	FALSE
+glial cell	ENSG00000175567	FALSE
+glial cell	ENSG00000171631	FALSE
+glial cell	ENSG00000163737	FALSE
+glial cell	ENSG00000128918	FALSE
+glial cell	ENSG00000169313	FALSE
+glial cell	ENSG00000183160	FALSE
+glial cell	ENSG00000160180	FALSE
+glial cell	ENSG00000103449	FALSE
+glial cell	ENSG00000119535	FALSE
+glial cell	ENSG00000110719	FALSE
+glial cell	ENSG00000157303	FALSE
+glial cell	ENSG00000141968	FALSE
+glial cell	ENSG00000142583	FALSE
+glial cell	ENSG00000110324	FALSE
+glial cell	ENSG00000169403	FALSE
+glial cell	ENSG00000089692	FALSE
+glial cell	ENSG00000138185	FALSE
+glial cell	ENSG00000169252	FALSE
+glial cell	ENSG00000059377	FALSE
+glial cell	ENSG00000181631	FALSE
+glial cell	ENSG00000142347	FALSE
+glial cell	ENSG00000116774	FALSE
+glial cell	ENSG00000082781	FALSE
+glial cell	ENSG00000176170	FALSE
+glial cell	ENSG00000158270	FALSE
+glial cell	ENSG00000106624	FALSE
+glial cell	ENSG00000095303	FALSE
+glial cell	ENSG00000077420	FALSE
+glial cell	ENSG00000273749	FALSE
+glial cell	ENSG00000153208	FALSE
+glial cell	ENSG00000204103	FALSE
+glial cell	ENSG00000110934	FALSE
+glial cell	ENSG00000091317	FALSE
+glial cell	ENSG00000121797	FALSE
+glial cell	ENSG00000163815	FALSE
+glial cell	ENSG00000011028	FALSE
+glial cell	ENSG00000143119	FALSE
+glial cell	ENSG00000170345	FALSE
+glial cell	ENSG00000120738	FALSE
+glial cell	ENSG00000157933	FALSE
+glial cell	ENSG00000173369	FALSE
+glial cell	ENSG00000064300	FALSE
+glial cell	ENSG00000197921	FALSE
+glial cell	ENSG00000132561	FALSE
+glial cell	ENSG00000100146	FALSE
+glial cell	ENSG00000205927	FALSE
+glial cell	ENSG00000184221	FALSE
+glial cell	ENSG00000173786	FALSE
+glial cell	ENSG00000064787	FALSE
+glial cell	ENSG00000108381	FALSE
+glial cell	ENSG00000185668	FALSE
+glial cell	ENSG00000105695	FALSE
+glial cell	ENSG00000123560	FALSE
+glial cell	ENSG00000170962	FALSE
+glial cell	ENSG00000106571	FALSE
+glial cell	ENSG00000164056	FALSE
+glial cell	ENSG00000168646	FALSE
+glial cell	ENSG00000158887	FALSE
+glial cell	ENSG00000135862	FALSE
+glial cell	ENSG00000128311	FALSE
+glial cell	ENSG00000104419	FALSE
+glial cell	ENSG00000164932	FALSE
+glial cell	ENSG00000186575	FALSE
+glial cell	ENSG00000106541	FALSE
+glial cell	ENSG00000164007	FALSE
+glial cell	ENSG00000105227	FALSE
+glial cell	ENSG00000156219	FALSE
+glial cell	ENSG00000153902	FALSE
+glial cell	ENSG00000151929	FALSE
+glial cell	ENSG00000143171	FALSE
+glial cell	ENSG00000114200	FALSE
+glial cell	ENSG00000241404	FALSE
+glial cell	ENSG00000146013	FALSE
+glial cell	ENSG00000012171	FALSE
+glial cell	ENSG00000136546	FALSE
+glial cell	ENSG00000149591	FALSE
+glial cell	ENSG00000189058	FALSE
+glial cell	ENSG00000109846	FALSE
+glial cell	ENSG00000109099	FALSE
+glial cell	ENSG00000105767	FALSE
+glial cell	ENSG00000111262	FALSE
+granulocyte	ENSG00000143546	FALSE
+granulocyte	ENSG00000148346	FALSE
+granulocyte	ENSG00000104921	FALSE
+granulocyte	ENSG00000110848	FALSE
+granulocyte	ENSG00000170458	FALSE
+granulocyte	ENSG00000196549	FALSE
+granulocyte	ENSG00000272398	FALSE
+granulocyte	ENSG00000109743	FALSE
+granulocyte	ENSG00000077238	FALSE
+granulocyte	ENSG00000188404	FALSE
+granulocyte	ENSG00000185291	FALSE
+granulocyte	ENSG00000183625	FALSE
+granulocyte	ENSG00000154269	FALSE
+granulocyte	ENSG00000179639	FALSE
+granulocyte	ENSG00000136869	FALSE
+granulocyte	ENSG00000213316	FALSE
+granulocyte	ENSG00000163751	FALSE
+granulocyte	ENSG00000005844	FALSE
+granulocyte	ENSG00000169896	FALSE
+granulocyte	ENSG00000140678	FALSE
+granulocyte	ENSG00000139626	FALSE
+granulocyte	ENSG00000113520	FALSE
+granulocyte	ENSG00000149534	FALSE
+granulocyte	ENSG00000149516	FALSE
+granulocyte	ENSG00000140287	FALSE
+granulocyte	ENSG00000179348	FALSE
+granulocyte	ENSG00000277632	FALSE
+granulocyte	ENSG00000105383	FALSE
+granulocyte	ENSG00000026508	FALSE
+granulocyte	ENSG00000039068	FALSE
+granulocyte	ENSG00000135312	FALSE
+granulocyte	ENSG00000163453	FALSE
+granulocyte	ENSG00000137976	FALSE
+granulocyte	ENSG00000134824	FALSE
+granulocyte	ENSG00000076716	FALSE
+granulocyte	ENSG00000113262	FALSE
+granulocyte	ENSG00000131069	FALSE
+granulocyte	ENSG00000170425	FALSE
+granulocyte	ENSG00000103569	FALSE
+granulocyte	ENSG00000186318	FALSE
+granulocyte	ENSG00000125378	FALSE
+granulocyte	ENSG00000134508	FALSE
+granulocyte	ENSG00000275302	FALSE
+granulocyte	ENSG00000245848	FALSE
+granulocyte	ENSG00000129173	FALSE
+granulocyte	ENSG00000149485	FALSE
+granulocyte	ENSG00000064763	FALSE
+granulocyte	ENSG00000112146	FALSE
+granulocyte	ENSG00000204681	FALSE
+granulocyte	ENSG00000169508	FALSE
+granulocyte	ENSG00000019991	FALSE
+granulocyte	ENSG00000185885	FALSE
+granulocyte	ENSG00000203485	FALSE
+granulocyte	ENSG00000153814	FALSE
+granulocyte	ENSG00000198910	FALSE
+granulocyte	ENSG00000130702	FALSE
+granulocyte	ENSG00000172197	FALSE
+granulocyte	ENSG00000165030	FALSE
+granulocyte	ENSG00000135838	FALSE
+granulocyte	ENSG00000021762	FALSE
+granulocyte	ENSG00000089723	FALSE
+granulocyte	ENSG00000169860	FALSE
+granulocyte	ENSG00000067992	FALSE
+granulocyte	ENSG00000067840	FALSE
+granulocyte	ENSG00000112378	FALSE
+granulocyte	ENSG00000255072	FALSE
+granulocyte	ENSG00000171680	FALSE
+granulocyte	ENSG00000122194	FALSE
+granulocyte	ENSG00000204618	FALSE
+granulocyte	ENSG00000091138	FALSE
+granulocyte	ENSG00000112053	FALSE
+granulocyte	ENSG00000064692	FALSE
+granulocyte	ENSG00000117069	FALSE
+granulocyte	ENSG00000196284	FALSE
+granulocyte	ENSG00000078246	FALSE
+granulocyte	ENSG00000135605	FALSE
+granulocyte	ENSG00000112494	FALSE
+granulocyte	ENSG00000165392	FALSE
+granulocyte	ENSG00000125968	FALSE
+granulocyte	ENSG00000163220	FALSE
+granulocyte	ENSG00000186810	FALSE
+granulocyte	ENSG00000196154	FALSE
+granulocyte	ENSG00000203747	FALSE
+granulocyte	ENSG00000090382	FALSE
+granulocyte	ENSG00000261371	FALSE
+granulocyte	ENSG00000065534	FALSE
+granulocyte	ENSG00000171860	FALSE
+granulocyte	ENSG00000196371	FALSE
+granulocyte	ENSG00000197405	FALSE
+granulocyte	ENSG00000163823	FALSE
+granulocyte	ENSG00000122223	FALSE
+granulocyte	ENSG00000183134	FALSE
+granulocyte	ENSG00000105366	FALSE
+granulocyte	ENSG00000142512	FALSE
+granulocyte	ENSG00000008438	FALSE
+granulocyte	ENSG00000121053	FALSE
+granulocyte	ENSG00000169397	FALSE
+granulocyte	ENSG00000169385	FALSE
+granulocyte	ENSG00000113525	FALSE
+granulocyte	ENSG00000186652	FALSE
+granulocyte	ENSG00000156575	FALSE
+granulocyte	ENSG00000030419	FALSE
+granulocyte	ENSG00000172156	FALSE
+granulocyte	ENSG00000271503	FALSE
+granulocyte	ENSG00000164400	FALSE
+granulocyte	ENSG00000091181	FALSE
+granulocyte	ENSG00000150337	FALSE
+granulocyte	ENSG00000137462	FALSE
+granulocyte	ENSG00000160593	FALSE
+granulocyte	ENSG00000166527	FALSE
+granulocyte	ENSG00000151651	FALSE
+granulocyte	ENSG00000167208	FALSE
+granulocyte	ENSG00000081041	FALSE
+granulocyte	ENSG00000125538	FALSE
+granulocyte	ENSG00000100985	FALSE
+granulocyte	ENSG00000180871	FALSE
+granulocyte	ENSG00000126759	FALSE
+granulocyte	ENSG00000100448	FALSE
+granulocyte	ENSG00000163464	FALSE
+granulocyte	ENSG00000119535	FALSE
+granulocyte	ENSG00000121797	FALSE
+granulocyte	ENSG00000196415	FALSE
+granulocyte	ENSG00000085514	FALSE
+granulocyte	ENSG00000143669	FALSE
+granulocyte	ENSG00000124469	FALSE
+granulocyte	ENSG00000005381	FALSE
+granulocyte	ENSG00000079385	FALSE
+granulocyte	ENSG00000132693	FALSE
+granulocyte	ENSG00000206047	FALSE
+granulocyte	ENSG00000239839	FALSE
+granulocyte	ENSG00000012223	FALSE
+granulocyte	ENSG00000197561	FALSE
+granulocyte	ENSG00000257017	FALSE
+granulocyte	ENSG00000118113	FALSE
+granulocyte	ENSG00000171236	FALSE
+granulocyte	ENSG00000099985	FALSE
+granulocyte	ENSG00000166523	FALSE
+granulocyte	ENSG00000244617	FALSE
+granulocyte	ENSG00000158517	FALSE
+granulocyte	ENSG00000124731	FALSE
+granulocyte	ENSG00000137642	FALSE
+granulocyte	ENSG00000081181	FALSE
+granulocyte	ENSG00000115590	FALSE
+granulocyte	ENSG00000204936	FALSE
+granulocyte	ENSG00000073756	FALSE
+granulocyte	ENSG00000111331	FALSE
+granulocyte	ENSG00000172232	FALSE
+granulocyte	ENSG00000021355	FALSE
+granulocyte	ENSG00000164047	FALSE
+granulocyte	ENSG00000105281	FALSE
+granulocyte	ENSG00000159322	FALSE
+granulocyte	ENSG00000140368	FALSE
+granulocyte	ENSG00000107099	FALSE
+granulocyte	ENSG00000162711	FALSE
+innate lymphoid cell	ENSG00000118520	TRUE
+innate lymphoid cell	ENSG00000107317	TRUE
+innate lymphoid cell	ENSG00000113525	TRUE
+innate lymphoid cell	ENSG00000069667	TRUE
+innate lymphoid cell	ENSG00000115602	TRUE
+innate lymphoid cell	ENSG00000107485	TRUE
+innate lymphoid cell	ENSG00000163600	TRUE
+innate lymphoid cell	ENSG00000056736	TRUE
+innate lymphoid cell	ENSG00000168685	TRUE
+innate lymphoid cell	ENSG00000205755	TRUE
+innate lymphoid cell	ENSG00000127152	TRUE
+innate lymphoid cell	ENSG00000169194	TRUE
+lymphocyte of B lineage	ENSG00000009709	TRUE
+lymphocyte of B lineage	ENSG00000101017	TRUE
+lymphocyte of B lineage	ENSG00000126353	TRUE
+lymphocyte of B lineage	ENSG00000116824	TRUE
+lymphocyte of B lineage	ENSG00000110448	TRUE
+lymphocyte of B lineage	ENSG00000156738	TRUE
+lymphocyte of B lineage	ENSG00000117322	TRUE
+lymphocyte of B lineage	ENSG00000012124	TRUE
+lymphocyte of B lineage	ENSG00000104921	TRUE
+lymphocyte of B lineage	ENSG00000110848	TRUE
+lymphocyte of B lineage	ENSG00000125726	TRUE
+lymphocyte of B lineage	ENSG00000105369	TRUE
+lymphocyte of B lineage	ENSG00000007312	TRUE
+lymphocyte of B lineage	ENSG00000121594	TRUE
+lymphocyte of B lineage	ENSG00000114013	TRUE
+lymphocyte of B lineage	ENSG00000049249	TRUE
+lymphocyte of B lineage	ENSG00000115884	TRUE
+lymphocyte of B lineage	ENSG00000117586	TRUE
+lymphocyte of B lineage	ENSG00000240505	TRUE
+lymphocyte of B lineage	ENSG00000159958	TRUE
+lymphocyte of B lineage	ENSG00000188389	TRUE
+lymphocyte of B lineage	ENSG00000211898	TRUE
+lymphocyte of B lineage	ENSG00000211899	TRUE
+lymphocyte of B lineage	ENSG00000152689	TRUE
+lymphocyte of B lineage	ENSG00000204287	TRUE
+lymphocyte of B lineage	ENSG00000227507	TRUE
+lymphocyte of B lineage	ENSG00000196735	TRUE
+lymphocyte of B lineage	ENSG00000151702	TRUE
+lymphocyte of B lineage	ENSG00000170458	TRUE
+lymphocyte of B lineage	ENSG00000137872	TRUE
+lymphocyte of B lineage	ENSG00000167613	TRUE
+lymphocyte of B lineage	ENSG00000119917	TRUE
+lymphocyte of B lineage	ENSG00000128322	TRUE
+lymphocyte of B lineage	ENSG00000107447	TRUE
+lymphocyte of B lineage	ENSG00000196549	TRUE
+lymphocyte of B lineage	ENSG00000197471	TRUE
+lymphocyte of B lineage	ENSG00000177455	TRUE
+lymphocyte of B lineage	ENSG00000272398	TRUE
+lymphocyte of B lineage	ENSG00000139193	TRUE
+lymphocyte of B lineage	ENSG00000109956	TRUE
+lymphocyte of B lineage	ENSG00000137101	TRUE
+lymphocyte of B lineage	ENSG00000196092	TRUE
+lymphocyte of B lineage	ENSG00000132465	TRUE
+lymphocyte of B lineage	ENSG00000170476	TRUE
+lymphocyte of B lineage	ENSG00000167656	TRUE
+lymphocyte of B lineage	ENSG00000162894	TRUE
+lymphocyte of B lineage	ENSG00000153064	TRUE
+lymphocyte of B lineage	ENSG00000134109	TRUE
+lymphocyte of B lineage	ENSG00000128218	TRUE
+lymphocyte of B lineage	ENSG00000110777	TRUE
+lymphocyte of B lineage	ENSG00000184164	TRUE
+lymphocyte of B lineage	ENSG00000099958	TRUE
+lymphocyte of B lineage	ENSG00000116191	TRUE
+lymphocyte of B lineage	ENSG00000137478	TRUE
+lymphocyte of B lineage	ENSG00000175482	TRUE
+lymphocyte of B lineage	ENSG00000048462	TRUE
+lymphocyte of B lineage	ENSG00000122986	TRUE
+lymphocyte of B lineage	ENSG00000132185	TRUE
+lymphocyte of B lineage	ENSG00000088298	TRUE
+lymphocyte of B lineage	ENSG00000095585	TRUE
+lymphocyte of B lineage	ENSG00000153066	TRUE
+lymphocyte of B lineage	ENSG00000186265	TRUE
+lymphocyte of B lineage	ENSG00000084070	TRUE
+lymphocyte of B lineage	ENSG00000134285	TRUE
+lymphocyte of B lineage	ENSG00000058262	TRUE
+lymphocyte of B lineage	ENSG00000129128	TRUE
+lymphocyte of B lineage	ENSG00000269404	TRUE
+lymphocyte of B lineage	ENSG00000145088	TRUE
+lymphocyte of B lineage	ENSG00000121966	TRUE
+lymphocyte of B lineage	ENSG00000023445	TRUE
+lymphocyte of B lineage	ENSG00000211677	TRUE
+lymphocyte of B lineage	ENSG00000211679	TRUE
+lymphocyte of B lineage	ENSG00000211675	TRUE
+lymphocyte of B lineage	ENSG00000103522	TRUE
+lymphocyte of B lineage	ENSG00000211592	TRUE
+lymphocyte of B lineage	ENSG00000169575	TRUE
+lymphocyte of B lineage	ENSG00000172578	TRUE
+lymphocyte of B lineage	ENSG00000162739	TRUE
+lymphocyte of B lineage	ENSG00000109743	TRUE
+lymphocyte of B lineage	ENSG00000204410	TRUE
+lymphocyte of B lineage	ENSG00000146094	TRUE
+lymphocyte of B lineage	ENSG00000112182	TRUE
+lymphocyte of B lineage	ENSG00000168297	TRUE
+lymphocyte of B lineage	ENSG00000211896	TRUE
+lymphocyte of B lineage	ENSG00000211897	TRUE
+lymphocyte of B lineage	ENSG00000211892	TRUE
+lymphocyte of B lineage	ENSG00000004468	TRUE
+lymphocyte of B lineage	ENSG00000081237	TRUE
+lymphocyte of B lineage	ENSG00000164330	TRUE
+lymphocyte of B lineage	ENSG00000119866	TRUE
+lymphocyte of B lineage	ENSG00000196352	TRUE
+lymphocyte of B lineage	ENSG00000019582	TRUE
+lymphocyte of B lineage	ENSG00000169442	TRUE
+lymphocyte of B lineage	ENSG00000239732	TRUE
+lymphocyte of B lineage	ENSG00000133789	TRUE
+lymphocyte of B lineage	ENSG00000137309	TRUE
+lymphocyte of B lineage	ENSG00000066294	TRUE
+lymphocyte of B lineage	ENSG00000135318	TRUE
+lymphocyte of B lineage	ENSG00000042980	TRUE
+lymphocyte of B lineage	ENSG00000163568	TRUE
+lymphocyte of B lineage	ENSG00000012779	TRUE
+lymphocyte of B lineage	ENSG00000136573	TRUE
+lymphocyte of B lineage	ENSG00000112486	TRUE
+lymphocyte of B lineage	ENSG00000134061	TRUE
+lymphocyte of B lineage	ENSG00000158481	TRUE
+lymphocyte of B lineage	ENSG00000104894	TRUE
+lymphocyte of B lineage	ENSG00000153923	TRUE
+lymphocyte of B lineage	ENSG00000160683	TRUE
+lymphocyte of B lineage	ENSG00000170456	TRUE
+lymphocyte of B lineage	ENSG00000072694	TRUE
+lymphocyte of B lineage	ENSG00000132704	TRUE
+lymphocyte of B lineage	ENSG00000111816	TRUE
+lymphocyte of B lineage	ENSG00000176533	TRUE
+lymphocyte of B lineage	ENSG00000125245	TRUE
+lymphocyte of B lineage	ENSG00000228315	TRUE
+lymphocyte of B lineage	ENSG00000152804	TRUE
+lymphocyte of B lineage	ENSG00000241106	TRUE
+lymphocyte of B lineage	ENSG00000186803	TRUE
+lymphocyte of B lineage	ENSG00000206066	TRUE
+lymphocyte of B lineage	ENSG00000104432	TRUE
+lymphocyte of B lineage	ENSG00000140968	TRUE
+lymphocyte of B lineage	ENSG00000112799	TRUE
+lymphocyte of B lineage	ENSG00000165471	TRUE
+lymphocyte of B lineage	ENSG00000135577	TRUE
+lymphocyte of B lineage	ENSG00000196436	TRUE
+lymphocyte of B lineage	ENSG00000083454	TRUE
+lymphocyte of B lineage	ENSG00000168081	TRUE
+lymphocyte of B lineage	ENSG00000213402	TRUE
+lymphocyte of B lineage	ENSG00000068831	TRUE
+lymphocyte of B lineage	ENSG00000142178	TRUE
+lymphocyte of B lineage	ENSG00000137078	TRUE
+lymphocyte of B lineage	ENSG00000074803	TRUE
+lymphocyte of B lineage	ENSG00000079263	TRUE
+lymphocyte of B lineage	ENSG00000035720	TRUE
+lymphocyte of B lineage	ENSG00000121895	TRUE
+lymphocyte of B lineage	ENSG00000076604	TRUE
+lymphocyte of B lineage	ENSG00000011590	TRUE
+lymphocyte of B lineage	ENSG00000134460	TRUE
+lymphocyte of B lineage	ENSG00000005471	TRUE
+lymphocyte of B lineage	ENSG00000110987	TRUE
+lymphocyte of B lineage	ENSG00000162373	TRUE
+lymphocyte of B lineage	ENSG00000157764	TRUE
+lymphocyte of B lineage	ENSG00000077238	TRUE
+lymphocyte of B lineage	ENSG00000112818	TRUE
+lymphocyte of B lineage	ENSG00000243156	TRUE
+lymphocyte of B lineage	ENSG00000174944	TRUE
+lymphocyte of B lineage	ENSG00000242221	TRUE
+lymphocyte of B lineage	ENSG00000188404	TRUE
+lymphocyte of B lineage	ENSG00000100721	TRUE
+lymphocyte of B lineage	ENSG00000242366	TRUE
+lymphocyte of B lineage	ENSG00000187607	TRUE
+lymphocyte of B lineage	ENSG00000106952	TRUE
+lymphocyte of B lineage	ENSG00000114861	TRUE
+lymphocyte of B lineage	ENSG00000187098	TRUE
+lymphocyte of B lineage	ENSG00000179344	TRUE
+lymphocyte of B lineage	ENSG00000247982	TRUE
+lymphocyte of B lineage	ENSG00000066923	TRUE
+lymphocyte of B lineage	ENSG00000184047	TRUE
+lymphocyte of B lineage	ENSG00000125810	TRUE
+lymphocyte of B lineage	ENSG00000010278	TRUE
+lymphocyte of B lineage	ENSG00000100453	TRUE
+lymphocyte of B lineage	ENSG00000110079	TRUE
+lymphocyte of B lineage	ENSG00000127074	TRUE
+lymphocyte of B lineage	ENSG00000137265	TRUE
+lymphocyte of B lineage	ENSG00000057657	TRUE
+lymphocyte of B lineage	ENSG00000197594	TRUE
+lymphocyte of B lineage	ENSG00000136826	TRUE
+lymphocyte of B lineage	ENSG00000033800	TRUE
+lymphocyte of B lineage	ENSG00000172115	TRUE
+lymphocyte of B lineage	ENSG00000115317	TRUE
+lymphocyte of B lineage	ENSG00000184451	TRUE
+lymphocyte of B lineage	ENSG00000150967	TRUE
+lymphocyte of B lineage	ENSG00000116748	TRUE
+lymphocyte of B lineage	ENSG00000101280	TRUE
+lymphocyte of B lineage	ENSG00000230223	TRUE
+lymphocyte of B lineage	ENSG00000170128	TRUE
+lymphocyte of B lineage	ENSG00000211891	TRUE
+lymphocyte of B lineage	ENSG00000177272	TRUE
+lymphocyte of B lineage	ENSG00000178342	TRUE
+lymphocyte of B lineage	ENSG00000203896	TRUE
+lymphocyte of B lineage	ENSG00000111885	TRUE
+lymphocyte of B lineage	ENSG00000172469	TRUE
+lymphocyte of B lineage	ENSG00000105613	TRUE
+lymphocyte of B lineage	ENSG00000184313	TRUE
+lymphocyte of B lineage	ENSG00000152256	TRUE
+lymphocyte of B lineage	ENSG00000143839	TRUE
+lymphocyte of B lineage	ENSG00000225093	TRUE
+lymphocyte of B lineage	ENSG00000061656	TRUE
+lymphocyte of B lineage	ENSG00000136840	TRUE
+lymphocyte of B lineage	ENSG00000104055	TRUE
+lymphocyte of B lineage	ENSG00000197888	TRUE
+lymphocyte of B lineage	ENSG00000124256	TRUE
+lymphocyte of B lineage	ENSG00000197279	TRUE
+lymphocyte of B lineage	ENSG00000211893	TRUE
+lymphocyte of B lineage	ENSG00000253755	TRUE
+lymphocyte of B lineage	ENSG00000211895	TRUE
+lymphocyte of B lineage	ENSG00000211890	TRUE
+lymphocyte of B lineage	ENSG00000211673	TRUE
+lymphocyte of B lineage	ENSG00000211685	TRUE
+lymphocyte of B lineage	ENSG00000180879	TRUE
+lymphocyte of B lineage	ENSG00000172349	TRUE
+lymphocyte of B lineage	ENSG00000180535	TRUE
+lymphocyte of B lineage	ENSG00000166794	TRUE
+macroglial cell	ENSG00000132437	FALSE
+macroglial cell	ENSG00000186318	FALSE
+macroglial cell	ENSG00000165478	FALSE
+macroglial cell	ENSG00000152128	FALSE
+macroglial cell	ENSG00000076706	FALSE
+macroglial cell	ENSG00000107317	FALSE
+macroglial cell	ENSG00000132470	FALSE
+macroglial cell	ENSG00000108947	FALSE
+macroglial cell	ENSG00000147852	FALSE
+macroglial cell	ENSG00000137033	FALSE
+macroglial cell	ENSG00000163517	FALSE
+macroglial cell	ENSG00000100146	FALSE
+macroglial cell	ENSG00000205927	FALSE
+macroglial cell	ENSG00000184221	FALSE
+macroglial cell	ENSG00000148826	FALSE
+macroglial cell	ENSG00000054983	FALSE
+macroglial cell	ENSG00000204655	FALSE
+macroglial cell	ENSG00000091513	FALSE
+macroglial cell	ENSG00000177468	FALSE
+macroglial cell	ENSG00000198835	FALSE
+macroglial cell	ENSG00000130005	FALSE
+macroglial cell	ENSG00000064787	FALSE
+macroglial cell	ENSG00000164303	FALSE
+macroglial cell	ENSG00000196187	FALSE
+macroglial cell	ENSG00000180929	FALSE
+macroglial cell	ENSG00000146592	FALSE
+macroglial cell	ENSG00000066468	FALSE
+macroglial cell	ENSG00000144659	FALSE
+macroglial cell	ENSG00000092445	FALSE
+macroglial cell	ENSG00000180739	FALSE
+macroglial cell	ENSG00000108381	FALSE
+macroglial cell	ENSG00000154928	FALSE
+macroglial cell	ENSG00000005513	FALSE
+macroglial cell	ENSG00000169710	FALSE
+macroglial cell	ENSG00000126861	FALSE
+macroglial cell	ENSG00000188706	FALSE
+macroglial cell	ENSG00000158859	FALSE
+macroglial cell	ENSG00000124920	FALSE
+macroglial cell	ENSG00000187764	FALSE
+macroglial cell	ENSG00000179178	FALSE
+macroglial cell	ENSG00000109466	FALSE
+macroglial cell	ENSG00000173852	FALSE
+macroglial cell	ENSG00000099282	FALSE
+macroglial cell	ENSG00000132702	FALSE
+macroglial cell	ENSG00000169562	FALSE
+macroglial cell	ENSG00000197430	FALSE
+macroglial cell	ENSG00000136541	FALSE
+macroglial cell	ENSG00000103089	FALSE
+macroglial cell	ENSG00000013297	FALSE
+macroglial cell	ENSG00000011426	FALSE
+macroglial cell	ENSG00000164181	FALSE
+macroglial cell	ENSG00000102934	FALSE
+macroglial cell	ENSG00000185668	FALSE
+macroglial cell	ENSG00000171840	FALSE
+macroglial cell	ENSG00000101049	FALSE
+macroglial cell	ENSG00000176402	FALSE
+macroglial cell	ENSG00000170775	FALSE
+macroglial cell	ENSG00000167755	FALSE
+macroglial cell	ENSG00000050344	FALSE
+macroglial cell	ENSG00000114757	FALSE
+macroglial cell	ENSG00000159261	FALSE
+macroglial cell	ENSG00000176658	FALSE
+macroglial cell	ENSG00000073417	FALSE
+macroglial cell	ENSG00000242689	FALSE
+macroglial cell	ENSG00000066629	FALSE
+macroglial cell	ENSG00000197892	FALSE
+macroglial cell	ENSG00000164627	FALSE
+macroglial cell	ENSG00000172548	FALSE
+macroglial cell	ENSG00000103184	FALSE
+macroglial cell	ENSG00000170374	FALSE
+macroglial cell	ENSG00000147488	FALSE
+macroglial cell	ENSG00000149599	FALSE
+macroglial cell	ENSG00000067606	FALSE
+macroglial cell	ENSG00000141337	FALSE
+macroglial cell	ENSG00000141458	FALSE
+macroglial cell	ENSG00000105695	FALSE
+macroglial cell	ENSG00000197119	FALSE
+macroglial cell	ENSG00000125454	FALSE
+macroglial cell	ENSG00000054690	FALSE
+macroglial cell	ENSG00000205116	FALSE
+macroglial cell	ENSG00000244274	FALSE
+macroglial cell	ENSG00000104205	FALSE
+macroglial cell	ENSG00000177666	FALSE
+macroglial cell	ENSG00000105643	FALSE
+macroglial cell	ENSG00000136960	FALSE
+macroglial cell	ENSG00000123560	FALSE
+macroglial cell	ENSG00000123104	FALSE
+macroglial cell	ENSG00000197971	FALSE
+macrophage	ENSG00000101017	TRUE
+macrophage	ENSG00000143546	TRUE
+macrophage	ENSG00000126353	TRUE
+macrophage	ENSG00000121594	TRUE
+macrophage	ENSG00000114013	TRUE
+macrophage	ENSG00000170458	TRUE
+macrophage	ENSG00000167613	TRUE
+macrophage	ENSG00000177455	TRUE
+macrophage	ENSG00000103522	TRUE
+macrophage	ENSG00000019582	TRUE
+macrophage	ENSG00000134061	TRUE
+macrophage	ENSG00000183625	TRUE
+macrophage	ENSG00000136869	TRUE
+macrophage	ENSG00000213316	TRUE
+macrophage	ENSG00000005844	TRUE
+macrophage	ENSG00000169896	TRUE
+macrophage	ENSG00000140678	TRUE
+macrophage	ENSG00000277632	TRUE
+macrophage	ENSG00000105383	TRUE
+macrophage	ENSG00000275302	TRUE
+macrophage	ENSG00000245848	TRUE
+macrophage	ENSG00000169508	TRUE
+macrophage	ENSG00000089041	TRUE
+macrophage	ENSG00000112149	TRUE
+macrophage	ENSG00000095970	TRUE
+macrophage	ENSG00000170323	TRUE
+macrophage	ENSG00000163220	TRUE
+macrophage	ENSG00000132514	TRUE
+macrophage	ENSG00000163687	TRUE
+macrophage	ENSG00000177575	TRUE
+macrophage	ENSG00000155659	TRUE
+macrophage	ENSG00000119508	TRUE
+macrophage	ENSG00000102962	TRUE
+macrophage	ENSG00000026751	TRUE
+macrophage	ENSG00000161921	TRUE
+macrophage	ENSG00000161929	TRUE
+macrophage	ENSG00000146192	TRUE
+macrophage	ENSG00000276600	TRUE
+macrophage	ENSG00000138744	TRUE
+macrophage	ENSG00000010704	TRUE
+macrophage	ENSG00000121807	TRUE
+macrophage	ENSG00000183484	TRUE
+macrophage	ENSG00000196154	TRUE
+macrophage	ENSG00000172243	TRUE
+macrophage	ENSG00000204472	TRUE
+macrophage	ENSG00000163131	TRUE
+macrophage	ENSG00000174837	TRUE
+macrophage	ENSG00000168329	TRUE
+macrophage	ENSG00000203747	TRUE
+macrophage	ENSG00000153071	TRUE
+macrophage	ENSG00000131981	TRUE
+macrophage	ENSG00000018280	TRUE
+macrophage	ENSG00000162692	TRUE
+macrophage	ENSG00000118257	TRUE
+macrophage	ENSG00000135218	TRUE
+macrophage	ENSG00000133800	TRUE
+macrophage	ENSG00000010327	TRUE
+macrophage	ENSG00000163739	TRUE
+macrophage	ENSG00000107317	TRUE
+macrophage	ENSG00000171860	TRUE
+macrophage	ENSG00000196371	TRUE
+macrophage	ENSG00000197405	TRUE
+macrophage	ENSG00000271503	TRUE
+macrophage	ENSG00000100979	TRUE
+macrophage	ENSG00000150337	TRUE
+macrophage	ENSG00000186818	TRUE
+macrophage	ENSG00000160791	TRUE
+macrophage	ENSG00000137462	TRUE
+macrophage	ENSG00000171659	TRUE
+macrophage	ENSG00000135678	TRUE
+macrophage	ENSG00000133063	TRUE
+macrophage	ENSG00000124491	TRUE
+macrophage	ENSG00000106799	TRUE
+macrophage	ENSG00000162723	TRUE
+macrophage	ENSG00000187116	TRUE
+macrophage	ENSG00000260314	TRUE
+macrophage	ENSG00000173193	TRUE
+macrophage	ENSG00000168214	TRUE
+macrophage	ENSG00000137491	TRUE
+macrophage	ENSG00000129521	TRUE
+macrophage	ENSG00000160593	TRUE
+macrophage	ENSG00000127951	TRUE
+macrophage	ENSG00000136235	TRUE
+macrophage	ENSG00000166527	TRUE
+macrophage	ENSG00000151651	TRUE
+macrophage	ENSG00000152213	TRUE
+macrophage	ENSG00000262406	TRUE
+macrophage	ENSG00000110079	TRUE
+macrophage	ENSG00000110077	TRUE
+macrophage	ENSG00000171051	TRUE
+macrophage	ENSG00000130513	TRUE
+macrophage	ENSG00000139832	TRUE
+macrophage	ENSG00000232810	TRUE
+macrophage	ENSG00000167208	TRUE
+macrophage	ENSG00000184922	TRUE
+macrophage	ENSG00000144959	TRUE
+macrophage	ENSG00000106178	TRUE
+macrophage	ENSG00000167851	TRUE
+macrophage	ENSG00000081041	TRUE
+macrophage	ENSG00000108688	TRUE
+macrophage	ENSG00000108691	TRUE
+macrophage	ENSG00000125538	TRUE
+macrophage	ENSG00000128604	TRUE
+macrophage	ENSG00000106546	TRUE
+macrophage	ENSG00000136286	TRUE
+macrophage	ENSG00000138166	TRUE
+macrophage	ENSG00000174946	TRUE
+macrophage	ENSG00000155307	TRUE
+macrophage	ENSG00000100985	TRUE
+macrophage	ENSG00000135245	TRUE
+macrophage	ENSG00000134955	TRUE
+macrophage	ENSG00000143387	TRUE
+macrophage	ENSG00000087253	TRUE
+macrophage	ENSG00000163106	TRUE
+macrophage	ENSG00000159110	TRUE
+macrophage	ENSG00000166927	TRUE
+macrophage	ENSG00000164120	TRUE
+macrophage	ENSG00000073754	TRUE
+macrophage	ENSG00000100055	TRUE
+macrophage	ENSG00000198851	TRUE
+macrophage	ENSG00000182578	TRUE
+macrophage	ENSG00000129226	TRUE
+macrophage	ENSG00000175567	TRUE
+macrophage	ENSG00000188056	TRUE
+macrophage	ENSG00000000938	TRUE
+macrophage	ENSG00000165168	TRUE
+macrophage	ENSG00000091972	TRUE
+macrophage	ENSG00000163606	TRUE
+macrophage	ENSG00000141448	TRUE
+macrophage	ENSG00000132170	TRUE
+macrophage	ENSG00000011600	TRUE
+macrophage	ENSG00000090104	TRUE
+macrophage	ENSG00000171631	TRUE
+macrophage	ENSG00000178573	TRUE
+macrophage	ENSG00000123146	TRUE
+macrophage	ENSG00000110446	TRUE
+macrophage	ENSG00000135929	TRUE
+macrophage	ENSG00000155465	TRUE
+macrophage	ENSG00000020633	TRUE
+macrophage	ENSG00000165025	TRUE
+macrophage	ENSG00000163737	TRUE
+macrophage	ENSG00000128918	TRUE
+macrophage	ENSG00000169313	TRUE
+macrophage	ENSG00000183160	TRUE
+macrophage	ENSG00000160180	TRUE
+macrophage	ENSG00000103449	TRUE
+macrophage	ENSG00000119535	TRUE
+macrophage	ENSG00000110719	TRUE
+macrophage	ENSG00000157303	TRUE
+macrophage	ENSG00000141968	TRUE
+macrophage	ENSG00000142583	TRUE
+macrophage	ENSG00000110324	TRUE
+macrophage	ENSG00000169403	TRUE
+macrophage	ENSG00000089692	TRUE
+macrophage	ENSG00000138185	TRUE
+macrophage	ENSG00000169252	TRUE
+macrophage	ENSG00000059377	TRUE
+macrophage	ENSG00000181631	TRUE
+macrophage	ENSG00000142347	TRUE
+macrophage	ENSG00000116774	TRUE
+macrophage	ENSG00000082781	TRUE
+macrophage	ENSG00000176170	TRUE
+macrophage	ENSG00000158270	TRUE
+macrophage	ENSG00000106624	TRUE
+macrophage	ENSG00000095303	TRUE
+macrophage	ENSG00000077420	TRUE
+macrophage	ENSG00000273749	TRUE
+macrophage	ENSG00000153208	TRUE
+macrophage	ENSG00000204103	TRUE
+macrophage	ENSG00000110934	TRUE
+macrophage	ENSG00000091317	TRUE
+macrophage	ENSG00000121797	TRUE
+macrophage	ENSG00000163815	TRUE
+macrophage	ENSG00000011028	TRUE
+macrophage	ENSG00000143119	TRUE
+macrophage	ENSG00000170345	TRUE
+macrophage	ENSG00000120738	TRUE
+macrophage	ENSG00000157933	TRUE
+macrophage	ENSG00000173369	TRUE
+macrophage	ENSG00000025434	TRUE
+macrophage	ENSG00000100292	TRUE
+macrophage	ENSG00000166211	TRUE
+macrophage	ENSG00000138449	TRUE
+macrophage	ENSG00000088827	TRUE
+mature alpha-beta T cell	ENSG00000170989	FALSE
+mature alpha-beta T cell	ENSG00000117586	FALSE
+mature alpha-beta T cell	ENSG00000188389	FALSE
+mature alpha-beta T cell	ENSG00000121966	FALSE
+mature alpha-beta T cell	ENSG00000066294	FALSE
+mature alpha-beta T cell	ENSG00000160683	FALSE
+mature alpha-beta T cell	ENSG00000026508	FALSE
+mature alpha-beta T cell	ENSG00000089041	FALSE
+mature alpha-beta T cell	ENSG00000026751	FALSE
+mature alpha-beta T cell	ENSG00000100453	FALSE
+mature alpha-beta T cell	ENSG00000180644	FALSE
+mature alpha-beta T cell	ENSG00000069667	FALSE
+mature alpha-beta T cell	ENSG00000091972	FALSE
+mature alpha-beta T cell	ENSG00000117090	FALSE
+mature alpha-beta T cell	ENSG00000120738	FALSE
+mature alpha-beta T cell	ENSG00000081985	FALSE
+mature alpha-beta T cell	ENSG00000177663	FALSE
+mature alpha-beta T cell	ENSG00000096996	FALSE
+mature alpha-beta T cell	ENSG00000111796	FALSE
+mature alpha-beta T cell	ENSG00000160255	FALSE
+mature alpha-beta T cell	ENSG00000107968	FALSE
+mature alpha-beta T cell	ENSG00000123358	FALSE
+mature alpha-beta T cell	ENSG00000120949	FALSE
+mature alpha-beta T cell	ENSG00000100385	FALSE
+mature alpha-beta T cell	ENSG00000109906	FALSE
+mature alpha-beta T cell	ENSG00000073861	FALSE
+mature alpha-beta T cell	ENSG00000107485	FALSE
+mature alpha-beta T cell	ENSG00000149294	FALSE
+mature alpha-beta T cell	ENSG00000060140	FALSE
+mature alpha-beta T cell	ENSG00000081059	FALSE
+mature alpha-beta T cell	ENSG00000163600	FALSE
+mature alpha-beta T cell	ENSG00000010610	FALSE
+mature alpha-beta T cell	ENSG00000167286	FALSE
+mature alpha-beta T cell	ENSG00000113916	FALSE
+mature alpha-beta T cell	ENSG00000160712	FALSE
+mature alpha-beta T cell	ENSG00000102245	FALSE
+mature B cell	ENSG00000116824	TRUE
+mature B cell	ENSG00000156738	TRUE
+mature B cell	ENSG00000117322	TRUE
+mature B cell	ENSG00000012124	TRUE
+mature B cell	ENSG00000104921	TRUE
+mature B cell	ENSG00000110848	TRUE
+mature B cell	ENSG00000105369	TRUE
+mature B cell	ENSG00000007312	TRUE
+mature B cell	ENSG00000121594	TRUE
+mature B cell	ENSG00000114013	TRUE
+mature B cell	ENSG00000240505	TRUE
+mature B cell	ENSG00000159958	TRUE
+mature B cell	ENSG00000211898	TRUE
+mature B cell	ENSG00000211899	TRUE
+mature B cell	ENSG00000227507	TRUE
+mature B cell	ENSG00000196549	TRUE
+mature B cell	ENSG00000177455	TRUE
+mature B cell	ENSG00000139193	TRUE
+mature B cell	ENSG00000137101	TRUE
+mature B cell	ENSG00000196092	TRUE
+mature B cell	ENSG00000153064	TRUE
+mature B cell	ENSG00000128218	TRUE
+mature B cell	ENSG00000116191	TRUE
+mature B cell	ENSG00000048462	TRUE
+mature B cell	ENSG00000269404	TRUE
+mature B cell	ENSG00000145088	TRUE
+mature B cell	ENSG00000023445	TRUE
+mature B cell	ENSG00000211592	TRUE
+mature B cell	ENSG00000112182	TRUE
+mature B cell	ENSG00000004468	TRUE
+mature B cell	ENSG00000081237	TRUE
+mature B cell	ENSG00000019582	TRUE
+mature B cell	ENSG00000169442	TRUE
+mature B cell	ENSG00000066294	TRUE
+mature B cell	ENSG00000135318	TRUE
+mature B cell	ENSG00000042980	TRUE
+mature B cell	ENSG00000163568	TRUE
+mature B cell	ENSG00000012779	TRUE
+mature B cell	ENSG00000136573	TRUE
+mature B cell	ENSG00000112486	TRUE
+mature B cell	ENSG00000134061	TRUE
+mature B cell	ENSG00000158481	TRUE
+mature B cell	ENSG00000104894	TRUE
+mature B cell	ENSG00000153923	TRUE
+mature B cell	ENSG00000160683	TRUE
+mature B cell	ENSG00000170456	TRUE
+mature B cell	ENSG00000072694	TRUE
+mature B cell	ENSG00000132704	TRUE
+mature B cell	ENSG00000111816	TRUE
+mature B cell	ENSG00000176533	TRUE
+mature B cell	ENSG00000125245	TRUE
+mature B cell	ENSG00000228315	TRUE
+mature B cell	ENSG00000152804	TRUE
+mature B cell	ENSG00000241106	TRUE
+mature B cell	ENSG00000186803	TRUE
+mature B cell	ENSG00000206066	TRUE
+mature B cell	ENSG00000104432	TRUE
+mature B cell	ENSG00000140968	TRUE
+mature B cell	ENSG00000112799	TRUE
+mature B cell	ENSG00000165471	TRUE
+mature B cell	ENSG00000135577	TRUE
+mature B cell	ENSG00000196436	TRUE
+mature B cell	ENSG00000083454	TRUE
+mature B cell	ENSG00000168081	TRUE
+mature B cell	ENSG00000213402	TRUE
+mature B cell	ENSG00000068831	TRUE
+mature B cell	ENSG00000142178	TRUE
+mature B cell	ENSG00000137078	TRUE
+mature B cell	ENSG00000074803	TRUE
+mature B cell	ENSG00000079263	TRUE
+mature B cell	ENSG00000035720	TRUE
+mature B cell	ENSG00000121895	TRUE
+mature B cell	ENSG00000076604	TRUE
+mature B cell	ENSG00000011590	TRUE
+mature B cell	ENSG00000134460	TRUE
+mature B cell	ENSG00000005471	TRUE
+mature B cell	ENSG00000110987	TRUE
+mature B cell	ENSG00000162373	TRUE
+mature B cell	ENSG00000157764	TRUE
+mature B cell	ENSG00000077238	TRUE
+mature B cell	ENSG00000112818	TRUE
+mature B cell	ENSG00000243156	TRUE
+mature B cell	ENSG00000174944	TRUE
+mature B cell	ENSG00000242221	TRUE
+mature B cell	ENSG00000188404	TRUE
+mature B cell	ENSG00000100721	TRUE
+mature B cell	ENSG00000242366	TRUE
+mature B cell	ENSG00000187607	TRUE
+mature B cell	ENSG00000106952	TRUE
+mature B cell	ENSG00000114861	TRUE
+mature B cell	ENSG00000187098	TRUE
+mature B cell	ENSG00000179344	TRUE
+mature B cell	ENSG00000247982	TRUE
+mature B cell	ENSG00000066923	TRUE
+mature T cell	ENSG00000143546	TRUE
+mature T cell	ENSG00000170989	TRUE
+mature T cell	ENSG00000126353	TRUE
+mature T cell	ENSG00000116824	TRUE
+mature T cell	ENSG00000110448	TRUE
+mature T cell	ENSG00000110848	TRUE
+mature T cell	ENSG00000117586	TRUE
+mature T cell	ENSG00000188389	TRUE
+mature T cell	ENSG00000227507	TRUE
+mature T cell	ENSG00000139193	TRUE
+mature T cell	ENSG00000121966	TRUE
+mature T cell	ENSG00000004468	TRUE
+mature T cell	ENSG00000081237	TRUE
+mature T cell	ENSG00000066294	TRUE
+mature T cell	ENSG00000135318	TRUE
+mature T cell	ENSG00000112486	TRUE
+mature T cell	ENSG00000160683	TRUE
+mature T cell	ENSG00000213402	TRUE
+mature T cell	ENSG00000134460	TRUE
+mature T cell	ENSG00000188404	TRUE
+mature T cell	ENSG00000183625	TRUE
+mature T cell	ENSG00000139626	TRUE
+mature T cell	ENSG00000113520	TRUE
+mature T cell	ENSG00000026508	TRUE
+mature T cell	ENSG00000089041	TRUE
+mature T cell	ENSG00000136244	TRUE
+mature T cell	ENSG00000163220	TRUE
+mature T cell	ENSG00000026751	TRUE
+mature T cell	ENSG00000083457	TRUE
+mature T cell	ENSG00000197635	TRUE
+mature T cell	ENSG00000186810	TRUE
+mature T cell	ENSG00000153563	TRUE
+mature T cell	ENSG00000178562	TRUE
+mature T cell	ENSG00000133574	TRUE
+mature T cell	ENSG00000138795	TRUE
+mature T cell	ENSG00000163823	TRUE
+mature T cell	ENSG00000183134	TRUE
+mature T cell	ENSG00000113525	TRUE
+mature T cell	ENSG00000030419	TRUE
+mature T cell	ENSG00000164400	TRUE
+mature T cell	ENSG00000100453	TRUE
+mature T cell	ENSG00000105374	TRUE
+mature T cell	ENSG00000180644	TRUE
+mature T cell	ENSG00000134539	TRUE
+mature T cell	ENSG00000198821	TRUE
+mature T cell	ENSG00000173762	TRUE
+mature T cell	ENSG00000171791	TRUE
+mature T cell	ENSG00000069667	TRUE
+mature T cell	ENSG00000160791	TRUE
+mature T cell	ENSG00000232810	TRUE
+mature T cell	ENSG00000106546	TRUE
+mature T cell	ENSG00000163106	TRUE
+mature T cell	ENSG00000198851	TRUE
+mature T cell	ENSG00000091972	TRUE
+mature T cell	ENSG00000132170	TRUE
+mature T cell	ENSG00000178573	TRUE
+mature T cell	ENSG00000112115	TRUE
+mature T cell	ENSG00000115602	TRUE
+mature T cell	ENSG00000213658	TRUE
+mature T cell	ENSG00000117090	TRUE
+mature T cell	ENSG00000089692	TRUE
+mature T cell	ENSG00000138185	TRUE
+mature T cell	ENSG00000082781	TRUE
+mature T cell	ENSG00000077420	TRUE
+mature T cell	ENSG00000110934	TRUE
+mature T cell	ENSG00000120738	TRUE
+mature T cell	ENSG00000102575	TRUE
+mature T cell	ENSG00000081985	TRUE
+mature T cell	ENSG00000177663	TRUE
+mature T cell	ENSG00000096996	TRUE
+mature T cell	ENSG00000111796	TRUE
+mature T cell	ENSG00000160255	TRUE
+mature T cell	ENSG00000107968	TRUE
+mature T cell	ENSG00000123358	TRUE
+mature T cell	ENSG00000120949	TRUE
+mature T cell	ENSG00000100385	TRUE
+mature T cell	ENSG00000109906	TRUE
+mature T cell	ENSG00000073861	TRUE
+mature T cell	ENSG00000107485	TRUE
+mature T cell	ENSG00000149294	TRUE
+mature T cell	ENSG00000060140	TRUE
+mature T cell	ENSG00000081059	TRUE
+mature T cell	ENSG00000115590	TRUE
+mature T cell	ENSG00000160654	TRUE
+mature T cell	ENSG00000115604	TRUE
+mature T cell	ENSG00000111537	TRUE
+mature T cell	ENSG00000163600	TRUE
+mature T cell	ENSG00000056736	TRUE
+mature T cell	ENSG00000168685	TRUE
+mature T cell	ENSG00000169194	TRUE
+mature T cell	ENSG00000070729	TRUE
+mature T cell	ENSG00000137265	TRUE
+mature T cell	ENSG00000197594	TRUE
+mature T cell	ENSG00000184451	TRUE
+mature T cell	ENSG00000010610	TRUE
+mature T cell	ENSG00000167286	TRUE
+mature T cell	ENSG00000172215	TRUE
+mature T cell	ENSG00000182568	TRUE
+mature T cell	ENSG00000211772	TRUE
+mature T cell	ENSG00000277734	TRUE
+mature T cell	ENSG00000211751	TRUE
+mature T cell	ENSG00000168421	TRUE
+mature T cell	ENSG00000186827	TRUE
+mature T cell	ENSG00000182866	TRUE
+mature T cell	ENSG00000141293	TRUE
+mature T cell	ENSG00000113916	TRUE
+mature T cell	ENSG00000160712	TRUE
+mature T cell	ENSG00000102245	TRUE
+mature T cell	ENSG00000109471	TRUE
+mature T cell	ENSG00000120659	TRUE
+mature T cell	ENSG00000135077	TRUE
+mature T cell	ENSG00000111321	TRUE
+mature T cell	ENSG00000226979	TRUE
+mature T cell	ENSG00000136634	TRUE
+mature T cell	ENSG00000179934	TRUE
+mature T cell	ENSG00000113249	TRUE
+mature T cell	ENSG00000166888	TRUE
+mature T cell	ENSG00000112116	TRUE
+mature T cell	ENSG00000138684	TRUE
+mature T cell	ENSG00000127318	TRUE
+mature T cell	ENSG00000143365	TRUE
+mature T cell	ENSG00000183813	TRUE
+mature T cell	ENSG00000145839	TRUE
+mature T cell	ENSG00000049768	TRUE
+mature T cell	ENSG00000101096	TRUE
+mature T cell	ENSG00000109320	TRUE
+mature T cell	ENSG00000113580	TRUE
+mature T cell	ENSG00000100351	TRUE
+mature T cell	ENSG00000175463	TRUE
+mature T cell	ENSG00000115165	TRUE
+mature T cell	ENSG00000186432	TRUE
+mature T cell	ENSG00000133106	TRUE
+mature T cell	ENSG00000213203	TRUE
+mature T cell	ENSG00000185811	TRUE
+mature T cell	ENSG00000067066	TRUE
+mature T cell	ENSG00000065357	TRUE
+mature T cell	ENSG00000158987	TRUE
+mature T cell	ENSG00000076928	TRUE
+mature T cell	ENSG00000075884	TRUE
+mature T cell	ENSG00000180448	TRUE
+mature T cell	ENSG00000163599	TRUE
+mature T cell	ENSG00000183560	TRUE
+mature T cell	ENSG00000186891	TRUE
+mature T cell	ENSG00000115594	TRUE
+mature T cell	ENSG00000105855	TRUE
+mature T cell	ENSG00000137507	TRUE
+mature T cell	ENSG00000110195	TRUE
+megakaryocyte	ENSG00000143546	FALSE
+megakaryocyte	ENSG00000151702	FALSE
+megakaryocyte	ENSG00000121966	FALSE
+megakaryocyte	ENSG00000103522	FALSE
+megakaryocyte	ENSG00000239732	FALSE
+megakaryocyte	ENSG00000134460	FALSE
+megakaryocyte	ENSG00000179348	FALSE
+megakaryocyte	ENSG00000087085	FALSE
+megakaryocyte	ENSG00000136244	FALSE
+megakaryocyte	ENSG00000163220	FALSE
+megakaryocyte	ENSG00000261371	FALSE
+megakaryocyte	ENSG00000259207	FALSE
+megakaryocyte	ENSG00000110799	FALSE
+megakaryocyte	ENSG00000117707	FALSE
+megakaryocyte	ENSG00000010278	FALSE
+megakaryocyte	ENSG00000159674	FALSE
+megakaryocyte	ENSG00000124491	FALSE
+megakaryocyte	ENSG00000132170	FALSE
+megakaryocyte	ENSG00000180871	FALSE
+megakaryocyte	ENSG00000115956	FALSE
+megakaryocyte	ENSG00000185245	FALSE
+megakaryocyte	ENSG00000005961	FALSE
+megakaryocyte	ENSG00000117400	FALSE
+megakaryocyte	ENSG00000213658	FALSE
+megakaryocyte	ENSG00000163737	FALSE
+megakaryocyte	ENSG00000187266	FALSE
+megakaryocyte	ENSG00000178732	FALSE
+megakaryocyte	ENSG00000163464	FALSE
+megakaryocyte	ENSG00000117090	FALSE
+megakaryocyte	ENSG00000133256	FALSE
+megakaryocyte	ENSG00000007264	FALSE
+megakaryocyte	ENSG00000170759	FALSE
+megakaryocyte	ENSG00000102145	FALSE
+megakaryocyte	ENSG00000102003	FALSE
+megakaryocyte	ENSG00000011105	FALSE
+megakaryocyte	ENSG00000150681	FALSE
+megakaryocyte	ENSG00000161911	FALSE
+megakaryocyte	ENSG00000108839	FALSE
+megakaryocyte	ENSG00000174175	FALSE
+megakaryocyte	ENSG00000131196	FALSE
+megakaryocyte	ENSG00000185043	FALSE
+megakaryocyte	ENSG00000173846	FALSE
+megakaryocyte	ENSG00000197063	FALSE
+megakaryocyte	ENSG00000123384	FALSE
+megakaryocyte	ENSG00000112715	FALSE
+megakaryocyte	ENSG00000105329	FALSE
+megakaryocyte	ENSG00000169704	FALSE
+memory B cell	ENSG00000156738	TRUE
+memory B cell	ENSG00000117322	TRUE
+memory B cell	ENSG00000012124	TRUE
+memory B cell	ENSG00000110848	TRUE
+memory B cell	ENSG00000105369	TRUE
+memory B cell	ENSG00000007312	TRUE
+memory B cell	ENSG00000121594	TRUE
+memory B cell	ENSG00000114013	TRUE
+memory B cell	ENSG00000240505	TRUE
+memory B cell	ENSG00000211898	TRUE
+memory B cell	ENSG00000211899	TRUE
+memory B cell	ENSG00000227507	TRUE
+memory B cell	ENSG00000177455	TRUE
+memory B cell	ENSG00000139193	TRUE
+memory B cell	ENSG00000137101	TRUE
+memory B cell	ENSG00000196092	TRUE
+memory B cell	ENSG00000153064	TRUE
+memory B cell	ENSG00000128218	TRUE
+memory B cell	ENSG00000116191	TRUE
+memory B cell	ENSG00000048462	TRUE
+memory B cell	ENSG00000269404	TRUE
+memory B cell	ENSG00000211592	TRUE
+memory B cell	ENSG00000112182	TRUE
+memory B cell	ENSG00000004468	TRUE
+memory B cell	ENSG00000081237	TRUE
+memory B cell	ENSG00000066294	TRUE
+memory B cell	ENSG00000135318	TRUE
+memory B cell	ENSG00000042980	TRUE
+memory B cell	ENSG00000163568	TRUE
+memory B cell	ENSG00000012779	TRUE
+memory B cell	ENSG00000136573	TRUE
+memory B cell	ENSG00000112486	TRUE
+memory B cell	ENSG00000134061	TRUE
+memory B cell	ENSG00000158481	TRUE
+memory B cell	ENSG00000104894	TRUE
+memory B cell	ENSG00000153923	TRUE
+memory B cell	ENSG00000160683	TRUE
+memory B cell	ENSG00000170456	TRUE
+memory B cell	ENSG00000072694	TRUE
+memory B cell	ENSG00000132704	TRUE
+memory B cell	ENSG00000111816	TRUE
+memory B cell	ENSG00000176533	TRUE
+memory B cell	ENSG00000125245	TRUE
+memory B cell	ENSG00000228315	TRUE
+memory B cell	ENSG00000152804	TRUE
+memory B cell	ENSG00000241106	TRUE
+memory B cell	ENSG00000186803	TRUE
+memory B cell	ENSG00000206066	TRUE
+memory B cell	ENSG00000104432	TRUE
+memory B cell	ENSG00000140968	TRUE
+memory B cell	ENSG00000112799	TRUE
+memory B cell	ENSG00000165471	TRUE
+memory B cell	ENSG00000135577	TRUE
+memory B cell	ENSG00000196436	TRUE
+memory B cell	ENSG00000083454	TRUE
+memory B cell	ENSG00000168081	TRUE
+memory B cell	ENSG00000213402	TRUE
+memory B cell	ENSG00000068831	TRUE
+memory B cell	ENSG00000142178	TRUE
+memory B cell	ENSG00000137078	TRUE
+memory B cell	ENSG00000074803	TRUE
+memory B cell	ENSG00000079263	TRUE
+memory B cell	ENSG00000035720	TRUE
+memory B cell	ENSG00000121895	TRUE
+memory B cell	ENSG00000076604	TRUE
+memory B cell	ENSG00000011590	TRUE
+memory T cell	ENSG00000143546	TRUE
+memory T cell	ENSG00000126353	TRUE
+memory T cell	ENSG00000116824	TRUE
+memory T cell	ENSG00000110848	TRUE
+memory T cell	ENSG00000227507	TRUE
+memory T cell	ENSG00000139193	TRUE
+memory T cell	ENSG00000081237	TRUE
+memory T cell	ENSG00000112486	TRUE
+memory T cell	ENSG00000213402	TRUE
+memory T cell	ENSG00000188404	TRUE
+memory T cell	ENSG00000139626	TRUE
+memory T cell	ENSG00000163220	TRUE
+memory T cell	ENSG00000083457	TRUE
+memory T cell	ENSG00000178562	TRUE
+memory T cell	ENSG00000133574	TRUE
+memory T cell	ENSG00000138795	TRUE
+memory T cell	ENSG00000105374	TRUE
+memory T cell	ENSG00000198821	TRUE
+memory T cell	ENSG00000173762	TRUE
+memory T cell	ENSG00000171791	TRUE
+memory T cell	ENSG00000160791	TRUE
+memory T cell	ENSG00000198851	TRUE
+memory T cell	ENSG00000213658	TRUE
+memory T cell	ENSG00000082781	TRUE
+memory T cell	ENSG00000077420	TRUE
+memory T cell	ENSG00000110934	TRUE
+memory T cell	ENSG00000102575	TRUE
+memory T cell	ENSG00000081059	TRUE
+memory T cell	ENSG00000160654	TRUE
+memory T cell	ENSG00000163600	TRUE
+memory T cell	ENSG00000168685	TRUE
+memory T cell	ENSG00000197594	TRUE
+memory T cell	ENSG00000010610	TRUE
+memory T cell	ENSG00000167286	TRUE
+memory T cell	ENSG00000172215	TRUE
+memory T cell	ENSG00000182568	TRUE
+memory T cell	ENSG00000211772	TRUE
+memory T cell	ENSG00000277734	TRUE
+memory T cell	ENSG00000211751	TRUE
+memory T cell	ENSG00000168421	TRUE
+memory T cell	ENSG00000182866	TRUE
+memory T cell	ENSG00000141293	TRUE
+memory T cell	ENSG00000100351	TRUE
+memory T cell	ENSG00000175463	TRUE
+memory T cell	ENSG00000115165	TRUE
+memory T cell	ENSG00000186432	TRUE
+memory T cell	ENSG00000133106	TRUE
+memory T cell	ENSG00000213203	TRUE
+memory T cell	ENSG00000185811	TRUE
+memory T cell	ENSG00000067066	TRUE
+memory T cell	ENSG00000065357	TRUE
+memory T cell	ENSG00000158987	TRUE
+memory T cell	ENSG00000076928	TRUE
+memory T cell	ENSG00000075884	TRUE
+memory T cell	ENSG00000180448	TRUE
+microvascular endothelial cell	ENSG00000131095	FALSE
+microvascular endothelial cell	ENSG00000170075	FALSE
+microvascular endothelial cell	ENSG00000164707	FALSE
+microvascular endothelial cell	ENSG00000089057	FALSE
+microvascular endothelial cell	ENSG00000118777	FALSE
+microvascular endothelial cell	ENSG00000137273	FALSE
+microvascular endothelial cell	ENSG00000173638	FALSE
+microvascular endothelial cell	ENSG00000188338	FALSE
+microvascular endothelial cell	ENSG00000127863	FALSE
+microvascular endothelial cell	ENSG00000146072	FALSE
+microvascular endothelial cell	ENSG00000183770	FALSE
+microvascular endothelial cell	ENSG00000164379	FALSE
+microvascular endothelial cell	ENSG00000138795	FALSE
+microvascular endothelial cell	ENSG00000112033	FALSE
+microvascular endothelial cell	ENSG00000156925	FALSE
+microvascular endothelial cell	ENSG00000170017	FALSE
+monocyte	ENSG00000101017	TRUE
+monocyte	ENSG00000143546	TRUE
+monocyte	ENSG00000114013	TRUE
+monocyte	ENSG00000204287	TRUE
+monocyte	ENSG00000170458	TRUE
+monocyte	ENSG00000119917	TRUE
+monocyte	ENSG00000197471	TRUE
+monocyte	ENSG00000121966	TRUE
+monocyte	ENSG00000081237	TRUE
+monocyte	ENSG00000072694	TRUE
+monocyte	ENSG00000188404	TRUE
+monocyte	ENSG00000136869	TRUE
+monocyte	ENSG00000005844	TRUE
+monocyte	ENSG00000169896	TRUE
+monocyte	ENSG00000140678	TRUE
+monocyte	ENSG00000277632	TRUE
+monocyte	ENSG00000105383	TRUE
+monocyte	ENSG00000026508	TRUE
+monocyte	ENSG00000163220	TRUE
+monocyte	ENSG00000177575	TRUE
+monocyte	ENSG00000138744	TRUE
+monocyte	ENSG00000101336	TRUE
+monocyte	ENSG00000121807	TRUE
+monocyte	ENSG00000196154	TRUE
+monocyte	ENSG00000172243	TRUE
+monocyte	ENSG00000204482	TRUE
+monocyte	ENSG00000174837	TRUE
+monocyte	ENSG00000168329	TRUE
+monocyte	ENSG00000203747	TRUE
+monocyte	ENSG00000197249	TRUE
+monocyte	ENSG00000038427	TRUE
+monocyte	ENSG00000090382	TRUE
+monocyte	ENSG00000261371	TRUE
+monocyte	ENSG00000090339	TRUE
+monocyte	ENSG00000007908	TRUE
+monocyte	ENSG00000135218	TRUE
+monocyte	ENSG00000174600	TRUE
+monocyte	ENSG00000159640	TRUE
+monocyte	ENSG00000196371	TRUE
+monocyte	ENSG00000173762	TRUE
+monocyte	ENSG00000150337	TRUE
+monocyte	ENSG00000260314	TRUE
+monocyte	ENSG00000127951	TRUE
+monocyte	ENSG00000110077	TRUE
+monocyte	ENSG00000232810	TRUE
+monocyte	ENSG00000125538	TRUE
+monocyte	ENSG00000166927	TRUE
+monocyte	ENSG00000182578	TRUE
+monocyte	ENSG00000129226	TRUE
+monocyte	ENSG00000090104	TRUE
+monocyte	ENSG00000126759	TRUE
+monocyte	ENSG00000122861	TRUE
+monocyte	ENSG00000119535	TRUE
+monocyte	ENSG00000128383	TRUE
+monocyte	ENSG00000168769	TRUE
+monocyte	ENSG00000135636	TRUE
+monocyte	ENSG00000103313	TRUE
+monocyte	ENSG00000162747	TRUE
+monocyte	ENSG00000159339	TRUE
+monocyte	ENSG00000121853	TRUE
+monocyte	ENSG00000169083	TRUE
+monocyte	ENSG00000157873	TRUE
+monocyte	ENSG00000093072	TRUE
+monocyte	ENSG00000170430	TRUE
+monocyte	ENSG00000102575	TRUE
+monocyte	ENSG00000117228	TRUE
+monocyte	ENSG00000089127	TRUE
+monocyte	ENSG00000185507	TRUE
+monocyte	ENSG00000188313	TRUE
+monocyte	ENSG00000157601	TRUE
+monocyte	ENSG00000136689	TRUE
+monocyte	ENSG00000185745	TRUE
+monocyte	ENSG00000131203	TRUE
+monocyte	ENSG00000121858	TRUE
+monocyte	ENSG00000169245	TRUE
+monocyte	ENSG00000163563	TRUE
+monocyte	ENSG00000152518	TRUE
+monocyte	ENSG00000111144	TRUE
+monocyte	ENSG00000172322	TRUE
+monocyte	ENSG00000117091	TRUE
+monocyte	ENSG00000196415	TRUE
+monocyte	ENSG00000142089	TRUE
+monocyte	ENSG00000115414	TRUE
+monocyte	ENSG00000197746	TRUE
+monocyte	ENSG00000085265	TRUE
+monocyte	ENSG00000155366	TRUE
+monocyte	ENSG00000085514	TRUE
+monocyte	ENSG00000144802	TRUE
+monocyte	ENSG00000160932	TRUE
+monocyte	ENSG00000254087	TRUE
+monocyte	ENSG00000172216	TRUE
+monocyte	ENSG00000216490	TRUE
+monocyte	ENSG00000163221	TRUE
+monocyte	ENSG00000116741	TRUE
+monocyte	ENSG00000066336	TRUE
+monocyte	ENSG00000025708	TRUE
+monocyte	ENSG00000121552	TRUE
+monocyte	ENSG00000103490	TRUE
+monocyte	ENSG00000143669	TRUE
+mononuclear phagocyte	ENSG00000160307	TRUE
+mononuclear phagocyte	ENSG00000101017	TRUE
+mononuclear phagocyte	ENSG00000143546	TRUE
+mononuclear phagocyte	ENSG00000126353	TRUE
+mononuclear phagocyte	ENSG00000117322	TRUE
+mononuclear phagocyte	ENSG00000012124	TRUE
+mononuclear phagocyte	ENSG00000121594	TRUE
+mononuclear phagocyte	ENSG00000114013	TRUE
+mononuclear phagocyte	ENSG00000204287	TRUE
+mononuclear phagocyte	ENSG00000196735	TRUE
+mononuclear phagocyte	ENSG00000170458	TRUE
+mononuclear phagocyte	ENSG00000119917	TRUE
+mononuclear phagocyte	ENSG00000128322	TRUE
+mononuclear phagocyte	ENSG00000197471	TRUE
+mononuclear phagocyte	ENSG00000132465	TRUE
+mononuclear phagocyte	ENSG00000170476	TRUE
+mononuclear phagocyte	ENSG00000099958	TRUE
+mononuclear phagocyte	ENSG00000095585	TRUE
+mononuclear phagocyte	ENSG00000186265	TRUE
+mononuclear phagocyte	ENSG00000269404	TRUE
+mononuclear phagocyte	ENSG00000121966	TRUE
+mononuclear phagocyte	ENSG00000081237	TRUE
+mononuclear phagocyte	ENSG00000119866	TRUE
+mononuclear phagocyte	ENSG00000239732	TRUE
+mononuclear phagocyte	ENSG00000134061	TRUE
+mononuclear phagocyte	ENSG00000158481	TRUE
+mononuclear phagocyte	ENSG00000072694	TRUE
+mononuclear phagocyte	ENSG00000140968	TRUE
+mononuclear phagocyte	ENSG00000188404	TRUE
+mononuclear phagocyte	ENSG00000179344	TRUE
+mononuclear phagocyte	ENSG00000185291	TRUE
+mononuclear phagocyte	ENSG00000179639	TRUE
+mononuclear phagocyte	ENSG00000136869	TRUE
+mononuclear phagocyte	ENSG00000005844	TRUE
+mononuclear phagocyte	ENSG00000169896	TRUE
+mononuclear phagocyte	ENSG00000140678	TRUE
+mononuclear phagocyte	ENSG00000277632	TRUE
+mononuclear phagocyte	ENSG00000105383	TRUE
+mononuclear phagocyte	ENSG00000026508	TRUE
+mononuclear phagocyte	ENSG00000039068	TRUE
+mononuclear phagocyte	ENSG00000169508	TRUE
+mononuclear phagocyte	ENSG00000136244	TRUE
+mononuclear phagocyte	ENSG00000112149	TRUE
+mononuclear phagocyte	ENSG00000158477	TRUE
+mononuclear phagocyte	ENSG00000090659	TRUE
+mononuclear phagocyte	ENSG00000078081	TRUE
+mononuclear phagocyte	ENSG00000158485	TRUE
+mononuclear phagocyte	ENSG00000095970	TRUE
+mononuclear phagocyte	ENSG00000170323	TRUE
+mononuclear phagocyte	ENSG00000163220	TRUE
+mononuclear phagocyte	ENSG00000118520	TRUE
+mononuclear phagocyte	ENSG00000242574	TRUE
+mononuclear phagocyte	ENSG00000204257	TRUE
+mononuclear phagocyte	ENSG00000132514	TRUE
+mononuclear phagocyte	ENSG00000196126	TRUE
+mononuclear phagocyte	ENSG00000231389	TRUE
+mononuclear phagocyte	ENSG00000223865	TRUE
+mononuclear phagocyte	ENSG00000163687	TRUE
+mononuclear phagocyte	ENSG00000197992	TRUE
+mononuclear phagocyte	ENSG00000131042	TRUE
+mononuclear phagocyte	ENSG00000139083	TRUE
+mononuclear phagocyte	ENSG00000177575	TRUE
+mononuclear phagocyte	ENSG00000169429	TRUE
+mononuclear phagocyte	ENSG00000155659	TRUE
+mononuclear phagocyte	ENSG00000119508	TRUE
+mononuclear phagocyte	ENSG00000056558	TRUE
+mononuclear phagocyte	ENSG00000104856	TRUE
+mononuclear phagocyte	ENSG00000123685	TRUE
+mononuclear phagocyte	ENSG00000102962	TRUE
+mononuclear phagocyte	ENSG00000026751	TRUE
+mononuclear phagocyte	ENSG00000173578	TRUE
+mononuclear phagocyte	ENSG00000161921	TRUE
+mononuclear phagocyte	ENSG00000161929	TRUE
+mononuclear phagocyte	ENSG00000146192	TRUE
+mononuclear phagocyte	ENSG00000276600	TRUE
+mononuclear phagocyte	ENSG00000138744	TRUE
+mononuclear phagocyte	ENSG00000101336	TRUE
+mononuclear phagocyte	ENSG00000010704	TRUE
+mononuclear phagocyte	ENSG00000121807	TRUE
+mononuclear phagocyte	ENSG00000196218	TRUE
+mononuclear phagocyte	ENSG00000083457	TRUE
+mononuclear phagocyte	ENSG00000196189	TRUE
+mononuclear phagocyte	ENSG00000197635	TRUE
+mononuclear phagocyte	ENSG00000158714	TRUE
+mononuclear phagocyte	ENSG00000186810	TRUE
+mononuclear phagocyte	ENSG00000122025	TRUE
+mononuclear phagocyte	ENSG00000164342	TRUE
+mononuclear phagocyte	ENSG00000183484	TRUE
+mononuclear phagocyte	ENSG00000135074	TRUE
+mononuclear phagocyte	ENSG00000152056	TRUE
+mononuclear phagocyte	ENSG00000130707	TRUE
+mononuclear phagocyte	ENSG00000159618	TRUE
+mononuclear phagocyte	ENSG00000119714	TRUE
+mononuclear phagocyte	ENSG00000157404	TRUE
+mononuclear phagocyte	ENSG00000117009	TRUE
+mononuclear phagocyte	ENSG00000078589	TRUE
+mononuclear phagocyte	ENSG00000137502	TRUE
+mononuclear phagocyte	ENSG00000130584	TRUE
+mononuclear phagocyte	ENSG00000196154	TRUE
+mononuclear phagocyte	ENSG00000172243	TRUE
+mononuclear phagocyte	ENSG00000204472	TRUE
+mononuclear phagocyte	ENSG00000204482	TRUE
+mononuclear phagocyte	ENSG00000163131	TRUE
+mononuclear phagocyte	ENSG00000174837	TRUE
+mononuclear phagocyte	ENSG00000102970	TRUE
+mononuclear phagocyte	ENSG00000116031	TRUE
+mononuclear phagocyte	ENSG00000153563	TRUE
+mononuclear phagocyte	ENSG00000168329	TRUE
+mononuclear phagocyte	ENSG00000054219	TRUE
+mononuclear phagocyte	ENSG00000197646	TRUE
+mononuclear phagocyte	ENSG00000198053	TRUE
+mononuclear phagocyte	ENSG00000203747	TRUE
+mononuclear phagocyte	ENSG00000087086	TRUE
+mononuclear phagocyte	ENSG00000197249	TRUE
+mononuclear phagocyte	ENSG00000167601	TRUE
+mononuclear phagocyte	ENSG00000167641	TRUE
+mononuclear phagocyte	ENSG00000105492	TRUE
+mononuclear phagocyte	ENSG00000153071	TRUE
+mononuclear phagocyte	ENSG00000038427	TRUE
+mononuclear phagocyte	ENSG00000090382	TRUE
+mononuclear phagocyte	ENSG00000135046	TRUE
+mononuclear phagocyte	ENSG00000182985	TRUE
+mononuclear phagocyte	ENSG00000145349	TRUE
+mononuclear phagocyte	ENSG00000131981	TRUE
+mononuclear phagocyte	ENSG00000131400	TRUE
+mononuclear phagocyte	ENSG00000121316	TRUE
+mononuclear phagocyte	ENSG00000169413	TRUE
+mononuclear phagocyte	ENSG00000145287	TRUE
+mononuclear phagocyte	ENSG00000018280	TRUE
+mononuclear phagocyte	ENSG00000162493	TRUE
+mononuclear phagocyte	ENSG00000178562	TRUE
+mononuclear phagocyte	ENSG00000118898	TRUE
+mononuclear phagocyte	ENSG00000126233	TRUE
+mononuclear phagocyte	ENSG00000206503	TRUE
+mononuclear phagocyte	ENSG00000234745	TRUE
+mononuclear phagocyte	ENSG00000204525	TRUE
+mononuclear phagocyte	ENSG00000198502	TRUE
+mononuclear phagocyte	ENSG00000170542	TRUE
+mononuclear phagocyte	ENSG00000261371	TRUE
+mononuclear phagocyte	ENSG00000090339	TRUE
+mononuclear phagocyte	ENSG00000007908	TRUE
+mononuclear phagocyte	ENSG00000167748	TRUE
+mononuclear phagocyte	ENSG00000135218	TRUE
+mononuclear phagocyte	ENSG00000182566	TRUE
+mononuclear phagocyte	ENSG00000174600	TRUE
+mononuclear phagocyte	ENSG00000159640	TRUE
+mononuclear phagocyte	ENSG00000196371	TRUE
+mononuclear phagocyte	ENSG00000100453	TRUE
+mononuclear phagocyte	ENSG00000173762	TRUE
+mononuclear phagocyte	ENSG00000111249	TRUE
+mononuclear phagocyte	ENSG00000124507	TRUE
+mononuclear phagocyte	ENSG00000150337	TRUE
+mononuclear phagocyte	ENSG00000260314	TRUE
+mononuclear phagocyte	ENSG00000127951	TRUE
+mononuclear phagocyte	ENSG00000110077	TRUE
+mononuclear phagocyte	ENSG00000232810	TRUE
+mononuclear phagocyte	ENSG00000125538	TRUE
+mononuclear phagocyte	ENSG00000128604	TRUE
+mononuclear phagocyte	ENSG00000166927	TRUE
+mononuclear phagocyte	ENSG00000182578	TRUE
+mononuclear phagocyte	ENSG00000129226	TRUE
+mononuclear phagocyte	ENSG00000090104	TRUE
+mononuclear phagocyte	ENSG00000126759	TRUE
+mononuclear phagocyte	ENSG00000122861	TRUE
+mononuclear phagocyte	ENSG00000119535	TRUE
+mononuclear phagocyte	ENSG00000128383	TRUE
+mononuclear phagocyte	ENSG00000168769	TRUE
+mononuclear phagocyte	ENSG00000135636	TRUE
+mononuclear phagocyte	ENSG00000103313	TRUE
+mononuclear phagocyte	ENSG00000162747	TRUE
+mononuclear phagocyte	ENSG00000159339	TRUE
+mononuclear phagocyte	ENSG00000121853	TRUE
+mononuclear phagocyte	ENSG00000169083	TRUE
+mononuclear phagocyte	ENSG00000157873	TRUE
+mononuclear phagocyte	ENSG00000093072	TRUE
+mononuclear phagocyte	ENSG00000170430	TRUE
+mononuclear phagocyte	ENSG00000102575	TRUE
+mononuclear phagocyte	ENSG00000117228	TRUE
+mononuclear phagocyte	ENSG00000089127	TRUE
+mononuclear phagocyte	ENSG00000185507	TRUE
+mononuclear phagocyte	ENSG00000188313	TRUE
+mononuclear phagocyte	ENSG00000157601	TRUE
+mononuclear phagocyte	ENSG00000136689	TRUE
+mononuclear phagocyte	ENSG00000185745	TRUE
+mononuclear phagocyte	ENSG00000131203	TRUE
+mononuclear phagocyte	ENSG00000121858	TRUE
+mononuclear phagocyte	ENSG00000169245	TRUE
+mononuclear phagocyte	ENSG00000163563	TRUE
+mononuclear phagocyte	ENSG00000152518	TRUE
+mononuclear phagocyte	ENSG00000111144	TRUE
+mononuclear phagocyte	ENSG00000172322	TRUE
+mononuclear phagocyte	ENSG00000117091	TRUE
+mononuclear phagocyte	ENSG00000196415	TRUE
+mononuclear phagocyte	ENSG00000142089	TRUE
+mononuclear phagocyte	ENSG00000115414	TRUE
+mononuclear phagocyte	ENSG00000197746	TRUE
+mononuclear phagocyte	ENSG00000085265	TRUE
+mononuclear phagocyte	ENSG00000155366	TRUE
+mononuclear phagocyte	ENSG00000085514	TRUE
+mononuclear phagocyte	ENSG00000144802	TRUE
+mononuclear phagocyte	ENSG00000160932	TRUE
+mononuclear phagocyte	ENSG00000254087	TRUE
+mononuclear phagocyte	ENSG00000172216	TRUE
+mononuclear phagocyte	ENSG00000216490	TRUE
+mononuclear phagocyte	ENSG00000163221	TRUE
+mononuclear phagocyte	ENSG00000116741	TRUE
+mononuclear phagocyte	ENSG00000066336	TRUE
+mononuclear phagocyte	ENSG00000025708	TRUE
+mononuclear phagocyte	ENSG00000121552	TRUE
+mononuclear phagocyte	ENSG00000103490	TRUE
+mononuclear phagocyte	ENSG00000143669	TRUE
+mononuclear phagocyte	ENSG00000107968	TRUE
+mononuclear phagocyte	ENSG00000056736	TRUE
+mononuclear phagocyte	ENSG00000010610	TRUE
+mononuclear phagocyte	ENSG00000239961	TRUE
+mononuclear phagocyte	ENSG00000198178	TRUE
+mononuclear phagocyte	ENSG00000102871	TRUE
+mononuclear phagocyte	ENSG00000123329	TRUE
+mononuclear phagocyte	ENSG00000125869	TRUE
+mononuclear phagocyte	ENSG00000169967	TRUE
+mononuclear phagocyte	ENSG00000102524	TRUE
+mononuclear phagocyte	ENSG00000171611	TRUE
+mononuclear phagocyte	ENSG00000178607	TRUE
+mononuclear phagocyte	ENSG00000196664	TRUE
+mononuclear phagocyte	ENSG00000140563	TRUE
+mononuclear phagocyte	ENSG00000179603	TRUE
+mononuclear phagocyte	ENSG00000154229	TRUE
+mononuclear phagocyte	ENSG00000132357	TRUE
+mononuclear phagocyte	ENSG00000132386	TRUE
+mononuclear phagocyte	ENSG00000135916	TRUE
+mononuclear phagocyte	ENSG00000196628	TRUE
+mononuclear phagocyte	ENSG00000066827	TRUE
+mononuclear phagocyte	ENSG00000099250	TRUE
+mononuclear phagocyte	ENSG00000139370	TRUE
+mononuclear phagocyte	ENSG00000173585	TRUE
+mononuclear phagocyte	ENSG00000130303	TRUE
+myeloid leukocyte	ENSG00000132437	TRUE
+myeloid leukocyte	ENSG00000101017	TRUE
+myeloid leukocyte	ENSG00000143546	TRUE
+myeloid leukocyte	ENSG00000080493	TRUE
+myeloid leukocyte	ENSG00000148346	TRUE
+myeloid leukocyte	ENSG00000126353	TRUE
+myeloid leukocyte	ENSG00000104921	TRUE
+myeloid leukocyte	ENSG00000110848	TRUE
+myeloid leukocyte	ENSG00000121594	TRUE
+myeloid leukocyte	ENSG00000114013	TRUE
+myeloid leukocyte	ENSG00000204287	TRUE
+myeloid leukocyte	ENSG00000170458	TRUE
+myeloid leukocyte	ENSG00000167613	TRUE
+myeloid leukocyte	ENSG00000119917	TRUE
+myeloid leukocyte	ENSG00000196549	TRUE
+myeloid leukocyte	ENSG00000197471	TRUE
+myeloid leukocyte	ENSG00000177455	TRUE
+myeloid leukocyte	ENSG00000272398	TRUE
+myeloid leukocyte	ENSG00000121966	TRUE
+myeloid leukocyte	ENSG00000103522	TRUE
+myeloid leukocyte	ENSG00000109743	TRUE
+myeloid leukocyte	ENSG00000081237	TRUE
+myeloid leukocyte	ENSG00000196352	TRUE
+myeloid leukocyte	ENSG00000019582	TRUE
+myeloid leukocyte	ENSG00000134061	TRUE
+myeloid leukocyte	ENSG00000072694	TRUE
+myeloid leukocyte	ENSG00000134460	TRUE
+myeloid leukocyte	ENSG00000077238	TRUE
+myeloid leukocyte	ENSG00000188404	TRUE
+myeloid leukocyte	ENSG00000187098	TRUE
+myeloid leukocyte	ENSG00000185291	TRUE
+myeloid leukocyte	ENSG00000183625	TRUE
+myeloid leukocyte	ENSG00000154269	TRUE
+myeloid leukocyte	ENSG00000179639	TRUE
+myeloid leukocyte	ENSG00000136869	TRUE
+myeloid leukocyte	ENSG00000213316	TRUE
+myeloid leukocyte	ENSG00000163751	TRUE
+myeloid leukocyte	ENSG00000005844	TRUE
+myeloid leukocyte	ENSG00000169896	TRUE
+myeloid leukocyte	ENSG00000140678	TRUE
+myeloid leukocyte	ENSG00000139626	TRUE
+myeloid leukocyte	ENSG00000113520	TRUE
+myeloid leukocyte	ENSG00000149534	TRUE
+myeloid leukocyte	ENSG00000149516	TRUE
+myeloid leukocyte	ENSG00000140287	TRUE
+myeloid leukocyte	ENSG00000179348	TRUE
+myeloid leukocyte	ENSG00000277632	TRUE
+myeloid leukocyte	ENSG00000105383	TRUE
+myeloid leukocyte	ENSG00000026508	TRUE
+myeloid leukocyte	ENSG00000039068	TRUE
+myeloid leukocyte	ENSG00000135312	TRUE
+myeloid leukocyte	ENSG00000163453	TRUE
+myeloid leukocyte	ENSG00000137976	TRUE
+myeloid leukocyte	ENSG00000134824	TRUE
+myeloid leukocyte	ENSG00000076716	TRUE
+myeloid leukocyte	ENSG00000113262	TRUE
+myeloid leukocyte	ENSG00000131069	TRUE
+myeloid leukocyte	ENSG00000170425	TRUE
+myeloid leukocyte	ENSG00000103569	TRUE
+myeloid leukocyte	ENSG00000186318	TRUE
+myeloid leukocyte	ENSG00000125378	TRUE
+myeloid leukocyte	ENSG00000134508	TRUE
+myeloid leukocyte	ENSG00000275302	TRUE
+myeloid leukocyte	ENSG00000245848	TRUE
+myeloid leukocyte	ENSG00000129173	TRUE
+myeloid leukocyte	ENSG00000149485	TRUE
+myeloid leukocyte	ENSG00000064763	TRUE
+myeloid leukocyte	ENSG00000112146	TRUE
+myeloid leukocyte	ENSG00000204681	TRUE
+myeloid leukocyte	ENSG00000169508	TRUE
+myeloid leukocyte	ENSG00000019991	TRUE
+myeloid leukocyte	ENSG00000185885	TRUE
+myeloid leukocyte	ENSG00000203485	TRUE
+myeloid leukocyte	ENSG00000153814	TRUE
+myeloid leukocyte	ENSG00000198910	TRUE
+myeloid leukocyte	ENSG00000130702	TRUE
+myeloid leukocyte	ENSG00000172197	TRUE
+myeloid leukocyte	ENSG00000165030	TRUE
+myeloid leukocyte	ENSG00000135838	TRUE
+myeloid leukocyte	ENSG00000021762	TRUE
+myeloid leukocyte	ENSG00000089723	TRUE
+myeloid leukocyte	ENSG00000169860	TRUE
+myeloid leukocyte	ENSG00000067992	TRUE
+myeloid leukocyte	ENSG00000067840	TRUE
+myeloid leukocyte	ENSG00000112378	TRUE
+myeloid leukocyte	ENSG00000255072	TRUE
+myeloid leukocyte	ENSG00000171680	TRUE
+myeloid leukocyte	ENSG00000122194	TRUE
+myeloid leukocyte	ENSG00000204618	TRUE
+myeloid leukocyte	ENSG00000091138	TRUE
+myeloid leukocyte	ENSG00000112053	TRUE
+myeloid leukocyte	ENSG00000064692	TRUE
+myeloid leukocyte	ENSG00000117069	TRUE
+myeloid leukocyte	ENSG00000196284	TRUE
+myeloid leukocyte	ENSG00000078246	TRUE
+myeloid leukocyte	ENSG00000135605	TRUE
+myeloid leukocyte	ENSG00000112494	TRUE
+myeloid leukocyte	ENSG00000165392	TRUE
+myeloid leukocyte	ENSG00000125968	TRUE
+myeloid leukocyte	ENSG00000089041	TRUE
+myeloid leukocyte	ENSG00000197959	TRUE
+myeloid leukocyte	ENSG00000087085	TRUE
+myeloid leukocyte	ENSG00000112149	TRUE
+myeloid leukocyte	ENSG00000095970	TRUE
+myeloid leukocyte	ENSG00000170323	TRUE
+myeloid leukocyte	ENSG00000163220	TRUE
+myeloid leukocyte	ENSG00000132514	TRUE
+myeloid leukocyte	ENSG00000163687	TRUE
+myeloid leukocyte	ENSG00000177575	TRUE
+myeloid leukocyte	ENSG00000155659	TRUE
+myeloid leukocyte	ENSG00000119508	TRUE
+myeloid leukocyte	ENSG00000102962	TRUE
+myeloid leukocyte	ENSG00000026751	TRUE
+myeloid leukocyte	ENSG00000161921	TRUE
+myeloid leukocyte	ENSG00000161929	TRUE
+myeloid leukocyte	ENSG00000146192	TRUE
+myeloid leukocyte	ENSG00000276600	TRUE
+myeloid leukocyte	ENSG00000138744	TRUE
+myeloid leukocyte	ENSG00000101336	TRUE
+myeloid leukocyte	ENSG00000010704	TRUE
+myeloid leukocyte	ENSG00000121807	TRUE
+myeloid leukocyte	ENSG00000186810	TRUE
+myeloid leukocyte	ENSG00000183484	TRUE
+myeloid leukocyte	ENSG00000157404	TRUE
+myeloid leukocyte	ENSG00000196154	TRUE
+myeloid leukocyte	ENSG00000172243	TRUE
+myeloid leukocyte	ENSG00000204472	TRUE
+myeloid leukocyte	ENSG00000204482	TRUE
+myeloid leukocyte	ENSG00000163131	TRUE
+myeloid leukocyte	ENSG00000174837	TRUE
+myeloid leukocyte	ENSG00000168329	TRUE
+myeloid leukocyte	ENSG00000203747	TRUE
+myeloid leukocyte	ENSG00000197249	TRUE
+myeloid leukocyte	ENSG00000153071	TRUE
+myeloid leukocyte	ENSG00000038427	TRUE
+myeloid leukocyte	ENSG00000090382	TRUE
+myeloid leukocyte	ENSG00000131981	TRUE
+myeloid leukocyte	ENSG00000018280	TRUE
+myeloid leukocyte	ENSG00000261371	TRUE
+myeloid leukocyte	ENSG00000090339	TRUE
+myeloid leukocyte	ENSG00000007908	TRUE
+myeloid leukocyte	ENSG00000162692	TRUE
+myeloid leukocyte	ENSG00000065534	TRUE
+myeloid leukocyte	ENSG00000118257	TRUE
+myeloid leukocyte	ENSG00000135218	TRUE
+myeloid leukocyte	ENSG00000133800	TRUE
+myeloid leukocyte	ENSG00000010327	TRUE
+myeloid leukocyte	ENSG00000163739	TRUE
+myeloid leukocyte	ENSG00000103257	TRUE
+myeloid leukocyte	ENSG00000175264	TRUE
+myeloid leukocyte	ENSG00000107317	TRUE
+myeloid leukocyte	ENSG00000150625	TRUE
+myeloid leukocyte	ENSG00000174600	TRUE
+myeloid leukocyte	ENSG00000119787	TRUE
+myeloid leukocyte	ENSG00000159640	TRUE
+myeloid leukocyte	ENSG00000171860	TRUE
+myeloid leukocyte	ENSG00000196371	TRUE
+myeloid leukocyte	ENSG00000197405	TRUE
+myeloid leukocyte	ENSG00000163823	TRUE
+myeloid leukocyte	ENSG00000122223	TRUE
+myeloid leukocyte	ENSG00000183134	TRUE
+myeloid leukocyte	ENSG00000105366	TRUE
+myeloid leukocyte	ENSG00000142512	TRUE
+myeloid leukocyte	ENSG00000008438	TRUE
+myeloid leukocyte	ENSG00000121053	TRUE
+myeloid leukocyte	ENSG00000169397	TRUE
+myeloid leukocyte	ENSG00000169385	TRUE
+myeloid leukocyte	ENSG00000113525	TRUE
+myeloid leukocyte	ENSG00000186652	TRUE
+myeloid leukocyte	ENSG00000156575	TRUE
+myeloid leukocyte	ENSG00000030419	TRUE
+myeloid leukocyte	ENSG00000172156	TRUE
+myeloid leukocyte	ENSG00000271503	TRUE
+myeloid leukocyte	ENSG00000164400	TRUE
+myeloid leukocyte	ENSG00000091181	TRUE
+myeloid leukocyte	ENSG00000248485	TRUE
+myeloid leukocyte	ENSG00000100979	TRUE
+myeloid leukocyte	ENSG00000173762	TRUE
+myeloid leukocyte	ENSG00000134138	TRUE
+myeloid leukocyte	ENSG00000010404	TRUE
+myeloid leukocyte	ENSG00000147571	TRUE
+myeloid leukocyte	ENSG00000150337	TRUE
+myeloid leukocyte	ENSG00000186818	TRUE
+myeloid leukocyte	ENSG00000160791	TRUE
+myeloid leukocyte	ENSG00000137462	TRUE
+myeloid leukocyte	ENSG00000171659	TRUE
+myeloid leukocyte	ENSG00000135678	TRUE
+myeloid leukocyte	ENSG00000133063	TRUE
+myeloid leukocyte	ENSG00000124491	TRUE
+myeloid leukocyte	ENSG00000106799	TRUE
+myeloid leukocyte	ENSG00000162723	TRUE
+myeloid leukocyte	ENSG00000187116	TRUE
+myeloid leukocyte	ENSG00000260314	TRUE
+myeloid leukocyte	ENSG00000173193	TRUE
+myeloid leukocyte	ENSG00000168214	TRUE
+myeloid leukocyte	ENSG00000137491	TRUE
+myeloid leukocyte	ENSG00000129521	TRUE
+myeloid leukocyte	ENSG00000160593	TRUE
+myeloid leukocyte	ENSG00000127951	TRUE
+myeloid leukocyte	ENSG00000136235	TRUE
+myeloid leukocyte	ENSG00000166527	TRUE
+myeloid leukocyte	ENSG00000151651	TRUE
+myeloid leukocyte	ENSG00000152213	TRUE
+myeloid leukocyte	ENSG00000262406	TRUE
+myeloid leukocyte	ENSG00000110079	TRUE
+myeloid leukocyte	ENSG00000110077	TRUE
+myeloid leukocyte	ENSG00000171051	TRUE
+myeloid leukocyte	ENSG00000130513	TRUE
+myeloid leukocyte	ENSG00000139832	TRUE
+myeloid leukocyte	ENSG00000232810	TRUE
+myeloid leukocyte	ENSG00000167208	TRUE
+myeloid leukocyte	ENSG00000184922	TRUE
+myeloid leukocyte	ENSG00000144959	TRUE
+myeloid leukocyte	ENSG00000106178	TRUE
+myeloid leukocyte	ENSG00000167851	TRUE
+myeloid leukocyte	ENSG00000081041	TRUE
+myeloid leukocyte	ENSG00000108688	TRUE
+myeloid leukocyte	ENSG00000108691	TRUE
+myeloid leukocyte	ENSG00000125538	TRUE
+myeloid leukocyte	ENSG00000128604	TRUE
+myeloid leukocyte	ENSG00000106546	TRUE
+myeloid leukocyte	ENSG00000136286	TRUE
+myeloid leukocyte	ENSG00000138166	TRUE
+myeloid leukocyte	ENSG00000174946	TRUE
+myeloid leukocyte	ENSG00000155307	TRUE
+myeloid leukocyte	ENSG00000100985	TRUE
+myeloid leukocyte	ENSG00000135245	TRUE
+myeloid leukocyte	ENSG00000134955	TRUE
+myeloid leukocyte	ENSG00000143387	TRUE
+myeloid leukocyte	ENSG00000087253	TRUE
+myeloid leukocyte	ENSG00000163106	TRUE
+myeloid leukocyte	ENSG00000159110	TRUE
+myeloid leukocyte	ENSG00000166927	TRUE
+myeloid leukocyte	ENSG00000164120	TRUE
+myeloid leukocyte	ENSG00000073754	TRUE
+myeloid leukocyte	ENSG00000100055	TRUE
+myeloid leukocyte	ENSG00000198851	TRUE
+myeloid leukocyte	ENSG00000182578	TRUE
+myeloid leukocyte	ENSG00000129226	TRUE
+myeloid leukocyte	ENSG00000175567	TRUE
+myeloid leukocyte	ENSG00000188056	TRUE
+myeloid leukocyte	ENSG00000000938	TRUE
+myeloid leukocyte	ENSG00000165168	TRUE
+myeloid leukocyte	ENSG00000091972	TRUE
+myeloid leukocyte	ENSG00000163606	TRUE
+myeloid leukocyte	ENSG00000141448	TRUE
+myeloid leukocyte	ENSG00000132170	TRUE
+myeloid leukocyte	ENSG00000011600	TRUE
+myeloid leukocyte	ENSG00000090104	TRUE
+myeloid leukocyte	ENSG00000171631	TRUE
+myeloid leukocyte	ENSG00000178573	TRUE
+myeloid leukocyte	ENSG00000123146	TRUE
+myeloid leukocyte	ENSG00000110446	TRUE
+myeloid leukocyte	ENSG00000135929	TRUE
+myeloid leukocyte	ENSG00000155465	TRUE
+myeloid leukocyte	ENSG00000020633	TRUE
+myeloid leukocyte	ENSG00000165025	TRUE
+myeloid leukocyte	ENSG00000112115	TRUE
+myeloid leukocyte	ENSG00000117594	TRUE
+myeloid leukocyte	ENSG00000120217	TRUE
+myeloid leukocyte	ENSG00000180871	TRUE
+myeloid leukocyte	ENSG00000085871	TRUE
+myeloid leukocyte	ENSG00000091704	TRUE
+myeloid leukocyte	ENSG00000092009	TRUE
+myeloid leukocyte	ENSG00000150540	TRUE
+myeloid leukocyte	ENSG00000172236	TRUE
+myeloid leukocyte	ENSG00000126759	TRUE
+myeloid leukocyte	ENSG00000041353	TRUE
+myeloid leukocyte	ENSG00000155926	TRUE
+myeloid leukocyte	ENSG00000115602	TRUE
+myeloid leukocyte	ENSG00000127955	TRUE
+myeloid leukocyte	ENSG00000197766	TRUE
+myeloid leukocyte	ENSG00000091039	TRUE
+myeloid leukocyte	ENSG00000282608	TRUE
+myeloid leukocyte	ENSG00000002587	TRUE
+myeloid leukocyte	ENSG00000100368	TRUE
+myeloid leukocyte	ENSG00000070190	TRUE
+myeloid leukocyte	ENSG00000108576	TRUE
+myeloid leukocyte	ENSG00000069535	TRUE
+myeloid leukocyte	ENSG00000144655	TRUE
+myeloid leukocyte	ENSG00000140459	TRUE
+myeloid leukocyte	ENSG00000115956	TRUE
+myeloid leukocyte	ENSG00000197253	TRUE
+myeloid leukocyte	ENSG00000129167	TRUE
+myeloid leukocyte	ENSG00000127074	TRUE
+myeloid leukocyte	ENSG00000116176	TRUE
+myeloid leukocyte	ENSG00000185338	TRUE
+myeloid leukocyte	ENSG00000010671	TRUE
+myeloid leukocyte	ENSG00000110002	TRUE
+myeloid leukocyte	ENSG00000183019	TRUE
+myeloid leukocyte	ENSG00000271605	TRUE
+myeloid leukocyte	ENSG00000157613	TRUE
+myeloid leukocyte	ENSG00000151617	TRUE
+myeloid leukocyte	ENSG00000171004	TRUE
+myeloid leukocyte	ENSG00000175538	TRUE
+myeloid leukocyte	ENSG00000183695	TRUE
+myeloid leukocyte	ENSG00000122861	TRUE
+myeloid leukocyte	ENSG00000163638	TRUE
+myeloid leukocyte	ENSG00000106078	TRUE
+myeloid leukocyte	ENSG00000100448	TRUE
+myeloid leukocyte	ENSG00000164418	TRUE
+myeloid leukocyte	ENSG00000153976	TRUE
+myeloid leukocyte	ENSG00000198682	TRUE
+myeloid leukocyte	ENSG00000166228	TRUE
+myeloid leukocyte	ENSG00000133135	TRUE
+myeloid leukocyte	ENSG00000112759	TRUE
+myeloid leukocyte	ENSG00000158715	TRUE
+myeloid leukocyte	ENSG00000133121	TRUE
+myeloid leukocyte	ENSG00000128274	TRUE
+myeloid leukocyte	ENSG00000078124	TRUE
+myeloid leukocyte	ENSG00000102401	TRUE
+myeloid leukocyte	ENSG00000179941	TRUE
+myeloid leukocyte	ENSG00000204217	TRUE
+myeloid leukocyte	ENSG00000166278	TRUE
+myeloid leukocyte	ENSG00000163492	TRUE
+myeloid leukocyte	ENSG00000143776	TRUE
+myeloid leukocyte	ENSG00000113100	TRUE
+myeloid leukocyte	ENSG00000005243	TRUE
+myeloid leukocyte	ENSG00000177054	TRUE
+myeloid leukocyte	ENSG00000198722	TRUE
+myeloid leukocyte	ENSG00000168016	TRUE
+myeloid leukocyte	ENSG00000146426	TRUE
+myeloid leukocyte	ENSG00000152284	TRUE
+myeloid leukocyte	ENSG00000152953	TRUE
+myeloid leukocyte	ENSG00000184005	TRUE
+myeloid leukocyte	ENSG00000120833	TRUE
+myeloid leukocyte	ENSG00000166068	TRUE
+myeloid leukocyte	ENSG00000091482	TRUE
+myeloid leukocyte	ENSG00000102038	TRUE
+myeloid leukocyte	ENSG00000136867	TRUE
+myeloid leukocyte	ENSG00000127990	TRUE
+myeloid leukocyte	ENSG00000185483	TRUE
+myeloid leukocyte	ENSG00000164197	TRUE
+myeloid leukocyte	ENSG00000058729	TRUE
+myeloid leukocyte	ENSG00000078328	TRUE
+myeloid leukocyte	ENSG00000109756	TRUE
+myeloid leukocyte	ENSG00000154678	TRUE
+myeloid leukocyte	ENSG00000169851	TRUE
+myeloid leukocyte	ENSG00000123240	TRUE
+myeloid leukocyte	ENSG00000184232	TRUE
+myeloid leukocyte	ENSG00000067141	TRUE
+myeloid leukocyte	ENSG00000166507	TRUE
+myeloid leukocyte	ENSG00000170255	TRUE
+myeloid leukocyte	ENSG00000115648	TRUE
+myeloid leukocyte	ENSG00000140545	TRUE
+myeloid leukocyte	ENSG00000185565	TRUE
+myeloid leukocyte	ENSG00000188993	TRUE
+myeloid leukocyte	ENSG00000050405	TRUE
+myeloid leukocyte	ENSG00000170477	TRUE
+myeloid leukocyte	ENSG00000100196	TRUE
+myeloid leukocyte	ENSG00000155304	TRUE
+myeloid leukocyte	ENSG00000153936	TRUE
+myeloid leukocyte	ENSG00000185245	TRUE
+myeloid leukocyte	ENSG00000128266	TRUE
+myeloid leukocyte	ENSG00000182197	TRUE
+myeloid leukocyte	ENSG00000158220	TRUE
+myeloid leukocyte	ENSG00000111674	TRUE
+myeloid leukocyte	ENSG00000154380	TRUE
+myeloid leukocyte	ENSG00000120129	TRUE
+myeloid leukocyte	ENSG00000157680	TRUE
+myeloid leukocyte	ENSG00000163673	TRUE
+myeloid leukocyte	ENSG00000163737	TRUE
+myeloid leukocyte	ENSG00000163464	TRUE
+myeloid leukocyte	ENSG00000128918	TRUE
+myeloid leukocyte	ENSG00000169313	TRUE
+myeloid leukocyte	ENSG00000183160	TRUE
+myeloid leukocyte	ENSG00000160180	TRUE
+myeloid leukocyte	ENSG00000103449	TRUE
+myeloid leukocyte	ENSG00000119535	TRUE
+myeloid leukocyte	ENSG00000110719	TRUE
+myeloid leukocyte	ENSG00000157303	TRUE
+myeloid leukocyte	ENSG00000141968	TRUE
+myeloid leukocyte	ENSG00000142583	TRUE
+myeloid leukocyte	ENSG00000110324	TRUE
+myeloid leukocyte	ENSG00000169403	TRUE
+myeloid leukocyte	ENSG00000089692	TRUE
+myeloid leukocyte	ENSG00000138185	TRUE
+myeloid leukocyte	ENSG00000169252	TRUE
+myeloid leukocyte	ENSG00000059377	TRUE
+myeloid leukocyte	ENSG00000181631	TRUE
+myeloid leukocyte	ENSG00000142347	TRUE
+myeloid leukocyte	ENSG00000116774	TRUE
+myeloid leukocyte	ENSG00000082781	TRUE
+myeloid leukocyte	ENSG00000176170	TRUE
+myeloid leukocyte	ENSG00000158270	TRUE
+myeloid leukocyte	ENSG00000106624	TRUE
+myeloid leukocyte	ENSG00000095303	TRUE
+myeloid leukocyte	ENSG00000077420	TRUE
+myeloid leukocyte	ENSG00000273749	TRUE
+myeloid leukocyte	ENSG00000153208	TRUE
+myeloid leukocyte	ENSG00000204103	TRUE
+myeloid leukocyte	ENSG00000110934	TRUE
+myeloid leukocyte	ENSG00000091317	TRUE
+myeloid leukocyte	ENSG00000121797	TRUE
+myeloid leukocyte	ENSG00000163815	TRUE
+myeloid leukocyte	ENSG00000011028	TRUE
+myeloid leukocyte	ENSG00000143119	TRUE
+myeloid leukocyte	ENSG00000170345	TRUE
+myeloid leukocyte	ENSG00000120738	TRUE
+myeloid leukocyte	ENSG00000157933	TRUE
+myeloid leukocyte	ENSG00000173369	TRUE
+myeloid leukocyte	ENSG00000128383	TRUE
+myeloid leukocyte	ENSG00000168769	TRUE
+myeloid leukocyte	ENSG00000135636	TRUE
+myeloid leukocyte	ENSG00000103313	TRUE
+myeloid leukocyte	ENSG00000162747	TRUE
+myeloid leukocyte	ENSG00000159339	TRUE
+myeloid leukocyte	ENSG00000121853	TRUE
+myeloid leukocyte	ENSG00000169083	TRUE
+myeloid leukocyte	ENSG00000157873	TRUE
+myeloid leukocyte	ENSG00000093072	TRUE
+myeloid leukocyte	ENSG00000170430	TRUE
+myeloid leukocyte	ENSG00000102575	TRUE
+myeloid leukocyte	ENSG00000117228	TRUE
+myeloid leukocyte	ENSG00000089127	TRUE
+myeloid leukocyte	ENSG00000185507	TRUE
+myeloid leukocyte	ENSG00000188313	TRUE
+myeloid leukocyte	ENSG00000157601	TRUE
+myeloid leukocyte	ENSG00000136689	TRUE
+myeloid leukocyte	ENSG00000185745	TRUE
+myeloid leukocyte	ENSG00000131203	TRUE
+myeloid leukocyte	ENSG00000121858	TRUE
+myeloid leukocyte	ENSG00000169245	TRUE
+myeloid leukocyte	ENSG00000163563	TRUE
+myeloid leukocyte	ENSG00000152518	TRUE
+myeloid leukocyte	ENSG00000111144	TRUE
+myeloid leukocyte	ENSG00000172322	TRUE
+myeloid leukocyte	ENSG00000117091	TRUE
+myeloid leukocyte	ENSG00000196415	TRUE
+myeloid leukocyte	ENSG00000142089	TRUE
+myeloid leukocyte	ENSG00000115414	TRUE
+myeloid leukocyte	ENSG00000197746	TRUE
+myeloid leukocyte	ENSG00000085265	TRUE
+myeloid leukocyte	ENSG00000155366	TRUE
+myeloid leukocyte	ENSG00000085514	TRUE
+myeloid leukocyte	ENSG00000144802	TRUE
+myeloid leukocyte	ENSG00000160932	TRUE
+myeloid leukocyte	ENSG00000254087	TRUE
+myeloid leukocyte	ENSG00000172216	TRUE
+myeloid leukocyte	ENSG00000216490	TRUE
+myeloid leukocyte	ENSG00000163221	TRUE
+myeloid leukocyte	ENSG00000116741	TRUE
+myeloid leukocyte	ENSG00000066336	TRUE
+myeloid leukocyte	ENSG00000025708	TRUE
+myeloid leukocyte	ENSG00000121552	TRUE
+myeloid leukocyte	ENSG00000103490	TRUE
+myeloid leukocyte	ENSG00000143669	TRUE
+myeloid leukocyte	ENSG00000124469	TRUE
+myeloid leukocyte	ENSG00000158473	TRUE
+myeloid leukocyte	ENSG00000005381	TRUE
+myeloid leukocyte	ENSG00000079385	TRUE
+myeloid leukocyte	ENSG00000132693	TRUE
+myeloid leukocyte	ENSG00000206047	TRUE
+myeloid leukocyte	ENSG00000239839	TRUE
+myeloid leukocyte	ENSG00000012223	TRUE
+myeloid leukocyte	ENSG00000197561	TRUE
+myeloid leukocyte	ENSG00000257017	TRUE
+myeloid leukocyte	ENSG00000118113	TRUE
+myeloid leukocyte	ENSG00000171236	TRUE
+myeloid leukocyte	ENSG00000099985	TRUE
+myeloid leukocyte	ENSG00000166523	TRUE
+myeloid leukocyte	ENSG00000244617	TRUE
+myeloid leukocyte	ENSG00000158517	TRUE
+myeloid leukocyte	ENSG00000124731	TRUE
+myeloid leukocyte	ENSG00000137642	TRUE
+myeloid leukocyte	ENSG00000081181	TRUE
+myeloid leukocyte	ENSG00000115590	TRUE
+myeloid leukocyte	ENSG00000204936	TRUE
+myeloid leukocyte	ENSG00000073756	TRUE
+myeloid leukocyte	ENSG00000111331	TRUE
+myeloid leukocyte	ENSG00000172232	TRUE
+myeloid leukocyte	ENSG00000021355	TRUE
+myeloid leukocyte	ENSG00000164047	TRUE
+myeloid leukocyte	ENSG00000105281	TRUE
+myeloid leukocyte	ENSG00000159322	TRUE
+myeloid leukocyte	ENSG00000140368	TRUE
+myeloid leukocyte	ENSG00000107099	TRUE
+myeloid leukocyte	ENSG00000162711	TRUE
+myeloid leukocyte	ENSG00000025434	TRUE
+myeloid leukocyte	ENSG00000100292	TRUE
+myeloid leukocyte	ENSG00000166211	TRUE
+myeloid leukocyte	ENSG00000138449	TRUE
+myeloid leukocyte	ENSG00000088827	TRUE
+naive B cell	ENSG00000116824	TRUE
+naive B cell	ENSG00000156738	TRUE
+naive B cell	ENSG00000117322	TRUE
+naive B cell	ENSG00000012124	TRUE
+naive B cell	ENSG00000104921	TRUE
+naive B cell	ENSG00000110848	TRUE
+naive B cell	ENSG00000105369	TRUE
+naive B cell	ENSG00000007312	TRUE
+naive B cell	ENSG00000159958	TRUE
+naive B cell	ENSG00000211898	TRUE
+naive B cell	ENSG00000211899	TRUE
+naive B cell	ENSG00000227507	TRUE
+naive B cell	ENSG00000196549	TRUE
+naive B cell	ENSG00000177455	TRUE
+naive B cell	ENSG00000137101	TRUE
+naive B cell	ENSG00000153064	TRUE
+naive B cell	ENSG00000128218	TRUE
+naive B cell	ENSG00000116191	TRUE
+naive B cell	ENSG00000269404	TRUE
+naive B cell	ENSG00000145088	TRUE
+naive B cell	ENSG00000023445	TRUE
+naive B cell	ENSG00000211592	TRUE
+naive B cell	ENSG00000112182	TRUE
+naive B cell	ENSG00000019582	TRUE
+naive B cell	ENSG00000169442	TRUE
+naive B cell	ENSG00000042980	TRUE
+naive B cell	ENSG00000136573	TRUE
+naive B cell	ENSG00000134061	TRUE
+naive B cell	ENSG00000158481	TRUE
+naive B cell	ENSG00000104894	TRUE
+naive B cell	ENSG00000160683	TRUE
+naive B cell	ENSG00000072694	TRUE
+naive B cell	ENSG00000132704	TRUE
+naive B cell	ENSG00000111816	TRUE
+naive B cell	ENSG00000125245	TRUE
+naive B cell	ENSG00000228315	TRUE
+naive B cell	ENSG00000152804	TRUE
+naive B cell	ENSG00000241106	TRUE
+naive B cell	ENSG00000206066	TRUE
+naive B cell	ENSG00000140968	TRUE
+naive B cell	ENSG00000112799	TRUE
+naive B cell	ENSG00000135577	TRUE
+naive B cell	ENSG00000083454	TRUE
+naive B cell	ENSG00000168081	TRUE
+naive B cell	ENSG00000213402	TRUE
+naive B cell	ENSG00000068831	TRUE
+naive B cell	ENSG00000142178	TRUE
+naive B cell	ENSG00000074803	TRUE
+naive B cell	ENSG00000035720	TRUE
+naive B cell	ENSG00000134460	TRUE
+naive B cell	ENSG00000005471	TRUE
+naive B cell	ENSG00000110987	TRUE
+naive B cell	ENSG00000162373	TRUE
+naive B cell	ENSG00000157764	TRUE
+naive B cell	ENSG00000077238	TRUE
+naive B cell	ENSG00000112818	TRUE
+naive B cell	ENSG00000243156	TRUE
+naive B cell	ENSG00000174944	TRUE
+naive B cell	ENSG00000242221	TRUE
+naive B cell	ENSG00000188404	TRUE
+naive B cell	ENSG00000100721	TRUE
+naive B cell	ENSG00000242366	TRUE
+naive B cell	ENSG00000187607	TRUE
+naive B cell	ENSG00000106952	TRUE
+naive B cell	ENSG00000114861	TRUE
+naive B cell	ENSG00000187098	TRUE
+naive B cell	ENSG00000179344	TRUE
+naive B cell	ENSG00000247982	TRUE
+naive B cell	ENSG00000066923	TRUE
+natural killer cell	ENSG00000116824	TRUE
+natural killer cell	ENSG00000110848	TRUE
+natural killer cell	ENSG00000137872	TRUE
+natural killer cell	ENSG00000139193	TRUE
+natural killer cell	ENSG00000121966	TRUE
+natural killer cell	ENSG00000162739	TRUE
+natural killer cell	ENSG00000169896	TRUE
+natural killer cell	ENSG00000140678	TRUE
+natural killer cell	ENSG00000277632	TRUE
+natural killer cell	ENSG00000105383	TRUE
+natural killer cell	ENSG00000275302	TRUE
+natural killer cell	ENSG00000171476	TRUE
+natural killer cell	ENSG00000026751	TRUE
+natural killer cell	ENSG00000197635	TRUE
+natural killer cell	ENSG00000157404	TRUE
+natural killer cell	ENSG00000196154	TRUE
+natural killer cell	ENSG00000153563	TRUE
+natural killer cell	ENSG00000203747	TRUE
+natural killer cell	ENSG00000170542	TRUE
+natural killer cell	ENSG00000115641	TRUE
+natural killer cell	ENSG00000122223	TRUE
+natural killer cell	ENSG00000271503	TRUE
+natural killer cell	ENSG00000164400	TRUE
+natural killer cell	ENSG00000115523	TRUE
+natural killer cell	ENSG00000100453	TRUE
+natural killer cell	ENSG00000137441	TRUE
+natural killer cell	ENSG00000105374	TRUE
+natural killer cell	ENSG00000180644	TRUE
+natural killer cell	ENSG00000150045	TRUE
+natural killer cell	ENSG00000077984	TRUE
+natural killer cell	ENSG00000134539	TRUE
+natural killer cell	ENSG00000172543	TRUE
+natural killer cell	ENSG00000159674	TRUE
+natural killer cell	ENSG00000145649	TRUE
+natural killer cell	ENSG00000198821	TRUE
+natural killer cell	ENSG00000173762	TRUE
+natural killer cell	ENSG00000211829	TRUE
+natural killer cell	ENSG00000106546	TRUE
+natural killer cell	ENSG00000117594	TRUE
+natural killer cell	ENSG00000092009	TRUE
+natural killer cell	ENSG00000213658	TRUE
+natural killer cell	ENSG00000105329	TRUE
+natural killer cell	ENSG00000111796	TRUE
+natural killer cell	ENSG00000100385	TRUE
+natural killer cell	ENSG00000109906	TRUE
+natural killer cell	ENSG00000073861	TRUE
+natural killer cell	ENSG00000060140	TRUE
+natural killer cell	ENSG00000213809	TRUE
+natural killer cell	ENSG00000168995	TRUE
+natural killer cell	ENSG00000189430	TRUE
+natural killer cell	ENSG00000134545	TRUE
+natural killer cell	ENSG00000008517	TRUE
+natural killer cell	ENSG00000100450	TRUE
+natural killer cell	ENSG00000197540	TRUE
+natural killer cell	ENSG00000147421	TRUE
+natural killer cell	ENSG00000160654	TRUE
+natural killer cell	ENSG00000150275	TRUE
+natural killer cell	ENSG00000158050	TRUE
+natural killer cell	ENSG00000074966	TRUE
+natural killer cell	ENSG00000147443	TRUE
+natural killer cell	ENSG00000205809	TRUE
+natural killer cell	ENSG00000164483	TRUE
+natural killer cell	ENSG00000131873	TRUE
+natural killer cell	ENSG00000143185	TRUE
+natural killer cell	ENSG00000115604	TRUE
+natural killer cell	ENSG00000134516	TRUE
+natural killer cell	ENSG00000027869	TRUE
+natural killer cell	ENSG00000143184	TRUE
+natural killer cell	ENSG00000113088	TRUE
+natural killer cell	ENSG00000111537	TRUE
+natural killer cell	ENSG00000147168	TRUE
+natural killer cell	ENSG00000125498	TRUE
+natural killer cell	ENSG00000167633	TRUE
+natural killer cell	ENSG00000104972	TRUE
+natural killer cell	ENSG00000139187	TRUE
+natural killer cell	ENSG00000204475	TRUE
+natural killer cell	ENSG00000138316	TRUE
+natural killer cell	ENSG00000164171	TRUE
+natural killer cell	ENSG00000069493	TRUE
+natural killer cell	ENSG00000167618	TRUE
+neuron	ENSG00000180176	TRUE
+neuron	ENSG00000132437	TRUE
+neuron	ENSG00000123454	TRUE
+neuron	ENSG00000141744	TRUE
+neuron	ENSG00000165646	TRUE
+neuron	ENSG00000139574	TRUE
+neuron	ENSG00000113504	TRUE
+neuron	ENSG00000067715	TRUE
+neuron	ENSG00000164093	TRUE
+neuron	ENSG00000184302	TRUE
+neuron	ENSG00000166448	TRUE
+neuron	ENSG00000069011	TRUE
+neuron	ENSG00000134200	TRUE
+neuron	ENSG00000110436	TRUE
+neuron	ENSG00000171885	TRUE
+neuron	ENSG00000101198	TRUE
+neuron	ENSG00000131018	TRUE
+neuron	ENSG00000187398	TRUE
+neuron	ENSG00000164209	TRUE
+neuron	ENSG00000182253	TRUE
+neuron	ENSG00000105143	TRUE
+neuron	ENSG00000119917	TRUE
+neuron	ENSG00000116191	TRUE
+neuron	ENSG00000137478	TRUE
+neuron	ENSG00000163568	TRUE
+neuron	ENSG00000160683	TRUE
+neuron	ENSG00000168081	TRUE
+neuron	ENSG00000179348	TRUE
+neuron	ENSG00000186318	TRUE
+neuron	ENSG00000198910	TRUE
+neuron	ENSG00000152578	TRUE
+neuron	ENSG00000273079	TRUE
+neuron	ENSG00000189056	TRUE
+neuron	ENSG00000184047	TRUE
+neuron	ENSG00000115525	TRUE
+neuron	ENSG00000066583	TRUE
+neuron	ENSG00000112562	TRUE
+neuron	ENSG00000158560	TRUE
+neuron	ENSG00000177551	TRUE
+neuron	ENSG00000158258	TRUE
+neuron	ENSG00000152128	TRUE
+neuron	ENSG00000007402	TRUE
+neuron	ENSG00000136425	TRUE
+neuron	ENSG00000173376	TRUE
+neuron	ENSG00000169783	TRUE
+neuron	ENSG00000144320	TRUE
+neuron	ENSG00000134758	TRUE
+neuron	ENSG00000205269	TRUE
+neuron	ENSG00000114770	TRUE
+neuron	ENSG00000119865	TRUE
+neuron	ENSG00000108001	TRUE
+neuron	ENSG00000172461	TRUE
+neuron	ENSG00000100836	TRUE
+neuron	ENSG00000130119	TRUE
+neuron	ENSG00000164978	TRUE
+neuron	ENSG00000185115	TRUE
+neuron	ENSG00000276644	TRUE
+neuron	ENSG00000103942	TRUE
+neuron	ENSG00000164114	TRUE
+neuron	ENSG00000197959	TRUE
+neuron	ENSG00000163818	TRUE
+neuron	ENSG00000105255	TRUE
+neuron	ENSG00000172465	TRUE
+neuron	ENSG00000107560	TRUE
+neuron	ENSG00000143032	TRUE
+neuron	ENSG00000166326	TRUE
+neuron	ENSG00000091664	TRUE
+neuron	ENSG00000172318	TRUE
+neuron	ENSG00000165300	TRUE
+neuron	ENSG00000187672	TRUE
+neuron	ENSG00000172915	TRUE
+neuron	ENSG00000114120	TRUE
+neuron	ENSG00000204186	TRUE
+neuron	ENSG00000107643	TRUE
+neuron	ENSG00000125965	TRUE
+neuron	ENSG00000087085	TRUE
+neuron	ENSG00000136280	TRUE
+neuron	ENSG00000116213	TRUE
+neuron	ENSG00000157168	TRUE
+neuron	ENSG00000159363	TRUE
+neuron	ENSG00000174469	TRUE
+neuron	ENSG00000273706	TRUE
+neuron	ENSG00000174482	TRUE
+neuron	ENSG00000165323	TRUE
+neuron	ENSG00000196220	TRUE
+neuron	ENSG00000179242	TRUE
+neuron	ENSG00000125848	TRUE
+neuron	ENSG00000164176	TRUE
+neuron	ENSG00000174460	TRUE
+neuron	ENSG00000170365	TRUE
+neuron	ENSG00000136535	TRUE
+neuron	ENSG00000184611	TRUE
+neuron	ENSG00000089116	TRUE
+neuron	ENSG00000172137	TRUE
+neuron	ENSG00000170370	TRUE
+neuron	ENSG00000043355	TRUE
+neuron	ENSG00000188064	TRUE
+neuron	ENSG00000275700	TRUE
+neuron	ENSG00000188613	TRUE
+neuron	ENSG00000145348	TRUE
+neuron	ENSG00000174136	TRUE
+neuron	ENSG00000165617	TRUE
+neuron	ENSG00000163508	TRUE
+neuron	ENSG00000118432	TRUE
+neuron	ENSG00000225978	TRUE
+neuron	ENSG00000070748	TRUE
+neuron	ENSG00000187714	TRUE
+neuron	ENSG00000115665	TRUE
+neuron	ENSG00000006128	TRUE
+neuron	ENSG00000012048	TRUE
+neuron	ENSG00000131473	TRUE
+neuron	ENSG00000240583	TRUE
+neuron	ENSG00000164638	TRUE
+neuron	ENSG00000018280	TRUE
+neuron	ENSG00000142319	TRUE
+neuron	ENSG00000125798	TRUE
+neuron	ENSG00000157542	TRUE
+neuron	ENSG00000153234	TRUE
+neuron	ENSG00000136944	TRUE
+neuron	ENSG00000081803	TRUE
+neuron	ENSG00000147434	TRUE
+neuron	ENSG00000008735	TRUE
+neuron	ENSG00000065320	TRUE
+neuron	ENSG00000126583	TRUE
+neuron	ENSG00000136531	TRUE
+neuron	ENSG00000009694	TRUE
+neuron	ENSG00000141946	TRUE
+neuron	ENSG00000164600	TRUE
+neuron	ENSG00000166949	TRUE
+neuron	ENSG00000107859	TRUE
+neuron	ENSG00000128271	TRUE
+neuron	ENSG00000164283	TRUE
+neuron	ENSG00000122679	TRUE
+neuron	ENSG00000163739	TRUE
+neuron	ENSG00000175264	TRUE
+neuron	ENSG00000117707	TRUE
+neuron	ENSG00000248485	TRUE
+neuron	ENSG00000100362	TRUE
+neuron	ENSG00000157103	TRUE
+neuron	ENSG00000136928	TRUE
+neuron	ENSG00000128683	TRUE
+neuron	ENSG00000099860	TRUE
+neuron	ENSG00000075891	TRUE
+neuron	ENSG00000101438	TRUE
+neuron	ENSG00000136750	TRUE
+neuron	ENSG00000146469	TRUE
+neuron	ENSG00000157005	TRUE
+neuron	ENSG00000183578	TRUE
+neuron	ENSG00000075223	TRUE
+neuron	ENSG00000196091	TRUE
+neuron	ENSG00000169116	TRUE
+neuron	ENSG00000144355	TRUE
+neuron	ENSG00000104888	TRUE
+neuron	ENSG00000176884	TRUE
+neuron	ENSG00000115419	TRUE
+neuron	ENSG00000134138	TRUE
+neuron	ENSG00000179520	TRUE
+neuron	ENSG00000106688	TRUE
+neuron	ENSG00000196517	TRUE
+neuron	ENSG00000007372	TRUE
+neuron	ENSG00000186472	TRUE
+neuron	ENSG00000124140	TRUE
+neuron	ENSG00000010818	TRUE
+neuron	ENSG00000153266	TRUE
+neuron	ENSG00000106852	TRUE
+neuron	ENSG00000167281	TRUE
+neuron	ENSG00000008056	TRUE
+neuron	ENSG00000105376	TRUE
+neuron	ENSG00000104327	TRUE
+neuron	ENSG00000187094	TRUE
+neuron	ENSG00000119614	TRUE
+neuron	ENSG00000163064	TRUE
+neuron	ENSG00000006468	TRUE
+neuron	ENSG00000106038	TRUE
+neuron	ENSG00000016082	TRUE
+neuron	ENSG00000107187	TRUE
+neuron	ENSG00000152822	TRUE
+neuron	ENSG00000122585	TRUE
+neuron	ENSG00000112038	TRUE
+neuron	ENSG00000105464	TRUE
+neuron	ENSG00000089250	TRUE
+neuron	ENSG00000115353	TRUE
+neuron	ENSG00000120088	TRUE
+neuron	ENSG00000124507	TRUE
+neuron	ENSG00000114279	TRUE
+neuron	ENSG00000122584	TRUE
+neuron	ENSG00000011347	TRUE
+neuron	ENSG00000151490	TRUE
+neuron	ENSG00000170579	TRUE
+neuron	ENSG00000168243	TRUE
+neuron	ENSG00000173805	TRUE
+neuron	ENSG00000234965	TRUE
+neuron	ENSG00000183570	TRUE
+neuron	ENSG00000183044	TRUE
+neuron	ENSG00000069482	TRUE
+neuron	ENSG00000163630	TRUE
+neuron	ENSG00000170893	TRUE
+neuron	ENSG00000155897	TRUE
+neuron	ENSG00000165521	TRUE
+neuron	ENSG00000151952	TRUE
+neuron	ENSG00000166862	TRUE
+neuron	ENSG00000135070	TRUE
+neuron	ENSG00000123684	TRUE
+neuron	ENSG00000090971	TRUE
+neuron	ENSG00000155792	TRUE
+neuron	ENSG00000163393	TRUE
+neuron	ENSG00000065989	TRUE
+neuron	ENSG00000100346	TRUE
+neuron	ENSG00000075539	TRUE
+neuron	ENSG00000148290	TRUE
+neuron	ENSG00000100505	TRUE
+neuron	ENSG00000129159	TRUE
+neuron	ENSG00000169213	TRUE
+neuron	ENSG00000059758	TRUE
+neuron	ENSG00000091844	TRUE
+neuron	ENSG00000167964	TRUE
+neuron	ENSG00000147852	TRUE
+neuron	ENSG00000105605	TRUE
+neuron	ENSG00000257704	TRUE
+neuron	ENSG00000078725	TRUE
+neuron	ENSG00000139200	TRUE
+neuron	ENSG00000168993	TRUE
+neuron	ENSG00000188803	TRUE
+neuron	ENSG00000162496	TRUE
+neuron	ENSG00000125841	TRUE
+neuron	ENSG00000148600	TRUE
+neuron	ENSG00000159842	TRUE
+neuron	ENSG00000124785	TRUE
+neuron	ENSG00000182379	TRUE
+neuron	ENSG00000237515	TRUE
+neuron	ENSG00000197696	TRUE
+neuron	ENSG00000255552	TRUE
+neuron	ENSG00000183166	TRUE
+neuron	ENSG00000147044	TRUE
+neuron	ENSG00000198216	TRUE
+neuron	ENSG00000157470	TRUE
+neuron	ENSG00000164076	TRUE
+neuron	ENSG00000107863	TRUE
+neuron	ENSG00000181418	TRUE
+neuron	ENSG00000185518	TRUE
+neuron	ENSG00000260230	TRUE
+neuron	ENSG00000068366	TRUE
+neuron	ENSG00000152495	TRUE
+neuron	ENSG00000221890	TRUE
+neuron	ENSG00000116983	TRUE
+neuron	ENSG00000048540	TRUE
+neuron	ENSG00000150551	TRUE
+neuron	ENSG00000128656	TRUE
+neuron	ENSG00000154146	TRUE
+neuron	ENSG00000070808	TRUE
+neuron	ENSG00000166501	TRUE
+neuron	ENSG00000104490	TRUE
+neuron	ENSG00000139998	TRUE
+neuron	ENSG00000072803	TRUE
+neuron	ENSG00000164742	TRUE
+neuron	ENSG00000138081	TRUE
+neuron	ENSG00000117154	TRUE
+neuron	ENSG00000162631	TRUE
+neuron	ENSG00000198934	TRUE
+neuron	ENSG00000085365	TRUE
+neuron	ENSG00000156011	TRUE
+neuron	ENSG00000069667	TRUE
+neuron	ENSG00000136485	TRUE
+neuron	ENSG00000128564	TRUE
+neuron	ENSG00000176396	TRUE
+neuron	ENSG00000182175	TRUE
+neuron	ENSG00000261678	TRUE
+neuron	ENSG00000028277	TRUE
+neuron	ENSG00000196935	TRUE
+neuron	ENSG00000155380	TRUE
+neuron	ENSG00000123643	TRUE
+neuron	ENSG00000145782	TRUE
+neuron	ENSG00000157985	TRUE
+neuron	ENSG00000177108	TRUE
+neuron	ENSG00000107897	TRUE
+neuron	ENSG00000186908	TRUE
+neuron	ENSG00000174963	TRUE
+neuron	ENSG00000104722	TRUE
+neuron	ENSG00000010404	TRUE
+neuron	ENSG00000116675	TRUE
+neuron	ENSG00000197177	TRUE
+neuron	ENSG00000089091	TRUE
+neuron	ENSG00000149575	TRUE
+neuron	ENSG00000165868	TRUE
+neuron	ENSG00000019505	TRUE
+neuron	ENSG00000180155	TRUE
+neuron	ENSG00000177301	TRUE
+neuron	ENSG00000164830	TRUE
+neuron	ENSG00000140323	TRUE
+neuron	ENSG00000125851	TRUE
+neuron	ENSG00000168779	TRUE
+neuron	ENSG00000196876	TRUE
+neuron	ENSG00000115977	TRUE
+neuron	ENSG00000109158	TRUE
+neuron	ENSG00000175352	TRUE
+neuron	ENSG00000108924	TRUE
+neuron	ENSG00000163932	TRUE
+neuron	ENSG00000070159	TRUE
+neuron	ENSG00000166006	TRUE
+neuron	ENSG00000008086	TRUE
+neuron	ENSG00000128596	TRUE
+neuron	ENSG00000156113	TRUE
+neuron	ENSG00000196104	TRUE
+neuron	ENSG00000088179	TRUE
+neuron	ENSG00000164951	TRUE
+neuron	ENSG00000186479	TRUE
+neuron	ENSG00000101333	TRUE
+neuron	ENSG00000155849	TRUE
+neuron	ENSG00000197381	TRUE
+neuron	ENSG00000143195	TRUE
+neuron	ENSG00000011243	TRUE
+neuron	ENSG00000179119	TRUE
+neuron	ENSG00000165494	TRUE
+neuron	ENSG00000213937	TRUE
+neuron	ENSG00000196507	TRUE
+neuron	ENSG00000169427	TRUE
+neuron	ENSG00000198963	TRUE
+neuron	ENSG00000111602	TRUE
+neuron	ENSG00000145824	TRUE
+neuron	ENSG00000110245	TRUE
+neuron	ENSG00000135346	TRUE
+neuron	ENSG00000179673	TRUE
+neuron	ENSG00000067191	TRUE
+neuron	ENSG00000185760	TRUE
+neuron	ENSG00000186297	TRUE
+neuron	ENSG00000166736	TRUE
+neuron	ENSG00000115252	TRUE
+neuron	ENSG00000117114	TRUE
+neuron	ENSG00000120049	TRUE
+neuron	ENSG00000148908	TRUE
+neuron	ENSG00000124772	TRUE
+neuron	ENSG00000147571	TRUE
+neuron	ENSG00000119125	TRUE
+neuron	ENSG00000170381	TRUE
+neuron	ENSG00000115844	TRUE
+neuron	ENSG00000105880	TRUE
+neuron	ENSG00000004848	TRUE
+neuron	ENSG00000198851	TRUE
+neuron	ENSG00000127955	TRUE
+neuron	ENSG00000108576	TRUE
+neuron	ENSG00000129167	TRUE
+neuron	ENSG00000110002	TRUE
+neuron	ENSG00000111674	TRUE
+neuron	ENSG00000007264	TRUE
+neuron	ENSG00000152977	TRUE
+neuron	ENSG00000160180	TRUE
+neuron	ENSG00000169252	TRUE
+neuron	ENSG00000121853	TRUE
+neuron	ENSG00000130675	TRUE
+neuron	ENSG00000159556	TRUE
+neuron	ENSG00000174279	TRUE
+neuron	ENSG00000113578	TRUE
+neuron	ENSG00000163623	TRUE
+neuron	ENSG00000064300	TRUE
+neuron	ENSG00000112246	TRUE
+neuron	ENSG00000179981	TRUE
+neuron	ENSG00000106536	TRUE
+neuron	ENSG00000168959	TRUE
+neuron	ENSG00000173406	TRUE
+neuron	ENSG00000258947	TRUE
+neuron	ENSG00000131771	TRUE
+neuron	ENSG00000163539	TRUE
+neuron	ENSG00000221946	TRUE
+neuron	ENSG00000011332	TRUE
+neuron	ENSG00000181195	TRUE
+neuron	ENSG00000144040	TRUE
+neuron	ENSG00000205476	TRUE
+neuron	ENSG00000124788	TRUE
+neuron	ENSG00000181656	TRUE
+neuron	ENSG00000112541	TRUE
+neuron	ENSG00000140526	TRUE
+neuron	ENSG00000152377	TRUE
+neuron	ENSG00000172260	TRUE
+neuron	ENSG00000133878	TRUE
+neuron	ENSG00000242173	TRUE
+neuron	ENSG00000164099	TRUE
+neuron	ENSG00000163536	TRUE
+neuron	ENSG00000125820	TRUE
+neuron	ENSG00000130427	TRUE
+neuron	ENSG00000108342	TRUE
+neuron	ENSG00000100285	TRUE
+neuron	ENSG00000132535	TRUE
+neuron	ENSG00000022355	TRUE
+neuron	ENSG00000132561	TRUE
+neuron	ENSG00000180773	TRUE
+neuron	ENSG00000135406	TRUE
+neuron	ENSG00000169057	TRUE
+neuron	ENSG00000174791	TRUE
+neuron	ENSG00000254550	TRUE
+neuron	ENSG00000179295	TRUE
+neuron	ENSG00000159723	TRUE
+neuron	ENSG00000182698	TRUE
+neuron	ENSG00000106089	TRUE
+neuron	ENSG00000099625	TRUE
+neuron	ENSG00000112309	TRUE
+neuron	ENSG00000010932	TRUE
+neuron	ENSG00000163520	TRUE
+neuron	ENSG00000180730	TRUE
+neuron	ENSG00000164106	TRUE
+neuron	ENSG00000182103	TRUE
+neuron	ENSG00000017427	TRUE
+neuron	ENSG00000233932	TRUE
+neuron	ENSG00000139182	TRUE
+neuron	ENSG00000163517	TRUE
+neuron	ENSG00000014824	TRUE
+neuron	ENSG00000181789	TRUE
+neuron	ENSG00000109670	TRUE
+neuron	ENSG00000113327	TRUE
+neuron	ENSG00000136448	TRUE
+neuron	ENSG00000032219	TRUE
+neuron	ENSG00000142046	TRUE
+neuron	ENSG00000164885	TRUE
+neuron	ENSG00000160633	TRUE
+neuron	ENSG00000187147	TRUE
+neuron	ENSG00000058335	TRUE
+neuron	ENSG00000204071	TRUE
+neuron	ENSG00000258986	TRUE
+neuron	ENSG00000145029	TRUE
+neuron	ENSG00000134265	TRUE
+neuron	ENSG00000153815	TRUE
+neuron	ENSG00000015171	TRUE
+neuron	ENSG00000005486	TRUE
+neuron	ENSG00000177511	TRUE
+neuron	ENSG00000102103	TRUE
+neuron	ENSG00000067445	TRUE
+neuron	ENSG00000129990	TRUE
+neuron	ENSG00000059122	TRUE
+neuron	ENSG00000152214	TRUE
+neuron	ENSG00000204065	TRUE
+neuron	ENSG00000130822	TRUE
+neuron	ENSG00000105696	TRUE
+neuron	ENSG00000158301	TRUE
+neuron	ENSG00000184368	TRUE
+neuron	ENSG00000225783	TRUE
+neuron	ENSG00000023287	TRUE
+neuron	ENSG00000125675	TRUE
+neuron	ENSG00000061936	TRUE
+neuron	ENSG00000144285	TRUE
+neuron	ENSG00000185946	TRUE
+neuron	ENSG00000037965	TRUE
+neuron	ENSG00000142599	TRUE
+neuron	ENSG00000100815	TRUE
+neuron	ENSG00000055609	TRUE
+neuron	ENSG00000130254	TRUE
+neuron	ENSG00000151835	TRUE
+neuron	ENSG00000198626	TRUE
+neuron	ENSG00000104218	TRUE
+neuron	ENSG00000124177	TRUE
+neuron	ENSG00000147905	TRUE
+neuron	ENSG00000186566	TRUE
+neuron	ENSG00000198729	TRUE
+neuron	ENSG00000160050	TRUE
+neuron	ENSG00000135750	TRUE
+neuron	ENSG00000250510	TRUE
+neuron	ENSG00000206140	TRUE
+neuron	ENSG00000197106	TRUE
+neuron	ENSG00000187957	TRUE
+neuron	ENSG00000158528	TRUE
+neuron	ENSG00000047249	TRUE
+neuron	ENSG00000121905	TRUE
+neuron	ENSG00000100884	TRUE
+neuron	ENSG00000117016	TRUE
+neuron	ENSG00000087263	TRUE
+neuron	ENSG00000140488	TRUE
+neuron	ENSG00000125821	TRUE
+neuron	ENSG00000160310	TRUE
+neuron	ENSG00000101200	TRUE
+neuron	ENSG00000154645	TRUE
+neuron	ENSG00000103154	TRUE
+neuron	ENSG00000167535	TRUE
+neuron	ENSG00000174145	TRUE
+neuron	ENSG00000088992	TRUE
+neuron	ENSG00000125967	TRUE
+neuron	ENSG00000136267	TRUE
+neuron	ENSG00000182389	TRUE
+neuron	ENSG00000077063	TRUE
+neuron	ENSG00000183036	TRUE
+neuron	ENSG00000214548	TRUE
+neuron	ENSG00000133134	TRUE
+neuron	ENSG00000133169	TRUE
+neuron	ENSG00000182636	TRUE
+neuron	ENSG00000162545	TRUE
+neuron	ENSG00000132424	TRUE
+neuron	ENSG00000174365	TRUE
+neuron	ENSG00000104435	TRUE
+neuron	ENSG00000120899	TRUE
+neuron	ENSG00000186469	TRUE
+neuron	ENSG00000132639	TRUE
+neuron	ENSG00000163032	TRUE
+neuron	ENSG00000153956	TRUE
+neuron	ENSG00000118473	TRUE
+neuron	ENSG00000033627	TRUE
+neuron	ENSG00000197535	TRUE
+neuron	ENSG00000106772	TRUE
+neuron	ENSG00000196361	TRUE
+neuron	ENSG00000160654	TRUE
+neuron	ENSG00000103546	TRUE
+neuron	ENSG00000133195	TRUE
+neuron	ENSG00000164038	TRUE
+neuron	ENSG00000185668	TRUE
+neuron	ENSG00000138735	TRUE
+neuron	ENSG00000154229	TRUE
+neuron	ENSG00000094631	TRUE
+neuron	ENSG00000185532	TRUE
+neuron	ENSG00000157087	TRUE
+neuron	ENSG00000096433	TRUE
+neuron	ENSG00000123360	TRUE
+neuron	ENSG00000160191	TRUE
+neuron	ENSG00000102924	TRUE
+neuron	ENSG00000061794	TRUE
+neuron	ENSG00000162105	TRUE
+neuron	ENSG00000100422	TRUE
+neuron	ENSG00000143858	TRUE
+neuron	ENSG00000144283	TRUE
+neuron	ENSG00000181790	TRUE
+neuron	ENSG00000164588	TRUE
+neuron	ENSG00000155886	TRUE
+neuron	ENSG00000185052	TRUE
+neuron	ENSG00000146910	TRUE
+neuron	ENSG00000160360	TRUE
+neuron	ENSG00000175175	TRUE
+neuron	ENSG00000152208	TRUE
+neuron	ENSG00000135638	TRUE
+neuron	ENSG00000229453	TRUE
+neuron	ENSG00000204305	TRUE
+neuron	ENSG00000164924	TRUE
+neuron	ENSG00000104783	TRUE
+neuron	ENSG00000078018	TRUE
+neuron	ENSG00000115310	TRUE
+neuron	ENSG00000186642	TRUE
+neuron	ENSG00000158445	TRUE
+neuron	ENSG00000182674	TRUE
+neuron	ENSG00000075043	TRUE
+neuron	ENSG00000184156	TRUE
+neuron	ENSG00000119042	TRUE
+neuron	ENSG00000180914	TRUE
+neuron	ENSG00000184408	TRUE
+neuron	ENSG00000171385	TRUE
+neuron	ENSG00000134259	TRUE
+neuron	ENSG00000151615	TRUE
+neuron	ENSG00000206652	TRUE
+neuron	ENSG00000213676	TRUE
+neuron	ENSG00000104497	TRUE
+neuron	ENSG00000176842	TRUE
+neuron	ENSG00000161179	TRUE
+neuron	ENSG00000175497	TRUE
+neuron	ENSG00000105251	TRUE
+neuron	ENSG00000253457	TRUE
+neuron	ENSG00000158089	TRUE
+neuron	ENSG00000147432	TRUE
+neuron	ENSG00000159445	TRUE
+neuron	ENSG00000140386	TRUE
+neuron	ENSG00000174473	TRUE
+neuron	ENSG00000177875	TRUE
+neuron	ENSG00000185942	TRUE
+neuron	ENSG00000197753	TRUE
+neuron	ENSG00000177679	TRUE
+neuron	ENSG00000182870	TRUE
+neuron	ENSG00000132938	TRUE
+neuron	ENSG00000142549	TRUE
+neuron	ENSG00000204843	TRUE
+neuron	ENSG00000131067	TRUE
+neuron	ENSG00000148925	TRUE
+neuron	ENSG00000143590	TRUE
+neuron	ENSG00000067221	TRUE
+neuron	ENSG00000132879	TRUE
+neuron	ENSG00000165973	TRUE
+neuron	ENSG00000125744	TRUE
+neuron	ENSG00000105327	TRUE
+neuron	ENSG00000173040	TRUE
+neuron	ENSG00000139973	TRUE
+neuron	ENSG00000100271	TRUE
+neuron	ENSG00000171723	TRUE
+neuron	ENSG00000173210	TRUE
+neuron	ENSG00000155974	TRUE
+neuron	ENSG00000124191	TRUE
+neuron	ENSG00000141562	TRUE
+neuron	ENSG00000135144	TRUE
+neuron	ENSG00000181541	TRUE
+neuron	ENSG00000183783	TRUE
+neuron	ENSG00000196353	TRUE
+neuron	ENSG00000162873	TRUE
+neuron	ENSG00000159387	TRUE
+neuron	ENSG00000172346	TRUE
+neuron	ENSG00000118507	TRUE
+neuron	ENSG00000157110	TRUE
+neuron	ENSG00000152192	TRUE
+neuron	ENSG00000166831	TRUE
+neuron	ENSG00000058091	TRUE
+neuron	ENSG00000173267	TRUE
+neuron	ENSG00000136546	TRUE
+neuron	ENSG00000163497	TRUE
+neuron	ENSG00000139287	TRUE
+neuron	ENSG00000146477	TRUE
+neuron	ENSG00000164463	TRUE
+neuron	ENSG00000183943	TRUE
+neuron	ENSG00000130711	TRUE
+neuron	ENSG00000116133	TRUE
+neuron	ENSG00000110680	TRUE
+neuron	ENSG00000175868	TRUE
+neuron	ENSG00000150722	TRUE
+neuron	ENSG00000135407	TRUE
+neuron	ENSG00000233670	TRUE
+neuron	ENSG00000169432	TRUE
+neuron	ENSG00000204130	TRUE
+neuron	ENSG00000160767	TRUE
+neuron	ENSG00000153132	TRUE
+neuron	ENSG00000111846	TRUE
+neuron	ENSG00000104219	TRUE
+neuron	ENSG00000185567	TRUE
+neuron	ENSG00000122733	TRUE
+neuron	ENSG00000069424	TRUE
+neuron	ENSG00000198513	TRUE
+neuron	ENSG00000152137	TRUE
+neuron	ENSG00000119782	TRUE
+neuron	ENSG00000171914	TRUE
+neuron	ENSG00000104381	TRUE
+neuron	ENSG00000149091	TRUE
+neuron	ENSG00000129682	TRUE
+neuron	ENSG00000102780	TRUE
+neuron	ENSG00000085719	TRUE
+neuron	ENSG00000119242	TRUE
+neuron	ENSG00000075340	TRUE
+neuron	ENSG00000154864	TRUE
+neuron	ENSG00000139190	TRUE
+neuron	ENSG00000185313	TRUE
+neuron associated cell	ENSG00000115138	TRUE
+neuron associated cell	ENSG00000134438	TRUE
+neuron associated cell	ENSG00000131095	TRUE
+neuron associated cell	ENSG00000079215	TRUE
+neuron associated cell	ENSG00000171885	TRUE
+neuron associated cell	ENSG00000170075	TRUE
+neuron associated cell	ENSG00000109107	TRUE
+neuron associated cell	ENSG00000136869	TRUE
+neuron associated cell	ENSG00000039068	TRUE
+neuron associated cell	ENSG00000089041	TRUE
+neuron associated cell	ENSG00000172461	TRUE
+neuron associated cell	ENSG00000136535	TRUE
+neuron associated cell	ENSG00000136244	TRUE
+neuron associated cell	ENSG00000169429	TRUE
+neuron associated cell	ENSG00000038427	TRUE
+neuron associated cell	ENSG00000166292	TRUE
+neuron associated cell	ENSG00000136160	TRUE
+neuron associated cell	ENSG00000117707	TRUE
+neuron associated cell	ENSG00000107317	TRUE
+neuron associated cell	ENSG00000157103	TRUE
+neuron associated cell	ENSG00000106688	TRUE
+neuron associated cell	ENSG00000007372	TRUE
+neuron associated cell	ENSG00000186472	TRUE
+neuron associated cell	ENSG00000111249	TRUE
+neuron associated cell	ENSG00000124140	TRUE
+neuron associated cell	ENSG00000109689	TRUE
+neuron associated cell	ENSG00000166266	TRUE
+neuron associated cell	ENSG00000010818	TRUE
+neuron associated cell	ENSG00000140538	TRUE
+neuron associated cell	ENSG00000108830	TRUE
+neuron associated cell	ENSG00000153266	TRUE
+neuron associated cell	ENSG00000134532	TRUE
+neuron associated cell	ENSG00000169855	TRUE
+neuron associated cell	ENSG00000135333	TRUE
+neuron associated cell	ENSG00000044524	TRUE
+neuron associated cell	ENSG00000230797	TRUE
+neuron associated cell	ENSG00000074181	TRUE
+neuron associated cell	ENSG00000148400	TRUE
+neuron associated cell	ENSG00000106852	TRUE
+neuron associated cell	ENSG00000132688	TRUE
+neuron associated cell	ENSG00000167281	TRUE
+neuron associated cell	ENSG00000118260	TRUE
+neuron associated cell	ENSG00000162992	TRUE
+neuron associated cell	ENSG00000139352	TRUE
+neuron associated cell	ENSG00000198400	TRUE
+neuron associated cell	ENSG00000008056	TRUE
+neuron associated cell	ENSG00000196712	TRUE
+neuron associated cell	ENSG00000171791	TRUE
+neuron associated cell	ENSG00000165970	TRUE
+neuron associated cell	ENSG00000186564	TRUE
+neuron associated cell	ENSG00000105376	TRUE
+neuron associated cell	ENSG00000180616	TRUE
+neuron associated cell	ENSG00000178403	TRUE
+neuron associated cell	ENSG00000232810	TRUE
+neuron associated cell	ENSG00000112115	TRUE
+neuron associated cell	ENSG00000187266	TRUE
+neuron associated cell	ENSG00000134853	TRUE
+neuron associated cell	ENSG00000053438	TRUE
+neuron associated cell	ENSG00000169313	TRUE
+neuron associated cell	ENSG00000181449	TRUE
+neuron associated cell	ENSG00000150275	TRUE
+neuron associated cell	ENSG00000173546	TRUE
+neuron associated cell	ENSG00000100146	TRUE
+neuron associated cell	ENSG00000205927	TRUE
+neuron associated cell	ENSG00000124159	TRUE
+neuron associated cell	ENSG00000131094	TRUE
+neuron associated cell	ENSG00000144230	TRUE
+neuron associated cell	ENSG00000115041	TRUE
+neuron associated cell	ENSG00000129596	TRUE
+neuron associated cell	ENSG00000072134	TRUE
+neuron associated cell	ENSG00000187416	TRUE
+neuron associated cell	ENSG00000204099	TRUE
+neuron associated cell	ENSG00000159166	TRUE
+neuron associated cell	ENSG00000140107	TRUE
+neuron associated cell	ENSG00000244405	TRUE
+neuron associated cell	ENSG00000114646	TRUE
+neuron associated cell	ENSG00000184221	TRUE
+neuron associated cell	ENSG00000116147	TRUE
+neuron associated cell	ENSG00000010810	TRUE
+neuron associated cell	ENSG00000148826	TRUE
+neuron associated cell	ENSG00000173786	TRUE
+neuron associated cell	ENSG00000135821	TRUE
+neuron associated cell	ENSG00000168398	TRUE
+neuron associated cell	ENSG00000163235	TRUE
+neuron associated cell	ENSG00000100030	TRUE
+neuron associated cell	ENSG00000096968	TRUE
+neuron associated cell	ENSG00000139874	TRUE
+neuron associated cell	ENSG00000177807	TRUE
+neuron associated cell	ENSG00000144191	TRUE
+neutrophil	ENSG00000143546	TRUE
+neutrophil	ENSG00000148346	TRUE
+neutrophil	ENSG00000170458	TRUE
+neutrophil	ENSG00000196549	TRUE
+neutrophil	ENSG00000272398	TRUE
+neutrophil	ENSG00000109743	TRUE
+neutrophil	ENSG00000188404	TRUE
+neutrophil	ENSG00000169896	TRUE
+neutrophil	ENSG00000140678	TRUE
+neutrophil	ENSG00000140287	TRUE
+neutrophil	ENSG00000277632	TRUE
+neutrophil	ENSG00000105383	TRUE
+neutrophil	ENSG00000163220	TRUE
+neutrophil	ENSG00000196154	TRUE
+neutrophil	ENSG00000203747	TRUE
+neutrophil	ENSG00000090382	TRUE
+neutrophil	ENSG00000261371	TRUE
+neutrophil	ENSG00000065534	TRUE
+neutrophil	ENSG00000196371	TRUE
+neutrophil	ENSG00000197405	TRUE
+neutrophil	ENSG00000163823	TRUE
+neutrophil	ENSG00000150337	TRUE
+neutrophil	ENSG00000137462	TRUE
+neutrophil	ENSG00000160593	TRUE
+neutrophil	ENSG00000166527	TRUE
+neutrophil	ENSG00000151651	TRUE
+neutrophil	ENSG00000167208	TRUE
+neutrophil	ENSG00000081041	TRUE
+neutrophil	ENSG00000125538	TRUE
+neutrophil	ENSG00000100985	TRUE
+neutrophil	ENSG00000180871	TRUE
+neutrophil	ENSG00000126759	TRUE
+neutrophil	ENSG00000100448	TRUE
+neutrophil	ENSG00000163464	TRUE
+neutrophil	ENSG00000119535	TRUE
+neutrophil	ENSG00000121797	TRUE
+neutrophil	ENSG00000196415	TRUE
+neutrophil	ENSG00000085514	TRUE
+neutrophil	ENSG00000143669	TRUE
+neutrophil	ENSG00000124469	TRUE
+neutrophil	ENSG00000005381	TRUE
+neutrophil	ENSG00000079385	TRUE
+neutrophil	ENSG00000132693	TRUE
+neutrophil	ENSG00000206047	TRUE
+neutrophil	ENSG00000239839	TRUE
+neutrophil	ENSG00000012223	TRUE
+neutrophil	ENSG00000197561	TRUE
+neutrophil	ENSG00000257017	TRUE
+neutrophil	ENSG00000118113	TRUE
+neutrophil	ENSG00000171236	TRUE
+neutrophil	ENSG00000099985	TRUE
+neutrophil	ENSG00000166523	TRUE
+neutrophil	ENSG00000244617	TRUE
+neutrophil	ENSG00000158517	TRUE
+neutrophil	ENSG00000124731	TRUE
+neutrophil	ENSG00000137642	TRUE
+neutrophil	ENSG00000081181	TRUE
+neutrophil	ENSG00000115590	TRUE
+neutrophil	ENSG00000204936	TRUE
+neutrophil	ENSG00000073756	TRUE
+neutrophil	ENSG00000111331	TRUE
+neutrophil	ENSG00000172232	TRUE
+neutrophil	ENSG00000021355	TRUE
+neutrophil	ENSG00000164047	TRUE
+neutrophil	ENSG00000105281	TRUE
+neutrophil	ENSG00000159322	TRUE
+neutrophil	ENSG00000140368	TRUE
+neutrophil	ENSG00000107099	TRUE
+neutrophil	ENSG00000162711	TRUE
+pericyte	ENSG00000154188	FALSE
+pericyte	ENSG00000026025	FALSE
+pericyte	ENSG00000135318	FALSE
+pericyte	ENSG00000174944	FALSE
+pericyte	ENSG00000185885	FALSE
+pericyte	ENSG00000170323	FALSE
+pericyte	ENSG00000261371	FALSE
+pericyte	ENSG00000090339	FALSE
+pericyte	ENSG00000076706	FALSE
+pericyte	ENSG00000120156	FALSE
+pericyte	ENSG00000277494	FALSE
+pericyte	ENSG00000143248	FALSE
+pericyte	ENSG00000232995	FALSE
+pericyte	ENSG00000121361	FALSE
+pericyte	ENSG00000133110	FALSE
+pericyte	ENSG00000106538	FALSE
+pericyte	ENSG00000074181	FALSE
+pericyte	ENSG00000117594	FALSE
+pericyte	ENSG00000140545	FALSE
+pericyte	ENSG00000112715	FALSE
+pericyte	ENSG00000054598	FALSE
+pericyte	ENSG00000152977	FALSE
+pericyte	ENSG00000109072	FALSE
+pericyte	ENSG00000173546	FALSE
+pericyte	ENSG00000113721	FALSE
+pericyte	ENSG00000166825	FALSE
+pericyte	ENSG00000107796	FALSE
+pericyte	ENSG00000175084	FALSE
+pericyte	ENSG00000069431	FALSE
+pericyte	ENSG00000174807	FALSE
+pericyte	ENSG00000185559	FALSE
+pericyte	ENSG00000111087	FALSE
+pericyte	ENSG00000148926	FALSE
+pericyte	ENSG00000131055	FALSE
+pericyte	ENSG00000131097	FALSE
+pericyte	ENSG00000133401	FALSE
+pericyte	ENSG00000162576	FALSE
+pericyte	ENSG00000138735	FALSE
+pericyte	ENSG00000025434	FALSE
+pericyte	ENSG00000149131	FALSE
+pericyte	ENSG00000186998	FALSE
+pericyte	ENSG00000143369	FALSE
+pericyte	ENSG00000118004	FALSE
+pericyte	ENSG00000088320	FALSE
+pericyte	ENSG00000106819	FALSE
+pericyte	ENSG00000161544	FALSE
+pericyte	ENSG00000127954	FALSE
+pericyte	ENSG00000185633	FALSE
+pericyte	ENSG00000169507	FALSE
+pericyte	ENSG00000187527	FALSE
+pericyte	ENSG00000131471	FALSE
+pericyte	ENSG00000091879	FALSE
+pericyte	ENSG00000109452	FALSE
+pericyte	ENSG00000160801	FALSE
+pericyte	ENSG00000112837	FALSE
+pericyte	ENSG00000162551	FALSE
+pericyte	ENSG00000108821	FALSE
+pericyte	ENSG00000128641	FALSE
+pericyte	ENSG00000168434	FALSE
+pericyte	ENSG00000163909	FALSE
+pericyte	ENSG00000114450	FALSE
+pericyte	ENSG00000163132	FALSE
+plasma cell	ENSG00000009709	TRUE
+plasma cell	ENSG00000101017	TRUE
+plasma cell	ENSG00000156738	TRUE
+plasma cell	ENSG00000105369	TRUE
+plasma cell	ENSG00000115884	TRUE
+plasma cell	ENSG00000240505	TRUE
+plasma cell	ENSG00000211898	TRUE
+plasma cell	ENSG00000211899	TRUE
+plasma cell	ENSG00000152689	TRUE
+plasma cell	ENSG00000177455	TRUE
+plasma cell	ENSG00000272398	TRUE
+plasma cell	ENSG00000139193	TRUE
+plasma cell	ENSG00000132465	TRUE
+plasma cell	ENSG00000170476	TRUE
+plasma cell	ENSG00000048462	TRUE
+plasma cell	ENSG00000145088	TRUE
+plasma cell	ENSG00000121966	TRUE
+plasma cell	ENSG00000211677	TRUE
+plasma cell	ENSG00000211679	TRUE
+plasma cell	ENSG00000211592	TRUE
+plasma cell	ENSG00000211896	TRUE
+plasma cell	ENSG00000211897	TRUE
+plasma cell	ENSG00000211892	TRUE
+plasma cell	ENSG00000004468	TRUE
+plasma cell	ENSG00000019582	TRUE
+plasma cell	ENSG00000104894	TRUE
+plasma cell	ENSG00000170456	TRUE
+plasma cell	ENSG00000072694	TRUE
+plasma cell	ENSG00000132704	TRUE
+plasma cell	ENSG00000176533	TRUE
+plasma cell	ENSG00000228315	TRUE
+plasma cell	ENSG00000241106	TRUE
+plasma cell	ENSG00000206066	TRUE
+plasma cell	ENSG00000083454	TRUE
+plasma cell	ENSG00000168081	TRUE
+plasma cell	ENSG00000142178	TRUE
+plasma cell	ENSG00000121895	TRUE
+plasma cell	ENSG00000184047	TRUE
+plasma cell	ENSG00000125810	TRUE
+plasma cell	ENSG00000010278	TRUE
+plasma cell	ENSG00000100453	TRUE
+plasma cell	ENSG00000110079	TRUE
+plasma cell	ENSG00000127074	TRUE
+plasma cell	ENSG00000137265	TRUE
+plasma cell	ENSG00000057657	TRUE
+plasma cell	ENSG00000197594	TRUE
+plasma cell	ENSG00000136826	TRUE
+plasma cell	ENSG00000033800	TRUE
+plasma cell	ENSG00000172115	TRUE
+plasma cell	ENSG00000115317	TRUE
+plasma cell	ENSG00000184451	TRUE
+plasma cell	ENSG00000150967	TRUE
+plasma cell	ENSG00000116748	TRUE
+plasma cell	ENSG00000101280	TRUE
+plasma cell	ENSG00000230223	TRUE
+plasma cell	ENSG00000170128	TRUE
+plasma cell	ENSG00000211891	TRUE
+plasma cell	ENSG00000177272	TRUE
+plasma cell	ENSG00000178342	TRUE
+plasma cell	ENSG00000203896	TRUE
+plasma cell	ENSG00000111885	TRUE
+plasma cell	ENSG00000172469	TRUE
+plasma cell	ENSG00000105613	TRUE
+plasma cell	ENSG00000184313	TRUE
+plasma cell	ENSG00000152256	TRUE
+plasma cell	ENSG00000143839	TRUE
+plasma cell	ENSG00000225093	TRUE
+plasma cell	ENSG00000061656	TRUE
+plasma cell	ENSG00000136840	TRUE
+plasma cell	ENSG00000104055	TRUE
+plasma cell	ENSG00000197888	TRUE
+plasma cell	ENSG00000124256	TRUE
+plasma cell	ENSG00000197279	TRUE
+plasma cell	ENSG00000211893	TRUE
+plasma cell	ENSG00000253755	TRUE
+plasma cell	ENSG00000211895	TRUE
+plasma cell	ENSG00000211890	TRUE
+plasma cell	ENSG00000211673	TRUE
+plasma cell	ENSG00000211685	TRUE
+plasma cell	ENSG00000180879	TRUE
+plasma cell	ENSG00000172349	TRUE
+plasma cell	ENSG00000180535	TRUE
+plasma cell	ENSG00000166794	TRUE
+regulatory T cell	ENSG00000135318	TRUE
+regulatory T cell	ENSG00000134460	TRUE
+regulatory T cell	ENSG00000188404	TRUE
+regulatory T cell	ENSG00000083457	TRUE
+regulatory T cell	ENSG00000030419	TRUE
+regulatory T cell	ENSG00000178573	TRUE
+regulatory T cell	ENSG00000089692	TRUE
+regulatory T cell	ENSG00000138185	TRUE
+regulatory T cell	ENSG00000070729	TRUE
+regulatory T cell	ENSG00000010610	TRUE
+regulatory T cell	ENSG00000186827	TRUE
+regulatory T cell	ENSG00000136634	TRUE
+regulatory T cell	ENSG00000183813	TRUE
+regulatory T cell	ENSG00000049768	TRUE
+regulatory T cell	ENSG00000163599	TRUE
+regulatory T cell	ENSG00000183560	TRUE
+regulatory T cell	ENSG00000186891	TRUE
+regulatory T cell	ENSG00000115594	TRUE
+regulatory T cell	ENSG00000105855	TRUE
+regulatory T cell	ENSG00000137507	TRUE
+regulatory T cell	ENSG00000110195	TRUE
+somatic stem cell	ENSG00000119866	FALSE
+somatic stem cell	ENSG00000039068	FALSE
+somatic stem cell	ENSG00000138795	FALSE
+somatic stem cell	ENSG00000111704	FALSE
+somatic stem cell	ENSG00000204531	FALSE
+somatic stem cell	ENSG00000187682	FALSE
+somatic stem cell	ENSG00000119888	FALSE
+somatic stem cell	ENSG00000184697	FALSE
+somatic stem cell	ENSG00000181885	FALSE
+somatic stem cell	ENSG00000182747	FALSE
+somatic stem cell	ENSG00000241186	FALSE
+somatic stem cell	ENSG00000107562	FALSE
+somatic stem cell	ENSG00000176887	FALSE
+somatic stem cell	ENSG00000072832	FALSE
+somatic stem cell	ENSG00000157851	FALSE
+somatic stem cell	ENSG00000148798	FALSE
+somatic stem cell	ENSG00000117122	FALSE
+T cell	ENSG00000160307	TRUE
+T cell	ENSG00000126353	TRUE
+T cell	ENSG00000116824	TRUE
+T cell	ENSG00000110848	TRUE
+T cell	ENSG00000227507	TRUE
+T cell	ENSG00000137872	TRUE
+T cell	ENSG00000119917	TRUE
+T cell	ENSG00000121966	TRUE
+T cell	ENSG00000169442	TRUE
+T cell	ENSG00000213402	TRUE
+T cell	ENSG00000134460	TRUE
+T cell	ENSG00000157764	TRUE
+T cell	ENSG00000277632	TRUE
+T cell	ENSG00000275302	TRUE
+T cell	ENSG00000185885	TRUE
+T cell	ENSG00000171476	TRUE
+T cell	ENSG00000056558	TRUE
+T cell	ENSG00000123685	TRUE
+T cell	ENSG00000121807	TRUE
+T cell	ENSG00000196154	TRUE
+T cell	ENSG00000153563	TRUE
+T cell	ENSG00000178562	TRUE
+T cell	ENSG00000196329	TRUE
+T cell	ENSG00000107317	TRUE
+T cell	ENSG00000170891	TRUE
+T cell	ENSG00000138795	TRUE
+T cell	ENSG00000271503	TRUE
+T cell	ENSG00000118513	TRUE
+T cell	ENSG00000115523	TRUE
+T cell	ENSG00000100453	TRUE
+T cell	ENSG00000137441	TRUE
+T cell	ENSG00000105374	TRUE
+T cell	ENSG00000180644	TRUE
+T cell	ENSG00000150045	TRUE
+T cell	ENSG00000077984	TRUE
+T cell	ENSG00000134539	TRUE
+T cell	ENSG00000172543	TRUE
+T cell	ENSG00000159674	TRUE
+T cell	ENSG00000145649	TRUE
+T cell	ENSG00000198821	TRUE
+T cell	ENSG00000169583	TRUE
+T cell	ENSG00000173762	TRUE
+T cell	ENSG00000205336	TRUE
+T cell	ENSG00000211829	TRUE
+T cell	ENSG00000117632	TRUE
+T cell	ENSG00000164104	TRUE
+T cell	ENSG00000176890	TRUE
+T cell	ENSG00000148773	TRUE
+T cell	ENSG00000175063	TRUE
+T cell	ENSG00000123416	TRUE
+T cell	ENSG00000066279	TRUE
+T cell	ENSG00000115163	TRUE
+T cell	ENSG00000131747	TRUE
+T cell	ENSG00000132646	TRUE
+T cell	ENSG00000178999	TRUE
+T cell	ENSG00000089685	TRUE
+T cell	ENSG00000137804	TRUE
+T cell	ENSG00000135451	TRUE
+T cell	ENSG00000196230	TRUE
+T cell	ENSG00000117724	TRUE
+T cell	ENSG00000134057	TRUE
+T cell	ENSG00000233306	TRUE
+T cell	ENSG00000211694	TRUE
+T cell	ENSG00000211693	TRUE
+T cell	ENSG00000211701	TRUE
+T cell	ENSG00000211699	TRUE
+T cell	ENSG00000211698	TRUE
+T cell	ENSG00000211697	TRUE
+T cell	ENSG00000211696	TRUE
+T cell	ENSG00000211695	TRUE
+T cell	ENSG00000211690	TRUE
+T cell	ENSG00000211687	TRUE
+T cell	ENSG00000211692	TRUE
+T cell	ENSG00000211688	TRUE
+T cell	ENSG00000211691	TRUE
+T cell	ENSG00000211689	TRUE
+T cell	ENSG00000227191	TRUE
+T cell	ENSG00000223997	TRUE
+T cell	ENSG00000237235	TRUE
+T cell	ENSG00000228985	TRUE
+T cell	ENSG00000211825	TRUE
+T cell	ENSG00000211827	TRUE
+T cell	ENSG00000211828	TRUE
+T cell	ENSG00000211826	TRUE
+T cell	ENSG00000211804	TRUE
+T cell	ENSG00000211821	TRUE
+T cell	ENSG00000256590	TRUE
+T cell	ENSG00000074181	TRUE
+T cell	ENSG00000171791	TRUE
+T cell	ENSG00000069667	TRUE
+T cell	ENSG00000184922	TRUE
+T cell	ENSG00000136286	TRUE
+T cell	ENSG00000198851	TRUE
+T cell	ENSG00000213658	TRUE
+T cell	ENSG00000089692	TRUE
+T cell	ENSG00000111796	TRUE
+T cell	ENSG00000100385	TRUE
+T cell	ENSG00000081059	TRUE
+T cell	ENSG00000008517	TRUE
+T cell	ENSG00000100450	TRUE
+T cell	ENSG00000160654	TRUE
+T cell	ENSG00000158050	TRUE
+T cell	ENSG00000074966	TRUE
+T cell	ENSG00000115604	TRUE
+T cell	ENSG00000113088	TRUE
+T cell	ENSG00000111537	TRUE
+T cell	ENSG00000069493	TRUE
+T cell	ENSG00000163600	TRUE
+T cell	ENSG00000168685	TRUE
+T cell	ENSG00000095794	TRUE
+T cell	ENSG00000010610	TRUE
+T cell	ENSG00000100422	TRUE
+T cell	ENSG00000167286	TRUE
+T cell	ENSG00000106560	TRUE
+T cell	ENSG00000213023	TRUE
+T cell	ENSG00000050165	TRUE
+T cell	ENSG00000183395	TRUE
+T cell	ENSG00000172215	TRUE
+T cell	ENSG00000182568	TRUE
+T cell	ENSG00000113263	TRUE
+T cell	ENSG00000211772	TRUE
+T cell	ENSG00000164949	TRUE
+T cell	ENSG00000185022	TRUE
+T cell	ENSG00000177426	TRUE
+T cell	ENSG00000118503	TRUE
+T cell	ENSG00000168994	TRUE
+T cell	ENSG00000173559	TRUE
+T cell	ENSG00000125898	TRUE
+T cell	ENSG00000232472	TRUE
+T cell	ENSG00000277734	TRUE
+T cell	ENSG00000233328	TRUE
+T cell	ENSG00000211751	TRUE
+T cell	ENSG00000134242	TRUE
+T cell	ENSG00000102886	TRUE
+T cell	ENSG00000172116	TRUE
+T cell	ENSG00000183918	TRUE
+T cell	ENSG00000125910	TRUE
+T cell	ENSG00000117281	TRUE
+T cell	ENSG00000168421	TRUE
+T cell	ENSG00000177675	TRUE
+T cell	ENSG00000134046	TRUE
+T cell	ENSG00000186827	TRUE
+T cell	ENSG00000115009	TRUE
+T cell	ENSG00000013725	TRUE
+T cell	ENSG00000182866	TRUE
+T cell	ENSG00000110651	TRUE
+T cell	ENSG00000154096	TRUE
+T cell	ENSG00000141293	TRUE
+T cell	ENSG00000276070	TRUE
+T cell	ENSG00000163564	TRUE
+T cell	ENSG00000171223	TRUE
