@@ -1,10 +1,10 @@
 # This script prepares gene sets for input to over-representation analysis (ORA) for a given ScPCA project as follows:
-# 
+#
 # 1. Identify all possible consensus cell types which _could_ have been called for the project
 # 2. Identify the PanglaoDB cell types that contributed to those consensus labels
 # 3. Using the scpca-nf PanglaoDB cell type reference for the given project, determine the genes in those PanglaoDB cell types
 # 4. These (unique) genes define the gene set for a given consensus cell type to test in ORA
-# 5. We include an indicator column `observed_in_singlecell` for whether the given gene set was observed in the project's consensus cell types 
+# 5. We include an indicator column `observed_in_singlecell` for whether the given gene set was observed in the project's consensus cell types
 
 
 renv::load()
@@ -27,18 +27,18 @@ option_list <- list(
     "--panglao_geneset_file",
     type = "character",
     help = "Path to gene set file used to cell type the given project"
-  ), 
+  ),
   make_option(
     "--output_file",
     type = "character",
     help = "Path to output TSV file to save gene sets."
-  ), 
+  ),
   make_option(
     "--consensus_reference_url",
     type = "character",
-    default = "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv",
+    default = "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv",
     help = "URL with map between consensus cell types and PanglaoDB gene set labels"
-  ), 
+  ),
   make_option(
     "--library_metadata_file",
     type = "character",
@@ -50,7 +50,7 @@ opts <- parse_args(OptionParser(option_list = option_list))
 
 # Checks---------
 stopifnot(
-  "Panglao gene set file not found" = file.exists(opts$panglao_geneset_file), 
+  "Panglao gene set file not found" = file.exists(opts$panglao_geneset_file),
   "Library metadata file not found" = file.exists(opts$library_metadata_file)
 )
 
@@ -59,15 +59,15 @@ consensus_ref_df <- readr::read_tsv(opts$consensus_reference_url)
 
 panglao_df <- readr::read_tsv(opts$panglao_geneset_file) |>
   tidyr::pivot_longer(
-    -ensembl_id, 
-    names_to = "panglao_celltype", 
+    -ensembl_id,
+    names_to = "panglao_celltype",
     values_to = "gene_present"
   )
 
 celltype_files <- list.files(
-  opts$celltype_dir, 
-  pattern = "_processed_consensus-cell-types\\.tsv\\.gz$", 
-  full.names = TRUE, 
+  opts$celltype_dir,
+  pattern = "_processed_consensus-cell-types\\.tsv\\.gz$",
+  full.names = TRUE,
   recursive = TRUE
 ) |>
   purrr::set_names(
@@ -104,7 +104,7 @@ observed_celltypes <- celltype_files |>
   purrr::map(
     \(f) {
       readr::read_tsv(f) |>
-        dplyr::pull(consensus_annotation) 
+        dplyr::pull(consensus_annotation)
     }) |>
   purrr::reduce(c) |>
   unique()
@@ -131,7 +131,7 @@ consensus_genesets_df <- split(consensus_cell_types, consensus_cell_types$consen
     \(df) {
       panglao_df |>
         dplyr::filter(
-          panglao_celltype %in% df$original_panglao_name, 
+          panglao_celltype %in% df$original_panglao_name,
           gene_present == 1
         ) |>
         dplyr::select(ensembl_id) |>
