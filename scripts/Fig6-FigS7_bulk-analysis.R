@@ -4,14 +4,24 @@ renv::load()
 
 # load any libraries 
 library(ggplot2)
+theme_set(theme_bw())
+
+
 
 # Set up -----------------------------------------------------------------------
 
+# significance threshold for odds ratios
+alpha <- 0.05 
+
+# Define projects intended for main vs supplementary figures
+main_projects <- c("SCPCP000001", "SCPCP000002", "SCPCP000009")
+si_projects   <- c("SCPCP000006", "SCPCP000017")
+
+# File paths
 analysis_dir <- here::here("analysis", "pseudobulk-bulk-prediction")
 result_dir <- file.path(analysis_dir, "results")
-
 tables_dir <- here::here("manuscript-numbers")
-bulk_numbers_tsv <- file.path(tables_dir, "bulk-analysis-counts.tsv")
+sample_metadata_file <- here::here("s3_files", "scpca-library-metadata.tsv")
 
 # This file contains all samples which were _initially_ considered before 
 # low-quality samples were removed
@@ -27,10 +37,60 @@ geneset_files <- list.files(
     \(x) {stringr::str_split_i(basename(x), pattern = "_", i = 1)}
   )
 
-sample_metadata_file <- here::here("s3_files", "scpca-library-metadata.tsv")
+# The TSV files containing odds ratio results from overrepresentation analysis
+odds_files <- list.files(
+  path = result_dir,
+  pattern = "_ORA-odds-ratios\\.tsv$",
+  full.names = TRUE
+)|>
+  purrr::set_names(
+    \(x) {stringr::str_split_i(basename(x), pattern = "_", i = 1)}
+  )
 
 
-# First, create the manuscript-numbers table ----------------------------------------------------------------
+# The TSV files containing modeled values
+data_files <- list.files(
+  path = file.path(result_dir, "models"),
+  pattern = "-data_threshold-0\\.tsv$",
+  full.names = TRUE
+)|>
+  purrr::set_names(
+    \(x) {stringr::str_split_i(basename(x), pattern = "_", i = 1)}
+  )
+
+
+# Output files
+bulk_numbers_tsv <- file.path(tables_dir, "bulk-analysis-counts.tsv")
+
+
+# Functions --------------------------------------------------------------------
+
+# Function to plot the odds ratio barplot
+plot_odds_ratios <- function(df) {
+  ggplot(df) +
+    aes(
+      x = tidytext::reorder_within(geneset_cell_type, odds_ratio, within = project_facet),
+      y = odds_ratio, 
+      fill = -log10(p_adj_bh)
+    ) +
+    geom_col() +
+    scale_fill_viridis_c() +
+    tidytext::scale_x_reordered() + # gets the labels back to only geneset_cell_type
+    facet_wrap(vars(project_facet), scales = "free_x", nrow = 1) +
+    labs(
+      x = "Gene set (cell type)", 
+      y = "Odds ratio", 
+      fill = "-Log10 adjusted p-value (BH)"
+    ) +
+    theme(
+      legend.position = "bottom", 
+      axis.text.x = element_text(angle = 30, hjust = 1, size = 8)
+    )
+}
+
+
+
+# First, create the manuscript-numbers table -----------------------------------
 
 # Define vector of low-quality samples which were removed
 # Source: https://github.com/AlexsLemonade/scpca-paper-figures/blob/aa53bb48f2a7b1c9312033df25c912f25eb08147/analysis/pseudobulk-bulk-prediction/notebooks/build-assess-models.Rmd#L41-L53
@@ -93,6 +153,43 @@ bulk_table <- bulk_table |>
     n_samples_used        = sum(bulk_table$n_samples_used), 
     n_ora_genesets        = NA_integer_ # the sum of this quantity isn't relevant
   )
+
+
+# Odds ratio panels -----------------------------------------------------------------
+
+# Read in odds ratio results and filter to significant only
+odds_df <- odds_files |>
+  purrr::map(readr::read_tsv) |>
+  purrr::list_rbind(names_to = "scpca_project_id") |>
+  # filter to significant at 0.05
+  dplyr::filter(p_adj_bh <= alpha)
+
+# Prepare data frame for plotting  
+odds_df <- odds_df |>
+  # join with the number of samples in each project
+  dplyr::inner_join(
+    dplyr::select(bulk_table, scpca_project_id, n_samples_used)
+  ) |>
+  # create columns for plotting 
+  dplyr::mutate(
+    # faceting with the sample count info
+    project_facet = glue::glue("{scpca_project_id} (N={n_samples_used})"), 
+    # wrapped gene set names for space
+    geneset_cell_type = stringr::str_wrap(geneset_cell_type, 25)
+  )
+
+# Main text panel:
+odds_panel_main <- odds_df |>
+  dplyr::filter(scpca_project_id %in% main_projects) |>
+  plot_odds_ratios()
+
+
+# SI panel:
+odds_panel_si <- odds_df |>
+  dplyr::filter(scpca_project_id %in% si_projects) |>
+  plot_odds_ratios()
+
+
 
 
 # Export -----------------------------------------------------------------------
