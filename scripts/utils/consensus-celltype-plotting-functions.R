@@ -95,7 +95,7 @@ marker_gene_dotplot <- function(
       percent_exp = (detected_count / total_cells) * 100,
       # account for NA/unknowns and set axes order
       broad_celltype_group = tidyr::replace_na(broad_celltype_group, "unknown") |>
-        factor(levels = c(unique(markers_df$validation_group_annotation), "unknown"))
+        factor(levels = c(names(celltype_colors), "unknown")
     )
 
   # get list of celltypes to keep and assign colors
@@ -130,19 +130,19 @@ marker_gene_dotplot <- function(
     dplyr::filter(mean_exp > 0, percent_exp > 10) |>
     dplyr::arrange(broad_celltype_group) |>
     # add a label for the plot
-    dplyr::mutate(y_label = as.factor(glue::glue("{broad_celltype_group} ({total_cells})"))) |>
+    dplyr::mutate(y_label = glue::glue("{broad_celltype_group} ({total_cells})")) |>
     # remove marker genes that aren't present in final annotations and set x axis order
     dplyr::filter(gene_symbol %in% marker_gene_order) |>
     dplyr::mutate(
       # set orders of gene symbol and validation groups
-      y_label = factor(y_label, levels = unique(y_label)),
+      y_label = factor(y_label, levels = rev(unique(y_label))),
       gene_symbol = factor(gene_symbol, levels = marker_gene_order),
       validation_group_annotation = factor(validation_group_annotation, levels = celltype_order)
     )
 
 
   # make dotplot with marker gene exp
-  dotplot <- ggplot(dotplot_df, aes(y = forcats::fct_rev(y_label), x = gene_symbol, color = mean_exp, size = percent_exp)) +
+  dotplot <- ggplot(dotplot_df, aes(y = y_label, x = gene_symbol, color = mean_exp, size = percent_exp)) +
     geom_point() +
     scale_color_viridis_c(option = "magma") +
     facet_grid(cols = vars(validation_group_annotation), scales = "free", space = "free") +
