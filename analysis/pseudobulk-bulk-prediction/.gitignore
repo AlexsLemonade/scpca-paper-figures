@@ -1,7 +1,6 @@
 # Ignore in the data directory except for the ORA gene sets
-!data/*
 data/*
-!/data/.gitkeep
+!/data/README.md
 !/data/*_panglao-genesets.tsv
 
 # Ignore RDS and TSV files in the results/models directory (but keep it present)
