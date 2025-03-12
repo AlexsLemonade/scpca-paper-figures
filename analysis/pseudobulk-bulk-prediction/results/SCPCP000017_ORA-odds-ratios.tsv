@@ -5,18 +5,26 @@ B cell	bulk	2.237037037037037	0.22407759224077592	0.44815518448155184
 B cell	pseudobulk	0	1	1
 blood vessel endothelial cell	bulk	0	1	1
 blood vessel endothelial cell	pseudobulk	0	1	1
+CD4-positive, alpha-beta T cell	bulk	0	1	1
+CD4-positive, alpha-beta T cell	pseudobulk	0	1	1
 chondrocyte	bulk	6.5221325167037865	0.010798920107989201	0.021597840215978402
 chondrocyte	pseudobulk	0	1	1
 dendritic cell	bulk	9.29204568039015	9.999000099990002e-5	1.9998000199980003e-4
 dendritic cell	pseudobulk	0	1	1
 endothelial cell	bulk	0.7647724477244773	0.7433256674332567	0.8769123087691231
 endothelial cell	pseudobulk	0.4744881377965551	0.8769123087691231	0.8769123087691231
+eosinophil	bulk	0	1	1
+eosinophil	pseudobulk	0	1	1
 epithelial cell	bulk	4.15769401330377	0.2221777822217778	0.4443555644435556
 epithelial cell	pseudobulk	0	1	1
 fibroblast	bulk	9.325807567452504	9.999000099990002e-5	1.9998000199980003e-4
 fibroblast	pseudobulk	0	1	1
 granulocyte	bulk	2.0825389755011137	0.17898210178982102	0.35796420357964204
 granulocyte	pseudobulk	0	1	1
+hematopoietic precursor cell	bulk	2.419483204134367	0.20507949205079493	0.41015898410158985
+hematopoietic precursor cell	pseudobulk	0	1	1
+hematopoietic stem cell	bulk	2.419483204134367	0.20507949205079493	0.41015898410158985
+hematopoietic stem cell	pseudobulk	0	1	1
 innate lymphoid cell	bulk	0	1	1
 innate lymphoid cell	pseudobulk	0	1	1
 lymphocyte of B lineage	bulk	2.1061056998557	0.1282871712828717	0.2565743425657434
@@ -35,6 +43,8 @@ memory B cell	bulk	0	1	1
 memory B cell	pseudobulk	0	1	1
 memory T cell	bulk	0	1	1
 memory T cell	pseudobulk	0	1	1
+microvascular endothelial cell	bulk	0	1	1
+microvascular endothelial cell	pseudobulk	0	1	1
 monocyte	bulk	8.605442176870747	9.999000099990002e-5	1.9998000199980003e-4
 monocyte	pseudobulk	0	1	1
 mononuclear phagocyte	bulk	8.642836570111916	9.999000099990002e-5	1.9998000199980003e-4
@@ -57,6 +67,8 @@ regulatory T cell	bulk	0	1	1
 regulatory T cell	pseudobulk	0	1	1
 smooth muscle cell	bulk	5.0365748709122204	0.010098990100989901	0.020197980201979802
 smooth muscle cell	pseudobulk	0	1	1
+somatic stem cell	bulk	0	1	1
+somatic stem cell	pseudobulk	0	1	1
 stromal cell	bulk	6.312457912457912	0.04279572042795721	0.08559144085591441
 stromal cell	pseudobulk	0	1	1
 T cell	bulk	3.9040535577147812	0.011698830116988301	0.023397660233976603
