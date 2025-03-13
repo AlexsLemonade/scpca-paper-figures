@@ -9,7 +9,7 @@ output:
     code_folding: hide
 params:
   msigdbr_category: "H"
-  model_expr_threshold: 0
+  model_expr_threshold: 0.25
   reps: 50
 ---
 
