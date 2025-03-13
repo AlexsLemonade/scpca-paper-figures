@@ -45,6 +45,7 @@ Below is a summary of all figures and tables in the paper.
 **Figure 5**
 
 - A. Dot plot summarizing marker gene expression in consensus cell types in Brain and CNS samples. 
+- B. Bar plot summarizing the percentage of cells annotated as each consensus cell type in High-grade and Low-grade glioma samples. 
 
 **Supplemental Figure 1**
 

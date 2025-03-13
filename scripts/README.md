@@ -92,6 +92,9 @@ Figure 5A includes a dot plot summarizing marker gene expression across all cons
 Supplemental Figure 6A-C include dot plots summarizing marker gene expression across all consensus cell types in the other diagnosis groups, leukemia, sarcoma, and other solid tumors. 
 Before running this script, you must run `figure_setup/sync-consensus-celltype-results.R`. 
 
+14. `Fig5B_brain-barplot-all-celltypes.R`: This script is used to generate Figure 5B, which shows the percentage of each library that is annotated as each of the consensus cell types for all libraries in High-grade and Low-grade glioma samples.
+Before running this script, you must run `figure_setup/sync-metadata.R` and `figure_setup/sync-consensus-celltype-results.R`. 
+
 ## Old figures
 
 The `old_figures` folder contains the scripts used to generate figures present in previous versions of the manuscript. 
