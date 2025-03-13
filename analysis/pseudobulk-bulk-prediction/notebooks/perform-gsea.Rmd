@@ -91,10 +91,10 @@ ext_str <- ifelse(params$model_expr_threshold < 0, "all-genes", glue::glue("thre
 
 
 ```{r}
-model_files <- list.files(
+data_files <- list.files(
   path = model_dir,
   full.names = TRUE,
-  pattern = paste0(ext_str, "\\.rds$")
+  pattern = paste0(ext_str, "\\.tsv$")
 ) |>
   purrr::set_names(
     \(f) stringr::str_split_i(basename(f), pattern = "_", i = 1)
@@ -102,20 +102,16 @@ model_files <- list.files(
 
 n_projects <- 5
 stopifnot(
-  "Model files not found. Check the provided model file extension." = length(model_files) == n_projects
+  "Data files not found. Check the provided model file extension." = length(data_files) == n_projects
 )
 
-ranked_residuals_list <- model_files |>
+ranked_residuals_list <- data_files |>
   purrr::map(
   \(f) {
-    model_data <- readr::read_rds(f)
-    
-    model_df <- model_data |>
-      purrr::pluck("data") |>
-      dplyr::mutate(residuals = unname(resid(model_data$model))) |>
+    readr::read_tsv(f) |>
       # get a ranked list
       dplyr::group_by(ensembl_id) |>
-      dplyr::summarize(median_res = median(residuals)) |>
+      dplyr::summarize(median_res = median(residual)) |>
       dplyr::arrange(-median_res) |>
       dplyr::pull(median_res, name = ensembl_id)
   }
