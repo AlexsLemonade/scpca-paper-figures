@@ -69,19 +69,11 @@ for project_dir in $scpca_dir/*; do
     fraction_expressed_file="${data_dir}/${project_id}_fraction-expressed-single-cell.tsv"
     geneset_file="${data_dir}/${project_id}_panglao-genesets.tsv"
 
-    ###### TPMs are not currently used in the analysis ######
-    # Calculate bulk TPM for each project
-    #tpm_file="${tpm_dir}/${project_id}_tpm.tsv"
-    #Rscript ${script_dir}/calculate-tpm.R \
-    #  --input_dir "${scpca_dir}/${project_id}" \
-    #  --output_file "${tpm_file}"
-
     # Calculate pseudobulk matrices for each project
     Rscript ${script_dir}/calculate-pseudobulk.R \
       --input_dir "${scpca_dir}/${project_id}" \
       --output_pseudobulk_file "${pseudobulk_file}" \
       --output_frac_expressed_file "${fraction_expressed_file}"
-
 
     # Prepare gene set lists for over-representation analysis
     case ${project_id} in
