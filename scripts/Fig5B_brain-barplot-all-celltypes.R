@@ -65,7 +65,6 @@ sample_ids <- sample_df$scpca_sample_id
 # Prep and plot cell types -----------------------------------------------------
 
 # get list of cell type files using sample ids 
-# list all cell type assignments files
 consensus_results_files <- list.files(
   consensus_results_dir,
   pattern = "_processed_consensus-cell-types\\.tsv\\.gz$",
@@ -74,75 +73,16 @@ consensus_results_files <- list.files(
 )
 celltype_files <- consensus_results_files[basename(dirname(consensus_results_files)) %in% sample_ids]
 
-create_celltype_summary <- function(
-    celltype_files,
-    validation_groups_df
-){
-  
-  # read in consensus files and create data frame
-  consensus_df <- celltype_files |> 
-    purrr::map(readr::read_tsv) |> 
-    dplyr::bind_rows()
-  
-  # get celltype summary for stacked bar chart 
-  # need to add in validation groups here and do summary by validation group 
-  consensus_df <- consensus_df |>
-    # add in broad cell type group which is used for plotting
-    # groups similar cell types together
-    dplyr::left_join(validation_groups_df, by = "consensus_annotation") |> 
-    # remove any PDX samples
-    dplyr::filter(sample_type == "patient tissue") |> 
-    # add in unknown for plotting 
-    dplyr::mutate(broad_celltype_group = tidyr::replace_na(broad_celltype_group, "unknown"))
-  
-  # get total cell count and number of assigned cell types per library
-  totals_df <- consensus_df |> 
-    dplyr::group_by(library_id) |> 
-    dplyr::summarize(
-      total_cells_per_library = dplyr::n()
-    ) 
-  
-  # get summary stats for each cell type in each library  
-  summary_df <- consensus_df |> 
-    dplyr::left_join(totals_df, by = "library_id") |> 
-    dplyr::group_by(project_id, library_id, sample_id, broad_celltype_group) |> 
-    dplyr::summarize(total_cells_per_annotation = dplyr::n(),
-                     total_cells_per_library = unique(total_cells_per_library),
-                     percent_cells_annotation = round((total_cells_per_annotation / total_cells_per_library) * 100 ,2)) |>
-    dplyr::ungroup() |> 
-    # join with sample metadata
-    dplyr::left_join(sample_df, by = c("project_id" = "scpca_project_id", "sample_id" = "scpca_sample_id"))
-  
-  # order by total % of annotated cells 
-  # get a vector of library ids ordered by total percentage annotated
-  library_levels <- summary_df |> 
-    dplyr::filter(broad_celltype_group != "unknown") |> 
-    dplyr::group_by(library_id) |> 
-    dplyr::summarize(
-      total_percent_annotated = sum(total_cells_per_annotation)/unique(total_cells_per_library)
-    ) |>
-    dplyr::arrange(desc(total_percent_annotated)) |> 
-    dplyr::pull(library_id)
-  
-  # reorder by total percentage annotated 
-  summary_df <- summary_df |> 
-    dplyr::mutate(
-      library_id = forcats::fct_relevel(library_id, library_levels),
-      broad_celltype_group = forcats::fct_relevel(broad_celltype_group, "unknown", after = Inf) |> 
-        forcats::fct_rev()
-    ) |>
-    unique()  
-  
-  return(summary_df)
-}
-
-
+# prep data frame for plotting
 summary_df <- create_celltype_summary(celltype_files, validation_groups_df) |> 
+  # join with sample metadata
+  dplyr::left_join(sample_df, by = c("project_id" = "scpca_project_id", "sample_id" = "scpca_sample_id")) |> 
+  # only keep HGG and LGG 
   dplyr::filter(subdiagnosis_group %in% c("High-grade glioma", "Low-grade glioma")) 
 
 # make stacked bar chart and facet 
-stacked_barchart(summary_df, fill_column = "broad_celltype_group", celltype_colors = celltype_colors, facet_variable = "subdiagnosis_group")
+hgg_lgg_barplot <- stacked_barchart(summary_df, fill_column = "broad_celltype_group", celltype_colors = celltype_colors, facet_variable = "subdiagnosis_group")
 
 # save plot 
-ggsave(output_pdf_file, plot = diagnosis_plot, width = 15, height = 10)
+ggsave(output_pdf_file, plot = hgg_lgg_barplot, width = 20, height = 10)
 

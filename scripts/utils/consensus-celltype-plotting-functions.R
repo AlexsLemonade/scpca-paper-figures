@@ -188,6 +188,76 @@ marker_gene_dotplot <- function(
 }
 
 
+#' Prep data frame to use for creating stacked bar plots showing all cell types 
+#'
+#' @param celltype_files List of files containing consensus cell type results
+#' @param validation_groups_df Data frame with validation group assignments 
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+create_celltype_summary <- function(
+    celltype_files,
+    validation_groups_df
+){
+  
+  # read in consensus files and create data frame
+  consensus_df <- celltype_files |> 
+    purrr::map(readr::read_tsv) |> 
+    dplyr::bind_rows()
+  
+  # get celltype summary for stacked bar chart 
+  # need to add in validation groups here and do summary by validation group 
+  consensus_df <- consensus_df |>
+    # add in broad cell type group which is used for plotting
+    # groups similar cell types together
+    dplyr::left_join(validation_groups_df, by = "consensus_annotation") |> 
+    # remove any PDX samples
+    dplyr::filter(sample_type == "patient tissue") |> 
+    # add in unknown for plotting 
+    dplyr::mutate(broad_celltype_group = tidyr::replace_na(broad_celltype_group, "unknown"))
+  
+  # get total cell count and number of assigned cell types per library
+  totals_df <- consensus_df |> 
+    dplyr::group_by(library_id) |> 
+    dplyr::summarize(
+      total_cells_per_library = dplyr::n()
+    ) 
+  
+  # get summary stats for each cell type in each library  
+  summary_df <- consensus_df |> 
+    dplyr::left_join(totals_df, by = "library_id") |> 
+    dplyr::group_by(project_id, library_id, sample_id, broad_celltype_group) |> 
+    dplyr::summarize(total_cells_per_annotation = dplyr::n(),
+                     total_cells_per_library = unique(total_cells_per_library),
+                     percent_cells_annotation = round((total_cells_per_annotation / total_cells_per_library) * 100 ,2)) |>
+    dplyr::ungroup()
+  
+  # order by total % of annotated cells 
+  # get a vector of library ids ordered by total percentage annotated
+  library_levels <- summary_df |> 
+    dplyr::filter(broad_celltype_group != "unknown") |> 
+    dplyr::group_by(library_id) |> 
+    dplyr::summarize(
+      total_percent_annotated = sum(total_cells_per_annotation)/unique(total_cells_per_library)
+    ) |>
+    dplyr::arrange(desc(total_percent_annotated)) |> 
+    dplyr::pull(library_id)
+  
+  # reorder by total percentage annotated 
+  summary_df <- summary_df |> 
+    dplyr::mutate(
+      library_id = forcats::fct_relevel(library_id, library_levels),
+      broad_celltype_group = forcats::fct_relevel(broad_celltype_group, "unknown", after = Inf) |> 
+        forcats::fct_rev()
+    ) |>
+    unique()  
+  
+  return(summary_df)
+}
+
+
 # barchart with or without faceting
 # each bar is a stacked barchart using the fill_color
 # faceting is only done if a facet_variable is provided
