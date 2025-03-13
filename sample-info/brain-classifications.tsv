@@ -1,10 +1,10 @@
 ontology_id	human_readable_value	submitted_diagnosis	diagnosis_group	subdiagnosis_group
 MONDO:0016684	Anaplastic astrocytoma	Anaplastic astrocytoma	Brain and CNS	High-grade glioma
-MONDO:0016700	Anaplastic ependymoma	Anaplastic ependymoma	Brain and CNS	High-grade glioma
-MONDO:0016734	Anaplastic ganglioglioma	Anaplastic ganglioglioma	Brain and CNS	High-grade glioma
+MONDO:0016700	Anaplastic ependymoma	Anaplastic ependymoma	Brain and CNS	NA
+MONDO:0016734	Anaplastic ganglioglioma	Anaplastic ganglioglioma	Brain and CNS	NA
 MONDO:0021640	Grade III glioma	Anaplastic glioma	Brain and CNS	High-grade glioma
 MONDO:0020560	Atypical teratoid rhabdoid tumor	Atypical teratoid rhabdoid tumor	Brain and CNS	High-grade glioma
-MONDO:0022965	Desmoplastic infantile ganglioglioma	Desmoplastic ganglioglioma	Brain and CNS	Low-grade glioma
+MONDO:0022965	Desmoplastic infantile ganglioglioma	Desmoplastic ganglioglioma	Brain and CNS	NA
 MONDO:0005499	Brain glioma	Diffuse midline glioma	Brain and CNS	High-grade glioma
 MONDO:0005505	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	Brain and CNS	Low-grade glioma
 MONDO:0019002	Lhermitte-Duclos disease	Dysplastic gangliocytoma	Brain and CNS	Low-grade glioma
@@ -18,12 +18,12 @@ MONDO:0100342	Malignant glioma	High-grade glioma	Brain and CNS	High-grade glioma
 MONDO:0858940	Infant-type hemispheric glioma	Infant-type hemispheric glioma	Brain and CNS	High-grade glioma
 MONDO:0021637	Low grade glioma	Low-grade glioma	Brain and CNS	Low-grade glioma
 MONDO:0007959	Medulloblastoma	Medulloblastoma	Brain and CNS	Other
-MONDO:0016699	Myxopapillary ependymoma	Myxopapillary ependymoma	Brain and CNS	Low-grade glioma
+MONDO:0016699	Myxopapillary ependymoma	Myxopapillary ependymoma	Brain and CNS	NA
 MONDO:0016691	Pilocytic astrocyoma	Pilocytic astrocytoma	Brain and CNS	Low-grade glioma
-MONDO:0016692	Pilomyxoid astrocytoma	Pilomyxoid astrocytoma	Brain and CNS	Low-grade glioma
+MONDO:0016692	Pilomyxoid astrocytoma	Pilomyxoid astrocytoma	Brain and CNS	NA
 MONDO:0016690	Pleomorphic xanthoastrocytoma	Pleomorphic xanthoastrocytoma	Brain and CNS	High-grade glioma
-MONDO:0000640	Central nervous system primitive neuroectodermal neoplasm	Primitive neuroectodermal tumor	Brain and CNS	Other
-MONDO:0008380	Retinoblastoma	Retinoblastoma	Brain and CNS	Other
-MONDO:0002546	Schwannoma	Schwannoma	Brain and CNS	Other
-MONDO:0007667	Subependymoma	Subependymoma	Brain and CNS	Low-grade glioma
+MONDO:0000640	Central nervous system primitive neuroectodermal neoplasm	Primitive neuroectodermal tumor	Brain and CNS	NA
+MONDO:0008380	Retinoblastoma	Retinoblastoma	Brain and CNS	NA
+MONDO:0002546	Schwannoma	Schwannoma	Brain and CNS	NA
+MONDO:0007667	Subependymoma	Subependymoma	Brain and CNS	NA
 PATO:0000461	Normal	Non-cancerous	Non-cancerous	Non-cancerous
