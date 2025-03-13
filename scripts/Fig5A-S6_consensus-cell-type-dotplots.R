@@ -77,6 +77,11 @@ non_multiplex_samples <- readr::read_tsv(library_metadata_file) |>
   dplyr::pull(scpca_sample_id)
 
 # Create dot plots -------------------------------------------------------------
+
+# Define width of output PDF for each dotplot
+file_widths <- c(26, 18, 27, 26)
+names(file_widths) <- names(output_pdf_files)
+
 plot_list <- output_pdf_files |> 
   purrr::iwalk(\(file, group){
     
@@ -97,7 +102,7 @@ plot_list <- output_pdf_files |>
     )
     
     # save plot 
-    ggsave(file, plot = combined_plot, width = 23, height = 10)
+    ggsave(file, plot = combined_plot, width = file_widths[group], height = 10)
     gc() # clean up after each run
   })
 
