@@ -1,17 +1,17 @@
 #!/bin/bash
 
-# This script runs the analysis predicting bulk from pseudobulk
+# This script runs the analysis predicting bulk from pseudobulk followed by overrepresentation analysis on model outliers
 #
 # Default usage:
 # ./run-prediction.sh
 #
-# To also run the GSEA analysis, use:
+# To also run the GSEA analysis (not presented in the manuscript), use:
 # RUN_GSEA=1 ./run-prediction.sh
 #
 
 set -euo pipefail
 
-# controls whether to run the GSEA analysis, which is very time-consuming
+# controls whether to run the GSEA analysis, which is very time-consuming and not ultimately part of the paper
 RUN_GSEA=${RUN_GSEA:-0}
 
 # Run script from its location
@@ -69,19 +69,11 @@ for project_dir in $scpca_dir/*; do
     fraction_expressed_file="${data_dir}/${project_id}_fraction-expressed-single-cell.tsv"
     geneset_file="${data_dir}/${project_id}_panglao-genesets.tsv"
 
-    ###### TPMs are not currently used in the analysis ######
-    # Calculate bulk TPM for each project
-    #tpm_file="${tpm_dir}/${project_id}_tpm.tsv"
-    #Rscript ${script_dir}/calculate-tpm.R \
-    #  --input_dir "${scpca_dir}/${project_id}" \
-    #  --output_file "${tpm_file}"
-
     # Calculate pseudobulk matrices for each project
     Rscript ${script_dir}/calculate-pseudobulk.R \
       --input_dir "${scpca_dir}/${project_id}" \
       --output_pseudobulk_file "${pseudobulk_file}" \
       --output_frac_expressed_file "${fraction_expressed_file}"
-
 
     # Prepare gene set lists for over-representation analysis
     case ${project_id} in
@@ -120,7 +112,7 @@ for expr_threshold in -1 0 0.25; do
 done
 
 
-# Run the GSEA analysis across gene sets and models
+# If specified, run the GSEA analysis across gene sets and models
 if [[ ${RUN_GSEA} -eq 1 ]]; then
 
   gsea_reps=50
@@ -142,7 +134,7 @@ if [[ ${RUN_GSEA} -eq 1 ]]; then
 
 fi
 
-# Run the ORA analysis across gene sets using the model with genes present in at least one modality per sample
+# Run the overrepresentation analysis across gene sets using the model with genes present in at least one modality per sample
 ora_reps=10000
 summary_function="median" # use median of residuals when summarizing project
 sd_threshold=2.5 # outliers are >2.5 sd
