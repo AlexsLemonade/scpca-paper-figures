@@ -186,3 +186,55 @@ marker_gene_dotplot <- function(
   suppressMessages(duckplyr::methods_restore()) # back to dplyr outside the function
   return(combined_plot)
 }
+
+
+# barchart with or without faceting
+# each bar is a stacked barchart using the fill_color
+# faceting is only done if a facet_variable is provided
+#' Stacked bar chart showing the percentage of cells annotated as each annotation
+#' Each column is a library ID and the fill of each bar corresponds to the percent of that sample annotated as that cell type
+#'
+#' @param df Data frame to use for plotting. Must have `fill_column`, `facet_variable` (if used), `library_id`, and `percent_cells_annotation` as columns
+#' @param fill_column Column to use for determing fill color of each bar
+#' @param celltype_colors Named vector of cell types and colors, names should match values in `fill_column`
+#' @param fill_label Label for fill column to show on the legend
+#' @param facet_variable Column to use for faceting, default is NULL 
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+stacked_barchart <- function(
+    df, 
+    fill_column,
+    celltype_colors, # named vector where names match the values in fill_column
+    fill_label = "Broad cell type annotation", 
+    facet_variable = NULL # use for faceting HGG vs. LGG 
+){
+  
+  barchart <- ggplot(df) + 
+    aes(
+      x = library_id, 
+      y = percent_cells_annotation, 
+      fill = !!sym(fill_column)
+    ) +
+    geom_col() + 
+    scale_y_continuous(expand = c(0,0)) +
+    scale_fill_manual(values = celltype_colors) +
+    theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1),
+          strip.background = element_rect(fill = "transparent", color = "black", linewidth = 0.5),
+          # add a square around each of the plots
+          panel.background = element_rect(colour = "black", linewidth=0.5)) +
+    labs(
+      x = "", 
+      y = "Percent of cells",
+      fill= fill_label
+    )
+  
+  if(!is.null(facet_variable)){
+    barchart <- barchart +
+      facet_wrap(vars(!!sym(facet_variable)), scales ="free_x")
+  }
+  
+  return(barchart)
+}
