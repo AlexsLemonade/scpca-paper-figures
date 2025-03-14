@@ -56,12 +56,12 @@ Rscript ${script_dir}/Fig2B-F_qc-plots.R
 # Figure 4B
 Rscript ${script_dir}/Fig4B_singler-cellassign-heatmap.R
 
-# Figure 5A 
+# Figure 5A
 # also supplemental figure 6
 Rscript ${script_dir}/Fig5A-S6_consensus-cell-type-dotplots.R
 
-# Figure 5B
-Rscript ${script_dir}/Fig5B_brain-barplot-all-celltypes.R
+# Figure 5B-C
+Rscript ${script_dir}/Fig5B-C_brain-barplots.R
 
 ### Supplementary text figures ###
 
