@@ -33,7 +33,7 @@ validation_group_url <- "https://raw.githubusercontent.com/AlexsLemonade/OpenScP
 
 # define color palettes for both plots
 color_palette_all_file <- here::here("palettes", "validation-group-palette.tsv")
-celltype_colors_all <- readr::read_tsv(celltype_colors_all_file) |> 
+celltype_colors_all <- readr::read_tsv(color_palette_all_file) |> 
   tibble::deframe()
 color_palette_immune_file <- here::here("palettes", "immune-palette.tsv")
 celltype_colors_immune <- readr::read_tsv(color_palette_immune_file) |> 
