@@ -258,6 +258,115 @@ create_celltype_summary <- function(
 }
 
 
+#' Prep data frame to use for creating stacked bar plots showing immune cell types
+#'   with an emphasis on T and myeloid cell types 
+#'
+#' @param celltype_files List of files containing consensus cell type results
+#' @param all_immune_celltypes Vector of all consensus immune cell types possible
+#' @param tcell_celltypes Vector of T cell types to plot 
+#' @param myeloid_celltypes Vector of myeloid cell types to plot 
+#' @param n_immune_cell_threshold Number of immune cells required to include a library in the figure
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+create_immune_celltype_summary <- function(
+    celltype_files,
+    all_immune_celltypes, 
+    tcell_celltypes, 
+    myeloid_celltypes, 
+    n_immune_cell_threshold
+){
+  
+  # read in consensus files and create data frame
+  consensus_df <- celltype_files |> 
+    purrr::map(readr::read_tsv) |> 
+    dplyr::bind_rows()
+  
+  # subset to only immune celltypes, and add column for plotting
+  consensus_df <- consensus_df |>
+    # Keep only the immune cells and remove PDX
+    dplyr::filter(
+      consensus_annotation %in% all_immune_celltypes, 
+      sample_type == "patient tissue"
+    ) |>
+    # Create broad_celltype_group label with value "other" when cells are not T or myeloid types
+    dplyr::mutate(
+      broad_celltype_group = ifelse(
+        consensus_annotation %in% c(tcell_celltypes, myeloid_celltypes), 
+        consensus_annotation, 
+        "other"
+      )
+    ) 
+  
+  # get total cell count and number of assigned cell types per library
+  totals_df <- consensus_df |> 
+    dplyr::group_by(library_id) |> 
+    dplyr::summarize(
+      total_cells_per_library = dplyr::n()
+    ) 
+  
+  # Find libraries to remove: any with <= n_immune_cell_threshold
+  remove_libraries <- totals_df |>
+    dplyr::filter(total_cells_per_library <= n_immune_cell_threshold) |>
+    dplyr::pull(library_id)
+  
+  # get summary stats for each cell type in each library  
+  summary_df <- consensus_df |> 
+    dplyr::left_join(totals_df, by = "library_id") |> 
+    # remove libraries with insufficient cells
+    dplyr::filter(!(library_id %in% remove_libraries)) |>
+    dplyr::group_by(project_id, library_id, sample_id, broad_celltype_group) |> 
+    dplyr::summarize(total_cells_per_annotation = dplyr::n(),
+                     total_cells_per_library = unique(total_cells_per_library),
+                     percent_cells_annotation = round((total_cells_per_annotation / total_cells_per_library) * 100 ,2)) |>
+    dplyr::ungroup()
+  
+  
+  # Determine the order for immune cell categories based on:
+  # - myeloid and t-cell types should be ordered together
+  # - within each group, cell types should be ordered based on _overall frequency_
+  # - finally, "other" should be first
+  immune_factor_order <- summary_df |>
+    dplyr::filter(broad_celltype_group != "other") |>
+    # add up all the fractions as a proxy for overall frequency
+    dplyr::group_by(broad_celltype_group) |>
+    dplyr::summarize(total_frac = sum(percent_cells_annotation)) |>
+    # assign groupings so we can order by them
+    dplyr::mutate(
+      immune_group = ifelse(broad_celltype_group %in% tcell_celltypes, "tcell", "myeloid")
+    ) |>
+    dplyr::group_by(immune_group) |>
+    dplyr::arrange(desc(total_frac), .by_group = TRUE) |>
+    dplyr::pull(broad_celltype_group)
+  immune_factor_order <- c("other", immune_factor_order)
+  
+  
+  # order by total % of annotated cells 
+  # get a vector of library ids ordered by total percentage annotated
+  library_levels <- summary_df |> 
+    dplyr::filter(broad_celltype_group != "other") |> 
+    dplyr::group_by(library_id) |> 
+    dplyr::summarize(
+      total_percent_annotated = sum(total_cells_per_annotation)/unique(total_cells_per_library)
+    ) |>
+    dplyr::arrange(desc(total_percent_annotated)) |> 
+    dplyr::pull(library_id)
+  
+  # reorder by total percentage annotated 
+  summary_df <- summary_df |> 
+    dplyr::mutate(
+      library_id = forcats::fct_relevel(library_id, library_levels),
+      broad_celltype_group = forcats::fct_relevel(broad_celltype_group, immune_factor_order)
+    ) |>
+    unique()  
+  
+  return(summary_df)
+}
+
+
+
 # barchart with or without faceting
 # each bar is a stacked barchart using the fill_color
 # faceting is only done if a facet_variable is provided
