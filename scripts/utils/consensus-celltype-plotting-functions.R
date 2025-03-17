@@ -13,6 +13,7 @@ library(patchwork)
 #' @param validation_groups_df Data frame assigning consensus cell types to broader validation groups
 #' @param markers_df Data frame with marker genes for each cell type
 #' @param celltype_colors Named vector of colors to use for each broader validation group
+#' @param dotplot_size_range Vector specifying the point size range for dotplots, with a default of `c(1,6)` which matches the `ggplot2` default
 #'
 #' @returns Dot plot with summarized expression of marker genes for consensus cell types
 marker_gene_dotplot <- function(
@@ -20,7 +21,8 @@ marker_gene_dotplot <- function(
     consensus_results_dir,
     validation_groups_df,
     markers_df,
-    celltype_colors) {
+    celltype_colors, 
+    dotplot_size_range = c(1,6)) {
   
   # list all cell type assignments files
   consensus_results_files <- list.files(
@@ -144,6 +146,7 @@ marker_gene_dotplot <- function(
   # make dotplot with marker gene exp
   dotplot <- ggplot(dotplot_df, aes(y = y_label, x = gene_symbol, color = mean_exp, size = percent_exp)) +
     geom_point() +
+    scale_size(range = dotplot_size_range) + 
     scale_color_viridis_c(option = "magma") +
     facet_grid(cols = vars(validation_group_annotation), scales = "free", space = "free") +
     theme_classic() +
