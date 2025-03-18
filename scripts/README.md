@@ -35,7 +35,7 @@ To run the script use the following command:
 op run -- Rscript sync-reference-files.R
 ```
 
-4.`sync-consensus-celltype-results.R`: This script is used to sync the results from the `cell-type-consensus` module of [`OpenScPCA-nf`](https://github.com/AlexsLemonade/OpenScPCA-nf).
+4. `sync-consensus-celltype-results.R`: This script is used to sync the results from the `cell-type-consensus` module of [`OpenScPCA-nf`](https://github.com/AlexsLemonade/OpenScPCA-nf).
 All output files will be saved to a folder within the root directory of this repo named `s3_files/cell-type-consensus-results`. 
 In order to generate some of the figures (see more on which figures require this script below), this script will be need to run first.
 To run the script you will first need to login to your AWS account with access to `s3://openscpca-nf-workflow-results` and then run the script with the following command: 
@@ -43,6 +43,15 @@ To run the script you will first need to login to your AWS account with access t
 ```sh
 Rscript sync-consensus-celltype-results.R --profile <name of AWS profile> 
 ```
+
+5. `prepare-sample-whitelist.R`: This script is used to prepare the file `../sample-info/sample-whitelist.txt`, which contains a list of samples to include in figures and tables.
+This script assumes that metadata has been synced with `sync-metadata.R`.
+To run the script use the following command:
+
+```sh
+Rscript prepare-sample-whitelist.R
+```
+
 
 ## Generating figures and tables
 
