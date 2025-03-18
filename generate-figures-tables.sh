@@ -61,8 +61,8 @@ Rscript ${script_dir}/Fig4B_singler-cellassign-heatmap.R
 Rscript ${script_dir}/Fig5A-S6_consensus-cell-type-dotplots.R
 
 # Figure 6
-# also supplemental figure 7
-Rscript ${script_dir}/Fig6-FigS7_bulk-analysis.R
+# also supplemental figure 8
+Rscript ${script_dir}/Fig6-FigS8_bulk-analysis.R
 
 
 ### Supplementary text figures ###
