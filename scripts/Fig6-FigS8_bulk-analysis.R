@@ -74,7 +74,7 @@ plot_scatterplot <- function(df) {
     aes(x = pseudobulk, y = bulk) + 
     geom_bin_2d(binwidth = 0.25) + 
     scale_fill_viridis_c(limits = c(0, 800), oob = scales::squish, option = "inferno") +
-    geom_smooth(method = "lm", color = "cyan", linewidth = 0.75) + 
+    geom_smooth(method = "lm", color = "cyan2", linewidth = 0.75) + 
     facet_wrap(vars(project_facet)) +
     labs(
       x = "Pseudobulk expression", 
