@@ -74,7 +74,7 @@ plot_scatterplot <- function(df) {
     aes(x = pseudobulk, y = bulk) + 
     geom_bin_2d(binwidth = 0.25) + 
     scale_fill_viridis_c(limits = c(0, 800), oob = scales::squish, option = "inferno") +
-    geom_smooth(method = "lm", color = "paleturquoise", linewidth = 0.75) + 
+    geom_smooth(method = "lm", color = "cyan", linewidth = 0.75) + 
     facet_wrap(vars(project_facet)) +
     labs(
       x = "Pseudobulk expression", 
@@ -97,7 +97,7 @@ plot_odds_ratios <- function(df) {
         label = round(odds_ratio, 2), 
         y = odds_ratio + 0.75
       ), 
-      size = 2.5
+      size = 3
     ) +
     scale_fill_viridis_c() +
     tidytext::scale_x_reordered() + # gets the labels back to only geneset_cell_type
@@ -105,9 +105,9 @@ plot_odds_ratios <- function(df) {
     labs(
       x = "Consensus cell type", 
       y = "Odds ratio", 
-      fill = "-Log10(P)"
+      fill = "-Log10(adj. p-value)"
     ) +
-    theme(axis.text.x = element_text(angle = 30, hjust = 1, size = 7))
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7))
 }
 
 
