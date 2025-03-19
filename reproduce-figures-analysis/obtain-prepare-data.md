@@ -9,6 +9,25 @@ In addition to files provided already in the repository, you will also need the 
 * Files from the public AWS S3 bucket `s3://scpca-references`
   * To obtain files from S3, you will need to use [the `awscli` tool](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Data for figure and table scripts](#data-for-figure-and-table-scripts)
+  - [File organization](#file-organization)
+  - [Data files from the ScPCA Portal](#data-files-from-the-scpca-portal)
+  - [Reference files](#reference-files)
+  - [ScPCA metadata files](#scpca-metadata-files)
+  - [TODO: Files to reproduce Figures S1B-D](#todo-files-to-reproduce-figures-s1b-d)
+  - [TODO: Consensus cell type files](#todo-consensus-cell-type-files)
+- [Bulk and pseudobulk RNASeq analysis](#bulk-and-pseudobulk-rnaseq-analysis)
+  - [Obtaining files in `references`](#obtaining-files-in-references)
+  - [Obtaining files in `scpca_data`](#obtaining-files-in-scpca_data)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+
+
 ## Data for figure and table scripts
 
 This section provides instructions on how to obtain and prepare data files to run code in the `figure_scripts/` directory.
