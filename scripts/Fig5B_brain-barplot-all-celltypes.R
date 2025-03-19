@@ -19,7 +19,7 @@ output_pdf_file <- file.path(pdf_dir, "Fig5B_brain-barchart-all-celltypes.pdf")
 # all metadata files 
 sample_info_dir <- here::here("sample-info")
 project_whitelist_file <- file.path(sample_info_dir, "project-whitelist.txt")
-brain_classification_file <- file.path(sample_info_dir, "brain-classifications.tsv")
+brain_classification_file <- file.path(sample_info_dir, "brain-classifications-no-multiplexed.tsv")
 
 # s3 files 
 s3_dir <- here::here("s3_files")
@@ -51,8 +51,7 @@ non_multiplex_samples <- readr::read_tsv(library_metadata_file) |>
   dplyr::pull(scpca_sample_id)
 
 # brain classifications
-brain_classification_df <- readr::read_tsv(brain_classification_file) |> 
-  dplyr::select(diagnosis = submitted_diagnosis, subdiagnosis_group)
+brain_classification_df <- readr::read_tsv(brain_classification_file)
 
 # read in sample metadata and select samples
 sample_df <- readr::read_tsv(sample_metadata_file) |> 
