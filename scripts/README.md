@@ -44,6 +44,9 @@ To run the script you will first need to login to your AWS account with access t
 Rscript sync-consensus-celltype-results.R --profile <name of AWS profile> 
 ```
 
+5. `assign-brain-classifications.R`: This script is used to generate the table assigning each of the brain diagnoses to a subdiagnoses, either High-grade glioma or Low-grade glioma. 
+The output of this script is `sample-info/brain-classifications-no-multiplexed.tsv` and is used as input to create Figure 5B and Figure 5C. 
+
 ## Generating figures and tables
 
 The following scripts can be used to generate figures and tables:
