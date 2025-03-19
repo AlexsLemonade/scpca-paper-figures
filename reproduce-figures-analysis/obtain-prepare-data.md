@@ -15,8 +15,8 @@ This section provides instructions on how to obtain and prepare data files to ru
 
 ### File organization
 
-To faciliate reproducing figures, we recommend organizing downloaded files into this structure within the `s3_files` directory.
-To obtain these files, please follow the instructions given in the following subsections.
+To faciliate reproducing figures, we recommend organizing files into this structure in a directory called `s3_files`, to be stored at the top-level of the repository.
+Instructions on how to obtain each of these files are given in the following sections.
 
 ```console
 ├── SCPCP000003
@@ -99,22 +99,30 @@ There are three metadata files you will need:
 * `scpca-library-metadata.tsv`
 * `scpca-sample-metadata.tsv`
 
-A version of `scpca-project-celltype-metadata.tsv` which you can use to reproduce figures is provided in TODO: ZENODO_DIRECTORY.
+A version of `scpca-project-celltype-metadata.tsv` which you can use to reproduce figures is provided in TODO.
 
-To obtain the other two metadata files, we offer a helper script in TODO: ZENODO_DIRECTORY to create versions of these files which you can use to reproduce figures.
-Follow these instructions:
+To obtain the other two metadata files, we offer a helper script in TODO to create versions of these files which you can use to reproduce figures.
+Follow these instructions to create these two metadata files:
 
-* From the ScPCA Portal, download the full portal metadata using the button on the top-right of the page "Get all sample metadata"
-* Run the helper script as:
+* From the [ScPCA Portal](https://scpca.alexslemonade.org/), download the full portal metadata using the `Get All Sample Metadata` button on the top-right of the page
+* Run the helper script as follows:
 
 ```sh
-Rscript create-metadata-files.R --all_sample_metadata <path to that downloaded file>
+# TODO!!
+Rscript prepare-metadata-files.tsv --all_sample_metadata <path to that downloaded file>
 ```
 
 This will create files named `scpca-library-metadata.tsv` and `scpca-sample-metadata.tsv` which you can use to recreate figures.
 These files will be created in the same directory from which you run the script.
 
 
+### TODO: Files to reproduce Figures S1B-D
+
+Forthcoming section: Here, we can describe the benchmarking TSV files (https://github.com/AlexsLemonade/scpca-paper-figures/issues/216)
+
+### TODO: Consensus cell type files
+
+Forthcoming section: Here, we can describe obtaining consensus cell type files which is TBD.
 
 ## Bulk and pseudobulk RNASeq analysis
 
@@ -179,5 +187,5 @@ To obtain the `_processed.rds` files associated with samples of interest, we rec
 Do _not_ click "Merge all samples into 1 object", and be sure to use the `SingleCellExperiment (R)` format when downloading.
 * This will download both project's `SingleCellExperiment` files, organized by sample, as well as the project's bulk raw counts matrix
 * Once downloaded, you will then need to _remove_ directories for single-cell samples which are not used in this analysis.
-    * We provide a list in TODO: ZENODO_DIRECTORY `bulk-analysis-samples.tsv` which contains all sample ids which _are used_; other samples shoud be removed.
-    * Note that project `SCPCP000009` contains samples processed with multiplexed libraries, whose directory names include underscores; none of these are included in analyis and can be removed.
+    * We provide a list in `bulk-analysis-samples.tsv` of all sample ids which _are used_; other samples not listed here shoud be removed.
+    * Note that project `SCPCP000009` contains samples processed with multiplexed libraries, whose directory names include underscores; none of these are included in analysis, and all such directories should be removed.
