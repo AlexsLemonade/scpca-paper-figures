@@ -80,6 +80,12 @@ Comparison of delta median statistic obtained from running `SingleR` with differ
 - B. Dot plot summarizing marker gene expression in consensus cell types in Sarcoma samples. 
 - C. Dot plot summarizing marker gene expression in consensus cell types in Other solid tumor samples. 
 
+**Supplemental Figure 7**
+
+- A. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Leukemia samples. 
+- B. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Sarcoma samples. 
+- C. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Other solid tumor samples. 
+
 
 **Table S1**
 
