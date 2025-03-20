@@ -271,6 +271,7 @@ create_celltype_summary <- function(
 #' @param fill_column Column to use for determing fill color of each bar
 #' @param celltype_colors Named vector of cell types and colors, names should match values in `fill_column`
 #' @param fill_label Label for fill column to show on the legend
+#' @param lumped_label Label for cells that are shown in grey and should be last in the legend order (e.g., unknown or other)
 #' @param facet_variable Column to use for faceting, default is NULL 
 #'
 #' @returns
@@ -282,6 +283,7 @@ stacked_barchart <- function(
     fill_column,
     celltype_colors, # named vector where names match the values in fill_column
     fill_label = "Broad cell type annotation", 
+    lumped_label = "unknown",
     facet_variable = NULL # use for faceting HGG vs. LGG 
 ){
   
@@ -300,7 +302,7 @@ stacked_barchart <- function(
     scale_y_continuous(expand = c(0,0)) +
     # make sure unknown is last but all other legend order is based on when it appears 
     scale_fill_manual(values = celltype_colors,
-                      breaks = c(setdiff(unique(df[[fill_column]]), "unknown"), "unknown")) +
+                      breaks = c(setdiff(unique(df[[fill_column]]), lumped_label), lumped_label)) +
     theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1),
           strip.background = element_rect(fill = "transparent", color = "black", linewidth = 0.5),
           # add a square around each of the plots
