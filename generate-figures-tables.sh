@@ -63,6 +63,11 @@ Rscript ${script_dir}/Fig5A-S6_consensus-cell-type-dotplots.R
 # Figure 5B-C
 Rscript ${script_dir}/Fig5B-C_brain-barplots.R
 
+# Figure 6
+# also supplemental figure 8
+Rscript ${script_dir}/Fig6-FigS8_bulk-analysis.R
+
+
 ### Supplementary text figures ###
 
 # Figure S1A

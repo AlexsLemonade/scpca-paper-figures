@@ -81,6 +81,8 @@ non_multiplex_samples <- readr::read_tsv(library_metadata_file) |>
 # Define width of output PDF for each dotplot
 file_widths <- c(26, 18, 27, 26)
 names(file_widths) <- names(output_pdf_files)
+dotplot_size_range <- c(5, 6, 5, 5)
+names(dotplot_size_range) <- names(output_pdf_files)
 
 plot_list <- output_pdf_files |> 
   purrr::iwalk(\(file, group){
@@ -98,7 +100,8 @@ plot_list <- output_pdf_files |>
       consensus_results_dir,
       validation_groups_df,
       markers_df,
-      celltype_colors
+      celltype_colors, 
+      dotplot_size_range = c(1, dotplot_size_range[group])
     )
     
     # save plot 

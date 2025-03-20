@@ -23,7 +23,6 @@ data_dir="data"
 script_dir="scripts"
 scpca_dir="${data_dir}/scpca_data"
 ref_dir="${data_dir}/references"
-tpm_dir="${data_dir}/tpm"
 pseudobulk_dir="${data_dir}/pseudobulk"
 result_dir="results"
 notebook_dir="notebooks"
@@ -33,7 +32,6 @@ ora_html_dir="${notebook_dir}/ora-htmls"
 
 mkdir -p $scpca_dir
 mkdir -p $ref_dir
-mkdir -p $tpm_dir
 mkdir -p $pseudobulk_dir
 mkdir -p $result_dir
 mkdir -p $model_html_dir
