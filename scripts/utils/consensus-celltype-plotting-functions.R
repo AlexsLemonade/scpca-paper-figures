@@ -189,3 +189,130 @@ marker_gene_dotplot <- function(
   suppressMessages(duckplyr::methods_restore()) # back to dplyr outside the function
   return(combined_plot)
 }
+
+
+#' Prep data frame to use for creating stacked bar plots showing all cell types 
+#'
+#' @param celltype_files List of files containing consensus cell type results
+#' @param validation_groups_df Data frame with validation group assignments 
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+create_celltype_summary <- function(
+    celltype_files,
+    validation_groups_df
+){
+  
+  # read in consensus files and create data frame
+  consensus_df <- celltype_files |> 
+    purrr::map(readr::read_tsv) |> 
+    dplyr::bind_rows()
+  
+  # get celltype summary for stacked bar chart 
+  # need to add in validation groups here and do summary by validation group 
+  consensus_df <- consensus_df |>
+    # add in broad cell type group which is used for plotting
+    # groups similar cell types together
+    dplyr::left_join(validation_groups_df, by = "consensus_annotation") |> 
+    # remove any PDX samples
+    dplyr::filter(sample_type == "patient tissue") |> 
+    # add in unknown for plotting 
+    dplyr::mutate(broad_celltype_group = tidyr::replace_na(broad_celltype_group, "unknown"))
+  
+  # get total cell count and number of assigned cell types per library
+  totals_df <- consensus_df |> 
+    dplyr::group_by(library_id) |> 
+    dplyr::summarize(
+      total_cells_per_library = dplyr::n()
+    ) 
+  
+  # get summary stats for each cell type in each library  
+  summary_df <- consensus_df |> 
+    dplyr::left_join(totals_df, by = "library_id") |> 
+    dplyr::group_by(project_id, library_id, sample_id, broad_celltype_group) |> 
+    dplyr::summarize(total_cells_per_annotation = dplyr::n(),
+                     total_cells_per_library = unique(total_cells_per_library),
+                     percent_cells_annotation = round((total_cells_per_annotation / total_cells_per_library) * 100, 2)) |>
+    dplyr::ungroup()
+  
+  # order by total % of annotated cells 
+  # get a vector of library ids ordered by total percentage annotated
+  library_levels <- summary_df |> 
+    dplyr::filter(broad_celltype_group != "unknown") |> 
+    dplyr::group_by(library_id) |> 
+    dplyr::summarize(
+      total_percent_annotated = sum(total_cells_per_annotation)/unique(total_cells_per_library)
+    ) |>
+    dplyr::arrange(desc(total_percent_annotated)) |> 
+    dplyr::pull(library_id)
+  
+  # reorder by total percentage annotated 
+  summary_df <- summary_df |> 
+    dplyr::mutate(
+      library_id = forcats::fct_relevel(library_id, library_levels),
+      broad_celltype_group = forcats::fct_relevel(broad_celltype_group, "unknown", after = Inf) |> 
+        forcats::fct_rev()
+    ) |>
+    unique()  
+  
+  return(summary_df)
+}
+
+
+# barchart with or without faceting
+# each bar is a stacked barchart using the fill_color
+# faceting is only done if a facet_variable is provided
+#' Stacked bar chart showing the percentage of cells annotated as each annotation
+#' Each column is a library ID and the fill of each bar corresponds to the percent of that sample annotated as that cell type
+#'
+#' @param df Data frame to use for plotting. Must have `fill_column`, `facet_variable` (if used), `library_id`, and `percent_cells_annotation` as columns
+#' @param fill_column Column to use for determing fill color of each bar
+#' @param celltype_colors Named vector of cell types and colors, names should match values in `fill_column`
+#' @param fill_label Label for fill column to show on the legend
+#' @param facet_variable Column to use for faceting, default is NULL 
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+stacked_barchart <- function(
+    df, 
+    fill_column,
+    celltype_colors, # named vector where names match the values in fill_column
+    fill_label = "Broad cell type annotation", 
+    facet_variable = NULL # use for faceting HGG vs. LGG 
+){
+  
+  # make sure colors are named properly 
+  stopifnot(
+    "Names of celltype_colors must match values in fill_column" = all(df[[fill_column]] %in% names(celltype_colors))
+    )
+  
+  barchart <- ggplot(df) + 
+    aes(
+      x = library_id, 
+      y = percent_cells_annotation, 
+      fill = !!sym(fill_column)
+    ) +
+    geom_col() + 
+    scale_y_continuous(expand = c(0,0)) +
+    scale_fill_manual(values = celltype_colors) +
+    theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1),
+          strip.background = element_rect(fill = "transparent", color = "black", linewidth = 0.5),
+          # add a square around each of the plots
+          panel.background = element_rect(colour = "black", linewidth=0.5)) +
+    labs(
+      x = "", 
+      y = "Percent of cells",
+      fill= fill_label
+    )
+  
+  if(!is.null(facet_variable)){
+    barchart <- barchart +
+      facet_wrap(vars(!!sym(facet_variable)), scales = "free_x")
+  }
+  
+  return(barchart)
+}

@@ -60,6 +60,9 @@ Rscript ${script_dir}/Fig4B_singler-cellassign-heatmap.R
 # also supplemental figure 6
 Rscript ${script_dir}/Fig5A-S6_consensus-cell-type-dotplots.R
 
+# Figure 5B
+Rscript ${script_dir}/Fig5B_brain-barplot-all-celltypes.R
+
 # Figure 6
 # also supplemental figure 8
 Rscript ${script_dir}/Fig6-FigS8_bulk-analysis.R
