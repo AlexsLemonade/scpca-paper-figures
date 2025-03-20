@@ -268,24 +268,42 @@ create_celltype_summary <- function(
 #' @param all_immune_celltypes Vector of all consensus immune cell types possible
 #' @param tcell_celltypes Vector of T cell types to plot 
 #' @param myeloid_celltypes Vector of myeloid cell types to plot 
-#' @param n_immune_cell_threshold Number of immune cells required to include a library in the figure
+#' @param frac_immune_threshold Threshold of fraction of immune cells in library required to include a library in the figure
 #'
-#' @returns
-#' @export
-#'
-#' @examples
+#' @returns Summarized data frame for input to plotting
 create_immune_celltype_summary <- function(
     celltype_files,
     all_immune_celltypes, 
     tcell_celltypes, 
     myeloid_celltypes, 
-    n_immune_cell_threshold
+    frac_immune_threshold
 ){
   
   # read in consensus files and create data frame
   consensus_df <- celltype_files |> 
     purrr::map(readr::read_tsv) |> 
     dplyr::bind_rows()
+  
+  # Determine libraries to remove as those with < frac_immune_threshold
+  #  fraction of immune cells out of total
+  remove_libraries <- consensus_df |>
+    # Keep only the immune cells and remove PDX
+    dplyr::filter(
+      sample_type == "patient tissue"
+    ) |>
+    dplyr::mutate(
+      category = ifelse(
+        consensus_annotation %in% c(tcell_celltypes, myeloid_celltypes), 
+        "immune", 
+        "other"
+      )
+    )  |>
+    dplyr::count(library_id, category) |>
+    tidyr::pivot_wider(names_from = category, values_from = n, values_fill = 0) |>
+    dplyr::rowwise() |>
+    dplyr::mutate(frac_immune = immune / (other + immune)) |>
+    dplyr::filter(frac_immune < frac_immune_threshold) |>
+    dplyr::pull(library_id)
   
   # subset to only immune celltypes, and add column for plotting
   consensus_df <- consensus_df |>
@@ -310,11 +328,6 @@ create_immune_celltype_summary <- function(
       total_cells_per_library = dplyr::n()
     ) 
   
-  # Find libraries to remove: any with <= n_immune_cell_threshold
-  remove_libraries <- totals_df |>
-    dplyr::filter(total_cells_per_library <= n_immune_cell_threshold) |>
-    dplyr::pull(library_id)
-  
   # get summary stats for each cell type in each library  
   summary_df <- consensus_df |> 
     dplyr::left_join(totals_df, by = "library_id") |> 
@@ -323,12 +336,12 @@ create_immune_celltype_summary <- function(
     dplyr::group_by(project_id, library_id, sample_id, broad_celltype_group) |> 
     dplyr::summarize(total_cells_per_annotation = dplyr::n(),
                      total_cells_per_library = unique(total_cells_per_library),
-                     percent_cells_annotation = round((total_cells_per_annotation / total_cells_per_library) * 100 ,2)) |>
+                     percent_cells_annotation = round((total_cells_per_annotation / total_cells_per_library) * 100, 2)) |>
     dplyr::ungroup()
   
   
   # Determine the order for immune cell categories based on:
-  # - myeloid and t-cell types should be ordered together
+  # - myeloid and t-cell types should be grouped together
   # - within each group, cell types should be ordered based on _overall frequency_
   # - finally, "other" should be first
   immune_factor_order <- summary_df |>
@@ -343,18 +356,17 @@ create_immune_celltype_summary <- function(
     dplyr::group_by(immune_group) |>
     dplyr::arrange(desc(total_frac), .by_group = TRUE) |>
     dplyr::pull(broad_celltype_group)
-  immune_factor_order <- c("other", immune_factor_order)
+  immune_factor_order <- c(immune_factor_order, "other")
   
-  
-  # order by total % of annotated cells 
+  # order by % of myeloid cells 
   # get a vector of library ids ordered by total percentage annotated
   library_levels <- summary_df |> 
-    dplyr::filter(broad_celltype_group != "other") |> 
+    dplyr::filter(broad_celltype_group %in% myeloid_celltypes) |> 
     dplyr::group_by(library_id) |> 
     dplyr::summarize(
-      total_percent_annotated = sum(total_cells_per_annotation)/unique(total_cells_per_library)
+      myeloid_frac = sum(total_cells_per_annotation)/unique(total_cells_per_library)
     ) |>
-    dplyr::arrange(desc(total_percent_annotated)) |> 
+    dplyr::arrange(desc(myeloid_frac)) |> 
     dplyr::pull(library_id)
   
   # reorder by total percentage annotated 

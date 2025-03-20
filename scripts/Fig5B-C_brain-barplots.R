@@ -113,7 +113,7 @@ summary_df <- create_immune_celltype_summary(
   all_immune_celltypes, 
   tcell_celltypes, 
   myeloid_celltypes,
-  n_immune_cell_threshold = 20
+  frac_immune_threshold = 0.01
 ) |>
   # join with sample metadata
   dplyr::left_join(sample_df, by = c("project_id" = "scpca_project_id", "sample_id" = "scpca_sample_id")) |> 
