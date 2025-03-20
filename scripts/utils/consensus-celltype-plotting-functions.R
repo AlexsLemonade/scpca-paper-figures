@@ -234,7 +234,7 @@ create_celltype_summary <- function(
     dplyr::group_by(project_id, library_id, sample_id, broad_celltype_group) |> 
     dplyr::summarize(total_cells_per_annotation = dplyr::n(),
                      total_cells_per_library = unique(total_cells_per_library),
-                     percent_cells_annotation = round((total_cells_per_annotation / total_cells_per_library) * 100 ,2)) |>
+                     percent_cells_annotation = round((total_cells_per_annotation / total_cells_per_library) * 100, 2)) |>
     dplyr::ungroup()
   
   # order by total % of annotated cells 
@@ -406,6 +406,11 @@ stacked_barchart <- function(
     facet_variable = NULL # use for faceting HGG vs. LGG 
 ){
   
+  # make sure colors are named properly 
+  stopifnot(
+    "Names of celltype_colors must match values in fill_column" = all(df[[fill_column]] %in% names(celltype_colors))
+    )
+  
   barchart <- ggplot(df) + 
     aes(
       x = library_id, 
@@ -427,7 +432,7 @@ stacked_barchart <- function(
   
   if(!is.null(facet_variable)){
     barchart <- barchart +
-      facet_wrap(vars(!!sym(facet_variable)), scales ="free_x")
+      facet_wrap(vars(!!sym(facet_variable)), scales = "free_x")
   }
   
   return(barchart)
