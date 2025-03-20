@@ -285,6 +285,11 @@ stacked_barchart <- function(
     facet_variable = NULL # use for faceting HGG vs. LGG 
 ){
   
+  # make sure colors are named properly 
+  stopifnot(
+    "Names of celltype_colors must match values in fill_column" = all(df[[fill_column]] %in% names(celltype_colors))
+    )
+  
   barchart <- ggplot(df) + 
     aes(
       x = library_id, 
