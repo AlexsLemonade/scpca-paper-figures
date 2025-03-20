@@ -298,7 +298,9 @@ stacked_barchart <- function(
     ) +
     geom_col() + 
     scale_y_continuous(expand = c(0,0)) +
-    scale_fill_manual(values = celltype_colors) +
+    # make sure unknown is last but all other legend order is based on when it appears 
+    scale_fill_manual(values = celltype_colors,
+                      breaks = c(setdiff(unique(df[[fill_column]]), "unknown"), "unknown")) +
     theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1),
           strip.background = element_rect(fill = "transparent", color = "black", linewidth = 0.5),
           # add a square around each of the plots
