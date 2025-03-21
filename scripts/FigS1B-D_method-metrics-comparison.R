@@ -64,6 +64,12 @@ umi_pdf_file <- file.path(pdf_dir, "FigS1C-umi-benchmarking.pdf")
 genes_detected_pdf_file <- file.path(pdf_dir, "FigS1D-genes-detected-benchmarking.pdf")
 gene_exp_png_file <- file.path(png_dir, "FigS1B-gene-exp-benchmarking.png")
 
+# output TSV files of figure data
+repro_dir <- here::here("reproduce-figures-analysis")
+fs::dir_create(repro_dir)
+benchmark_cell_data_tsv <- file.path(repro_dir, "FigS1C_FigS1D-cell-metrics-data.tsv")
+benchmark_gene_data_tsv <- file.path(repro_dir, "FigS1B-gene-expression-data.tsv")
+
 # Create SCE objects -----------------------------------------------------------
 
 # read in alevin-fry output as SCEs
@@ -222,3 +228,8 @@ gene_exp_plot <- ggplot(rowdata_cor, aes(x = `Alevin-fry`, y = `Cell Ranger`, co
   )
 
 ggsave(filename = gene_exp_png_file, plot = gene_exp_plot, width = 7, height = 7)
+
+
+# Export TSVs for reproducibility ----------------
+readr::write_tsv(coldata_common, benchmark_cell_data_tsv)
+readr::write_tsv(rowdata_cor, benchmark_gene_data_tsv)
