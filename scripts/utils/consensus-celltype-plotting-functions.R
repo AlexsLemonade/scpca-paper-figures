@@ -273,6 +273,8 @@ create_celltype_summary <- function(
 #' @param fill_label Label for fill column to show on the legend
 #' @param lumped_label Label for cells that are shown in grey and should be last in the legend order (e.g., unknown or other)
 #' @param facet_variable Column to use for faceting, default is NULL 
+#' @param facet_col Number of columns to use in faceting, default is 2
+#' @param legend_position Where to put the legend, default is "right"
 #'
 #' @returns
 #' @export
@@ -284,13 +286,16 @@ stacked_barchart <- function(
     celltype_colors, # named vector where names match the values in fill_column
     fill_label = "Broad cell type annotation", 
     lumped_label = "unknown",
-    facet_variable = NULL # use for faceting HGG vs. LGG 
+    facet_variable = NULL, # use for faceting HGG vs. LGG 
+    facet_col = 2,
+    legend_position = "right"
 ){
   
   # make sure colors are named properly 
   stopifnot(
     "Names of celltype_colors must match values in fill_column" = all(df[[fill_column]] %in% names(celltype_colors))
-    )
+  )
+  
   
   barchart <- ggplot(df) + 
     aes(
@@ -303,10 +308,15 @@ stacked_barchart <- function(
     # make sure unknown is last but all other legend order is based on when it appears 
     scale_fill_manual(values = celltype_colors,
                       breaks = c(setdiff(unique(df[[fill_column]]), lumped_label), lumped_label)) +
-    theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1),
+    theme_classic() +
+    theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1, size = 8),
           strip.background = element_rect(fill = "transparent", color = "black", linewidth = 0.5),
           # add a square around each of the plots
-          panel.background = element_rect(colour = "black", linewidth=0.5)) +
+          panel.background = element_rect(colour = "black", linewidth=0.5),
+          axis.title = element_text(size = 12),
+          axis.text.y = element_text(size = 12),
+          strip.text = element_text(size = 12),
+          legend.position = legend_position) +
     labs(
       x = "", 
       y = "Percent of cells",
