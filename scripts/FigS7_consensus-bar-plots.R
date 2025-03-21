@@ -54,8 +54,16 @@ diagnosis_group_df <- readr::read_tsv(diagnosis_groupings_file) |>
 
 # get sample information
 sample_df <- readr::read_tsv(sample_metadata_file) |> 
-  dplyr::filter(scpca_project_id %in% project_whitelist) |> 
-  dplyr::left_join(diagnosis_group_df, by = c("diagnosis"))
+  dplyr::filter(scpca_project_id %in% project_whitelist,
+                !is_xenograft,
+                !is_cell_line) |> # exclude xenografts and cell lines from plots 
+  dplyr::left_join(diagnosis_group_df, by = c("diagnosis")) |> 
+  dplyr::mutate(
+    diagnosis_lumped = diagnosis |> 
+      forcats::fct_lump_min(10, other_level = "Other") |>
+      forcats::fct_infreq() |>
+      forcats::fct_relevel("Other", after = Inf)
+  )
 
 # pull out those that are non-multiplex single cell/nuc
 non_multiplex_samples <- readr::read_tsv(library_metadata_file) |> 
@@ -66,7 +74,7 @@ non_multiplex_samples <- readr::read_tsv(library_metadata_file) |>
 # Create bar plots -------------------------------------------------------------
 
 # Define width of output PDF for each barplot
-file_widths <- c(33, 20, 20)
+file_widths <- c(18, 15, 15)
 names(file_widths) <- names(output_pdf_files)
 
 plot_list <- output_pdf_files |> 
@@ -94,10 +102,10 @@ plot_list <- output_pdf_files |>
       dplyr::left_join(sample_df, by = c("project_id" = "scpca_project_id", "sample_id" = "scpca_sample_id"))
     
     # make stacked bar chart
-    barplot <- stacked_barchart(summary_df, fill_column = "broad_celltype_group", celltype_colors = celltype_colors)
+    barchart <- diagnosis_group_barchart(summary_df, fill_column = "broad_celltype_group", celltype_colors = celltype_colors)
     
     # save plot 
-    ggsave(file, plot = barplot, width = file_widths[[group]], height = 10)
+    ggsave(file, plot = barchart, width = file_widths[[group]], height = 10)
     gc() # clean up after each run
     
   })
