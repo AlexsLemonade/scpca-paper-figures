@@ -91,6 +91,9 @@ Rscript ${script_dir}/FigS5A_cellassign-justification.R
 # Figure S5B
 Rscript ${script_dir}/FigS5B_submitter-celltypes-heatmap.R
 
+# Figure S7
+Rscript ${script_dir}/FigS7_consensus-bar-plots.R
+
 ##########################################################
 #         Generate tables in order of appearance         #
 ##########################################################

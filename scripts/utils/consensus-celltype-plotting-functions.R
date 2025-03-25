@@ -271,7 +271,10 @@ create_celltype_summary <- function(
 #' @param fill_column Column to use for determing fill color of each bar
 #' @param celltype_colors Named vector of cell types and colors, names should match values in `fill_column`
 #' @param fill_label Label for fill column to show on the legend
+#' @param lumped_label Label for cells that are shown in grey and should be last in the legend order (e.g., unknown or other)
 #' @param facet_variable Column to use for faceting, default is NULL 
+#' @param facet_col Number of columns to use in faceting, default is 2
+#' @param legend_position Where to put the legend, default is "right"
 #'
 #' @returns
 #' @export
@@ -282,13 +285,17 @@ stacked_barchart <- function(
     fill_column,
     celltype_colors, # named vector where names match the values in fill_column
     fill_label = "Broad cell type annotation", 
-    facet_variable = NULL # use for faceting HGG vs. LGG 
+    lumped_label = "unknown",
+    facet_variable = NULL, # use for faceting HGG vs. LGG 
+    facet_col = 2,
+    legend_position = "right"
 ){
   
   # make sure colors are named properly 
   stopifnot(
     "Names of celltype_colors must match values in fill_column" = all(df[[fill_column]] %in% names(celltype_colors))
-    )
+  )
+  
   
   barchart <- ggplot(df) + 
     aes(
@@ -298,11 +305,18 @@ stacked_barchart <- function(
     ) +
     geom_col() + 
     scale_y_continuous(expand = c(0,0)) +
-    scale_fill_manual(values = celltype_colors) +
-    theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1),
+    # make sure unknown is last but all other legend order is based on when it appears 
+    scale_fill_manual(values = celltype_colors,
+                      breaks = c(setdiff(unique(df[[fill_column]]), lumped_label), lumped_label)) +
+    theme_classic() +
+    theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1, size = 8),
           strip.background = element_rect(fill = "transparent", color = "black", linewidth = 0.5),
           # add a square around each of the plots
-          panel.background = element_rect(colour = "black", linewidth=0.5)) +
+          panel.background = element_rect(colour = "black", linewidth=0.5),
+          axis.title = element_text(size = 12),
+          axis.text.y = element_text(size = 12),
+          strip.text = element_text(size = 12),
+          legend.position = legend_position) +
     labs(
       x = "", 
       y = "Percent of cells",
@@ -311,8 +325,99 @@ stacked_barchart <- function(
   
   if(!is.null(facet_variable)){
     barchart <- barchart +
-      facet_wrap(vars(!!sym(facet_variable)), scales = "free_x")
+      facet_wrap(vars(!!sym(facet_variable)), scales = "free_x", ncol = facet_col)
   }
   
   return(barchart)
+  
 }
+
+#' Bar chart faceted by diagnosis group
+#' Facets are dynamic based on the number of libraries in a diagnosis group
+#'
+#' @param plot_df Data frame to use for plotting. Must have `fill_column`, `facet_variable` (if used), `library_id`, and `percent_cells_annotation` as columns
+#' @param fill_column Column to use for determing fill color of each bar
+#' @param celltype_colors Named vector of cell types and colors, names should match values in `fill_column`
+#' @param fill_label Label for fill column to show on the legend
+#' @param lumped_label Label for cells that are shown in grey and should be last in the legend order (e.g., unknown or other)
+#' @param diagnosis_column Column to use for faceting, default is "diagnosis_lumped"
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+diagnosis_group_barchart <- function(
+    plot_df, 
+    fill_column, 
+    celltype_colors, # named vector where names match the values in fill_column
+    fill_label = "Broad cell type annotation", 
+    lumped_label = "unknown",
+    diagnosis_column = "diagnosis_lumped"
+  ){
+  
+  plot_df <- plot_df |> 
+    dplyr::group_by(!!sym(diagnosis_column)) |> 
+    # add the number of libraries for each diagnosis
+    dplyr::mutate(
+      unique_library_count = dplyr::n_distinct(library_id)
+    ) |> 
+    dplyr::ungroup() |> 
+    # set number of columns for faceted plot based on library number
+    dplyr::mutate(
+      ncol = dplyr::case_when(
+        # numbers chosen to optimize aesthetics across all groups
+        unique_library_count > 45 ~ 1,
+        unique_library_count > 29 ~ 2,
+        .default = 3
+      )
+    )
+  
+  # create a plot just to extract the legend
+  legend_plot <- ggplot(plot_df) +
+    aes(
+      x = library_id, 
+      y = percent_cells_annotation, 
+      fill = !!sym(fill_column)
+    ) +
+    geom_col() +
+    scale_fill_manual(
+      values = celltype_colors,
+      breaks = c(setdiff(unique(plot_df[[fill_column]]), lumped_label), lumped_label)
+    ) +
+    theme_classic() +
+    theme(legend.position = "bottom") +
+    labs(
+      fill = fill_label
+    )
+  
+  # extract the legend and make sure its a ggplot object 
+  shared_legend <- ggpubr::get_legend(legend_plot) |> 
+    ggplotify::as.ggplot()
+  
+  # split dataframe by number of columns needed in faceting
+  split_df <- split(plot_df, plot_df$ncol, drop = TRUE)
+  
+  # create a list of plots, one for each number of columns in faceting 
+  barchart_list <- split_df |> 
+    purrr::map(\(df){
+      
+      faceted_plot <- stacked_barchart(
+        df, 
+        fill_column = fill_column, 
+        celltype_colors = celltype_colors, 
+        fill_label = fill_label,
+        facet_variable = diagnosis_column, 
+        facet_col = unique(df$ncol),
+        legend_position = "none" # don't include legends 
+      )
+      
+      return(faceted_plot)
+      
+    })
+  
+  # combine into one plot and add the legend 
+  combined_barchart <- patchwork::wrap_plots(barchart_list, ncol = 1)  / shared_legend
+  
+  return(combined_barchart)
+  
+} 
