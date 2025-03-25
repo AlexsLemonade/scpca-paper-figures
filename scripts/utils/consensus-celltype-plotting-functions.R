@@ -387,7 +387,7 @@ diagnosis_group_barchart <- function(
     theme_classic() +
     theme(legend.position = "bottom") +
     labs(
-      fill= fill_label
+      fill = fill_label
     )
   
   # extract the legend and make sure its a ggplot object 
