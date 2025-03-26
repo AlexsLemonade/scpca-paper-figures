@@ -27,10 +27,10 @@ theme_set(
 # Set up -----------------------------------------------------------------------
 
 # folder where any local data lives
-local_results_dir <- here::here("s3_files", "SCPCS000264")
+local_results_dir <- here::here("s3_files", "SCPCS000251")
 
 # define file paths to downloaded files
-processed_sce_file <- file.path(local_results_dir, "SCPCL000490_processed.rds")
+processed_sce_file <- file.path(local_results_dir, "SCPCL000498_processed.rds")
 
 # read in sce objects
 processed_sce <- readr::read_rds(processed_sce_file)
