@@ -418,6 +418,13 @@ stacked_barchart <- function(
     "Names of celltype_colors must match values in fill_column" = all(df[[fill_column]] %in% names(celltype_colors))
   )
   
+  plot_breaks <- c(
+    setdiff(
+      levels(df[[fill_column]]), 
+      lumped_label
+    ), 
+    lumped_label
+  )
   
   barchart <- ggplot(df) + 
     aes(
@@ -428,8 +435,10 @@ stacked_barchart <- function(
     geom_col() + 
     scale_y_continuous(expand = c(0,0)) +
     # make sure unknown is last but all other legend order is based on when it appears 
-    scale_fill_manual(values = celltype_colors,
-                      breaks = c(setdiff(unique(df[[fill_column]]), lumped_label), lumped_label)) +
+    scale_fill_manual(
+      values = celltype_colors,
+      breaks = plot_breaks
+    ) +
     theme_classic() +
     theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1, size = x_axis_text_size),
           strip.background = element_rect(fill = "transparent", color = "black", linewidth = 0.5),
