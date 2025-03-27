@@ -16,7 +16,7 @@ panglao_metadata_file <- here::here("sample-info", "celltype-reference-metadata.
 
 # project celltype metadata
 # need this to get ref name for each project
-project_metadata_file <- here::here("reproduce-figures-analysis", "scpca-project-celltype-metadata.tsv")
+project_metadata_file <- here::here("sample-info", "scpca-project-celltype-metadata.tsv")
 # project whitelist
 project_whitelist_file <- file.path("sample-info", "project-whitelist.txt")
 
