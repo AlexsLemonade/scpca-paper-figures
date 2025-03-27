@@ -35,7 +35,11 @@ To run the script use the following command:
 op run -- Rscript sync-reference-files.R
 ```
 
+<<<<<<< HEAD
+4. `sync-consensus-celltype-results.R`: This script is used to sync the results from the `cell-type-consensus` module of [`OpenScPCA-nf`](https://github.com/AlexsLemonade/OpenScPCA-nf).
+=======
 4.`sync-consensus-celltype-results.R`: This script is used to sync the results from the `cell-type-consensus` module of [`OpenScPCA-nf`](https://github.com/AlexsLemonade/OpenScPCA-nf).
+>>>>>>> main
 All output files will be saved to a folder within the root directory of this repo named `s3_files/cell-type-consensus-results`.
 In order to generate some of the figures (see more on which figures require this script below), this script will be need to run first.
 To run the script you will first need to login to your AWS account with access to `s3://openscpca-nf-workflow-results` and then run the script with the following command:
@@ -89,15 +93,26 @@ Before running this script, you must run `figure_setup/sync-data-files.R`.
 13. `FigS5B_submitter-celltypes-heatmap.R`: This script is used to generate supplemental Figure 5B, which includes a heatmap comparing the `CellAssign` and `SingleR` annotations to submitter-provided annotations for an example library.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
 
+<<<<<<< HEAD
+13. `Fig5A-S6_consensus-cell-type-dotplots.R`: This script is used to generate Figure 5A and supplemental figure 6A-C.
+=======
 14. `Fig5A-S6_consensus-cell-type-dotplots.R`: This script is used to generate Figure 5A and supplemental figure 6A-C.
+>>>>>>> main
 Figure 5A includes a dot plot summarizing marker gene expression across all consensus cell types in the Brain and CNS samples.
 Supplemental Figure 6A-C include dot plots summarizing marker gene expression across all consensus cell types in the other diagnosis groups, leukemia, sarcoma, and other solid tumors.
 Before running this script, you must run `figure_setup/sync-consensus-celltype-results.R`.
 
+<<<<<<< HEAD
+14. `Fig5B_brain-barplot-all-celltypes.R`: This script is used to generate Figure 5B, which shows the percentage of each library that is annotated as each of the consensus cell types for all libraries in High-grade and Low-grade glioma samples.
+Before running this script, you must run `figure_setup/sync-metadata.R` and `figure_setup/sync-consensus-celltype-results.R`.
+
+15. `FigS7_consensus-bar-plots.R`: This script is used to generate Supplemental figure 7A-C, which show the percentage of each library that is annotated as each of the consensus cell types for all libraries in each diagnosis group, excluding the Brain and CNS samples.
+=======
 15. `Fig5B_brain-barplot-all-celltypes.R`: This script is used to generate Figure 5B, which shows the percentage of each library that is annotated as each of the consensus cell types for all libraries in High-grade and Low-grade glioma samples.
 Before running this script, you must run `figure_setup/sync-metadata.R` and `figure_setup/sync-consensus-celltype-results.R`.
 
 16. `FigS7_consensus-bar-plots.R`: This script is used to generate Supplemental figure 7A-C, which show the percentage of each library that is annotated as each of the consensus cell types for all libraries in each diagnosis group, excluding the Brain and CNS samples.
+>>>>>>> main
 Before running this script, you must run `figure_setup/sync-metadata.R` and `figure_setup/sync-consensus-celltype-results.R`.
 
 ## Old figures
