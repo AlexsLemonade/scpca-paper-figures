@@ -36,16 +36,16 @@ op run -- Rscript sync-reference-files.R
 ```
 
 4.`sync-consensus-celltype-results.R`: This script is used to sync the results from the `cell-type-consensus` module of [`OpenScPCA-nf`](https://github.com/AlexsLemonade/OpenScPCA-nf).
-All output files will be saved to a folder within the root directory of this repo named `s3_files/cell-type-consensus-results`. 
+All output files will be saved to a folder within the root directory of this repo named `s3_files/cell-type-consensus-results`.
 In order to generate some of the figures (see more on which figures require this script below), this script will be need to run first.
-To run the script you will first need to login to your AWS account with access to `s3://openscpca-nf-workflow-results` and then run the script with the following command: 
+To run the script you will first need to login to your AWS account with access to `s3://openscpca-nf-workflow-results` and then run the script with the following command:
 
 ```sh
-Rscript sync-consensus-celltype-results.R --profile <name of AWS profile> 
+Rscript sync-consensus-celltype-results.R --profile <name of AWS profile>
 ```
 
-5. `assign-brain-classifications.R`: This script is used to generate the table assigning each of the brain diagnoses to a subdiagnoses, either High-grade glioma or Low-grade glioma. 
-The output of this script is `sample-info/brain-classifications-no-multiplexed.tsv` and is used as input to create Figure 5B and Figure 5C. 
+5. `assign-brain-classifications.R`: This script is used to generate the table assigning each of the brain diagnoses to a subdiagnoses, either High-grade glioma or Low-grade glioma.
+The output of this script is `sample-info/brain-classifications-no-multiplexed.tsv` and is used as input to create Figure 5B and Figure 5C.
 
 ## Generating figures and tables
 
@@ -79,31 +79,30 @@ Before running this script, you must run `figure_setup/sync-data-files.R`.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
 
 10. `TableS2_cellassign-ref-summary.R`: This script is used to generate supplemental Table 2, which includes one row for each ScPCA project on the Portal and the associated diagnoses, reference used from `PanglaoDB`, and list of organs used to construct the reference.
-Before running this script, you must run `figure_setup/sync-metadata.R`.
 
 11. `FigS4_celldex-ref-comparison.R`: This script is used to generate supplemental Figure 4, which compares the delta median statistic calculated from running `SingleR` on a subset of ScPCA libraries with 4 different `celldex` references.
 Before running this script, you must run both `figure_setup/sync-data-files.R` and `figure_setup/sync-metadata.R`.
 
-12. `FigS5A-B_cellassign-justification.R`: This script is used to generate supplemental Figure 5A, which includes a UMAP summarizing cell type annotations using `CellAssign`. 
+12. `FigS5A-B_cellassign-justification.R`: This script is used to generate supplemental Figure 5A, which includes a UMAP summarizing cell type annotations using `CellAssign`.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
 
 13. `FigS5B_submitter-celltypes-heatmap.R`: This script is used to generate supplemental Figure 5B, which includes a heatmap comparing the `CellAssign` and `SingleR` annotations to submitter-provided annotations for an example library.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
 
-13. `Fig5A-S6_consensus-cell-type-dotplots.R`: This script is used to generate Figure 5A and supplemental figure 6A-C.
-Figure 5A includes a dot plot summarizing marker gene expression across all consensus cell types in the Brain and CNS samples. 
-Supplemental Figure 6A-C include dot plots summarizing marker gene expression across all consensus cell types in the other diagnosis groups, leukemia, sarcoma, and other solid tumors. 
-Before running this script, you must run `figure_setup/sync-consensus-celltype-results.R`. 
+14. `Fig5A-S6_consensus-cell-type-dotplots.R`: This script is used to generate Figure 5A and supplemental figure 6A-C.
+Figure 5A includes a dot plot summarizing marker gene expression across all consensus cell types in the Brain and CNS samples.
+Supplemental Figure 6A-C include dot plots summarizing marker gene expression across all consensus cell types in the other diagnosis groups, leukemia, sarcoma, and other solid tumors.
+Before running this script, you must run `figure_setup/sync-consensus-celltype-results.R`.
 
-14. `Fig5B_brain-barplot-all-celltypes.R`: This script is used to generate Figure 5B, which shows the percentage of each library that is annotated as each of the consensus cell types for all libraries in High-grade and Low-grade glioma samples.
-Before running this script, you must run `figure_setup/sync-metadata.R` and `figure_setup/sync-consensus-celltype-results.R`. 
+15. `Fig5B_brain-barplot-all-celltypes.R`: This script is used to generate Figure 5B, which shows the percentage of each library that is annotated as each of the consensus cell types for all libraries in High-grade and Low-grade glioma samples.
+Before running this script, you must run `figure_setup/sync-metadata.R` and `figure_setup/sync-consensus-celltype-results.R`.
 
-15. `FigS7_consensus-bar-plots.R`: This script is used to generate Supplemental figure 7A-C, which show the percentage of each library that is annotated as each of the consensus cell types for all libraries in each diagnosis group, excluding the Brain and CNS samples.
-Before running this script, you must run `figure_setup/sync-metadata.R` and `figure_setup/sync-consensus-celltype-results.R`. 
+16. `FigS7_consensus-bar-plots.R`: This script is used to generate Supplemental figure 7A-C, which show the percentage of each library that is annotated as each of the consensus cell types for all libraries in each diagnosis group, excluding the Brain and CNS samples.
+Before running this script, you must run `figure_setup/sync-metadata.R` and `figure_setup/sync-consensus-celltype-results.R`.
 
 ## Old figures
 
-The `old_figures` folder contains the scripts used to generate figures present in previous versions of the manuscript. 
+The `old_figures` folder contains the scripts used to generate figures present in previous versions of the manuscript.
 
 1. `FigS5B_cellassign-heatmap.R`: This script is used to generate a previous version of supplemental Figure 5B, which included an example heatmap comparing submitter provided annotations to automated annotations from `CellAssign`.
 Before running this script, you must run `figure_setup/sync-data-files.R`.
