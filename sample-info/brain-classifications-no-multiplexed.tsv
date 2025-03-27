@@ -1,0 +1,18 @@
+diagnosis	subdiagnosis_group
+Anaplastic glioma	High-grade glioma
+Glioblastoma	High-grade glioma
+High-grade glioma	High-grade glioma
+Diffuse midline glioma	High-grade glioma
+Pleomorphic xanthoastrocytoma	High-grade glioma
+Anaplastic astrocytoma	High-grade glioma
+Pilocytic astrocytoma	Low-grade glioma
+Ganglioglioma	Low-grade glioma
+Low-grade glioma	Low-grade glioma
+Ganglioglioma/ATRT	Low-grade glioma
+Ependymoma	Low-grade glioma
+Dysplastic gangliocytoma	Low-grade glioma
+Dysembryoplastic neuroepithelial tumor	Low-grade glioma
+Atypical teratoid rhabdoid tumor	other
+Glial-neuronal tumor	Low-grade glioma
+Focal cortical dysplasia	other
+Infant-type hemispheric glioma	High-grade glioma

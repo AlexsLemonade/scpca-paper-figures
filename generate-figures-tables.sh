@@ -60,6 +60,9 @@ Rscript ${script_dir}/Fig4B_singler-cellassign-heatmap.R
 # also supplemental figure 6
 Rscript ${script_dir}/Fig5A-S6_consensus-cell-type-dotplots.R
 
+# Figure 5B
+Rscript ${script_dir}/Fig5B_brain-barplot-all-celltypes.R
+
 # Figure 6
 # also supplemental figure 8
 Rscript ${script_dir}/Fig6-FigS8_bulk-analysis.R
@@ -87,6 +90,9 @@ Rscript ${script_dir}/FigS5A_cellassign-justification.R
 
 # Figure S5B
 Rscript ${script_dir}/FigS5B_submitter-celltypes-heatmap.R
+
+# Figure S7
+Rscript ${script_dir}/FigS7_consensus-bar-plots.R
 
 ##########################################################
 #         Generate tables in order of appearance         #
