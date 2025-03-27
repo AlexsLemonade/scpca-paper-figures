@@ -408,6 +408,7 @@ stacked_barchart <- function(
     fill_label = "Broad cell type annotation", 
     lumped_label = "unknown",
     facet_variable = NULL, # use for faceting HGG vs. LGG 
+    x_axis_text_size = 4, 
     facet_col = 2,
     legend_position = "right"
 ){
@@ -430,7 +431,7 @@ stacked_barchart <- function(
     scale_fill_manual(values = celltype_colors,
                       breaks = c(setdiff(unique(df[[fill_column]]), lumped_label), lumped_label)) +
     theme_classic() +
-    theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1, size = 8),
+    theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1, size = x_axis_text_size),
           strip.background = element_rect(fill = "transparent", color = "black", linewidth = 0.5),
           # add a square around each of the plots
           panel.background = element_rect(colour = "black", linewidth=0.5),

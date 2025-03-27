@@ -100,7 +100,7 @@ summary_df <- create_celltype_summary(celltype_files, validation_groups_df) |>
 hgg_lgg_barplot <- stacked_barchart(summary_df, fill_column = "broad_celltype_group", celltype_colors = celltype_colors_all, facet_variable = "subdiagnosis_group")
 
 # save plot 
-ggsave(output_5b_pdf_file, plot = hgg_lgg_barplot, width = 20, height = 10)
+ggsave(output_5b_pdf_file, plot = hgg_lgg_barplot, width = 12, height = 5)
 
 
 
@@ -108,7 +108,7 @@ ggsave(output_5b_pdf_file, plot = hgg_lgg_barplot, width = 20, height = 10)
 # Prep and plot 5C -----------------------------------------------------
 
 
-summary_df <- create_immune_celltype_summary(
+summary_immune_df <- create_immune_celltype_summary(
   celltype_files,
   all_immune_celltypes, 
   tcell_celltypes, 
@@ -121,13 +121,15 @@ summary_df <- create_immune_celltype_summary(
   dplyr::filter(subdiagnosis_group %in% c("High-grade glioma", "Low-grade glioma"))
 
 
+
 hgg_lgg_immune_barplot <- stacked_barchart(
-  summary_df, 
+  summary_immune_df, 
   fill_column = "broad_celltype_group", 
-  celltype_colors = celltype_colors_immune, 
-  facet_variable = "subdiagnosis_group", 
-  fill_label = "Immune cell type"
+  celltype_colors = celltype_colors_immune,
+  fill_label = "Immune cell type",
+  lumped_label = "other",
+  facet_variable = "subdiagnosis_group"
 )
 
 # save plot 
-ggsave(output_5c_pdf_file, plot = hgg_lgg_immune_barplot, width = 20, height = 10)
+ggsave(output_5c_pdf_file, plot = hgg_lgg_immune_barplot, width = 12, height = 5)
