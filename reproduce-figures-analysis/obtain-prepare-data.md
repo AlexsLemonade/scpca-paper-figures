@@ -199,5 +199,5 @@ To obtain the `_processed.rds` files associated with samples of interest, we rec
 Do _not_ click "Merge all samples into 1 object", and be sure to use the `SingleCellExperiment (R)` format when downloading.
 * This will download both project's `SingleCellExperiment` files, organized by sample, as well as the project's bulk raw counts matrix
 * Once downloaded, you will then need to _remove_ directories for single-cell samples which are not used in this analysis.
-    * We provide a list in `bulk-analysis-samples.tsv` of all sample ids which _are used_; other samples not listed here shoud be removed.
+    * We provide a list in `bulk-analysis-samples.tsv` of all sample ids which _are used_; other samples not listed here shoud be removed. TODO should we provide a helper script here? Should we have separate TSV files per project? Is there another approach folks have in mind?
     * Note that project `SCPCP000009` contains samples processed with multiplexed libraries, whose directory names include underscores; none of these are included in analysis, and all such directories should be removed.
