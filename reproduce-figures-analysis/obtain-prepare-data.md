@@ -20,7 +20,7 @@ In addition to files provided already in the repository, you will also need the 
   - [ScPCA metadata files](#scpca-metadata-files)
   - [TODO: Files to reproduce Figures S1B-D](#todo-files-to-reproduce-figures-s1b-d)
   - [TODO: Consensus cell type files](#todo-consensus-cell-type-files)
-- [Bulk and pseudobulk RNASeq analysis](#bulk-and-pseudobulk-rnaseq-analysis)
+- [Bulk and pseudobulk RNA-Seq analysis](#bulk-and-pseudobulk-rna-seq-analysis)
   - [Obtaining files in `references`](#obtaining-files-in-references)
   - [Obtaining files in `scpca_data`](#obtaining-files-in-scpca_data)
 
@@ -30,7 +30,8 @@ In addition to files provided already in the repository, you will also need the 
 
 ## Data for figure and table scripts
 
-This section provides instructions on how to obtain and prepare data files to run code in the `figure_scripts/` directory.
+This section provides instructions on how to obtain and prepare data files to run code in the `scripts/` directory.
+By preparing data as described in this file, you will not need to run any scripts in `scripts/figure_setup/` which are meant for internal Data Lab use.
 
 ### File organization
 
@@ -112,23 +113,15 @@ aws s3 cp s3://scpca-references/celltype/singler_models/ . --recursive --exclude
 
 ### ScPCA metadata files
 
-There are three metadata files you will need:
-
-* `scpca-project-celltype-metadata.tsv`
-* `scpca-library-metadata.tsv`
-* `scpca-sample-metadata.tsv`
-
-A version of `scpca-project-celltype-metadata.tsv` which you can use to reproduce figures is provided in TODO.
-
-To obtain the other two metadata files, we offer a helper script in TODO to create versions of these files which you can use to reproduce figures.
+There are two metadata files you will need, `scpca-library-metadata.tsv` and `scpca-sample-metadata.tsv`.
+To create them, we offer a helper script in `prepare-metadata-files.R` to create versions of these files which you can use to reproduce figures.
 Follow these instructions to create these two metadata files:
 
 * From the [ScPCA Portal](https://scpca.alexslemonade.org/), download the full portal metadata using the `Get All Sample Metadata` button on the top-right of the page
 * Run the helper script as follows:
 
 ```sh
-# TODO!!
-Rscript prepare-metadata-files.tsv --all_sample_metadata <path to that downloaded file>
+Rscript prepare-metadata-files.R --all_sample_metadata <path to that downloaded file>
 ```
 
 This will create files named `scpca-library-metadata.tsv` and `scpca-sample-metadata.tsv` which you can use to recreate figures.
@@ -143,7 +136,7 @@ Forthcoming section: Here, we can describe the benchmarking TSV files (https://g
 
 Forthcoming section: Here, we can describe obtaining consensus cell type files which is TBD.
 
-## Bulk and pseudobulk RNASeq analysis
+## Bulk and pseudobulk RNA-Seq analysis
 
 Code for this analysis is provided in the directory `analysis/pseudobulk-bulk-prediction`.
 From this directory, you can use the `run-prediction.sh` script to run the analysis and generate results which are used to as input to scripts in `figure_scripts` that create Figure 6 and Figure S8.
