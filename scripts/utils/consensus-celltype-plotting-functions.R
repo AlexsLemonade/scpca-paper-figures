@@ -356,7 +356,7 @@ create_immune_celltype_summary <- function(
     dplyr::group_by(immune_group) |>
     dplyr::arrange(desc(total_frac), .by_group = TRUE) |>
     dplyr::pull(immune_celltype_group)
-  immune_factor_order <- c(immune_factor_order, "other")
+  immune_factor_order <- c("other", immune_factor_order)
   
   # order by % of myeloid cells 
   # get a vector of library ids ordered by total percentage annotated
