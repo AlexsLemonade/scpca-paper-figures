@@ -124,7 +124,7 @@ summary_immune_df <- create_immune_celltype_summary(
 
 hgg_lgg_immune_barplot <- stacked_barchart(
   summary_immune_df, 
-  fill_column = "broad_celltype_group", 
+  fill_column = "immune_celltype_group", 
   celltype_colors = celltype_colors_immune,
   fill_label = "Immune cell type",
   lumped_label = "other",

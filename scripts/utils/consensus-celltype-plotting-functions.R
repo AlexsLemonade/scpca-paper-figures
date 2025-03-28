@@ -312,9 +312,9 @@ create_immune_celltype_summary <- function(
       consensus_annotation %in% all_immune_celltypes, 
       sample_type == "patient tissue"
     ) |>
-    # Create broad_celltype_group label with value "other" when cells are not T or myeloid types
+    # Create immune_celltype_group label with value "other" when cells are not T or myeloid types
     dplyr::mutate(
-      broad_celltype_group = ifelse(
+      immune_celltype_group = ifelse(
         consensus_annotation %in% c(tcell_celltypes, myeloid_celltypes), 
         consensus_annotation, 
         "other"
@@ -333,7 +333,7 @@ create_immune_celltype_summary <- function(
     dplyr::left_join(totals_df, by = "library_id") |> 
     # remove libraries with insufficient cells
     dplyr::filter(!(library_id %in% remove_libraries)) |>
-    dplyr::group_by(project_id, library_id, sample_id, broad_celltype_group) |> 
+    dplyr::group_by(project_id, library_id, sample_id, immune_celltype_group) |> 
     dplyr::summarize(total_cells_per_annotation = dplyr::n(),
                      total_cells_per_library = unique(total_cells_per_library),
                      percent_cells_annotation = round((total_cells_per_annotation / total_cells_per_library) * 100, 2)) |>
@@ -345,23 +345,23 @@ create_immune_celltype_summary <- function(
   # - within each group, cell types should be ordered based on _overall frequency_
   # - finally, "other" should be first
   immune_factor_order <- summary_df |>
-    dplyr::filter(broad_celltype_group != "other") |>
+    dplyr::filter(immune_celltype_group != "other") |>
     # add up all the fractions as a proxy for overall frequency
-    dplyr::group_by(broad_celltype_group) |>
+    dplyr::group_by(immune_celltype_group) |>
     dplyr::summarize(total_frac = sum(percent_cells_annotation)) |>
     # assign groupings so we can order by them
     dplyr::mutate(
-      immune_group = ifelse(broad_celltype_group %in% tcell_celltypes, "tcell", "myeloid")
+      immune_group = ifelse(immune_celltype_group %in% tcell_celltypes, "tcell", "myeloid")
     ) |>
     dplyr::group_by(immune_group) |>
     dplyr::arrange(desc(total_frac), .by_group = TRUE) |>
-    dplyr::pull(broad_celltype_group)
+    dplyr::pull(immune_celltype_group)
   immune_factor_order <- c(immune_factor_order, "other")
   
   # order by % of myeloid cells 
   # get a vector of library ids ordered by total percentage annotated
   library_levels <- summary_df |> 
-    dplyr::filter(broad_celltype_group %in% myeloid_celltypes) |> 
+    dplyr::filter(immune_celltype_group %in% myeloid_celltypes) |> 
     dplyr::group_by(library_id) |> 
     dplyr::summarize(
       myeloid_frac = sum(total_cells_per_annotation)/unique(total_cells_per_library)
@@ -373,7 +373,7 @@ create_immune_celltype_summary <- function(
   summary_df <- summary_df |> 
     dplyr::mutate(
       library_id = forcats::fct_relevel(library_id, library_levels),
-      broad_celltype_group = forcats::fct_relevel(broad_celltype_group, immune_factor_order)
+      immune_celltype_group = forcats::fct_relevel(immune_celltype_group, immune_factor_order)
     ) |>
     unique()  
   
