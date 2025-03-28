@@ -14,9 +14,23 @@ The following scripts can be used to generate figures and tables:
 
 * `Fig1B_modality-barchart.R`: This script is used to generate Figure 1B, which includes a summary of the types of modalities found in the ScPCA portal.
 
-* `TableS1_modality-summary.R`: This script is used to generate supplemental Table 1, which contains a summary of the types of libraries found in each project.
+* `Fig2B-F_qc-plots.R`: This script is used to generate panels Figure 2B-F, which includes simplified and miniature versions of the plots found in the main QC report included with each sample download.
 
-* `Fig2B-G_qc-plots.R`: This script is used to generate panels Figure 2B-G, which includes simplified and miniature versions of the plots found in the main QC report included with each sample download.
+* `Fig3D_merged-umaps.R`: This script is used to generate Figure 3D, which includes an example of the UMAPs shown in the merged report.
+
+* `Fig4B_singler-cellassign-heatmap.R`: This script is used to generate Figure 4B, which includes an example of the heatmap comparing cell type annotations from `SingleR` to `CellAssign`.
+
+* `Fig5A-S6_consensus-cell-type-dotplots.R`: This script is used to generate Figure 5A and supplemental figure 6A-C.
+Figure 5A includes a dot plot summarizing marker gene expression across all consensus cell types in the Brain and CNS samples.
+Supplemental Figure 6A-C include dot plots summarizing marker gene expression across all consensus cell types in the other diagnosis groups, leukemia, sarcoma, and other solid tumors.
+
+* `Fig5B-C_brain-barplots.R`: This script is used to generate Figures 5B and 5C.
+Figure 5B shows the percentage of each library that is annotated as each of the consensus cell types for all libraries in High-grade and Low-grade glioma samples.
+Figure 5C shows the percentage of each library that is annotated as each of the _immune_ consensus cell types, emphasizing myeloid and leukocyte cell types, for all libraries in High-grade and Low-grade glioma samples.
+
+* `Fig6-FigS8_bulk-analysis.R `: This script is used to generate Figures 6 and S8.
+Figure 6 shows (A) scatterplots of the relationship between bulk and pseudobulk counts for relevant Brain and CNS projects, and (B) bar plots of odds ratios from overrepresentation analysis of bulk expression data for relevant Brain and CNS projects.
+Figure S8 shows (A) scatterplots of the relationship between bulk and pseudobulk counts for projects not shown in Figure 6A, and (B) bar plots of odds ratios from overrepresentation analysis of bulk expression data for projects not shown in Figure 6B.
 
 * `FigS1A_memory-time-comparison.R`: This script is used to generate supplemental Figure 1A, which shows a comparison of total run time and peak memory usage for Cell Ranger and Alevin-fry.
 This script uses the trace files found in `nextflow_logs/`.
@@ -25,32 +39,17 @@ This script uses the trace files found in `nextflow_logs/`.
 
 * `FigS2B-D_adt-plots.R`: This script is used to generate supplemental Figure 2B-D, which includes simplified and miniature versions of the plots in the ADT section of the main QC report included with each sample download.
 
-* `Fig3D_merged-umaps.R`: This script is used to generate Figure 3D, which includes an example of the UMAPs shown in the merged report.
-
-* `Fig4B_singler-cellassign-heatmap.R`: This script is used to generate Figure 4B, which includes an example of the heatmap comparing cell type annotations from `SingleR` to `CellAssign`.
-
-* `TableS2_cellassign-ref-summary.R`: This script is used to generate supplemental Table 2, which includes one row for each ScPCA project on the Portal and the associated diagnoses, reference used from `PanglaoDB`, and list of organs used to construct the reference.
-
 * `FigS4_celldex-ref-comparison.R`: This script is used to generate supplemental Figure 4, which compares the delta median statistic calculated from running `SingleR` on a subset of ScPCA libraries with 4 different `celldex` references.
 
-* `FigS5A-B_cellassign-justification.R`: This script is used to generate supplemental Figure 5A, which includes a UMAP summarizing cell type annotations using `CellAssign`.
+* `FigS5A_cellassign-justification.R`: This script is used to generate supplemental Figure 5A, which includes a UMAP summarizing cell type annotations using `CellAssign`.
 
 * `FigS5B_submitter-celltypes-heatmap.R`: This script is used to generate supplemental Figure 5B, which includes a heatmap comparing the `CellAssign` and `SingleR` annotations to submitter-provided annotations for an example library.
 
-* `Fig5A-S6_consensus-cell-type-dotplots.R`: This script is used to generate Figure 5A and supplemental figure 6A-C.
-Figure 5A includes a dot plot summarizing marker gene expression across all consensus cell types in the Brain and CNS samples.
-Supplemental Figure 6A-C include dot plots summarizing marker gene expression across all consensus cell types in the other diagnosis groups, leukemia, sarcoma, and other solid tumors.
-
-* `Fig5BC_brain-barplots.R`: This script is used to generate Figures 5B and 5C.
-Figure 5B shows the percentage of each library that is annotated as each of the consensus cell types for all libraries in High-grade and Low-grade glioma samples.
-Figure 5C shows the percentage of each library that is annotated as each of the _immune_ consensus cell types, emphasizing myeloid and leukocyte cell types, for all libraries in High-grade and Low-grade glioma samples.
-
-* `Fig6-FigS8_bulk-analysis.R `: This script is used to generate Figures 6 and S8.
-Figure 6 shows (A) scatterplots of the relationship between bulk and pseudobulk counts for relevant Brain and CNS projects, and (B) bar plots of odds ratios from overrepresentation analysis of bulk expression data for relevant Brain and CNS projects.
-Figure S8 shows (A) scatterplots of the relationship between bulk and pseudobulk counts for projects not shown in Figure 6A, and (B) bar plots of odds ratios from overrepresentation analysis of bulk expression data for projects not shown in Figure 6B.
-
 * `FigS7_consensus-bar-plots.R`: This script is used to generate Supplemental figure 7A-C, which show the percentage of each library that is annotated as each of the consensus cell types for all libraries in each diagnosis group, excluding the Brain and CNS samples.
 
+* `TableS1_modality-summary.R`: This script is used to generate supplemental Table 1, which contains a summary of the types of libraries found in each project.
+
+* `TableS2_cellassign-ref-summary.R`: This script is used to generate supplemental Table 2, which includes one row for each ScPCA project on the Portal and the associated diagnoses, reference used from `PanglaoDB`, and list of organs used to construct the reference.
 
 ## Old figures
 
