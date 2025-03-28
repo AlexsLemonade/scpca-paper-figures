@@ -8,6 +8,8 @@ This repo contains the figures and tables included in the ScPCA manuscript.
 
 - [Summary of figures and tables](#summary-of-figures-and-tables)
 - [Generating figures and tables](#generating-figures-and-tables)
+  - [Instructions to prepare data](#instructions-to-prepare-data)
+  - [Instructons for Data Lab members](#instructons-for-data-lab-members)
 - [Sample info](#sample-info)
 - [Color palettes](#color-palettes)
 - [Manuscript numbers](#manuscript-numbers)
@@ -110,22 +112,28 @@ List of references used for each project on the Portal with `CellAssign`, includ
 
 ## Generating figures and tables
 
-
-⚠️ _This section currently requires internal Data Lab access to data_
-
 The `figures` and `tables` folders contain the most up-to-date version of each of the figures and tables, respectively.
 The `scripts` directory contains all scripts used to create the figures and tables.
 See the [`README` for the `scripts` directory](./scripts/README.md) for more information on figure and table scripts.
 
-To generate all figures and tables, run the script [`generate-figures-tables.sh`](generate-figures-tables.sh) as:
+
+The [`generate-figures-tables.sh`](generate-figures-tables.sh) script can be used to prepare all figures and tables.
+The script assumes that a directory called `s3_files` has been populated with relevant data files.
+Therefore, **before running this script** you will first need to prepare these input data files, as described in the sections below.
+
+Then, run the figure generation script as:
 
 ```sh
 bash generate-figures-tables.sh
 ```
 
-Note that this script assumes that the `s3_files` directory has been populated with relevant data files.
-These files can be obtained by first running the figure setup scripts, many of which require S3 bucket access as a Data Lab member.
-Setup scripts can be run as:
+### Instructions to prepare data
+
+If you are not a member of the Data Lab, please follow the instructions provided in `reproduce-figures-analysis/obtain-prepare-data.md` to obtain and prepare additional data needed to regenerate figures and tables.
+
+### Instructons for Data Lab members
+
+To prepare data for figure and table generation, will need to run the figure setup scripts:
 
 ```sh
 Rscript scripts/figure_setup/sync-metadata.R
@@ -142,7 +150,6 @@ op run -- Rscript scripts/figure_setup/sync-metadata.R
 op run -- Rscript scripts/figure_setup/sync-data-files.R
 op run -- Rscript scripts/figure_setup/sync-reference-files.R
 ```
-
 
 ## Sample info
 
