@@ -10,6 +10,7 @@ This repo contains the figures and tables included in the ScPCA manuscript.
 - [Generating figures and tables](#generating-figures-and-tables)
 - [Sample info](#sample-info)
 - [Color palettes](#color-palettes)
+- [Manuscript numbers](#manuscript-numbers)
 - [Renv](#renv)
 - [Contributing](#contributing)
 
@@ -44,8 +45,14 @@ Below is a summary of all figures and tables in the paper.
 
 **Figure 5**
 
-- A. Dot plot summarizing marker gene expression in consensus cell types in Brain and CNS samples. 
-- B. Bar plot summarizing the percentage of cells annotated as each consensus cell type in High-grade and Low-grade glioma samples. 
+- A. Dot plot summarizing marker gene expression in consensus cell types in Brain and CNS samples.
+- B. Bar plot summarizing the percentage of cells annotated as each consensus cell type in High-grade and Low-grade glioma samples.
+- C. Bar plot summarizing the percentage of cells annotated with specific immune cell types in High-grade and Low-grade glioma samples.
+
+**Figure 6**
+
+- A. Scatterplots of the relationship between bulk and pseudobulk counts for relevant Brain and CNS projects.
+- B. Bar plots of odds ratios from overrepresentation analysis of bulk expression data for relevant Brain and CNS projects.
 
 **Supplemental Figure 1**
 
@@ -76,15 +83,20 @@ Comparison of delta median statistic obtained from running `SingleR` with differ
 
 **Supplemental Figure 6**
 
-- A. Dot plot summarizing marker gene expression in consensus cell types in Leukemia samples. 
-- B. Dot plot summarizing marker gene expression in consensus cell types in Sarcoma samples. 
-- C. Dot plot summarizing marker gene expression in consensus cell types in Other solid tumor samples. 
+- A. Dot plot summarizing marker gene expression in consensus cell types in Leukemia samples.
+- B. Dot plot summarizing marker gene expression in consensus cell types in Sarcoma samples.
+- C. Dot plot summarizing marker gene expression in consensus cell types in Other solid tumor samples.
 
 **Supplemental Figure 7**
 
-- A. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Leukemia samples. 
-- B. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Sarcoma samples. 
-- C. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Other solid tumor samples. 
+- A. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Leukemia samples.
+- B. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Sarcoma samples.
+- C. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Other solid tumor samples.
+
+**Supplemental Figure 8**
+
+- A. Scatterplots of the relationship between bulk and pseudobulk counts for projects not shown in Figure 6A.
+- B. Bar plots of odds ratios from overrepresentation analysis of bulk expression data for projects not shown in Figure 6B.
 
 
 **Table S1**
