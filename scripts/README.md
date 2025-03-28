@@ -1,6 +1,10 @@
 # Scripts for generating figures and tables
 
 This folder contains all scripts used to generate figures and tables.
+Before running these scripts, you will need to prepare data for script input:
+
+* If you are a Data Lab staff member, you will need to run scripts described in the **Figure set up** section at the bottom of this document
+* You are not a Data Lab staff member, you will need to follow instructions provided in the file `../reproduce-figures-analysis/obtain-prepare-data.md`
 
 ## Generating figures and tables
 
@@ -71,7 +75,6 @@ Before running this script, you must run `figure_setup/sync-data-files.R`.
 
 The `figure_setup` folder contains scripts to prepare figure data for internal use by the Data Lab.
 These scripts are only expected to be run by Data Lab staff.
-Non-Data Lab staff can prepare up all files needed to reproduce figures using the instructions provided in `../reproduce-figures-analysis/obtain-prepare-data.md`.
 
 1. `sync-metadata.R`: This script is used to sync any metadata files found on S3 to a local folder.
 In particular, the `scpca-sample-metadata.tsv` and `scpca-library-metadata.tsv` will be stored to a folder within the root directory of this repo named `s3_files`.
