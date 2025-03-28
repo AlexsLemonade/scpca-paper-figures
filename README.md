@@ -52,7 +52,7 @@ Below is a summary of all figures and tables in the paper.
 
 - A. Dot plot summarizing marker gene expression in consensus cell types in Brain and CNS samples.
 - B. Bar plot summarizing the percentage of cells annotated as each consensus cell type in High-grade and Low-grade glioma samples.
-- C. Bar plot summarizing the percentage of cells annotated with specific immune cell types in High-grade and Low-grade glioma samples.
+- C. Bar plot summarizing the percentage of cells annotated as each immune consensus cell type, with an emphasis on cells in the T-cell and myeloid lineages, in High-grade and Low-grade glioma samples.
 
 **Figure 6**
 
