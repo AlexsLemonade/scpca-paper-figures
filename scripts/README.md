@@ -41,7 +41,13 @@ This script uses the trace files found in `nextflow_logs/`.
 Figure 5A includes a dot plot summarizing marker gene expression across all consensus cell types in the Brain and CNS samples.
 Supplemental Figure 6A-C include dot plots summarizing marker gene expression across all consensus cell types in the other diagnosis groups, leukemia, sarcoma, and other solid tumors.
 
-* `Fig5B_brain-barplot-all-celltypes.R`: This script is used to generate Figure 5B, which shows the percentage of each library that is annotated as each of the consensus cell types for all libraries in High-grade and Low-grade glioma samples.
+* `Fig5BC_brain-barplots.R`: This script is used to generate Figures 5B and 5C.
+Figure 5B shows the percentage of each library that is annotated as each of the consensus cell types for all libraries in High-grade and Low-grade glioma samples.
+Figure 5C shows the percentage of each library that is annotated as each of the _immune_ consensus cell types, emphasizing myeloid and leukocyte cell types, for all libraries in High-grade and Low-grade glioma samples.
+
+* `Fig6-FigS8_bulk-analysis.R `: This script is used to generate Figures 6 and S8.
+Figure 6 shows (A) scatterplots of the relationship between bulk and pseudobulk counts for relevant Brain and CNS projects, and (B) bar plots of odds ratios from overrepresentation analysis of bulk expression data for relevant Brain and CNS projects.
+Figure S8 shows (A) scatterplots of the relationship between bulk and pseudobulk counts for projects not shown in Figure 6A, and (B) bar plots of odds ratios from overrepresentation analysis of bulk expression data for projects not shown in Figure 6B.
 
 * `FigS7_consensus-bar-plots.R`: This script is used to generate Supplemental figure 7A-C, which show the percentage of each library that is annotated as each of the consensus cell types for all libraries in each diagnosis group, excluding the Brain and CNS samples.
 
