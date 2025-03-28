@@ -9,20 +9,15 @@ library(ggplot2)
 
 # Set up -----------------------------------------------------------------------
 
-
-# source in helper functions for plotting
-function_file <- here::here("scripts", "utils", "sample-summary-helper-functions.R")
-source(function_file)
-
 # all metadata files 
 sample_info_dir <- here::here("sample-info")
 project_whitelist_file <- file.path(sample_info_dir, "project-whitelist.txt")
+sample_whitelist_file <- file.path(sample_info_dir, "sample-whitelist.txt")
 diagnosis_groupings_file <- file.path(sample_info_dir, "diagnosis-groupings.tsv")
 disease_timing_file <- file.path(sample_info_dir, "disease-timing.tsv")
 
-# path to metadata files
+# path to metadata file
 sample_metadata_file <- here::here("s3_files", "scpca-sample-metadata.tsv")
-project_metadata_file <- here::here("s3_files", "scpca-project-metadata.tsv")
 
 # color palette
 disease_timing_palette <- here::here("palettes", "disease-timing-palette.tsv")
@@ -37,11 +32,9 @@ disease_timing_count_table <- file.path(tables_dir, "disease-timing-counts.tsv")
 
 # Prep sample metadata ------------------------------------------------------
 
-# read in project whitelist and grouping metadata 
+# read in project and sample whitelists and grouping metadata 
 project_whitelist <- readLines(project_whitelist_file)
-
-# get sample whitelist 
-sample_whitelist <- get_sample_whitelist(project_metadata_file, project_whitelist)
+sample_whitelist <- readLines(sample_whitelist_file)
 
 # read in diagnosis groupings and disease timing
 diagnosis_groupings_df <- readr::read_tsv(diagnosis_groupings_file) |>

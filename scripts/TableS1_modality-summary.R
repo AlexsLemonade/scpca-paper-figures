@@ -8,19 +8,15 @@ library(ggplot2)
 
 # Set up -----------------------------------------------------------------------
 
-# source in helper functions for plotting
-function_file <- here::here("scripts", "utils", "sample-summary-helper-functions.R")
-source(function_file)
-
 # path to metadata files
 s3_file_dir <- here::here("s3_files")
 library_metadata_file <- file.path(s3_file_dir, "scpca-library-metadata.tsv")
 sample_metadata_file <- file.path(s3_file_dir, "scpca-sample-metadata.tsv")
-project_metadata_file <- file.path(s3_file_dir, "scpca-project-metadata.tsv")
 
-# project whitelist and diagnosis groupings
+# whitelists and diagnosis groupings
 sample_info_dir <- here::here("sample-info")
 project_whitelist_file <- file.path(sample_info_dir, "project-whitelist.txt")
+sample_whitelist_file <- file.path(sample_info_dir, "sample-whitelist.txt")
 diagnosis_groupings_file <- file.path(sample_info_dir, "diagnosis-groupings.tsv")
 
 # output files 
@@ -28,11 +24,9 @@ table_dir <- here::here("tables")
 fs::dir_create(table_dir)
 output_table_file <- file.path(table_dir, "TableS1-modality-overview.tsv")
 
-# read in project whitelist
+# read in project and sample whitelists
 project_whitelist <- readLines(project_whitelist_file)
-
-# read in project metadata files and create sample whitelist 
-sample_whitelist <- get_sample_whitelist(project_metadata_file, project_whitelist)
+sample_whitelist <- readLines(sample_whitelist_file)
 
 # read in groupings
 diagnosis_groupings_df <- readr::read_tsv(diagnosis_groupings_file)
