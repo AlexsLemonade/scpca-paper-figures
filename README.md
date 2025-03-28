@@ -10,9 +10,12 @@ This repo contains the figures and tables included in the ScPCA manuscript.
 - [Generating figures and tables](#generating-figures-and-tables)
   - [Instructions to prepare data](#instructions-to-prepare-data)
   - [Instructons for Data Lab members](#instructons-for-data-lab-members)
-- [Sample info](#sample-info)
-- [Color palettes](#color-palettes)
-- [Manuscript numbers](#manuscript-numbers)
+- [Additional repository contents](#additional-repository-contents)
+  - [Sample info](#sample-info)
+  - [Color palettes](#color-palettes)
+  - [Manuscript numbers](#manuscript-numbers)
+  - [Nextflow logs](#nextflow-logs)
+  - [Analysis](#analysis)
 - [Renv](#renv)
 - [Contributing](#contributing)
 
@@ -112,13 +115,13 @@ List of references used for each project on the Portal with `CellAssign`, includ
 
 ## Generating figures and tables
 
-The `figures` and `tables` folders contain the most up-to-date version of each of the figures and tables, respectively.
-The `scripts` directory contains all scripts used to create the figures and tables.
-See the [`README` for the `scripts` directory](./scripts/README.md) for more information on figure and table scripts.
+The `figures/` and `tables/` folders contain the most up-to-date version of each of the figures and tables, respectively.
+The `scripts/` folder contains all scripts used to create the figures and tables.
+See the [`README` for the `scripts` folder](./scripts/README.md) for more information on figure and table scripts.
 
 
 The [`generate-figures-tables.sh`](generate-figures-tables.sh) script can be used to prepare all figures and tables.
-The script assumes that a directory called `s3_files` has been populated with relevant data files.
+The script assumes that a folder called `s3_files` has been populated with relevant data files.
 Therefore, **before running this script** you will first need to prepare these input data files, as described in the sections below.
 
 Then, run the figure generation script as:
@@ -151,7 +154,9 @@ op run -- Rscript scripts/figure_setup/sync-data-files.R
 op run -- Rscript scripts/figure_setup/sync-reference-files.R
 ```
 
-## Sample info
+## Additional repository contents
+
+### Sample info
 
 The `sample-info/` folder contains metadata files used to create figures and tables.
 
@@ -166,7 +171,7 @@ For each `submitted_disease_timing`, a `standardized_disease_timing` is assigned
 * `scpca-project-celltype-metadata.tsv`: This tsv file provides the specific CellAssign cell typing reference used for each ScPCA project.
 
 
-## Color palettes
+### Color palettes
 
 The `palettes/` folder contains any palettes used in generating the figures.
 
@@ -177,13 +182,24 @@ The `palettes/` folder contains any palettes used in generating the figures.
 * `method-palette.tsv`: This is the palette used to color by quantification method used, either `Alevin-fry` or `Cell Ranger`.
 * `validation-group-palette.tsv`: This is the palette used to color validation groups used to assess consensus cell types.
 
-## Manuscript numbers
+### Manuscript numbers
 
 The `manuscript-numbers` folder contains tables with total sample counts referenced when writing the manuscript.
 These tables are not included in the final manuscript and were created as follows:
 
 * `bulk-analysis-counts.tsv` was created by `../scripts/Fig6-FigS8_bulk-analysis.R`
 * `diagnosis-group-counts.tsv` and `disease-timing-counts.tsv` were created by `../scripts/Fig1A_sample-disease-barchart.R`
+
+
+### Nextflow logs
+
+The `nextflow_logs` folder contains text files with Nextflow log information from running the `scpca-nf` pipeline.
+These files are specifically used by `scripts/FigS1A_memory-time-comparison.R` to create Figure 1A.
+
+### Analysis
+
+This `analysis` folder contains analyses comparing bulk and pseudobulk RNA-Seq data.
+Please refer to `analysis/README.md` for additional details.
 
 ## Renv
 
@@ -199,6 +215,6 @@ Each time you install or use new packages, you will want to run `renv::snapshot(
 
 In addition, this repository uses the [`parsable-r`](https://lorenzwalthert.github.io/precommit/articles/available-hooks.html#parsable-r) pre-commit hook to ensure R scripts are parsable.
 To use this hook, first ensure that that the `pre-commit` package is installed on your system; you can install it with your favorite method (`pip install pre-commit` or `conda install pre-commit`).
-Then, run `pre-commit install` in the `scpca-paper-figures` directory to enable pre-commit hooks in this repository.
-This will install the hooks in the `.git/hooks` directory, and they will be run automatically when you commit changes.
+Then, run `pre-commit install` in the `scpca-paper-figures` folder to enable pre-commit hooks in this repository.
+This will install the hooks in the `.git/hooks` folder, and they will be run automatically when you commit changes.
 If the hook fails, the commit will be aborted, and you will need to fix the errors and re-commit.
