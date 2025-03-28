@@ -110,6 +110,7 @@ List of references used for each project on the Portal with `CellAssign`, includ
 
 ## Generating figures and tables
 
+
 ⚠️ _This section currently requires internal Data Lab access to data_
 
 The `figures` and `tables` folders contain the most up-to-date version of each of the figures and tables, respectively.
@@ -123,16 +124,18 @@ bash generate-figures-tables.sh
 ```
 
 Note that this script assumes that the `s3_files` directory has been populated with relevant data files.
-These files can be obtained by first running the figure setup scripts, which currently require S3 bucket access as a Data Lab member.
+These files can be obtained by first running the figure setup scripts, many of which require S3 bucket access as a Data Lab member.
 Setup scripts can be run as:
 
 ```sh
 Rscript scripts/figure_setup/sync-metadata.R
 Rscript scripts/figure_setup/sync-data-files.R
 Rscript scripts/figure_setup/sync-reference-files.R
+Rscript scripts/figure_setup/assign-brain-classifications.R
+Rscript scripts/figure_setup/prepare-sample-whitelist.R
 ```
 
-If you have setup `1Password` to handle your AWS credentials, you will need to prefix those lines with `op run --`:
+If you have setup `1Password` to handle your AWS credentials, you will need to prefix scripts beginning with `sync-` with `op run --`, specifically:
 
 ```sh
 op run -- Rscript scripts/figure_setup/sync-metadata.R
@@ -143,28 +146,37 @@ op run -- Rscript scripts/figure_setup/sync-reference-files.R
 
 ## Sample info
 
-The `sample-info` folder contains metadata files used to create figures and tables.
+The `sample-info/` folder contains metadata files used to create figures and tables.
 
-1. `diagnosis-groupings.tsv`: This tsv file contains one row per `submitted_diagnosis` associated with samples on the ScPCA Portal.
+* `brain-classifications-no-multiplexed.tsv`: This tsv file classifies brain-related diagnoses in the ScPCA Portal into "High-grade glioma" and "Low-grade glioma" for plotting.
+* `celltype-reference-metadata.tsv`: This tsv file contains information about references used for CellAssign cell type annotation on the ScPCA Portal.
+* `diagnosis-groupings.tsv`: This tsv file contains one row per `submitted_diagnosis` associated with samples on the ScPCA Portal.
 For each `submitted_diagnosis`, a `diagnosis_group` is assigned.
-
-2. `disease-timing.tsv`: This tsv file contains one row per `submitted_disease_timing` associated with samples on the ScPCA Portal.
+* `disease-timing.tsv`: This tsv file contains one row per `submitted_disease_timing` associated with samples on the ScPCA Portal.
 For each `submitted_disease_timing`, a `standardized_disease_timing` is assigned.
+* `project-whitelist.txt`: This file contains a list of all projects that are currently active on the ScPCA Portal.
+* `sample-whitelist.txt`: This file contains a list of all samples that are currently active on the ScPCA Portal.
+* `scpca-project-celltype-metadata.tsv`: This tsv file provides the specific CellAssign cell typing reference used for each ScPCA project.
 
-3. `project-whiteliest.txt`: This file contains a list of all projects that are currently active on the ScPCA Portal.
 
 ## Color palettes
 
-The `palettes` folder contains any palettes used in generating the figures.
+The `palettes/` folder contains any palettes used in generating the figures.
 
-1. `diagnosis-group-palette.tsv`: This is the palette used to color the `diagnosis_group` for each sample.
-2. `suspension-palette.tsv`: This is the palette used to color libraries by `Single-cell` or `Single-nuclei`.
-3. `method-palette.tsv`: This is the palette used to color by quantification method used, either `Alevin-fry` or `Cell Ranger`.
+* `diagnosis-group-palette.tsv`: This is the palette used to color the `diagnosis_group` for each sample.
+* `disease-timing-palette.tsv`: This is the palette used to color the `disease_timing` for each sample.
+* `immune-palette.tsv`: This is the palette used to color certain immune cell types from the overall consensus cell types.
+* `suspension-palette.tsv`: This is the palette used to color libraries by `Single-cell` or `Single-nuclei`.
+* `method-palette.tsv`: This is the palette used to color by quantification method used, either `Alevin-fry` or `Cell Ranger`.
+* `validation-group-palette.tsv`: This is the palette used to color validation groups used to assess consensus cell types.
 
 ## Manuscript numbers
 
 The `manuscript-numbers` folder contains tables with total sample counts referenced when writing the manuscript.
-These tables are not included in the final manuscript and were created using `scripts/Fig1A_sample-disease-barchart.R`.
+These tables are not included in the final manuscript and were created as follows:
+
+* `bulk-analysis-counts.tsv` was created by `../scripts/Fig6-FigS8_bulk-analysis.R`
+* `diagnosis-group-counts.tsv` and `disease-timing-counts.tsv` were created by `../scripts/Fig1A_sample-disease-barchart.R`
 
 ## Renv
 
