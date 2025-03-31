@@ -126,7 +126,8 @@ hgg_lgg_immune_barplot <- stacked_barchart(
   summary_immune_df, 
   fill_column = "immune_celltype_group", 
   celltype_colors = celltype_colors_immune,
-  fill_label = "Immune cell type",
+  fill_label = "Immune cell type annotation",
+  y_label = "Percent of immune cells",
   lumped_label = "other",
   facet_variable = "subdiagnosis_group"
 )
