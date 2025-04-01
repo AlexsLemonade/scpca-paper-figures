@@ -381,19 +381,17 @@ create_immune_celltype_summary <- function(
 }
 
 
-
-# barchart with or without faceting
-# each bar is a stacked barchart using the fill_color
-# faceting is only done if a facet_variable is provided
-#' Stacked bar chart showing the percentage of cells annotated as each annotation
+#' Stacked bar chart showing the percentage of cells annotated as each annotation, with optional faceting
 #' Each column is a library ID and the fill of each bar corresponds to the percent of that sample annotated as that cell type
 #'
 #' @param df Data frame to use for plotting. Must have `fill_column`, `facet_variable` (if used), `library_id`, and `percent_cells_annotation` as columns
 #' @param fill_column Column to use for determing fill color of each bar
 #' @param celltype_colors Named vector of cell types and colors, names should match values in `fill_column`
 #' @param fill_label Label for fill column to show on the legend
+#' @param y_label Label for y-axis
 #' @param lumped_label Label for cells that are shown in grey and should be last in the legend order (e.g., unknown or other)
 #' @param facet_variable Column to use for faceting, default is NULL 
+#' @param x_axis_text_size Size of x-axis text, default is 4
 #' @param facet_col Number of columns to use in faceting, default is 2
 #' @param legend_position Where to put the legend, default is "right"
 #'
@@ -406,6 +404,7 @@ stacked_barchart <- function(
     fill_column,
     celltype_colors, # named vector where names match the values in fill_column
     fill_label = "Broad cell type annotation", 
+    y_label = "Percent of cells",
     lumped_label = "unknown",
     facet_variable = NULL, # use for faceting HGG vs. LGG 
     x_axis_text_size = 4, 
@@ -450,7 +449,7 @@ stacked_barchart <- function(
           legend.position = legend_position) +
     labs(
       x = "", 
-      y = "Percent of cells",
+      y = y_label,
       fill= fill_label
     )
   
