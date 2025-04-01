@@ -4,7 +4,7 @@ This folder contains all scripts used to generate figures and tables.
 Before running these scripts, you will need to prepare data for script input:
 
 * If you are a Data Lab staff member, you will need to run scripts described in the **Figure set up** section at the bottom of this document
-* You are not a Data Lab staff member, you will need to follow instructions provided in the file `../reproduce-figures-analysis/obtain-prepare-data.md`
+* If you are not a Data Lab staff member, you will need to follow instructions provided in the file `../reproduce-figures/obtain-prepare-data.md`
 
 ## Generating figures and tables
 

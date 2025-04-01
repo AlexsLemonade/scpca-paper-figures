@@ -136,14 +136,13 @@ If you are not a member of the Data Lab, please follow the instructions provided
 
 ### Instructons for Data Lab members
 
-To prepare data for figure and table generation, will need to run the figure setup scripts:
+To prepare data for figure and table generation, you will need to run the figure setup scripts:
 
 ```sh
 Rscript scripts/figure_setup/sync-metadata.R
 Rscript scripts/figure_setup/sync-data-files.R
 Rscript scripts/figure_setup/sync-reference-files.R
-Rscript scripts/figure_setup/assign-brain-classifications.R
-Rscript scripts/figure_setup/prepare-sample-whitelist.R
+Rscript scripts/figure_setup/sync-consensus-celltype-results.R
 ```
 
 If you have setup `1Password` to handle your AWS credentials, you will need to prefix scripts beginning with `sync-` with `op run --`, specifically:
@@ -180,7 +179,7 @@ The `palettes/` folder contains any palettes used in generating the figures.
 * `immune-palette.tsv`: This is the palette used to color certain immune cell types from the overall consensus cell types.
 * `suspension-palette.tsv`: This is the palette used to color libraries by `Single-cell` or `Single-nuclei`.
 * `method-palette.tsv`: This is the palette used to color by quantification method used, either `Alevin-fry` or `Cell Ranger`.
-* `validation-group-palette.tsv`: This is the palette used to color validation groups used to assess consensus cell types.
+* `validation-group-palette.tsv`: This is the palette used to color broad cell type annotations used to assess consensus cell types.
 
 ### Manuscript numbers
 
