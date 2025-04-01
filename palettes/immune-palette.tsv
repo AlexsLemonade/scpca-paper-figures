@@ -1,0 +1,14 @@
+immune_celltype_annotation	color
+T cell	#3283FE
+mature T cell	#53b5e0 
+memory T cell	#246eab 
+regulatory T cell	#4764df
+CD4-positive alpha-beta T cell	#71bee4 
+mature alpha-beta T cell	#7184b7
+macrophage	#1C8356 
+monocyte	#1CBE4F 
+dendritic cell	#16FF32 
+mononuclear phagocyte	#6f9e44
+myeloid leukocyte	#005700 
+neutrophil	#b7e86c
+other	#C0C0C0

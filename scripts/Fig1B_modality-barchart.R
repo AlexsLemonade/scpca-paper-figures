@@ -8,17 +8,12 @@ library(ggplot2)
 
 # Set up -----------------------------------------------------------------------
 
-# source in helper functions for plotting
-function_file <- here::here("scripts", "utils", "sample-summary-helper-functions.R")
-source(function_file)
-
 # path to metadata files
 library_metadata_file <- here::here( "s3_files", "scpca-library-metadata.tsv")
-sample_metadata_file <- here::here("s3_files", "scpca-sample-metadata.tsv")
-project_metadata_file <- here::here("s3_files", "scpca-project-metadata.tsv")
 
-# project whitelist file 
+# whitelist files 
 project_whitelist_file <- here::here("sample-info", "project-whitelist.txt")
+sample_whitelist_file <- here::here("sample-info", "sample-whitelist.txt")
 
 # color palette for single-cell/single-nuclei
 suspension_palette_file <- here::here("palettes", "suspension-palette.tsv")
@@ -40,11 +35,9 @@ modality_order <- c("Single suspension",
 # read in color palette
 suspension_palette <- readr::read_tsv(suspension_palette_file)
 
-# read in project whitelist
+# read in project and sample whitelists
 project_whitelist <- readLines(project_whitelist_file)
-
-# get sample whitelist 
-sample_whitelist <- get_sample_whitelist(project_metadata_file, project_whitelist)
+sample_whitelist <- readLines(sample_whitelist_file)
 
 # read in library metadata
 library_metadata_df <- readr::read_tsv(library_metadata_file)
