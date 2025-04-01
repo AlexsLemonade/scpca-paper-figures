@@ -8,8 +8,14 @@ This repo contains the figures and tables included in the ScPCA manuscript.
 
 - [Summary of figures and tables](#summary-of-figures-and-tables)
 - [Generating figures and tables](#generating-figures-and-tables)
-- [Sample info](#sample-info)
-- [Color palettes](#color-palettes)
+  - [Instructions to prepare data](#instructions-to-prepare-data)
+  - [Instructons for Data Lab members](#instructons-for-data-lab-members)
+- [Additional repository contents](#additional-repository-contents)
+  - [Sample info](#sample-info)
+  - [Color palettes](#color-palettes)
+  - [Manuscript numbers](#manuscript-numbers)
+  - [Nextflow logs](#nextflow-logs)
+  - [Analysis](#analysis)
 - [Renv](#renv)
 - [Contributing](#contributing)
 
@@ -44,8 +50,14 @@ Below is a summary of all figures and tables in the paper.
 
 **Figure 5**
 
-- A. Dot plot summarizing marker gene expression in consensus cell types in Brain and CNS samples. 
-- B. Bar plot summarizing the percentage of cells annotated as each consensus cell type in High-grade and Low-grade glioma samples. 
+- A. Dot plot summarizing marker gene expression in consensus cell types in Brain and CNS samples.
+- B. Bar plot summarizing the percentage of cells annotated as each consensus cell type in High-grade and Low-grade glioma samples.
+- C. Bar plot summarizing the percentage of cells annotated as each immune consensus cell type, with an emphasis on cells in the T-cell and myeloid lineages, in High-grade and Low-grade glioma samples.
+
+**Figure 6**
+
+- A. Scatterplots of the relationship between bulk and pseudobulk counts for relevant Brain and CNS projects.
+- B. Bar plots of odds ratios from overrepresentation analysis of bulk expression data for relevant Brain and CNS projects.
 
 **Supplemental Figure 1**
 
@@ -76,15 +88,20 @@ Comparison of delta median statistic obtained from running `SingleR` with differ
 
 **Supplemental Figure 6**
 
-- A. Dot plot summarizing marker gene expression in consensus cell types in Leukemia samples. 
-- B. Dot plot summarizing marker gene expression in consensus cell types in Sarcoma samples. 
-- C. Dot plot summarizing marker gene expression in consensus cell types in Other solid tumor samples. 
+- A. Dot plot summarizing marker gene expression in consensus cell types in Leukemia samples.
+- B. Dot plot summarizing marker gene expression in consensus cell types in Sarcoma samples.
+- C. Dot plot summarizing marker gene expression in consensus cell types in Other solid tumor samples.
 
 **Supplemental Figure 7**
 
-- A. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Leukemia samples. 
-- B. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Sarcoma samples. 
-- C. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Other solid tumor samples. 
+- A. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Leukemia samples.
+- B. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Sarcoma samples.
+- C. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Other solid tumor samples.
+
+**Supplemental Figure 8**
+
+- A. Scatterplots of the relationship between bulk and pseudobulk counts for projects not shown in Figure 6A.
+- B. Bar plots of odds ratios from overrepresentation analysis of bulk expression data for projects not shown in Figure 6B.
 
 
 **Table S1**
@@ -98,29 +115,37 @@ List of references used for each project on the Portal with `CellAssign`, includ
 
 ## Generating figures and tables
 
-⚠️ _This section currently requires internal Data Lab access to data_
+The `figures/` and `tables/` folders contain the most up-to-date version of each of the figures and tables, respectively.
+The `scripts/` folder contains all scripts used to create the figures and tables.
+See the [`README` for the `scripts` folder](./scripts/README.md) for more information on figure and table scripts.
 
-The `figures` and `tables` folders contain the most up-to-date version of each of the figures and tables, respectively.
-The `scripts` directory contains all scripts used to create the figures and tables.
-See the [`README` for the `scripts` directory](./scripts/README.md) for more information on figure and table scripts.
 
-To generate all figures and tables, run the script [`generate-figures-tables.sh`](generate-figures-tables.sh) as:
+The [`generate-figures-tables.sh`](generate-figures-tables.sh) script can be used to prepare all figures and tables.
+The script assumes that a folder called `s3_files` has been populated with relevant data files.
+Therefore, **before running this script** you will first need to prepare these input data files, as described in the sections below.
+
+Then, run the figure generation script as:
 
 ```sh
 bash generate-figures-tables.sh
 ```
 
-Note that this script assumes that the `s3_files` directory has been populated with relevant data files.
-These files can be obtained by first running the figure setup scripts, which currently require S3 bucket access as a Data Lab member.
-Setup scripts can be run as:
+### Instructions to prepare data
+
+If you are not a member of the Data Lab, please follow the instructions provided in `reproduce-figures/obtain-prepare-data.md` to obtain and prepare additional data needed to regenerate figures and tables.
+
+### Instructons for Data Lab members
+
+To prepare data for figure and table generation, you will need to run the figure setup scripts:
 
 ```sh
 Rscript scripts/figure_setup/sync-metadata.R
 Rscript scripts/figure_setup/sync-data-files.R
 Rscript scripts/figure_setup/sync-reference-files.R
+Rscript scripts/figure_setup/sync-consensus-celltype-results.R
 ```
 
-If you have setup `1Password` to handle your AWS credentials, you will need to prefix those lines with `op run --`:
+If you have setup `1Password` to handle your AWS credentials, you will need to prefix scripts beginning with `sync-` with `op run --`, specifically:
 
 ```sh
 op run -- Rscript scripts/figure_setup/sync-metadata.R
@@ -128,31 +153,52 @@ op run -- Rscript scripts/figure_setup/sync-data-files.R
 op run -- Rscript scripts/figure_setup/sync-reference-files.R
 ```
 
+## Additional repository contents
 
-## Sample info
+### Sample info
 
-The `sample-info` folder contains metadata files used to create figures and tables.
+The `sample-info/` folder contains metadata files used to create figures and tables.
 
-1. `diagnosis-groupings.tsv`: This tsv file contains one row per `submitted_diagnosis` associated with samples on the ScPCA Portal.
+* `brain-classifications-no-multiplexed.tsv`: This tsv file classifies brain-related diagnoses in the ScPCA Portal into "High-grade glioma" and "Low-grade glioma" for plotting.
+* `celltype-reference-metadata.tsv`: This tsv file contains information about references used for CellAssign and SingleR cell type annotation on the ScPCA Portal.
+* `diagnosis-groupings.tsv`: This tsv file contains one row per `submitted_diagnosis` associated with samples on the ScPCA Portal.
 For each `submitted_diagnosis`, a `diagnosis_group` is assigned.
-
-2. `disease-timing.tsv`: This tsv file contains one row per `submitted_disease_timing` associated with samples on the ScPCA Portal.
+* `disease-timing.tsv`: This tsv file contains one row per `submitted_disease_timing` associated with samples on the ScPCA Portal.
 For each `submitted_disease_timing`, a `standardized_disease_timing` is assigned.
+* `project-whitelist.txt`: This file contains a list of all projects that are currently active on the ScPCA Portal.
+* `sample-whitelist.txt`: This file contains a list of all samples that are currently active on the ScPCA Portal.
+* `scpca-project-celltype-metadata.tsv`: This tsv file provides the specific CellAssign cell typing reference used for each ScPCA project.
 
-3. `project-whiteliest.txt`: This file contains a list of all projects that are currently active on the ScPCA Portal.
 
-## Color palettes
+### Color palettes
 
-The `palettes` folder contains any palettes used in generating the figures.
+The `palettes/` folder contains any palettes used in generating the figures.
 
-1. `diagnosis-group-palette.tsv`: This is the palette used to color the `diagnosis_group` for each sample.
-2. `suspension-palette.tsv`: This is the palette used to color libraries by `Single-cell` or `Single-nuclei`.
-3. `method-palette.tsv`: This is the palette used to color by quantification method used, either `Alevin-fry` or `Cell Ranger`.
+* `diagnosis-group-palette.tsv`: This is the palette used to color the `diagnosis_group` for each sample.
+* `disease-timing-palette.tsv`: This is the palette used to color the `disease_timing` for each sample.
+* `immune-palette.tsv`: This is the palette used to color certain immune cell types from the overall consensus cell types.
+* `suspension-palette.tsv`: This is the palette used to color libraries by `Single-cell` or `Single-nuclei`.
+* `method-palette.tsv`: This is the palette used to color by quantification method used, either `Alevin-fry` or `Cell Ranger`.
+* `validation-group-palette.tsv`: This is the palette used to color broad cell type annotations used to assess consensus cell types.
 
-## Manuscript numbers
+### Manuscript numbers
 
 The `manuscript-numbers` folder contains tables with total sample counts referenced when writing the manuscript.
-These tables are not included in the final manuscript and were created using `scripts/Fig1A_sample-disease-barchart.R`.
+These tables are not included in the final manuscript and were created as follows:
+
+* `bulk-analysis-counts.tsv` was created by `../scripts/Fig6-FigS8_bulk-analysis.R`
+* `diagnosis-group-counts.tsv` and `disease-timing-counts.tsv` were created by `../scripts/Fig1A_sample-disease-barchart.R`
+
+
+### Nextflow logs
+
+The `nextflow_logs` folder contains text files with Nextflow log information from running the `scpca-nf` pipeline.
+These files are specifically used by `scripts/FigS1A_memory-time-comparison.R` to create Figure 1A.
+
+### Analysis
+
+This `analysis` folder contains analyses comparing bulk and pseudobulk RNA-Seq data.
+Please refer to `analysis/README.md` for additional details.
 
 ## Renv
 
@@ -168,6 +214,6 @@ Each time you install or use new packages, you will want to run `renv::snapshot(
 
 In addition, this repository uses the [`parsable-r`](https://lorenzwalthert.github.io/precommit/articles/available-hooks.html#parsable-r) pre-commit hook to ensure R scripts are parsable.
 To use this hook, first ensure that that the `pre-commit` package is installed on your system; you can install it with your favorite method (`pip install pre-commit` or `conda install pre-commit`).
-Then, run `pre-commit install` in the `scpca-paper-figures` directory to enable pre-commit hooks in this repository.
-This will install the hooks in the `.git/hooks` directory, and they will be run automatically when you commit changes.
+Then, run `pre-commit install` in the `scpca-paper-figures` folder to enable pre-commit hooks in this repository.
+This will install the hooks in the `.git/hooks` folder, and they will be run automatically when you commit changes.
 If the hook fails, the commit will be aborted, and you will need to fix the errors and re-commit.

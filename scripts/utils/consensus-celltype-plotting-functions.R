@@ -261,18 +261,137 @@ create_celltype_summary <- function(
 }
 
 
-# barchart with or without faceting
-# each bar is a stacked barchart using the fill_color
-# faceting is only done if a facet_variable is provided
-#' Stacked bar chart showing the percentage of cells annotated as each annotation
+#' Prep data frame to use for creating stacked bar plots showing immune cell types
+#'   with an emphasis on T and myeloid cell types 
+#'
+#' @param celltype_files List of files containing consensus cell type results
+#' @param all_immune_celltypes Vector of all consensus immune cell types possible
+#' @param tcell_celltypes Vector of T cell types to plot 
+#' @param myeloid_celltypes Vector of myeloid cell types to plot 
+#' @param frac_immune_threshold Threshold of fraction of immune cells in library required to include a library in the figure
+#'
+#' @returns Summarized data frame for input to plotting
+create_immune_celltype_summary <- function(
+    celltype_files,
+    all_immune_celltypes, 
+    tcell_celltypes, 
+    myeloid_celltypes, 
+    frac_immune_threshold
+){
+  
+  # read in consensus files and create data frame
+  consensus_df <- celltype_files |> 
+    purrr::map(readr::read_tsv) |> 
+    dplyr::bind_rows()
+  
+  # Determine libraries to remove as those with < frac_immune_threshold
+  #  fraction of immune cells out of total
+  remove_libraries <- consensus_df |>
+    # Keep only the immune cells and remove PDX
+    dplyr::filter(
+      sample_type == "patient tissue"
+    ) |>
+    dplyr::mutate(
+      category = ifelse(
+        consensus_annotation %in% c(tcell_celltypes, myeloid_celltypes), 
+        "immune", 
+        "other"
+      )
+    )  |>
+    dplyr::count(library_id, category) |>
+    tidyr::pivot_wider(names_from = category, values_from = n, values_fill = 0) |>
+    dplyr::rowwise() |>
+    dplyr::mutate(frac_immune = immune / (other + immune)) |>
+    dplyr::filter(frac_immune < frac_immune_threshold) |>
+    dplyr::pull(library_id)
+  
+  # subset to only immune celltypes, and add column for plotting
+  consensus_df <- consensus_df |>
+    # Keep only the immune cells and remove PDX
+    dplyr::filter(
+      consensus_annotation %in% all_immune_celltypes, 
+      sample_type == "patient tissue"
+    ) |>
+    # Create immune_celltype_group label with value "other" when cells are not T or myeloid types
+    dplyr::mutate(
+      immune_celltype_group = ifelse(
+        consensus_annotation %in% c(tcell_celltypes, myeloid_celltypes), 
+        consensus_annotation, 
+        "other"
+      )
+    ) 
+  
+  # get total cell count and number of assigned cell types per library
+  totals_df <- consensus_df |> 
+    dplyr::group_by(library_id) |> 
+    dplyr::summarize(
+      total_cells_per_library = dplyr::n()
+    ) 
+  
+  # get summary stats for each cell type in each library  
+  summary_df <- consensus_df |> 
+    dplyr::left_join(totals_df, by = "library_id") |> 
+    # remove libraries with insufficient cells
+    dplyr::filter(!(library_id %in% remove_libraries)) |>
+    dplyr::group_by(project_id, library_id, sample_id, immune_celltype_group) |> 
+    dplyr::summarize(total_cells_per_annotation = dplyr::n(),
+                     total_cells_per_library = unique(total_cells_per_library),
+                     percent_cells_annotation = round((total_cells_per_annotation / total_cells_per_library) * 100, 2)) |>
+    dplyr::ungroup()
+  
+  
+  # Determine the order for immune cell categories based on:
+  # - myeloid and t-cell types should be grouped together
+  # - within each group, cell types should be ordered based on _overall frequency_
+  # - finally, "other" should be first
+  immune_factor_order <- summary_df |>
+    dplyr::filter(immune_celltype_group != "other") |>
+    # add up all the fractions as a proxy for overall frequency
+    dplyr::group_by(immune_celltype_group) |>
+    dplyr::summarize(total_frac = sum(percent_cells_annotation)) |>
+    # assign groupings so we can order by them
+    dplyr::mutate(
+      immune_group = ifelse(immune_celltype_group %in% tcell_celltypes, "tcell", "myeloid")
+    ) |>
+    dplyr::group_by(immune_group) |>
+    dplyr::arrange(desc(total_frac), .by_group = TRUE) |>
+    dplyr::pull(immune_celltype_group)
+  immune_factor_order <- c("other", immune_factor_order)
+  
+  # order by % of myeloid cells 
+  # get a vector of library ids ordered by total percentage annotated
+  library_levels <- summary_df |> 
+    dplyr::filter(immune_celltype_group %in% myeloid_celltypes) |> 
+    dplyr::group_by(library_id) |> 
+    dplyr::summarize(
+      myeloid_frac = sum(total_cells_per_annotation)/unique(total_cells_per_library)
+    ) |>
+    dplyr::arrange(desc(myeloid_frac)) |> 
+    dplyr::pull(library_id)
+  
+  # reorder by total percentage annotated 
+  summary_df <- summary_df |> 
+    dplyr::mutate(
+      library_id = forcats::fct_relevel(library_id, library_levels),
+      immune_celltype_group = forcats::fct_relevel(immune_celltype_group, immune_factor_order)
+    ) |>
+    unique()  
+  
+  return(summary_df)
+}
+
+
+#' Stacked bar chart showing the percentage of cells annotated as each annotation, with optional faceting
 #' Each column is a library ID and the fill of each bar corresponds to the percent of that sample annotated as that cell type
 #'
 #' @param df Data frame to use for plotting. Must have `fill_column`, `facet_variable` (if used), `library_id`, and `percent_cells_annotation` as columns
 #' @param fill_column Column to use for determing fill color of each bar
 #' @param celltype_colors Named vector of cell types and colors, names should match values in `fill_column`
 #' @param fill_label Label for fill column to show on the legend
+#' @param y_label Label for y-axis
 #' @param lumped_label Label for cells that are shown in grey and should be last in the legend order (e.g., unknown or other)
 #' @param facet_variable Column to use for faceting, default is NULL 
+#' @param x_axis_text_size Size of x-axis text, default is 4
 #' @param facet_col Number of columns to use in faceting, default is 2
 #' @param legend_position Where to put the legend, default is "right"
 #'
@@ -285,8 +404,10 @@ stacked_barchart <- function(
     fill_column,
     celltype_colors, # named vector where names match the values in fill_column
     fill_label = "Broad cell type annotation", 
+    y_label = "Percent of cells",
     lumped_label = "unknown",
     facet_variable = NULL, # use for faceting HGG vs. LGG 
+    x_axis_text_size = 4, 
     facet_col = 2,
     legend_position = "right"
 ){
@@ -296,6 +417,13 @@ stacked_barchart <- function(
     "Names of celltype_colors must match values in fill_column" = all(df[[fill_column]] %in% names(celltype_colors))
   )
   
+  plot_breaks <- c(
+    setdiff(
+      levels(df[[fill_column]]), 
+      lumped_label
+    ), 
+    lumped_label
+  )
   
   barchart <- ggplot(df) + 
     aes(
@@ -306,10 +434,12 @@ stacked_barchart <- function(
     geom_col() + 
     scale_y_continuous(expand = c(0,0)) +
     # make sure unknown is last but all other legend order is based on when it appears 
-    scale_fill_manual(values = celltype_colors,
-                      breaks = c(setdiff(unique(df[[fill_column]]), lumped_label), lumped_label)) +
+    scale_fill_manual(
+      values = celltype_colors,
+      breaks = plot_breaks
+    ) +
     theme_classic() +
-    theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1, size = 8),
+    theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1, size = x_axis_text_size),
           strip.background = element_rect(fill = "transparent", color = "black", linewidth = 0.5),
           # add a square around each of the plots
           panel.background = element_rect(colour = "black", linewidth=0.5),
@@ -319,7 +449,7 @@ stacked_barchart <- function(
           legend.position = legend_position) +
     labs(
       x = "", 
-      y = "Percent of cells",
+      y = y_label,
       fill= fill_label
     )
   
