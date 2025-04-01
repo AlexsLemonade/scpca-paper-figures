@@ -64,69 +64,13 @@ umi_pdf_file <- file.path(pdf_dir, "FigS1C-umi-benchmarking.pdf")
 genes_detected_pdf_file <- file.path(pdf_dir, "FigS1D-genes-detected-benchmarking.pdf")
 gene_exp_png_file <- file.path(png_dir, "FigS1B-gene-exp-benchmarking.png")
 
-# Create SCE objects -----------------------------------------------------------
+# output TSV files of figure data
+repro_dir <- here::here("reproduce-figures")
+fs::dir_create(repro_dir)
+benchmark_cell_data_tsv <- file.path(repro_dir, "FigS1C_FigS1D-cell-metrics-data.tsv")
+benchmark_gene_data_tsv <- file.path(repro_dir, "FigS1B-gene-expression-data.tsv")
 
-# read in alevin-fry output as SCEs
-af_sces <- af_dir_list |> 
-  purrr::map(
-    \(quant_dir){
-      sce <- scpcaTools::read_alevin(
-        quant_dir = quant_dir,
-        fry_mode = TRUE) |> 
-        # filter empty droplets 
-        scpcaTools::filter_counts()
-    }
-  )
 
-# read in cell ranger output as SCEs 
-cellranger_sces <- cellranger_dir_list |> 
-  purrr::map(scpcaTools::read_cellranger) 
-
-# add per cell and per feature info to each sce 
-all_sces <- list(af_sces, cellranger_sces) |> 
-  purrr::set_names(c("Alevin-fry", "Cell Ranger")) |> 
-  purrr::map(\(list){
-    list |> 
-      purrr::map(\(sce) {
-        sce |> 
-          scuttle::addPerCellQCMetrics(subsets = list(mito = mito_genes[mito_genes %in% rownames(sce)])) |>
-          scuttle::addPerFeatureQCMetrics()
-      })
-  })
-
-# Prep for plotting ------------------------------------------------------------
-
-# read in library metadata
-library_df <- readr::read_tsv(library_metadata_file) |> 
-  dplyr::select(run_id = scpca_run_id, scpca_library_id)
-
-# read in suspension palette 
-suspension_palette <- readr::read_tsv(suspension_palette_file) |> 
-  dplyr::rename(seq_unit = suspension_type)
-
-# create a data frame with coldata info for each tool, run id combo 
-coldata_df <- all_sces |> 
-  purrr::map_df(
-    \(x) purrr::map_df(x, scpcaTools::coldata_to_df, .id = "run_id"),
-    .id = "tool"
-    ) |> 
-  # create new columns with seq unit 
-  dplyr::mutate(seq_unit = dplyr::case_when(run_id %in% single_cell ~ "Single-cell",
-                                            run_id %in% single_nuclei ~ "Single-nuclei")) |>
-  dplyr::left_join(library_df) |>
-  dplyr::mutate(plot_id = glue::glue("{scpca_library_id} ({seq_unit})")) |> 
-  dplyr::left_join(suspension_palette)
-
-# filter for cells that are found in both af + cellranger
-cell_counts <- coldata_df |>  
-  dplyr::count(cell_id, run_id)
-
-common_cells <- cell_counts |>
-  dplyr::filter(n == 2) |>
-  dplyr::pull(cell_id)
-
-coldata_common <- coldata_df |>
-  dplyr::filter(cell_id %in% common_cells)
 
 # Set up colors ----------------------------------------------------------------
 
@@ -148,8 +92,114 @@ suspension_colors <- suspension_palette$color |>
 backgrounds <- rep(c("Single-cell", "Single-nuclei"), each = 3) |>
   purrr::map(\(x) element_rect(fill = suspension_colors[[x]]))
 
-# Plot cell metrics ------------------------------------------------------------
 
+
+# Run code to prepare data if the TSVs don't exist
+if (!file.exists(benchmark_cell_data_tsv) & !(file.exists(benchmark_gene_data_tsv))) {
+  
+  # Create SCE objects -----------------------------------------------------------
+  
+  # read in alevin-fry output as SCEs
+  af_sces <- af_dir_list |> 
+    purrr::map(
+      \(quant_dir){
+        sce <- scpcaTools::read_alevin(
+          quant_dir = quant_dir,
+          fry_mode = TRUE) |> 
+          # filter empty droplets 
+          scpcaTools::filter_counts()
+      }
+    )
+  
+  # read in cell ranger output as SCEs 
+  cellranger_sces <- cellranger_dir_list |> 
+    purrr::map(scpcaTools::read_cellranger) 
+  
+  # add per cell and per feature info to each sce 
+  all_sces <- list(af_sces, cellranger_sces) |> 
+    purrr::set_names(c("Alevin-fry", "Cell Ranger")) |> 
+    purrr::map(\(list){
+      list |> 
+        purrr::map(\(sce) {
+          sce |> 
+            scuttle::addPerCellQCMetrics(subsets = list(mito = mito_genes[mito_genes %in% rownames(sce)])) |>
+            scuttle::addPerFeatureQCMetrics()
+        })
+    })
+  
+  # Prep coldata ------------------------------------------------------------
+  
+  # read in library metadata
+  library_df <- readr::read_tsv(library_metadata_file) |> 
+    dplyr::select(run_id = scpca_run_id, scpca_library_id)
+  
+  # read in suspension palette 
+  suspension_palette <- readr::read_tsv(suspension_palette_file) |> 
+    dplyr::rename(seq_unit = suspension_type)
+  
+  # create a data frame with coldata info for each tool, run id combo 
+  coldata_df <- all_sces |> 
+    purrr::map_df(
+      \(x) purrr::map_df(x, scpcaTools::coldata_to_df, .id = "run_id"),
+      .id = "tool"
+      ) |> 
+    # create new columns with seq unit 
+    dplyr::mutate(seq_unit = dplyr::case_when(run_id %in% single_cell ~ "Single-cell",
+                                              run_id %in% single_nuclei ~ "Single-nuclei")) |>
+    dplyr::left_join(library_df) |>
+    dplyr::mutate(plot_id = glue::glue("{scpca_library_id} ({seq_unit})")) |> 
+    dplyr::left_join(suspension_palette)
+  
+  # filter for cells that are found in both af + cellranger
+  cell_counts <- coldata_df |>  
+    dplyr::count(cell_id, run_id)
+  
+  common_cells <- cell_counts |>
+    dplyr::filter(n == 2) |>
+    dplyr::pull(cell_id)
+  
+  coldata_common <- coldata_df |>
+    dplyr::filter(cell_id %in% common_cells)
+  
+  # prep row data ----------------------------------------------------------------
+  
+  ## Mean gene expression correlation  
+  # grab rowdata from filtered sces
+  rowdata_df <- all_sces |> 
+    purrr::map_df(
+      \(x) purrr::map_df(x, scpcaTools::rowdata_to_df, .id = "run_id"),
+      .id = "tool"
+    ) |>
+    # annotate as single cell vs. single nuclei
+    dplyr::mutate(seq_unit = dplyr::case_when(run_id %in% single_cell ~ "Single-cell",
+                                              run_id %in% single_nuclei ~ "Single-nuclei")) |> 
+    dplyr::left_join(library_df) |>
+    dplyr::mutate(plot_id = glue::glue("{scpca_library_id} ({seq_unit})"))
+  
+  # remove genes with low detection 
+  rowdata_cor <- rowdata_df |>
+    dplyr::filter(detected >= 5.0) |> 
+    # spread table to put mean expression for Alevin-fry and Cell ranger in its own columns for plotting
+    dplyr::select(tool, gene_id, plot_id, seq_unit, mean) |>
+    # spread the mean expression stats to one column per caller
+    tidyr::pivot_wider(id_cols = c(gene_id, plot_id, seq_unit),
+                       names_from = c("tool"),
+                       values_from = mean) |>
+    # drop rows with NA values to ease correlation calculations
+    tidyr::drop_na()
+  
+  # Export TSVs for reproducibility ----------------
+  readr::write_tsv(coldata_common, benchmark_cell_data_tsv)
+  readr::write_tsv(rowdata_cor, benchmark_gene_data_tsv)
+  
+} else {
+  # Read TSVs if they already exist
+  coldata_common <- readr::read_tsv(benchmark_cell_data_tsv)
+  rowdata_cor <- readr::read_tsv(benchmark_gene_data_tsv)
+}
+  
+# Plot cell metrics ------------------------------------------------------------
+  
 # create combined UMI per cell plot 
 umi_plot <- ggplot(coldata_common, aes(x = sum, color = tool)) + 
   geom_density() + 
@@ -176,32 +226,6 @@ genes_detected_plot <- ggplot(coldata_common, aes(x = detected, color = tool)) +
 
 ggsave(filename = genes_detected_pdf_file, plot = genes_detected_plot, width = 7, height = 7)
 
-# prep row data ----------------------------------------------------------------
-
-## Mean gene expression correlation  
-# grab rowdata from filtered sces
-rowdata_df <- all_sces |> 
-  purrr::map_df(
-    \(x) purrr::map_df(x, scpcaTools::rowdata_to_df, .id = "run_id"),
-    .id = "tool"
-  ) |>
-  # annotate as single cell vs. single nuclei
-  dplyr::mutate(seq_unit = dplyr::case_when(run_id %in% single_cell ~ "Single-cell",
-                                            run_id %in% single_nuclei ~ "Single-nuclei")) |> 
-  dplyr::left_join(library_df) |>
-  dplyr::mutate(plot_id = glue::glue("{scpca_library_id} ({seq_unit})"))
-
-# remove genes with low detection 
-rowdata_cor <- rowdata_df |>
-  dplyr::filter(detected >= 5.0) |> 
-  # spread table to put mean expression for Alevin-fry and Cell ranger in its own columns for plotting
-  dplyr::select(tool, gene_id, plot_id, seq_unit, mean) |>
-  # spread the mean expression stats to one column per caller
-  tidyr::pivot_wider(id_cols = c(gene_id, plot_id, seq_unit),
-                     names_from = c("tool"),
-                     values_from = mean) |>
-  # drop rows with NA values to ease correlation calculations
-  tidyr::drop_na()
 
 # Plot gene metrics ------------------------------------------------------------
 
@@ -222,3 +246,4 @@ gene_exp_plot <- ggplot(rowdata_cor, aes(x = `Alevin-fry`, y = `Cell Ranger`, co
   )
 
 ggsave(filename = gene_exp_png_file, plot = gene_exp_plot, width = 7, height = 7)
+
