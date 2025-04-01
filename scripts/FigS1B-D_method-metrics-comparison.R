@@ -65,7 +65,7 @@ genes_detected_pdf_file <- file.path(pdf_dir, "FigS1D-genes-detected-benchmarkin
 gene_exp_png_file <- file.path(png_dir, "FigS1B-gene-exp-benchmarking.png")
 
 # output TSV files of figure data
-repro_dir <- here::here("reproduce-figures-analysis")
+repro_dir <- here::here("reproduce-figures")
 fs::dir_create(repro_dir)
 benchmark_cell_data_tsv <- file.path(repro_dir, "FigS1C_FigS1D-cell-metrics-data.tsv")
 benchmark_gene_data_tsv <- file.path(repro_dir, "FigS1B-gene-expression-data.tsv")
