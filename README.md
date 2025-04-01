@@ -160,7 +160,7 @@ op run -- Rscript scripts/figure_setup/sync-reference-files.R
 The `sample-info/` folder contains metadata files used to create figures and tables.
 
 * `brain-classifications-no-multiplexed.tsv`: This tsv file classifies brain-related diagnoses in the ScPCA Portal into "High-grade glioma" and "Low-grade glioma" for plotting.
-* `celltype-reference-metadata.tsv`: This tsv file contains information about references used for CellAssign cell type annotation on the ScPCA Portal.
+* `celltype-reference-metadata.tsv`: This tsv file contains information about references used for CellAssign and SingleR cell type annotation on the ScPCA Portal.
 * `diagnosis-groupings.tsv`: This tsv file contains one row per `submitted_diagnosis` associated with samples on the ScPCA Portal.
 For each `submitted_diagnosis`, a `diagnosis_group` is assigned.
 * `disease-timing.tsv`: This tsv file contains one row per `submitted_disease_timing` associated with samples on the ScPCA Portal.
