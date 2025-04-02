@@ -13,24 +13,20 @@ In addition to files provided already in the repository, you will also need the 
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Data for figure and table scripts](#data-for-figure-and-table-scripts)
-  - [File organization](#file-organization)
-  - [Data files from the ScPCA Portal](#data-files-from-the-scpca-portal)
-  - [Reference files](#reference-files)
-  - [ScPCA metadata files](#scpca-metadata-files)
-  - [TODO: Files to reproduce Figures S1B-D](#todo-files-to-reproduce-figures-s1b-d)
-  - [TODO: Consensus cell type files](#todo-consensus-cell-type-files)
+- [File organization](#file-organization)
+- [Data files from the ScPCA Portal](#data-files-from-the-scpca-portal)
+- [Reference files](#reference-files)
+- [ScPCA metadata files](#scpca-metadata-files)
+- [TODO: Files to reproduce Figures S1B-D](#todo-files-to-reproduce-figures-s1b-d)
+- [TODO: Consensus cell type files](#todo-consensus-cell-type-files)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
-
-## Data for figure and table scripts
-
 This section provides instructions on how to obtain and prepare data files to run code in the `scripts/` directory.
 By preparing data as described in this file, you will not need to run any scripts in `scripts/figure_setup/` which are meant for internal Data Lab use.
 
-### File organization
+## File organization
 
 To faciliate reproducing figures, we recommend organizing files into this structure in a directory called `s3_files`, to be stored at the top-level of the repository.
 Instructions on how to obtain each of these files are given in the following sections.
@@ -74,7 +70,7 @@ Instructions on how to obtain each of these files are given in the following sec
 └── scpca-sample-metadata.tsv
 ```
 
-### Data files from the ScPCA Portal
+## Data files from the ScPCA Portal
 
 The table below provides an overview of RDS files with `SingleCellExperiment` that need to be downloaded from the ScPCA Portal to reproduce figures:
 
@@ -95,7 +91,7 @@ The table below provides an overview of RDS files with `SingleCellExperiment` th
 
 
 
-### Reference files
+## Reference files
 
 All files in the `reference_files` directory are available from the public AWS S3 bucket `s3://scpca-references`.
 They can be obtained using the `awscli` tool with the following commands:
@@ -106,7 +102,7 @@ aws s3 cp s3://scpca-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens
 aws s3 cp s3://scpca-references/celltype/singler_models/ . --recursive --exclude "*" --include "*.rds" --no-sign-request
 ```
 
-### ScPCA metadata files
+## ScPCA metadata files
 
 There are two metadata files you will need, `scpca-library-metadata.tsv` and `scpca-sample-metadata.tsv`.
 To create them, we offer a helper script in `prepare-metadata-files.R` to create versions of these files which you can use to reproduce figures.
@@ -130,10 +126,10 @@ This will create files named `scpca-library-metadata.tsv` and `scpca-sample-meta
 These files will be created in the same directory from which you run the script.
 
 
-### TODO: Files to reproduce Figures S1B-D
+## TODO: Files to reproduce Figures S1B-D
 
 Forthcoming section: Here, we can describe the benchmarking TSV files (https://github.com/AlexsLemonade/scpca-paper-figures/issues/216)
 
-### TODO: Consensus cell type files
+## TODO: Consensus cell type files
 
 Forthcoming section: Here, we can describe obtaining consensus cell type files which is TBD.
