@@ -6,4 +6,10 @@ This directory contains analysis results.
     * RDS files contain the fitted model itself built as `bulk ~ pseudobulk + (1|sample_id)` with the `lme4` package
     * TSV files contain the underlying data, including Ensembl ids, that was modeled, as well as model residuals
 * All TSV files `<project id>_ORA-odds-ratios.tsv` contain results from overrepresentation analysis for the given project
-  * Associated HTMLs associated with this analysis are available in `../notebooks/ora-htmls`
+  * These files contain the following columns:
+    * `geneset_cell_type`: The consensus cell type evaluated for overrepresentation
+    * `modality`: Whether the result represents bulk or pseudobulk gene set overrepresentation
+    * `odds_ratio`: The odds ratio that cell type marker genes are present in the modality outliers relative to other genes
+    * `p_value`: Uncorrected P-value from permutation test with N=10,000 replicates
+    * `p_adj_bh`: FDR-corrected P-value with Benjamini-Hochberg
+  * Associated HTMLs for this analysis are available in `../notebooks/ora-htmls`
