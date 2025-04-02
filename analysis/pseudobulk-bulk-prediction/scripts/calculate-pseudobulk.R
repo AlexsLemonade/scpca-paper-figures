@@ -21,6 +21,11 @@ option_list <- list(
     help = "Input directory containing all _processed.rds files, which will be found recursively"
   ),
   make_option(
+    "--map_file", 
+    type = "character", 
+    help = "Path to TSV which contains samples used in analysis, which will be used to determine which processed RDS files to use."
+  ),
+  make_option(
     "--output_pseudobulk_file",
     type = "character",
     help = "Path to output TSV to save pseudobulk calculations"
@@ -36,35 +41,44 @@ opts <- parse_args(OptionParser(option_list = option_list))
 # Check inputs and paths -------
 stopifnot(
   "An input directory must be provided to `input_dir`." = !is.null(opts$input_dir),
-  "A path to an output TSV file to save pseudobulk counts must be specified with `output_pseudoulk_file`." = !is.null(opts$output_pseudobulk_file),
+  "A map file must be provided to `map_file`." = !is.null(opts$map_file),
+  "A path to an output TSV file to save pseudobulk counts must be specified with `output_pseudobulk_file`." = !is.null(opts$output_pseudobulk_file),
   "A path to an output TSV file to save fraction of single-cell samples genes are expressed in must be specified with `output_frac_expressed_file`." = !is.null(opts$output_frac_expressed_file)
 )
 fs::dir_create(dirname(opts$output_pseudobulk_file))
 fs::dir_create(dirname(opts$output_frac_expressed_file))
 
 
-# Read in all SCEs----------------
+# Prepare SCEs for calculations ----------------
 rds_files <- list.files(
   path = opts$input_dir,
   pattern = "_processed\\.rds$",
   recursive = TRUE
-)
+) |>
+  purrr::set_names(
+    \(f){stringr::str_split_i(f, pattern = "/", i = 1)}
+  )
 stopifnot(
   "Could not find any _processed.rds files in the provided `input_dir`." = length(rds_files) > 0
 )
 
-sample_ids <- stringr::str_split_i(rds_files, pattern = "/", i = 1)
-rds_files <- file.path(opts$input_dir, rds_files) # update to contain full path
-names(rds_files) <- sample_ids
+# Read in map file for subsetting SCEs
+map_df <- readr::read_tsv(opts$map_file)
 
-sce_list <- purrr::map(rds_files, readr::read_rds)
+# consider only sample ids included in analysis
+rds_files <- rds_files[names(rds_files) %in% map_df$scpca_sample_id]
+
+sce_list <- rds_files |>
+  purrr::map(
+    \(f) {
+      readr::read_rds(file.path(opts$input_dir, f))
+  })
 
 # extract and sum the raw counts
 pseudo_raw_counts <- sce_list |>
   purrr::map(counts) |>
   purrr::map(rowSums) |>
   do.call(cbind, args = _ )
-
 
 # Export table of fraction expressed based on raw counts alone
 rowMeans(pseudo_raw_counts > 0) |>
@@ -78,7 +92,7 @@ pseudo_deseq <- DESeqDataSetFromMatrix(
   countData = pseudo_raw_counts,
   # these arguments don't matter for our purposes,
   # but DESeq2 requires them
-  colData = data.frame(sample = sample_ids),
+  colData = data.frame(sample = names(rds_files)),
   design = ~sample) |>
   estimateSizeFactors() |>
   rlog(blind = TRUE) |>
