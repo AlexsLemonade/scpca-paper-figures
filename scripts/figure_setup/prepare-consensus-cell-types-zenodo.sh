@@ -36,7 +36,8 @@ for celltype_file in ${output_dir}/SCPCP*/SCPCS*/*_processed_consensus-cell-type
   # Uncompress the tsv file
   gunzip -cf $celltype_file > $temp_file
 
-  # Only retain columns of interest
+  # Only retain the columns of interest:
+  # project_id, sample_id, library_id, barcodes, sample_type, consensus_annotation
   cut $temp_file -d$'\t' -f 1,2,3,4,5,12 > $tsv
 
   # Recompress the tsv file
