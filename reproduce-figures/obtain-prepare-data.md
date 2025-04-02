@@ -1,6 +1,6 @@
 # Preparing input files for figures and analysis
 
-This file contains instructions for obtaining and preparing data files to reproduce figures, tables, and analyses in `scpca-paper-figures`.
+This file contains instructions for obtaining and preparing data files to reproduce figures and tables and analyses in `scpca-paper-figures`.
 
 In addition to files provided already in the repository, you will also need the following:
 
@@ -20,9 +20,6 @@ In addition to files provided already in the repository, you will also need the 
   - [ScPCA metadata files](#scpca-metadata-files)
   - [TODO: Files to reproduce Figures S1B-D](#todo-files-to-reproduce-figures-s1b-d)
   - [TODO: Consensus cell type files](#todo-consensus-cell-type-files)
-- [Bulk and pseudobulk RNA-Seq analysis](#bulk-and-pseudobulk-rna-seq-analysis)
-  - [Obtaining files in `references`](#obtaining-files-in-references)
-  - [Obtaining files in `scpca_data`](#obtaining-files-in-scpca_data)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -74,7 +71,6 @@ Instructions on how to obtain each of these files are given in the following sec
 │       ├── HumanPrimaryCellAtlasData_celldex_1-10-1_model.rds
 │       └── MonacoImmuneData_celldex_1-10-1_model.rds
 ├── scpca-library-metadata.tsv
-├── scpca-project-celltype-metadata.tsv
 └── scpca-sample-metadata.tsv
 ```
 
@@ -110,7 +106,6 @@ aws s3 cp s3://scpca-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens
 aws s3 cp s3://scpca-references/celltype/singler_models/ . --recursive --exclude "*" --include "*.rds" --no-sign-request
 ```
 
-
 ### ScPCA metadata files
 
 There are two metadata files you will need, `scpca-library-metadata.tsv` and `scpca-sample-metadata.tsv`.
@@ -121,7 +116,14 @@ Follow these instructions to create these two metadata files:
 * Run the helper script as follows:
 
 ```sh
+# By default, files will be exported a directory called metadata-files/
 Rscript prepare-metadata-files.R --all_sample_metadata <path to that downloaded file>
+
+# You can customize this directory with  --output_dir
+Rscript prepare-metadata-files.R --all_sample_metadata <path to that downloaded file> --output_dir <output directory>
+
+# If metadata files already exist in the output directory, you will need the --overwrite flag to overwrite them:
+Rscript prepare-metadata-files.R --all_sample_metadata <path to that downloaded file> --overwrite
 ```
 
 This will create files named `scpca-library-metadata.tsv` and `scpca-sample-metadata.tsv` which you can use to recreate figures.
@@ -135,69 +137,3 @@ Forthcoming section: Here, we can describe the benchmarking TSV files (https://g
 ### TODO: Consensus cell type files
 
 Forthcoming section: Here, we can describe obtaining consensus cell type files which is TBD.
-
-## Bulk and pseudobulk RNA-Seq analysis
-
-Code for this analysis is provided in the directory `analysis/pseudobulk-bulk-prediction`.
-From this directory, you can use the `run-prediction.sh` script to run the analysis and generate results which are used to as input to scripts in `figure_scripts` that create Figure 6 and Figure S8.
-
-There are several files you will need to obtain from both the ScPCA Portal and the public AWS S3 bucket to enable running the analysis.
-Data should be stored in `analysis/pseudobulk-bulk-prediction/data` according to this organization:
-
-```console
-├── references
-│   ├── bone-and-soft-tissue_PanglaoDB_2020-03-27.tsv
-│   ├── brain-compartment_PanglaoDB_2020-03-27.tsv
-│   └── kidney-compartment_PanglaoDB_2020-03-27.tsv
-└── scpca_data
-    ├── SCPCP000001
-    │   ├── SCPCP000001_bulk_quant.tsv
-    │   ├── SCPCSXXXXXX
-    │   │   └── SCPCLXXXXXX_processed.rds
-    │   └── ...
-    ├── SCPCP000002
-    │   ├── SCPCP000002_bulk_quant.tsv
-    │   ├── SCPCSXXXXXX
-    │   │   └── SCPCLXXXXXX_processed.rds
-    │   └── ...
-    ├── SCPCP000006
-    │   ├── SCPCP000006_bulk_quant.tsv
-    │   ├── SCPCSXXXXXX
-    │   │   └── SCPCLXXXXXX_processed.rds
-    │   └── ...
-    ├── SCPCP000009
-    │   ├── SCPCP000009_bulk_quant.tsv
-    │   ├── SCPCSXXXXXX
-    │   │   └── SCPCLXXXXXX_processed.rds
-    │   └── ...
-    └── SCPCP000017
-        ├── SCPCP000017_bulk_quant.tsv
-        ├── SCPCSXXXXXX
-        │   └── SCPCLXXXXXX_processed.rds
-        └── ...
-```
-
-### Obtaining files in `references`
-
-Files in the `references` directory can be obtained from the public `scpca-references` AWS S3 bucket using [the `awscli` tool](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
-
-Use the following commands to download files into the current directory:
-
-```sh
-aws s3 cp s3://scpca-references/celltype/cellassign_references/bone-and-soft-tissue_PanglaoDB_2020-03-27.tsv . --no-sign-request
-aws s3 cp s3://scpca-references/celltype/cellassign_references/brain-compartment_PanglaoDB_2020-03-27.tsv . --no-sign-request
-aws s3 cp s3://scpca-references/celltype/cellassign_references/kidney-compartment_PanglaoDB_2020-03-27.tsv . --no-sign-request
-```
-
-### Obtaining files in `scpca_data`
-
-All ScPCA data files come from the ScPCA Portal projects `SCPCP000001`, `SCPCP000002`, `SCPCP000006`, `SCPCP000009`, and `SCPCP000017`.
-To obtain the `_processed.rds` files associated with samples of interest, we recommend taking the following steps:
-
-* Navigate to the ScPCA Portal project page of interest, e.g. <https://scpca.alexslemonade.org/projects/SCPCP000001> for project `SCPCP000001`.
-* Click the "Download Project" button to download all samples for the project.
-Do _not_ click "Merge all samples into 1 object", and be sure to use the `SingleCellExperiment (R)` format when downloading.
-* This will download both project's `SingleCellExperiment` files, organized by sample, as well as the project's bulk raw counts matrix
-* Once downloaded, you will then need to _remove_ directories for single-cell samples which are not used in this analysis.
-    * We provide a list in `bulk-analysis-samples.tsv` of all sample ids which _are used_; other samples not listed here shoud be removed. TODO should we provide a helper script here? Should we have separate TSV files per project? Is there another approach folks have in mind?
-    * Note that project `SCPCP000009` contains samples processed with multiplexed libraries, whose directory names include underscores; none of these are included in analysis, and all such directories should be removed.
