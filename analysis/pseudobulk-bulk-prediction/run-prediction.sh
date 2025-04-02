@@ -43,6 +43,7 @@ mkdir -p $ora_html_dir
 consensus_celltype_dir="../../s3_files/cell-type-consensus-results"
 
 # This convenience file keeps track of the bulk library & sample ids used
+# This is also used to assist filtering to single-cell processed RDS files of interest based on sample
 map_file="${data_dir}/bulk-library-sample-ids.tsv"
 
 
@@ -70,6 +71,7 @@ for project_dir in $scpca_dir/*; do
     # Calculate pseudobulk matrices for each project
     Rscript ${script_dir}/calculate-pseudobulk.R \
       --input_dir "${scpca_dir}/${project_id}" \
+      --map_file "${map_file}" \
       --output_pseudobulk_file "${pseudobulk_file}" \
       --output_frac_expressed_file "${fraction_expressed_file}"
 
