@@ -1,5 +1,35 @@
 #!/usr/bin/env Rscript
 
+# This script organized and parses data obtained from the ScPCA Portal so that figures and analyses can be reproduced.
+# This script will create a directory (provided by the `--output_dir` argument) with two directories:
+# - `s3_files`: This directory will contain ScPCA data files needed to reproduce tables and figures.
+# - `scpca-data`: This directory will contain ScPCA data files needed to reproduce the bulk expression analysis.
+# For full details and instructions, please refer to `prepare-obtain-data.md`.
+# 
+# ########################### Instructions ############################
+# Before running this script, you will need to take the following steps:
+#
+# 1. Download all projects in the ScPCA Portal that are listed in the file ../sample-info/project-whitelist.txt as follows:
+#   - Download projects in SingleCellExperiment format
+#   - Do _not_ merge all objects into the same sample
+#   - If the project contains multiplexed samples, you can exclude those samples (but it will not affect the code if they are included)
+# 2. In addition, you will need to download the merged version of project SCPCP000003, again in SingleCellExperiment format
+# 3. All downloaded files will be named `{project id}_SINGLE-CELL_SINGLE-CELL-EXPERIMENT_{descriptor field}_{access date}.zip`, where
+#  `{descriptor field}` may be one of `MERGED`, `MULTIPLEXED`, or may not be present.
+# 4. Place all downloaded `.zip` files into the same directory; you do NOT need to unzip or rename any files.
+
+# Then, you can run this script as follows:
+# 
+#   Rscript prepare-scpca-data.R \
+#     --portal_projects_dir <path to directory with all zip files> \
+#     --merged_sce_path <path to merged SCE file> \
+#     --output_dir <output directory to save prepared files>
+# This script will not overwrite an existing output directory, unless you provide the `--overwrite` flag.
+#
+# Finally, move the directories created in the provided output directory to their final locations:
+# - `s3_files` should be placed in the top-level of the `scpca-paper-figures` repository
+# - `scpca-data` should placed inside the bulk analysis data directory, `scpca-paper-figures/pseudobulk-bulk-prediction/data/`
+
 
 renv::load()
 suppressPackageStartupMessages({
@@ -15,13 +45,13 @@ option_list <- list(
     "--portal_projects_dir",
     type = "character",
     default = "/Users/sjspielman/Downloads/projects",
-    help = "Path to directory containing all projects downloaded from the ScPCA Portal"
+    help = "Path to directory containing all project zip files downloaded from the ScPCA Portal"
   ),
   make_option(
     "--merged_sce_path",
     type = "character",
     default = "/Users/sjspielman/Downloads/SCPCP000003_SINGLE-CELL_SINGLE-CELL-EXPERIMENT_MERGED_2025-04-03.zip",
-    help = "Path to Portal downloaded file merged SCPCP000003 as a zip file"
+    help = "Path to the merged SCPCP000003 project file as a zip file"
   ),
   make_option(
     "--output_dir",
