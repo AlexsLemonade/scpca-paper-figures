@@ -5,7 +5,7 @@
 # - `s3_files`: This directory will contain ScPCA data files needed to reproduce tables and figures.
 # - `scpca-data`: This directory will contain ScPCA data files needed to reproduce the bulk expression analysis.
 #
-# For full details and instructions, please refer to `prepare-obtain-data.md`.
+# For full details and instructions, please refer to the current directory's `README.md`.
 # 
 # ########################### Instructions ############################
 # 
