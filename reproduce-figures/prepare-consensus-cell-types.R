@@ -2,7 +2,12 @@
 
 
 renv::load()
-library(optparse)
+suppressPackageStartupMessages({
+  library(SingleCellExperiment)
+  library(optparse)
+})
+
+
 
 # Parse options --------
 option_list <- list(
@@ -34,6 +39,9 @@ option_list <- list(
 opts <- parse_args(OptionParser(option_list = option_list))
 
 
+# Genes whose expression should be kept in consensus cell type marker gene TSVs
+marker_gene_ref_file <- "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-consensus/references/validation-markers.tsv"
+
 # Setup --------------------
 
 # Check files and directories
@@ -50,8 +58,6 @@ output_dir_analysis_data <- file.path(opts$output_dir, "scpca_data")
 if ((dir.exists(output_dir_s3_files) | dir.exists(output_dir_analysis_data)) & !opts$overwrite) {
   stop("Output directories already exist. To overwrite them, use the --overwrite flag.")
 }
-
-
 
 # Define additional nested directories and relevant sample/library ids
 output_dir_consensus_files <- file.path(output_dir_s3_files, "cell-type-consensus-results")
@@ -87,12 +93,24 @@ celltype_results_samples <- c(
 
 # These are the directories to save to output_dir_analysis_data
 # They should contain processed files organized as expected _AND_ with the bulk quant TSV file
-bulk_projects <- c("SCPCP000001", "SCPCP000002", "SCPCP000006", "SCPCP000009", "SCPCP000017")
+bulk_projects <- c(
+  "SCPCP000001", 
+  "SCPCP000002", 
+  "SCPCP000006", 
+  "SCPCP000009", 
+  "SCPCP000017"
+)
 
-# Number of projects expected
+# Total number of projects expected
 n_projects <- 23
 
-# Prepare files ------------------------
+
+# Define marker genes for recreating expression matrices used for consensus cell type dot plots
+marker_genes <- readr::read_tsv(marker_gene_ref_file) |>
+  dplyr::pull(ensembl_gene_id) |>
+  unique()
+
+# Define input files ------------------------
 
 # Define and check input projects
 input_zips <- list.files(
@@ -109,6 +127,16 @@ stopifnot(
 )
 
 
+# Copy over the merged SCPCP000003 file ----------------
+output_merged_sce_path <- file.path(output_dir_s3_files, "SCPCP000003", "SCPCP000003_merged.rds")
+fs::dir_create(dirname(output_merged_sce_path))
+fs::file_copy(
+  opts$merged_sce_path, 
+  output_merged_sce_path
+)
+
+
+# Map over project zip files to organize files for reproducibility ------------------
 input_zips |>
   purrr::iwalk(
     \(project_zip, project_id){
@@ -122,27 +150,27 @@ input_zips |>
       # Unzip the directory, specifying the target in consensus
       unzip(project_zip, exdir = project_consensus_dir)
 
-      # Define all sample directories present in this project
+      # First, remove all the qc htmls
+      system(glue::glue("rm {project_consensus_dir}/*/*html"))
+      
+      # Define all sample directories present in this project, _excluding_ multiplexed samples
+      # This is because multiplexed samples aren't used in any figures created from ScPCA data files
       sample_dirs <- list.dirs(
         project_consensus_dir, 
         full.names = TRUE
       ) |>
-        purrr::set_names(
-          \(x) {basename(x)}
-        )
-      sample_dirs <- sample_dirs[stringr::str_detect(names(sample_dirs), "SCPCS\\d{6}")]
-      
-      # First, remove all the qc htmls
-      system(glue::glue("rm {project_consensus_dir}/*/*html"))
+        purrr::set_names(\(x) {basename(x)}) |>
+        # get rid of the project folder & multiplexed samples
+        purrr::discard_at(\(x) {stringr::str_detect(x, "SCPCP\\d{6}")}) |>
+        purrr::discard_at(\(x) {stringr::str_detect(x, "_")}) 
 
       ####### Step 1: Copy RDS files to target directories #######
       sample_dirs |>
         purrr::iwalk(
           \(sample_dir, sample_id) {
             
-            # First, copy RDS files to target destinations as needed
-            
             # Copy processed rds files to celltype_results_files
+            # The next step will parse these files into TSVs
             if (sample_id %in% celltype_results_samples) {
               system(glue::glue("cp {sample_dir}/*processed.rds {output_dir_celltype_results}"))
             } 
@@ -156,7 +184,7 @@ input_zips |>
             system(glue::glue("rm {sample_dir}/*filtered.rds"))
       })
 
-      # If this is a bulk project, copy project over as well
+      # If this project is used in the bulk analysis,copy project over as well
       if (project_id %in% bulk_projects) {
         fs::dir_copy(
           project_consensus_dir, 
@@ -165,10 +193,78 @@ input_zips |>
       }
       
       ####### Step 2: Prepare consensus cell type files #######
-      #sample_dirs |>
-      #  purrr::iwalk(
-      #    \(sample_dir, sample_id) {
-      #      # forthcoming!
-      #  })
+      sample_dirs |>
+        purrr::walk(
+          \(sample_dir) {
+              
+            # Define input and output files
+            processed_rds_file <- list.files(
+              path = sample_dir,
+              pattern = "_processed\\.rds$", 
+              full.names = TRUE
+            )
+            stopifnot("Expected a single processed rds file." = length(processed_rds_file) == 1)
+            
+            # Define output file names
+            output_consensus_tsv <- stringr::str_replace(
+              processed_rds_file, "_processed\\.rds$", "_processed_consensus-cell-types.tsv.gz"
+            )
       
+            output_markers_tsv <- stringr::str_replace(
+              processed_rds_file, "_processed\\.rds$", "_processed_marker-gene-expression.tsv.gz"
+            )    
+            
+            # Read in the processed SCE
+            sce <- readRDS(processed_rds_file)
+            
+            # Prepare and export the consensus cell types table
+            data.frame(
+              project_id = metadata(sce)$project_id, 
+              sample_id  = metadata(sce)$sample_id, 
+              library_id = metadata(sce)$library_id, 
+              sample_type = metadata(sce)$sample_type,
+              barcodes = colnames(sce), 
+              # TODO TEMPORARY TO TEST THE CODE!!!!!!!!!!!
+              consensus_annotation = sce$singler_celltype_annotation 
+            ) |>
+              # export
+              readr::write_tsv(output_consensus_tsv)
+            
+            # Prepare and export the marker gene expression table
+            # This code is adapted from the consensus cell type module in OpenScPCA-nf:
+            # https://github.com/AlexsLemonade/OpenScPCA-nf/blob/a97e88c411cabb1b41e1fce6a7735311fb435051/modules/cell-type-consensus/resources/usr/bin/assign-consensus-celltypes.R#L205
+            
+            expressed_markers <- rowData(sce) |>
+              as.data.frame() |>
+              dplyr::filter(detected > 0) |>
+              dplyr::pull(gene_ids) |>
+              intersect(marker_genes)
+      
+            # get logcounts from sce for expressed genes, unless the length is 0 in which case fill NAs
+            if (length(expressed_markers) == 0) {
+              gene_exp_df <- data.frame(
+                barcodes = rownames(sce),
+                library_id = metadata(sce)$library_id,
+                ensembl_gene_id = NA,
+                logcounts = NA
+              )
+            } else {
+              gene_exp_df <- scuttle::makePerCellDF(
+                sce,
+                features = expressed_markers,
+                assay.type = "logcounts",
+                use.coldata = "barcodes",
+                use.dimred = FALSE
+              ) |>
+                tidyr::pivot_longer(starts_with("ENSG"), names_to = "ensembl_gene_id", values_to = "logcounts") |>
+                # add library id column
+                dplyr::mutate(library_id = metadata(sce)$library_id, .before = 0)
+            }
+            
+            # export the marker gene expression tsv
+            readr::write_tsv(gene_exp_df, output_markers_tsv)
+            
+            # Now that we have prepared consensus tsvs, we can remove the processed SCE itself
+            fs::file_delete(processed_rds_file)
+      })
 })
