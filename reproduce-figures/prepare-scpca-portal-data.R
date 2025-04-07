@@ -1,15 +1,17 @@
 #!/usr/bin/env Rscript
 
-# This script organized and parses data obtained from the ScPCA Portal so that figures and analyses can be reproduced.
-# This script will create a directory (provided by the `--output_dir` argument) with two directories:
+# This script organizes and parses data obtained from the ScPCA Portal so that figures and analyses can be reproduced.
+# This script will create a directory (provided by the `--output_dir` argument) with two directories you'll need:
 # - `s3_files`: This directory will contain ScPCA data files needed to reproduce tables and figures.
 # - `scpca-data`: This directory will contain ScPCA data files needed to reproduce the bulk expression analysis.
+#
 # For full details and instructions, please refer to `prepare-obtain-data.md`.
 # 
 # ########################### Instructions ############################
+# 
 # Before running this script, you will need to take the following steps:
 #
-# 1. Download all projects in the ScPCA Portal that are listed in the file ../sample-info/project-whitelist.txt as follows:
+# 1. Download all projects in the ScPCA Portal that are listed in the file `../sample-info/project-whitelist.txt` as follows:
 #   - Download projects in SingleCellExperiment format
 #   - Do _not_ merge all objects into the same sample
 #   - If the project contains multiplexed samples, you can exclude those samples (but it will not affect the code if they are included)
@@ -20,11 +22,13 @@
 
 # Then, you can run this script as follows:
 # 
-#   Rscript prepare-scpca-data.R \
+#   Rscript prepare-scpca-portal-data.R \
 #     --portal_projects_dir <path to directory with all zip files> \
 #     --merged_sce_path <path to merged SCE file> \
 #     --output_dir <output directory to save prepared files>
-# This script will not overwrite an existing output directory, unless you provide the `--overwrite` flag.
+# 
+# If `--output_dir` is not provided, it will default to `./scpca-portal-data`.
+# Note that this script will not overwrite an existing output directory without the `--overwrite` flag.
 #
 # Finally, move the directories created in the provided output directory to their final locations:
 # - `s3_files` should be placed in the top-level of the `scpca-paper-figures` repository
@@ -44,26 +48,30 @@ option_list <- list(
   make_option(
     "--portal_projects_dir",
     type = "character",
-    default = "/Users/sjspielman/Downloads/projects",
     help = "Path to directory containing all project zip files downloaded from the ScPCA Portal"
   ),
   make_option(
     "--merged_sce_path",
     type = "character",
-    default = "/Users/sjspielman/Downloads/SCPCP000003_SINGLE-CELL_SINGLE-CELL-EXPERIMENT_MERGED_2025-04-03.zip",
     help = "Path to the merged SCPCP000003 project file as a zip file"
   ),
   make_option(
     "--output_dir",
     type = "character",
-    default = "/Users/sjspielman/Desktop/parsed-portal",
-    help = "Output directory where directories `s3_files` and `scpca_data` will be saved"
+    default = "./scpca-portal-data", 
+    help = "Output directory where directories `s3_files` and `scpca-data` will be saved. By default, this is `./scpca-portal-data`."
   ),
+  make_option(
+    "--project_whitelist",
+    type = "character",
+    default = here::here("sample-info", "project-whitelist.txt"), 
+    help = "Path to file containing all projects considered in the manuscript."
+  ),  
   make_option(
     "--overwrite",
     action = "store_true",
     default = FALSE,
-    help = "Whether to overwrite existing directories `s3_files` and `scpca_data` if they exist in the provided output directory (default FALSE)"
+    help = "Whether to overwrite output files if they already exist in the provided output directory (default FALSE)"
   )
 )
 opts <- parse_args(OptionParser(option_list = option_list))
@@ -78,7 +86,8 @@ marker_gene_ref_file <- "https://raw.githubusercontent.com/AlexsLemonade/OpenScP
 stopifnot(
   "Portal projects directory not found" = dir.exists(opts$portal_projects_dir), 
   "Merged SCE for project SCPCP000003 not found" = file.exists(opts$merged_sce_path),
-  "Output directory not specified" = !is.null(opts$output_dir)
+  "Output directory not specified" = !is.null(opts$output_dir), 
+  "Project whitelist could not be found" = file.exists(opts$project_whitelist)
 )
 
 # Define and check output directories
@@ -96,6 +105,11 @@ output_dir_celltype_results <- file.path(output_dir_s3_files, "celltype_results"
 # Create directories which will be assumed to exist later
 fs::dir_create(output_dir_analysis_data)
 fs::dir_create(output_dir_celltype_results)
+
+# Define marker genes for recreating expression matrices used for consensus cell type dot plots
+marker_genes <- readr::read_tsv(marker_gene_ref_file) |>
+  dplyr::pull(ensembl_gene_id) |>
+  unique()
 
 # These are all output directories at the top-level of s3_files
 ### Some need just processed, and some also need (un)filtered, but scripts specify which one
@@ -120,7 +134,6 @@ celltype_results_samples <- c(
   "SCPCS000224"
 )
 
-
 # These are the directories to save to output_dir_analysis_data
 # They should contain processed files organized as expected _AND_ with the bulk quant TSV file
 bulk_projects <- c(
@@ -131,16 +144,11 @@ bulk_projects <- c(
   "SCPCP000017"
 )
 
-# Total number of projects expected
-n_projects <- 23
-
-
-# Define marker genes for recreating expression matrices used for consensus cell type dot plots
-marker_genes <- readr::read_tsv(marker_gene_ref_file) |>
-  dplyr::pull(ensembl_gene_id) |>
-  unique()
 
 # Define input files ------------------------
+
+# Read whitelist so we can check that all projects are present
+expected_projects <- readLines(opts$project_whitelist)
 
 # Define and check input projects
 input_zips <- list.files(
@@ -148,12 +156,13 @@ input_zips <- list.files(
   pattern = "^SCPCP\\d{6}_SINGLE-CELL_SINGLE-CELL-EXPERIMENT_\\d+{4}-\\d+{2}-\\d+{2}\\.zip",
   full.names = TRUE
 ) |>
+  # name by project
   purrr::set_names(
     \(x) {stringr::str_split_i(basename(x), "_", 1)}
   )
 stopifnot(
-  "Not all projects were found in the provided input directory. There should be 23 projects total." = 
-    length(input_zips) == n_projects
+  "The provided input directory does not contain all expected projects. Zip files for all projects listed in the `project-whitelist.txt` file should be present." = 
+    setequal(names(input_zips), expected_projects)
 )
 
 
