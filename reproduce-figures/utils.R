@@ -10,7 +10,7 @@
 #' @param sce_coldata Coldata slot of an SCE object 
 #' @param output_tsv Path to output TSV file
 #'
-prepare_consensus_tsv <- function(sce_metadata, sce_coldata, output_tsv){
+prepare_consensus_tsv <- function(sce, output_tsv){
   
   # Prepare and export the consensus cell types table from sce contents
   data.frame(
