@@ -58,7 +58,7 @@ option_list <- list(
   make_option(
     "--output_dir",
     type = "character",
-    default = "./scpca-portal-data", 
+    default = here::here(), 
     help = "Output directory where directories `s3_files` and `scpca-data` will be saved. By default, this is `./scpca-portal-data`."
   ),
   make_option(
@@ -261,7 +261,7 @@ input_zips |>
               project_id = metadata(sce)$project_id, 
               sample_id  = metadata(sce)$sample_id, 
               library_id = metadata(sce)$library_id, 
-              sample_type = metadata(sce)$sample_type,
+              sample_type = paste0(metadata(sce)$sample_type, collapse = ",")
               barcodes = colnames(sce), 
               # TODO TEMPORARY TO TEST THE CODE!!!!!!!!!!!
               consensus_annotation = sce$singler_celltype_annotation 
