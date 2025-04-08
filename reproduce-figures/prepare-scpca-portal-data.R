@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 # This script organizes and parses data obtained from the ScPCA Portal so that figures and analyses can be reproduced.
-# This script will create a directory (provided by the `--output_dir` argument) with two directories you'll need:
+# This script will create two directories you'll need:
 # - `s3_files`: This directory will contain ScPCA data files needed to reproduce tables and figures.
 # - `scpca-data`: This directory will contain ScPCA data files needed to reproduce the bulk expression analysis.
 #
@@ -11,28 +11,29 @@
 # 
 # Before running this script, you will need to take the following steps:
 #
-# 1. Download all projects in the ScPCA Portal that are listed in the file `../sample-info/project-whitelist.txt` as follows:
-#   - Download projects in SingleCellExperiment format
-#   - Do _not_ merge all objects into the same sample
+# 1. Ensure you have set up the `renv` environment in this project.
+#    For more information, refer to the top-level `README.md` file.
+# 2. Download all projects in the ScPCA Portal that are listed in the file `../sample-info/project-whitelist.txt`, with the following download options:
+#   - Ensure the selected modality is Single-cell
+#   - Ensure the selected Data Format is SingleCellExperiment (r)
+#   - Do _not_ click to merge all objects into the same sample
 #   - If the project contains multiplexed samples, you can exclude those samples (but it will not affect the code if they are included)
-# 2. In addition, you will need to download the merged version of project SCPCP000003, again in SingleCellExperiment format
-# 3. All downloaded files will be named `{project id}_SINGLE-CELL_SINGLE-CELL-EXPERIMENT_{descriptor field}_{access date}.zip`, where
-#  `{descriptor field}` may be one of `MERGED`, `MULTIPLEXED`, or may not be present.
-# 4. Place all downloaded `.zip` files into the same directory; you do NOT need to unzip or rename any files.
+# 3. In addition, you will need to download the merged version of project SCPCP000003, again in SingleCellExperiment format
+# 4. Without renaming downloaded files, place all downloaded project ZIP files a single directory for input to this script.
+#    Optionally, you can also store the merged version of SCPCP000003 in this directory, but it is not necessary.
 
 # Then, you can run this script as follows:
 # 
 #   Rscript prepare-scpca-portal-data.R \
-#     --portal_projects_dir <path to directory with all zip files> \
-#     --merged_sce_path <path to merged SCE file> \
-#     --output_dir <output directory to save prepared files>
+#     --portal_projects_dir <path to directory with all project zip files> \
+#     --merged_sce_path <path to merged SCE file>
 # 
-# If `--output_dir` is not provided, it will default to `./scpca-portal-data`.
-# Note that this script will not overwrite an existing output directory without the `--overwrite` flag.
+# By default, the output directories will be saved in the location in this repository where code expects them:
+# - `s3_files/` will be placed in the top level of the `scpca-paper-figures` repository
+# - `scpca-data/` will be placed inside the bulk analysis data directory, `scpca-paper-figures/pseudobulk-bulk-prediction/data/`
+# You can provide custom directories if you prefer; use the `--help` flag to see all script options.
+# Note that this script will not overwrite existing output directories without the `--overwrite` flag.
 #
-# Finally, move the directories created in the provided output directory to their final locations:
-# - `s3_files` should be placed in the top-level of the `scpca-paper-figures` repository
-# - `scpca-data` should placed inside the bulk analysis data directory, `scpca-paper-figures/pseudobulk-bulk-prediction/data/`
 
 
 renv::load()
@@ -40,7 +41,6 @@ suppressPackageStartupMessages({
   library(SingleCellExperiment)
   library(optparse)
 })
-
 
 
 # Parse options --------
@@ -153,9 +153,13 @@ expected_projects <- readLines(opts$project_whitelist)
 # Define and check input projects
 input_zips <- list.files(
   opts$portal_projects_dir, 
-  pattern = "^SCPCP\\d{6}_SINGLE-CELL_SINGLE-CELL-EXPERIMENT_\\d+{4}-\\d+{2}-\\d+{2}\\.zip",
-  full.names = TRUE
+  # allow for a token after .zip
+  pattern = "^SCPCP\\d{6}_single-cell.+\\.zip\\?*.*",
+  full.names = TRUE, 
+  ignore.case = TRUE # case insensitive regex
 ) |>
+  # remove any merged objects
+  purrr::discard(\(x){grepl("_merged_", x, ignore.case = TRUE)}) |>
   # name by project
   purrr::set_names(
     \(x) {stringr::str_split_i(basename(x), "_", 1)}
@@ -179,11 +183,7 @@ fs::file_copy(
 input_zips |>
   purrr::iwalk(
     \(project_zip, project_id){
-      
-      # temporary variables used for testing
-      #project_id <- "SCPCP000001"
-      #project_zip <- "/Users/sjspielman/Downloads/projects/SCPCP000001_SINGLE-CELL_SINGLE-CELL-EXPERIMENT_2025-04-03.zip"
-      
+
       project_consensus_dir <- file.path(output_dir_consensus_files, project_id)
       
       # Unzip the directory, specifying the target in consensus
