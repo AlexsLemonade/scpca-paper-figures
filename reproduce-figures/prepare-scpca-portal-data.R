@@ -8,7 +8,7 @@
 # For full details and instructions, please refer to the current directory's `README.md`.
 #
 #####################################################################################
-### CAUTION! YOU WILL NEED AT LEAST 165 GB OF AVAILABLE SPACE TO RUN THIS SCRIPT. ###
+### CAUTION! YOU WILL NEED AT LEAST 170 GB OF AVAILABLE SPACE TO RUN THIS SCRIPT. ###
 ##################################################################################### 
 #
 #
