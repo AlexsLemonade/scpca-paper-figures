@@ -284,11 +284,9 @@ input_zips |>
                 sce <- readRDS(rds)
                   
                 # Prepare and export consensus tsv
-                # To avoid passing in the whole large SCE, we only pass in some slots
-                prepare_consensus_tsv(metadata(sce), colData(sce), output_consensus_tsv)
+                prepare_consensus_tsv(sce, output_consensus_tsv)
                   
                 # Prepare and export marker gene expression tsv
-                # For this function, we do need the whole SCE
                 prepare_gene_expression_tsv(sce, marker_genes, output_gene_expr_tsv)
                   
             })  

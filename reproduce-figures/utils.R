@@ -6,21 +6,20 @@
 
 #' Prepare and export TSV of consensus cell types
 #'
-#' @param metadata Metadata slot of an SCE object 
-#' @param sce_coldata Coldata slot of an SCE object 
+#' @param sce SCE object to obtain cell types from 
 #' @param output_tsv Path to output TSV file
 #'
 prepare_consensus_tsv <- function(sce, output_tsv){
   
   # Prepare and export the consensus cell types table from sce contents
   data.frame(
-    project_id = sce_metadata$project_id, 
-    sample_id  = sce_metadata$sample_id, 
-    library_id = sce_metadata$library_id, 
-    sample_type = paste0(sce_metadata$sample_type, collapse = ","),
-    barcodes = rownames(sce_coldata), 
+    project_id = metadata(sce)$project_id, 
+    sample_id  = metadata(sce)$sample_id, 
+    library_id = metadata(sce)$library_id, 
+    sample_type = paste0(metadata(sce)$sample_type, collapse = ","),
+    barcodes = colnames(sce), 
     # TODO TEMPORARY TO TEST THE CODE!!!!!!!!!!!
-    consensus_annotation = sce_coldata$singler_celltype_annotation 
+    consensus_annotation = sce$singler_celltype_annotation 
   ) |>
     # export
     readr::write_tsv(output_tsv)
