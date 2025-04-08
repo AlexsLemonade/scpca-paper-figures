@@ -10,6 +10,9 @@ s3_files
 #DS Store
 .DS_Store
 
-# Illustrator files 
+# Illustrator files
 *.ai
 
+# scratch
+reproduce-figures/scratch/*
+!reproduce-figures/scratch/.gitkeep

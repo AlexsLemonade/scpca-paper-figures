@@ -132,7 +132,7 @@ bash generate-figures-tables.sh
 
 ### Instructions to prepare data
 
-If you are not a member of the Data Lab, please follow the instructions provided in `reproduce-figures/obtain-prepare-data.md` to obtain and prepare additional data needed to regenerate figures and tables.
+If you are not a member of the Data Lab, please follow the instructions provided in `reproduce-figures/README.md` to obtain and prepare additional data needed to regenerate figures and tables.
 
 ### Instructons for Data Lab members
 

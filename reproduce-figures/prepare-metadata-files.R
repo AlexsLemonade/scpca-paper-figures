@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 # This script can be used to create versions of `scpca-sample-metadata.tsv` and `scpca-library-metadata.tsv` needed to
 # reproduce manuscript figures, tables, and analyses.
 #
