@@ -65,7 +65,7 @@ sync_call <- glue::glue("aws s3 sync '{celltype_s3_files}' '{celltype_local_file
 system(sync_call)
 
 # sync merged object results for SCPCP000003 -----------------------------------
-merged_s3_dir <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000003/merged/"
+merged_s3_dir <- "s3://nextflow-ccdl-results/scpca/processed/results/SCPCP000003/merged/"
 merged_local_dir <- here::here("s3_files", "SCPCP000003")
 fs::dir_create(merged_local_dir)
 
