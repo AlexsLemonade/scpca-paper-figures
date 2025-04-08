@@ -242,10 +242,15 @@ input_zips |>
               fs::dir_create(standalone_dir)
               system(glue::glue("cp -r {sample_dir}/*rds {standalone_dir}"))
             } 
+            
       })
 
       # If this project is used in the bulk analysis, copy to bulk_project_dir
       if (project_id %in% bulk_projects) {
+        # First, we'll remove the files that aren't needed to save disk space
+        system(glue::glue("rm {project_scratch_dir}/*/*filtered.rds"))
+        system(glue::glue("rm {project_scratch_dir}/*/*html"))
+        
         fs::dir_copy(project_scratch_dir, opts$bulk_data_dir)
       }
       
