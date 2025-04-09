@@ -23,15 +23,17 @@
 #   - Ensure the selected Data Format is SingleCellExperiment (r)
 #   - Do _not_ click to merge all objects into the same sample
 #   - If the project contains multiplexed samples, you can exclude those samples (but it will not affect the code if they are included)
-# 3. In addition, you will need to download the merged version of project SCPCP000003, again in SingleCellExperiment format
-# 4. Without renaming downloaded files, place all downloaded project ZIP files a single directory for input to this script.
-#    Optionally, you can also store the merged version of SCPCP000003 in this directory, but it is not necessary.
+# 3. Download the merged version of project SCPCP000003 from the ScPCA Portal, again in SingleCellExperiment format
+# 4. Download the portal-wide metadata from the ScPCA Portal using the "Get All Sample Metadata" button on the top-right of the portal homepage
+# 5. Place all downlaoded project ZIP files (step 2) a single directory for input to this script.
+#    Optionally, you can also store the merged version of SCPCP000003 and the portal metadata TSV in this directory, but it is not necessary.
 
 # Then, you can run this script as follows:
 # 
 #   Rscript prepare-scpca-portal-data.R \
 #     --portal_projects_dir <path to directory with all project zip files> \
-#     --merged_sce_path <path to merged SCE file>
+#     --merged_sce_path <path to merged SCE file> \
+#     --portal_metadata_path <path to portal-wide metadata TSV>
 # 
 # By default, the output directories will be saved in the location in this repository where code expects them:
 # - `s3_files/` will be placed in the top level of the `scpca-paper-figures` repository
@@ -54,6 +56,11 @@ option_list <- list(
     "--portal_projects_dir",
     type = "character",
     help = "Path to directory containing project ZIP files downloaded from the ScPCA Portal"
+  ),
+  make_option(
+    "--portal_metadata_path",
+    type = "character",
+    help = "Path to the the portal-wide metadata TSV"
   ),
   make_option(
     "--merged_sce_path",
@@ -106,6 +113,7 @@ source(utils_file)
 stopifnot(
   "Portal projects directory not found" = dir.exists(opts$portal_projects_dir), 
   "Merged SCE for project SCPCP000003 not found" = file.exists(opts$merged_sce_path),
+  "Portal-wide metadata TSV not found" = file.exists(opts$portal_metadata_path),
   "Project whitelist could not be found" = file.exists(opts$project_whitelist)
 )
 
@@ -295,3 +303,23 @@ input_zips |>
       # Now that this project has been processed, we can clean out the scratch directory
       fs::dir_delete(project_scratch_dir)
 })
+
+
+# Prepare sample and library metadata files ---------------------------
+
+# Read input metadata file
+portal_metadata <- readr::read_tsv(opts$portal_sample_metadata)
+sample_metadata_file <- file.path(opts$s3_files_dir, "scpca-sample-metadata.tsv")
+library_metadata_file <- file.path(opts$s3_files_dir, "library-sample-metadata.tsv")
+
+# Create and export sample metadata table
+ portal_metadata |>
+  dplyr::select(scpca_project_id, scpca_sample_id, diagnosis, disease_timing, is_cell_line) |>
+  # remove duplicate rows, which occur when there are multiple libraries per sample
+  dplyr::distinct() |>
+  readr::write_tsv(sample_metadata_file)
+
+# Create and export library metadata table
+library_metadata <- portal_metadata |>
+  dplyr::select(scpca_project_id, scpca_sample_id, scpca_library_id, seq_unit, technology) |>
+  readr::write_tsv(library_metadata_file)
