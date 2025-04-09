@@ -23,15 +23,17 @@
 #   - Ensure the selected Data Format is SingleCellExperiment (r)
 #   - Do _not_ click to merge all objects into the same sample
 #   - If the project contains multiplexed samples, you can exclude those samples (but it will not affect the code if they are included)
-# 3. In addition, you will need to download the merged version of project SCPCP000003, again in SingleCellExperiment format
-# 4. Without renaming downloaded files, place all downloaded project ZIP files a single directory for input to this script.
-#    Optionally, you can also store the merged version of SCPCP000003 in this directory, but it is not necessary.
+# 3. Download the merged version of project SCPCP000003 from the ScPCA Portal, again in SingleCellExperiment format
+# 4. Download the portal-wide metadata from the ScPCA Portal using the "Get All Sample Metadata" button on the top-right of the portal homepage
+# 5. Place all downlaoded project ZIP files (step 2) a single directory for input to this script.
+#    Optionally, you can also store the merged version of SCPCP000003 and the portal metadata TSV in this directory, but it is not necessary.
 
 # Then, you can run this script as follows:
 # 
 #   Rscript prepare-scpca-portal-data.R \
 #     --portal_projects_dir <path to directory with all project zip files> \
-#     --merged_sce_path <path to merged SCE file>
+#     --merged_sce_path <path to merged SCE file> \
+#     --portal_metadata_path <path to portal-wide metadata TSV>
 # 
 # By default, the output directories will be saved in the location in this repository where code expects them:
 # - `s3_files/` will be placed in the top level of the `scpca-paper-figures` repository
@@ -54,6 +56,11 @@ option_list <- list(
     "--portal_projects_dir",
     type = "character",
     help = "Path to directory containing project ZIP files downloaded from the ScPCA Portal"
+  ),
+  make_option(
+    "--portal_metadata_path",
+    type = "character",
+    help = "Path to the the portal-wide metadata TSV"
   ),
   make_option(
     "--merged_sce_path",
@@ -102,27 +109,40 @@ source(utils_file)
 
 # Setup --------------------
 
-# Check files and directories
+# Check files and directories - for user-provided, first if they were specified, then if they exist
+stopifnot(
+  "Path to directory with project ZIP files be specified with --portal_projects_dir" = !is.null(opts$portal_projects_dir), 
+  "Path to merged SCE for project SCPCP000003 must be specified with --merged_sce_path" = !is.null(opts$merged_sce_path),
+  "Portal-wide metadata TSV must be specified with --portal_metadata_path" = !is.null(opts$portal_metadata_path)
+)
 stopifnot(
   "Portal projects directory not found" = dir.exists(opts$portal_projects_dir), 
   "Merged SCE for project SCPCP000003 not found" = file.exists(opts$merged_sce_path),
+  "Portal-wide metadata TSV not found" = file.exists(opts$portal_metadata_path),
   "Project whitelist could not be found" = file.exists(opts$project_whitelist)
 )
 
 # Check output directories
-if ((dir.exists(opts$s3_files_dir) | dir.exists(opts$bulk_data_dir)) & !opts$overwrite) {
-  stop("Output directories already exist. To overwrite them, use the --overwrite flag.")
+if ((dir.exists(opts$s3_files_dir) | dir.exists(opts$bulk_data_dir))) {
+  if (!opts$overwrite) {
+    stop("Output directories already exist. To overwrite them, use the --overwrite flag.")
+  } else {
+    # use system to remove, in case one doesn't exist since we used an or above
+    system(glue::glue("rm -rf {opts$s3_files_dir} {opts$bulk_data_dir}"))
+  }
 }
 
 # Define and create directories
 consensus_files_dir <- file.path(opts$s3_files_dir, "cell-type-consensus-results")
 celltype_results_dir <- file.path(opts$s3_files_dir, "celltype_results")
+reference_dir <- file.path(opts$s3_files_dir, "reference_files")
 
 fs::dir_create(c(
   opts$scratch_dir,
   opts$bulk_data_dir,
   consensus_files_dir, 
-  celltype_results_dir
+  celltype_results_dir, 
+  reference_dir
 ))
 
 # Define marker genes for recreating expression matrices used for consensus cell type dot plots
@@ -295,3 +315,40 @@ input_zips |>
       # Now that this project has been processed, we can clean out the scratch directory
       fs::dir_delete(project_scratch_dir)
 })
+
+
+# Prepare sample and library metadata files ---------------------------
+
+# Read input metadata file
+portal_metadata <- readr::read_tsv(opts$portal_metadata_path)
+sample_metadata_file <- file.path(opts$s3_files_dir, "scpca-sample-metadata.tsv")
+library_metadata_file <- file.path(opts$s3_files_dir, "library-sample-metadata.tsv")
+
+# Create and export sample metadata table
+ portal_metadata |>
+  dplyr::select(scpca_project_id, scpca_sample_id, diagnosis, disease_timing, is_cell_line) |>
+  # remove duplicate rows, which occur when there are multiple libraries per sample
+  dplyr::distinct() |>
+  readr::write_tsv(sample_metadata_file)
+
+# Create and export library metadata table
+library_metadata <- portal_metadata |>
+  dplyr::select(scpca_project_id, scpca_sample_id, scpca_library_id, seq_unit, technology) |>
+  readr::write_tsv(library_metadata_file)
+
+
+# Sync reference files from S3 ------------------------------------
+
+# annotation files
+system(
+  glue::glue("aws s3 cp s3://scpca-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens.GRCh38.104.spliced_cdna.tx2gene.tsv {reference_dir} --no-sign-request")
+)
+system(
+  glue::glue("aws s3 cp s3://scpca-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens.GRCh38.104.mitogenes.txt {reference_dir} --no-sign-request")
+)
+
+# SingleR model files
+system(
+  glue::glue("aws s3 cp s3://scpca-references/celltype/singler_models/ {reference_dir} --recursive --exclude '*' --include '*.rds' --no-sign-request")
+)
+

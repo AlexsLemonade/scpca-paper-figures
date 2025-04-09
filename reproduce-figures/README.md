@@ -1,10 +1,9 @@
-This directory contains instructions as well as necessary scripts and certain data files for reproducing manuscript figures and tables.
+This directory contains a script and certain data files necessary for reproducing manuscript figures, tables, and analyses.
 
-* `prepare-scpca-portal-data.R` This script organizes and prepares ScPCA data obtained from the ScPCA Portal needed to reproduce figures and analyses.
-CAUTION: Running this script requires at least 170 GB of free disk space.
+The script `prepare-scpca-portal-data.R` organizes and prepares data obtained from the ScPCA Portal and S3 needed to reproduce figures and analyses.
+**CAUTION: Running this script requires at least 170 GB of free disk space.**
   * This script uses functions provided in `utils.R`
   * This script also uses the `scratch` directory during file processing.
-* `prepare-metadata-files.R`: This script generates metadata files needed to reproduce figures and tables.
 
 ## Instructions
 
