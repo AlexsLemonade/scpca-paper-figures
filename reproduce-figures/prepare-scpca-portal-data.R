@@ -203,10 +203,10 @@ input_zips <- list.files(
   purrr::set_names(
     \(x) {stringr::str_split_i(basename(x), "_", 1)}
   )
-#stopifnot(
-#  "The provided input directory does not contain all expected projects. Zip files for all projects listed in the `project-whitelist.txt` file should be present." = 
-#    setequal(names(input_zips), expected_projects)
-#)
+stopifnot(
+  "The provided input directory does not contain all expected projects. Zip files for all projects listed in the `project-whitelist.txt` file should be present." = 
+    setequal(names(input_zips), expected_projects)
+)
 
 # First, unzip and copy over the merged SCPCP000003 file -----------------------
 merged_sce_dir <- file.path(opts$s3_files_dir, "SCPCP000003")
