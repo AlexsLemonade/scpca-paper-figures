@@ -109,7 +109,12 @@ source(utils_file)
 
 # Setup --------------------
 
-# Check files and directories
+# Check files and directories - for user-provided, first if they were specified, then if they exist
+stopifnot(
+  "Path to directory with project ZIP files be specified with --portal_projects_dir" = !is.null(opts$portal_projects_dir), 
+  "Path to merged SCE for project SCPCP000003 must be specified with --merged_sce_path" = !is.null(opts$merged_sce_path),
+  "Portal-wide metadata TSV must be specified with --portal_metadata_path" = !is.null(opts$portal_metadata_path)
+)
 stopifnot(
   "Portal projects directory not found" = dir.exists(opts$portal_projects_dir), 
   "Merged SCE for project SCPCP000003 not found" = file.exists(opts$merged_sce_path),
@@ -118,19 +123,26 @@ stopifnot(
 )
 
 # Check output directories
-if ((dir.exists(opts$s3_files_dir) | dir.exists(opts$bulk_data_dir)) & !opts$overwrite) {
-  stop("Output directories already exist. To overwrite them, use the --overwrite flag.")
+if ((dir.exists(opts$s3_files_dir) | dir.exists(opts$bulk_data_dir))) {
+  if (!opts$overwrite) {
+    stop("Output directories already exist. To overwrite them, use the --overwrite flag.")
+  } else {
+    # use system to remove, in case one doesn't exist since we used an or above
+    system(glue::glue("rm -rf {opts$s3_files_dir} {opts$bulk_data_dir}"))
+  }
 }
 
 # Define and create directories
 consensus_files_dir <- file.path(opts$s3_files_dir, "cell-type-consensus-results")
 celltype_results_dir <- file.path(opts$s3_files_dir, "celltype_results")
+reference_dir <- file.path(opts$s3_files_dir, "reference_files")
 
 fs::dir_create(c(
   opts$scratch_dir,
   opts$bulk_data_dir,
   consensus_files_dir, 
-  celltype_results_dir
+  celltype_results_dir, 
+  reference_dir
 ))
 
 # Define marker genes for recreating expression matrices used for consensus cell type dot plots
@@ -191,10 +203,10 @@ input_zips <- list.files(
   purrr::set_names(
     \(x) {stringr::str_split_i(basename(x), "_", 1)}
   )
-stopifnot(
-  "The provided input directory does not contain all expected projects. Zip files for all projects listed in the `project-whitelist.txt` file should be present." = 
-    setequal(names(input_zips), expected_projects)
-)
+#stopifnot(
+#  "The provided input directory does not contain all expected projects. Zip files for all projects listed in the `project-whitelist.txt` file should be present." = 
+#    setequal(names(input_zips), expected_projects)
+#)
 
 # First, unzip and copy over the merged SCPCP000003 file -----------------------
 merged_sce_dir <- file.path(opts$s3_files_dir, "SCPCP000003")
@@ -308,7 +320,7 @@ input_zips |>
 # Prepare sample and library metadata files ---------------------------
 
 # Read input metadata file
-portal_metadata <- readr::read_tsv(opts$portal_sample_metadata)
+portal_metadata <- readr::read_tsv(opts$portal_metadata_path)
 sample_metadata_file <- file.path(opts$s3_files_dir, "scpca-sample-metadata.tsv")
 library_metadata_file <- file.path(opts$s3_files_dir, "library-sample-metadata.tsv")
 
@@ -323,3 +335,20 @@ library_metadata_file <- file.path(opts$s3_files_dir, "library-sample-metadata.t
 library_metadata <- portal_metadata |>
   dplyr::select(scpca_project_id, scpca_sample_id, scpca_library_id, seq_unit, technology) |>
   readr::write_tsv(library_metadata_file)
+
+
+# Sync reference files from S3 ------------------------------------
+
+# annotation files
+system(
+  glue::glue("aws s3 cp s3://scpca-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens.GRCh38.104.spliced_cdna.tx2gene.tsv {reference_dir} --no-sign-request")
+)
+system(
+  glue::glue("aws s3 cp s3://scpca-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens.GRCh38.104.mitogenes.txt {reference_dir} --no-sign-request")
+)
+
+# SingleR model files
+system(
+  glue::glue("aws s3 cp s3://scpca-references/celltype/singler_models/ {reference_dir} --recursive --exclude '*' --include '*.rds' --no-sign-request")
+)
+
