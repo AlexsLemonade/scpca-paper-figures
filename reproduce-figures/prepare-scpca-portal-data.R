@@ -58,14 +58,14 @@ option_list <- list(
     help = "Path to directory containing project ZIP files downloaded from the ScPCA Portal"
   ),
   make_option(
-    "--portal_metadata_path",
-    type = "character",
-    help = "Path to the the portal-wide metadata TSV"
-  ),
-  make_option(
     "--merged_sce_path",
     type = "character",
     help = "Path to the merged SCPCP000003 project ZIP file"
+  ),
+  make_option(
+    "--portal_metadata_path",
+    type = "character",
+    help = "Path to the the portal-wide metadata TSV"
   ),
   make_option(
     "--s3_files_dir",
@@ -266,6 +266,7 @@ input_zips |>
       })
 
       # If this project is used in the bulk analysis, copy to bulk_project_dir
+      # We do this after copying samples above since we don't want to remove their (un)filtered files
       if (project_id %in% bulk_projects) {
         # First, we'll remove the files that aren't needed to save disk space
         system(glue::glue("rm {project_scratch_dir}/*/*filtered.rds"))
