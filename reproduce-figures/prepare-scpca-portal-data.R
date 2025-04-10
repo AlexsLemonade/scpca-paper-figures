@@ -3,7 +3,7 @@
 # This script organizes and parses data obtained from the ScPCA Portal so that figures and analyses can be reproduced.
 # This script will create two directories you'll need:
 # - `s3_files`: This directory will contain ScPCA data files needed to reproduce tables and figures.
-# - `scpca-data`: This directory will contain ScPCA data files needed to reproduce the bulk expression analysis.
+# - `scpca_data`: This directory will contain ScPCA data files needed to reproduce the bulk expression analysis.
 #
 # For full details and instructions, please refer to the current directory's `README.md`.
 #
@@ -37,7 +37,7 @@
 #
 # By default, the output directories will be saved in the location in this repository where code expects them:
 # - `s3_files/` will be placed in the top level of the `scpca-paper-figures` repository
-# - `scpca-data/` will be placed inside the bulk analysis data directory, `scpca-paper-figures/pseudobulk-bulk-prediction/data/`
+# - `scpca_data/` will be placed inside the bulk analysis data directory, `scpca-paper-figures/pseudobulk-bulk-prediction/data/`
 # You can provide custom directories if you prefer; use the `--help` flag to see all script options.
 # Note that this script will not overwrite existing output directories without the `--overwrite` flag.
 
@@ -58,14 +58,14 @@ option_list <- list(
     help = "Path to directory containing project ZIP files downloaded from the ScPCA Portal"
   ),
   make_option(
-    "--portal_metadata_path",
-    type = "character",
-    help = "Path to the the portal-wide metadata TSV"
-  ),
-  make_option(
     "--merged_sce_path",
     type = "character",
     help = "Path to the merged SCPCP000003 project ZIP file"
+  ),
+  make_option(
+    "--portal_metadata_path",
+    type = "character",
+    help = "Path to the the portal-wide metadata TSV"
   ),
   make_option(
     "--s3_files_dir",
@@ -76,8 +76,8 @@ option_list <- list(
   make_option(
     "--bulk_data_dir",
     type = "character",
-    default = here::here("analysis", "pseudobulk-bulk-prediction", "data", "scpca-data"),
-    help = "Output directory for data used in the bulk RNA-Seq analysis. Default is `analysis/pseudobulk-bulk-prediction/data/scpca-data`, which is where code expects it to be."
+    default = here::here("analysis", "pseudobulk-bulk-prediction", "data", "scpca_data"),
+    help = "Output directory for data used in the bulk RNA-Seq analysis. Default is `analysis/pseudobulk-bulk-prediction/data/scpca_data`, which is where code expects it to be."
   ),
   make_option(
      "--scratch_dir",
@@ -268,6 +268,7 @@ input_zips |>
       })
 
       # If this project is used in the bulk analysis, copy to bulk_project_dir
+      # We do this after copying samples above since we don't want to remove their (un)filtered files
       if (project_id %in% bulk_projects) {
         # First, we'll remove the files that aren't needed to save disk space
         system(glue::glue("rm {project_scratch_dir}/*/*filtered.rds"))

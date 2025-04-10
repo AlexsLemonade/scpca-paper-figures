@@ -11,6 +11,16 @@
 #'
 prepare_consensus_tsv <- function(sce, output_tsv){
   
+  # Define consensus cell types since they won't be present in SCEs which were not
+  #  annotated with both SingleR and CellAssign
+  if ("consensus_celltype_annotation" %in% names(colData(sce))) {
+    # TODO: This column needs to be updated
+    # See https://github.com/AlexsLemonade/scpca-paper-figures/issues/253
+    consensus_celltypes <- sce$singler_celltype_annotation
+  } else {
+    consensus_celltypes <- NA
+  }
+  
   # Prepare and export the consensus cell types table from sce contents
   data.frame(
     project_id = metadata(sce)$project_id, 
@@ -18,8 +28,7 @@ prepare_consensus_tsv <- function(sce, output_tsv){
     library_id = metadata(sce)$library_id, 
     sample_type = paste0(metadata(sce)$sample_type, collapse = ","),
     barcodes = colnames(sce), 
-    # TODO TEMPORARY TO TEST THE CODE!!!!!!!!!!!
-    consensus_annotation = sce$singler_celltype_annotation 
+    consensus_annotation = consensus_celltypes
   ) |>
     # export
     readr::write_tsv(output_tsv)
