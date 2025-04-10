@@ -327,7 +327,7 @@ input_zips |>
 # Read input metadata file
 portal_metadata <- readr::read_tsv(opts$portal_metadata_path)
 sample_metadata_file <- file.path(opts$s3_files_dir, "scpca-sample-metadata.tsv")
-library_metadata_file <- file.path(opts$s3_files_dir, "library-sample-metadata.tsv")
+library_metadata_file <- file.path(opts$s3_files_dir, "scpca-library-metadata.tsv")
 
 # Create and export sample metadata table
  portal_metadata |>
