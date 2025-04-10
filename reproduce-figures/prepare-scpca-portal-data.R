@@ -133,16 +133,18 @@ if ((dir.exists(opts$s3_files_dir) | dir.exists(opts$bulk_data_dir))) {
 }
 
 # Define and create directories
-consensus_files_dir <- file.path(opts$s3_files_dir, "cell-type-consensus-results")
-celltype_results_dir <- file.path(opts$s3_files_dir, "celltype_results")
-reference_dir <- file.path(opts$s3_files_dir, "reference_files")
+consensus_files_dir   <- file.path(opts$s3_files_dir, "cell-type-consensus-results")
+celltype_results_dir  <- file.path(opts$s3_files_dir, "celltype_results")
+s3_files_reference_dir <- file.path(opts$s3_files_dir, "reference_files")
+bulk_reference_dir    <- file.path(opts$bulk_data_dir, "references")
 
 fs::dir_create(c(
   opts$scratch_dir,
   opts$bulk_data_dir,
   consensus_files_dir,
   celltype_results_dir,
-  reference_dir
+  s3_files_reference_dir,
+  bulk_reference_dir
 ))
 
 # Define marker genes for recreating expression matrices used for consensus cell type dot plots
@@ -342,14 +344,24 @@ library_metadata <- portal_metadata |>
 
 # annotation files
 system(
-  glue::glue("aws s3 cp s3://scpca-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens.GRCh38.104.spliced_cdna.tx2gene.tsv {reference_dir} --no-sign-request")
+  glue::glue("aws s3 cp s3://scpca-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens.GRCh38.104.spliced_cdna.tx2gene.tsv {s3_files_reference_dir} --no-sign-request")
 )
 system(
-  glue::glue("aws s3 cp s3://scpca-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens.GRCh38.104.mitogenes.txt {reference_dir} --no-sign-request")
+  glue::glue("aws s3 cp s3://scpca-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens.GRCh38.104.mitogenes.txt {s3_files_reference_dir} --no-sign-request")
 )
 
 # SingleR model files
 system(
-  glue::glue("aws s3 cp s3://scpca-references/celltype/singler_models/ {reference_dir} --recursive --exclude '*' --include '*.rds' --no-sign-request")
+  glue::glue("aws s3 cp s3://scpca-references/celltype/singler_models/ {s3_files_reference_dir} --recursive --exclude '*' --include '*.rds' --no-sign-request")
 )
 
+# Panglao marker gene references
+system(
+  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/bone-and-soft-tissue_PanglaoDB_2020-03-27.tsv {bulk_reference_dir} --no-sign-request")
+)
+system(
+  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/brain-compartment_PanglaoDB_2020-03-27.tsv {bulk_reference_dir} --no-sign-request")
+)
+system(
+  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/kidney-compartment_PanglaoDB_2020-03-27.tsv {bulk_reference_dir} --no-sign-request")
+)
