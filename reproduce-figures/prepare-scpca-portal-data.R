@@ -9,6 +9,8 @@
 #
 #####################################################################################
 ### CAUTION! YOU WILL NEED AT LEAST 170 GB OF AVAILABLE SPACE TO RUN THIS SCRIPT. ###
+###                                                                               ###
+### In addition, it will take roughly 90 minutes to run this script.              ###
 #####################################################################################
 #
 #
