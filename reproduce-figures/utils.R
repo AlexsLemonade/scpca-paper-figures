@@ -1,8 +1,5 @@
-# This file contains functions used in prepare-scpca-portal-data.R to process consensus cell types.
-
-
-
-
+# This file contains functions used in prepare-scpca-portal-data.R to process consensus cell types
+#  and to create metadata files.
 
 #' Prepare and export TSV of consensus cell types
 #'
