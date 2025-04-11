@@ -91,19 +91,30 @@ prepare_library_metadata <- function(
     project_metadata_dir, 
     output_tsv) {
   
+  # final columns to include in the exported library metadata tsv
+  final_columns <- c(
+    "scpca_project_id",
+    "scpca_sample_id",
+    "scpca_library_id",
+    "seq_unit",
+    "technology"
+  )
+  
   portal_metadata <- portal_metadata |>
-    # Select columns of interest
-    dplyr::select(
-      scpca_project_id,
-      scpca_sample_id,
-      scpca_library_id,
-      seq_unit, 
-      technology
-    ) |>
-    # Group multiplexed sample ids back together
-    dplyr::group_by(scpca_project_id, scpca_library_id, seq_unit, technology) |>
-    dplyr::summarize(scpca_sample_id = paste(scpca_sample_id, collapse = ";"))
+    # Group multiplexed sample ids back together; keep has_cellhash for later manipulation
+    dplyr::group_by(scpca_project_id, scpca_library_id, seq_unit, technology, has_cellhash) |>
+    dplyr::summarize(scpca_sample_id = paste(scpca_sample_id, collapse = ";")) |>
+    dplyr::ungroup()
+  
+  # duplicate multiplexed rows so we have a row for cellhash technology
+  cellhash_rows <- portal_metadata |>
+    dplyr::filter(has_cellhash) |>
+    # in our code, we detect this technology with "cellhash" only, so the version isn't needed
+    dplyr::mutate(technology = "cellhash")
     
+  portal_metadata <- portal_metadata |>
+    dplyr::bind_rows(cellhash_rows) |>
+    dplyr::select(-has_cellhash)
   
   # Define bulk and project metadata files
   bulk_files <- list.files(
@@ -111,63 +122,42 @@ prepare_library_metadata <- function(
     pattern = "*_bulk_metadata\\.tsv", 
     full.names = TRUE
   )
-  project_files <- list.files(
+  citeseq_files <- list.files(
     path = project_metadata_dir, 
     pattern = "*_single_cell_metadata\\.tsv", 
     full.names = TRUE
-  ) |>
-    # we need project id identifiers for this one
-    purrr::set_names(\(x) {stringr::str_split_i(basename(x), "_", 1)})
+  ) 
   
   # Parse bulk metadata
   bulk_metadata <- bulk_files |>
     purrr::map(readr::read_tsv) |>
     purrr::list_rbind() |>
-    dplyr::select(
+    dplyr::rename(
       scpca_project_id = project_id, 
       scpca_sample_id = sample_id, 
-      scpca_library_id = library_id, 
-      seq_unit, 
-      technology
-    ) 
+      scpca_library_id = library_id
+    ) |>
+    dplyr::select(all_of(final_columns))
   
-  # Parse project metadata to get rows for CITE-seq & cellhash libraries
-  multimodal_metadata <- project_files |>
-    purrr::imap(
-      \(file, project_id) {
-        metadata_df <- readr::read_tsv(file) 
-        
-        # Get information for cellhash and then CITE-seq projects
-        if (project_id == "SCPCP000009") {
-          metadata_df <- metadata_df |>
-            dplyr::group_by(scpca_project_id, scpca_library_id, seq_unit, technology) |>
-            dplyr::summarize(scpca_sample_id = paste(scpca_sample_id, collapse = ";")) |>
-            dplyr::mutate(technology = "cellhash")
-        } else {
-          metadata_df <- metadata_df |>
-            dplyr::filter(!is.na(adt_filtering_method)) |>
-            dplyr::mutate(technology = "CITE-seq")
-        } 
-        
-        metadata_df <- metadata_df |>
-          dplyr::select(
-            scpca_project_id,
-            scpca_sample_id,
-            scpca_library_id,
-            seq_unit,
-            technology
-          )
+  # Parse project metadata to get rows for CITE-seq
+  cite_metadata <- citeseq_files |>
+    purrr::map(
+      \(file) {
+        metadata_df <- readr::read_tsv(file) |>
+          dplyr::filter(!is.na(adt_filtering_method)) |> 
+          # in our code, we detect this technology with "CITE" only, so the version isn't needed
+          dplyr::mutate(technology = "CITEseq") |>
+          dplyr::select(all_of(final_columns))
         
         return(metadata_df)
       }
     ) |>
-    purrr::list_rbind() |>
-    dplyr::ungroup()
+    purrr::list_rbind()
   
   # Combine data frames and export
   portal_metadata |>
     dplyr::bind_rows(bulk_metadata) |>
-    dplyr::bind_rows(multimodal_metadata) |>
-    dplyr::arrange(scpca_project_id) |>
+    dplyr::bind_rows(cite_metadata) |>
     readr::write_tsv(output_tsv)
 }
+
