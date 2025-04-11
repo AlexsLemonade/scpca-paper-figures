@@ -353,11 +353,11 @@ sample_metadata_file <- file.path(opts$s3_files_dir, "scpca-sample-metadata.tsv"
 library_metadata_file <- file.path(opts$s3_files_dir, "scpca-library-metadata.tsv")
 
 # Create and export sample metadata table
-portal_metadata |>
-  dplyr::select(scpca_project_id, scpca_sample_id, diagnosis, disease_timing, is_cell_line) |>
-  # remove duplicate rows, which occur when there are multiple libraries per sample
-  dplyr::distinct() |>
-  readr::write_tsv(sample_metadata_file)
+prepare_sample_metadata(
+  portal_metadata,
+  sample_metadata_file
+)
+
 
 # Create and export library metadata table
 prepare_library_metadata(
