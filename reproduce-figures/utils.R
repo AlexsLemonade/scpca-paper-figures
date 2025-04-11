@@ -78,6 +78,40 @@ prepare_gene_expression_tsv <- function(sce, marker_genes, output_tsv) {
 
 
 
+
+#' Prepare and export sample metadata file
+#'
+#' @param portal_metadata Data frame of portal-wide metadata
+#' @param output_tsv Path to output TSV file
+#'
+prepare_sample_metadata <- function(
+    portal_metadata, 
+    output_tsv) {
+  
+  sample_metadata <- portal_metadata |>
+    dplyr::select(scpca_project_id, scpca_sample_id, diagnosis, disease_timing, is_cell_line) |>
+    # remove duplicate rows, which occur when there are multiple libraries per sample
+    dplyr::distinct()
+  
+  # Prepare data frame with samples whose full metadata is not yet available on the portal
+  bulk_only_sample_metadata <-  tibble::tribble(
+    ~scpca_project_id, ~scpca_sample_id, ~diagnosis,        ~disease_timing,     ~is_cell_line, 
+    ###########################################################################################
+    "SCPCP000006",     "SCPCS000210",    "Wilms tumor",     "Initial diagnosis", FALSE,
+    "SCPCP000006",     "SCPCS000211",    "Wilms tumor",     "Initial diagnosis", FALSE,
+    "SCPCP000009",     "SCPCS000129",    "Medulloblastoma", "Initial diagnosis", FALSE,
+    "SCPCP000017",     "SCPCS000606",    "Osteosarcoma",    "Recurrence",        FALSE
+  )
+  
+  sample_metadata |>
+    dplyr::bind_rows(bulk_only_sample_metadata) |>
+    readr::write_tsv(output_tsv)
+}
+  
+  
+  
+
+
 #' Prepare and export library metadata file
 #'
 #' @param portal_metadata Data frame of portal-wide metadata
@@ -100,19 +134,19 @@ prepare_library_metadata <- function(
     "technology"
   )
   
-  portal_metadata <- portal_metadata |>
+  library_metadata <- portal_metadata |>
     # Group multiplexed sample ids back together; keep has_cellhash for later manipulation
     dplyr::group_by(scpca_project_id, scpca_library_id, seq_unit, technology, has_cellhash) |>
     dplyr::summarize(scpca_sample_id = paste(scpca_sample_id, collapse = ";")) |>
     dplyr::ungroup()
   
   # duplicate multiplexed rows so we have a row for cellhash technology
-  cellhash_rows <- portal_metadata |>
+  cellhash_rows <- library_metadata |>
     dplyr::filter(has_cellhash) |>
     # in our code, we detect this technology with "cellhash" only, so the version isn't needed
     dplyr::mutate(technology = "cellhash")
     
-  portal_metadata <- portal_metadata |>
+  library_metadata <- library_metadata |>
     dplyr::bind_rows(cellhash_rows) |>
     dplyr::select(-has_cellhash)
   
@@ -155,7 +189,7 @@ prepare_library_metadata <- function(
     purrr::list_rbind()
   
   # Combine data frames and export
-  portal_metadata |>
+  library_metadata |>
     dplyr::bind_rows(bulk_metadata) |>
     dplyr::bind_rows(cite_metadata) |>
     readr::write_tsv(output_tsv)
