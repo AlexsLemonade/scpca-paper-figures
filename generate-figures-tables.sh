@@ -22,18 +22,11 @@ mkdir -p ${BASEDIR}/figures/pngs
 mkdir -p ${BASEDIR}/figures/pdfs
 mkdir -p ${BASEDIR}/tables
 
-# check if s3 files directory already exists
-# if it does, delete it
+# Check if s3 files directory already exists and error if so
 if [ -d "${BASEDIR}/s3_files" ]; then
-  rm -r ${BASEDIR}/s3_files
+  echo "The s3_files/ directory does not exist. To create it, please follow instructions in the README file."
+  exit 1
 fi
-mkdir -p ${BASEDIR}/s3_files
-
-# copy over files from S3
-echo "Downloading data files..."
-Rscript ${script_dir}/figure_setup/sync-data-files.R
-Rscript ${script_dir}/figure_setup/sync-metadata.R
-Rscript ${script_dir}/figure_setup/sync-reference-files.R
 
 #########################################################
 #        Generate figures in order of appearance        #
@@ -58,10 +51,10 @@ Rscript ${script_dir}/Fig4B_singler-cellassign-heatmap.R
 
 # Figure 5A
 # also supplemental figure 6
-Rscript ${script_dir}/Fig5A-S6_consensus-cell-type-dotplots.R
+#Rscript ${script_dir}/Fig5A-S6_consensus-cell-type-dotplots.R
 
 # Figures 5B-C
-Rscript ${script_dir}/Fig5B-C_brain-barplots.R
+#Rscript ${script_dir}/Fig5B-C_brain-barplots.R
 
 # Figure 6
 # also supplemental figure 8
@@ -92,7 +85,7 @@ Rscript ${script_dir}/FigS5A_cellassign-justification.R
 Rscript ${script_dir}/FigS5B_submitter-celltypes-heatmap.R
 
 # Figure S7
-Rscript ${script_dir}/FigS7_consensus-bar-plots.R
+#Rscript ${script_dir}/FigS7_consensus-bar-plots.R
 
 ##########################################################
 #         Generate tables in order of appearance         #
