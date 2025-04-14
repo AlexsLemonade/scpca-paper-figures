@@ -9,6 +9,8 @@
 #
 #####################################################################################
 ### CAUTION! YOU WILL NEED AT LEAST 170 GB OF AVAILABLE SPACE TO RUN THIS SCRIPT. ###
+###                                                                               ###
+### In addition, it will take roughly 90 minutes to run this script.              ###
 #####################################################################################
 #
 #
@@ -136,7 +138,14 @@ if ((dir.exists(opts$s3_files_dir) | dir.exists(opts$bulk_data_dir))) {
 consensus_files_dir   <- file.path(opts$s3_files_dir, "cell-type-consensus-results")
 celltype_results_dir  <- file.path(opts$s3_files_dir, "celltype_results")
 s3_files_reference_dir <- file.path(opts$s3_files_dir, "reference_files")
+merged_sce_dir <- file.path(opts$s3_files_dir, "SCPCP000003")
 bulk_reference_dir    <- file.path(opts$bulk_data_dir, "references")
+
+# these directories are for temporary file stored in scratch
+merged_scratch_dir <- file.path(opts$scratch_dir, "SCPCP000003_merged")
+bulk_metadata_scratch_dir <- file.path(opts$scratch_dir, "bulk-metadata")
+citeseq_metadata_scratch_dir <- file.path(opts$scratch_dir, "citeseq-project-metadata")
+
 
 fs::dir_create(c(
   opts$scratch_dir,
@@ -144,7 +153,11 @@ fs::dir_create(c(
   consensus_files_dir,
   celltype_results_dir,
   s3_files_reference_dir,
-  bulk_reference_dir
+  merged_sce_dir,
+  bulk_reference_dir,
+  merged_scratch_dir,
+  bulk_metadata_scratch_dir,
+  citeseq_metadata_scratch_dir
 ))
 
 # Define marker genes for recreating expression matrices used for consensus cell type dot plots
@@ -185,6 +198,9 @@ bulk_projects <- c(
   "SCPCP000017"
 )
 
+# Projects with CITE-seq technology which we'll assign technology to when preparing metadata
+citeseq_projects <- c("SCPCP000003", "SCPCP000007", "SCPCP000008")
+
 
 # Define input files ------------------------
 
@@ -211,18 +227,13 @@ stopifnot(
 )
 
 # First, unzip and copy over the merged SCPCP000003 file -----------------------
-merged_sce_dir <- file.path(opts$s3_files_dir, "SCPCP000003")
-merge_scratch_dir <- file.path(opts$scratch_dir, "SCPCP000003_merged")
-fs::dir_create(c(merged_sce_dir, merge_scratch_dir))
-
-unzip(opts$merged_sce_path, exdir = merge_scratch_dir)
+unzip(opts$merged_sce_path, exdir = merged_scratch_dir)
 fs::file_move(
-  file.path(merge_scratch_dir, "SCPCP000003_merged.rds"),
+  file.path(merged_scratch_dir, "SCPCP000003_merged.rds"),
   merged_sce_dir
 )
-
-# clean up
-fs::dir_delete(merge_scratch_dir)
+# clean up for space
+fs::dir_delete(merged_scratch_dir)
 
 # Map over project zip files to organize files for reproducibility -------------
 input_zips |>
@@ -266,6 +277,20 @@ input_zips |>
             }
 
       })
+      
+      # Save metadata files to use when preparing the sample and library metadata files later
+      project_bulk_tsv <- file.path(project_scratch_dir, glue::glue("{project_id}_bulk_metadata.tsv"))
+      if (file.exists(project_bulk_tsv)) {
+        fs::file_copy(project_bulk_tsv, bulk_metadata_scratch_dir, overwrite = TRUE)
+      }
+      
+      if (project_id %in% citeseq_projects) {
+        fs::file_copy(
+          file.path(project_scratch_dir, glue::glue("single_cell_metadata.tsv")), 
+          file.path(citeseq_metadata_scratch_dir, glue::glue("{project_id}_single_cell_metadata.tsv")), 
+          overwrite = TRUE
+        )
+      }
 
       # If this project is used in the bulk analysis, copy to bulk_project_dir
       # We do this after copying samples above since we don't want to remove their (un)filtered files
@@ -274,7 +299,7 @@ input_zips |>
         system(glue::glue("rm {project_scratch_dir}/*/*filtered.rds"))
         system(glue::glue("rm {project_scratch_dir}/*/*html"))
 
-        fs::dir_copy(project_scratch_dir, opts$bulk_data_dir)
+        fs::dir_copy(project_scratch_dir, opts$bulk_data_dir, overwrite = TRUE)
       }
 
       ####### Step 2: Prepare consensus cell type files #######
@@ -325,20 +350,22 @@ input_zips |>
 # Read input metadata file
 portal_metadata <- readr::read_tsv(opts$portal_metadata_path)
 sample_metadata_file <- file.path(opts$s3_files_dir, "scpca-sample-metadata.tsv")
-library_metadata_file <- file.path(opts$s3_files_dir, "library-sample-metadata.tsv")
+library_metadata_file <- file.path(opts$s3_files_dir, "scpca-library-metadata.tsv")
 
 # Create and export sample metadata table
- portal_metadata |>
-  dplyr::select(scpca_project_id, scpca_sample_id, diagnosis, disease_timing, is_cell_line) |>
-  # remove duplicate rows, which occur when there are multiple libraries per sample
-  dplyr::distinct() |>
-  readr::write_tsv(sample_metadata_file)
+prepare_sample_metadata(
+  portal_metadata,
+  sample_metadata_file
+)
+
 
 # Create and export library metadata table
-library_metadata <- portal_metadata |>
-  dplyr::select(scpca_project_id, scpca_sample_id, scpca_library_id, seq_unit, technology) |>
-  readr::write_tsv(library_metadata_file)
-
+prepare_library_metadata(
+  portal_metadata, 
+  bulk_metadata_scratch_dir,
+  citeseq_metadata_scratch_dir,
+  library_metadata_file
+)
 
 # Sync reference files from S3 ------------------------------------
 
