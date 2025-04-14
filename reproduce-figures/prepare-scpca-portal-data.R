@@ -369,7 +369,7 @@ prepare_library_metadata(
 # Now we can remove the remaining files in scratch
 fs::dir_delete(c(
   bulk_metadata_scratch_dir,
-  citeseq_metadata_scratch_dir)
+  citeseq_metadata_scratch_dir
 ))
 
 # Sync reference files from S3 ------------------------------------
