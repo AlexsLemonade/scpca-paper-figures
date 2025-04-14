@@ -384,7 +384,7 @@ system(
 
 # SingleR model files
 system(
-  glue::glue("aws s3 cp s3://scpca-references/celltype/singler_models/ {s3_files_reference_dir} --recursive --exclude '*' --include '*.rds' --no-sign-request")
+  glue::glue("aws s3 cp s3://scpca-references/celltype/singler_models {s3_files_reference_dir}/singler_models --recursive --exclude '*' --include '*.rds' --no-sign-request")
 )
 
 # Panglao marker gene references
