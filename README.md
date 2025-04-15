@@ -9,7 +9,7 @@ This repo contains the figures and tables included in the ScPCA manuscript.
 - [Summary of figures and tables](#summary-of-figures-and-tables)
 - [Generating figures and tables](#generating-figures-and-tables)
   - [Instructions to prepare data](#instructions-to-prepare-data)
-  - [Instructons for Data Lab members](#instructons-for-data-lab-members)
+    - [Instructions for Data Lab members](#instructions-for-data-lab-members)
 - [Additional repository contents](#additional-repository-contents)
   - [Sample info](#sample-info)
   - [Color palettes](#color-palettes)
@@ -134,7 +134,7 @@ bash generate-figures-tables.sh
 
 If you are not a member of the Data Lab, please follow the instructions provided in `reproduce-figures/README.md` to obtain and prepare additional data needed to regenerate figures and tables.
 
-### Instructons for Data Lab members
+#### Instructions for Data Lab members
 
 To prepare data for figure and table generation, you will need to run the figure setup scripts:
 
