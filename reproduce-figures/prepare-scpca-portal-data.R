@@ -157,8 +157,7 @@ citeseq_metadata_scratch_dir <- file.path(opts$scratch_dir, "citeseq-project-met
 
 fs::dir_create(c(
   opts$scratch_dir,
-  bulk_scpca_data_dir,
-  bulk_references_dir,
+  output_dirs,
   consensus_files_dir,
   celltype_results_dir,
   s3_files_reference_dir,
