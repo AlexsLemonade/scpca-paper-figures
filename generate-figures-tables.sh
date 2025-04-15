@@ -23,8 +23,8 @@ mkdir -p ${BASEDIR}/figures/pdfs
 mkdir -p ${BASEDIR}/tables
 
 # Check if s3 files directory already exists and error if so
-if [ -d "${BASEDIR}/s3_files" ]; then
-  echo "The s3_files/ directory does not exist. To create it, please follow instructions in the README file."
+if [ ! -d "${BASEDIR}/s3_files" ]; then
+  echo "The `s3_files` directory does not exist. To create it, please follow the 'Instructions to prepare data' provided in the README file."
   exit 1
 fi
 
