@@ -78,14 +78,8 @@ option_list <- list(
   make_option(
     "--bulk_data_dir",
     type = "character",
-    default = here::here("analysis", "pseudobulk-bulk-prediction", "data", "scpca_data"),
-    help = "Output directory for ScPCA data used in the bulk RNA-Seq analysis. Default is `analysis/pseudobulk-bulk-prediction/data/scpca_data`, which is where code expects it to be."
-  ),
-  make_option(
-    "--bulk_references_dir",
-    type = "character",
-    default = here::here("analysis", "pseudobulk-bulk-prediction", "data", "references"),
-    help = "Output directory for references used in the bulk RNA-Seq analysis. Default is `analysis/pseudobulk-bulk-prediction/data/references`, which is where code expects it to be."
+    default = here::here("analysis", "pseudobulk-bulk-prediction", "data"),
+    help = "Output directory for ScPCA data used in the bulk RNA-Seq analysis. Default is `analysis/pseudobulk-bulk-prediction/data`, which is where code expects it to be."
   ),
   make_option(
      "--scratch_dir",
@@ -131,10 +125,14 @@ stopifnot(
 )
 
 # Check output directories
+
+# first, set up the target bulk dirs
+bulk_scpca_data_dir <- file.path(opts$bulk_data_dir, "scpca_data")
+bulk_references_dir <- file.path(opts$bulk_data_dir, "references")
 output_dirs <- c(
   opts$s3_files_dir, 
-  opts$bulk_data_dir, 
-  opts$bulk_references_dir
+  bulk_scpca_data_dir, 
+  bulk_references_dir
 )
 if (any(dir.exists(output_dirs))) {
   if (!opts$overwrite) {
@@ -159,8 +157,8 @@ citeseq_metadata_scratch_dir <- file.path(opts$scratch_dir, "citeseq-project-met
 
 fs::dir_create(c(
   opts$scratch_dir,
-  opts$bulk_data_dir,
-  opts$bulk_references_dir,
+  bulk_scpca_data_dir,
+  bulk_references_dir,
   consensus_files_dir,
   celltype_results_dir,
   s3_files_reference_dir,
@@ -198,7 +196,7 @@ celltype_results_samples <- c(
   "SCPCS000224"
 )
 
-# These are the directories to save to opts$bulk_files_dir
+# These are the directories to save to bulk_scpca_data_dir
 # They should contain processed files organized as expected and the bulk quant TSV file
 bulk_projects <- c(
   "SCPCP000001",
@@ -311,7 +309,7 @@ input_zips |>
 
         fs::dir_copy(
           project_scratch_dir, 
-          file.path(opts$bulk_data_dir, project_id), 
+          file.path(bulk_scpca_data_dir, project_id), 
           overwrite = TRUE
         )
       }
@@ -403,11 +401,11 @@ system(
 
 # Panglao marker gene references
 system(
-  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/bone-and-soft-tissue_PanglaoDB_2020-03-27.tsv {opts$bulk_references_dir} --no-sign-request")
+  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/bone-and-soft-tissue_PanglaoDB_2020-03-27.tsv {bulk_references_dir} --no-sign-request")
 )
 system(
-  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/brain-compartment_PanglaoDB_2020-03-27.tsv {opts$bulk_references_dir} --no-sign-request")
+  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/brain-compartment_PanglaoDB_2020-03-27.tsv {bulk_references_dir} --no-sign-request")
 )
 system(
-  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/kidney-compartment_PanglaoDB_2020-03-27.tsv {opts$bulk_references_dir} --no-sign-request")
+  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/kidney-compartment_PanglaoDB_2020-03-27.tsv {bulk_references_dir} --no-sign-request")
 )
