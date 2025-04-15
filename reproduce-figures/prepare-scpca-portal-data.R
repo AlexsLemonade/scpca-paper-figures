@@ -79,7 +79,13 @@ option_list <- list(
     "--bulk_data_dir",
     type = "character",
     default = here::here("analysis", "pseudobulk-bulk-prediction", "data", "scpca_data"),
-    help = "Output directory for data used in the bulk RNA-Seq analysis. Default is `analysis/pseudobulk-bulk-prediction/data/scpca_data`, which is where code expects it to be."
+    help = "Output directory for ScPCA data used in the bulk RNA-Seq analysis. Default is `analysis/pseudobulk-bulk-prediction/data/scpca_data`, which is where code expects it to be."
+  ),
+  make_option(
+    "--bulk_references_dir",
+    type = "character",
+    default = here::here("analysis", "pseudobulk-bulk-prediction", "data", "references"),
+    help = "Output directory for references used in the bulk RNA-Seq analysis. Default is `analysis/pseudobulk-bulk-prediction/data/references`, which is where code expects it to be."
   ),
   make_option(
      "--scratch_dir",
@@ -125,12 +131,17 @@ stopifnot(
 )
 
 # Check output directories
-if ((dir.exists(opts$s3_files_dir) | dir.exists(opts$bulk_data_dir))) {
+output_dirs <- c(
+  opts$s3_files_dir, 
+  opts$bulk_data_dir, 
+  opts$bulk_references_dir
+)
+if (any(dir.exists(output_dirs))) {
   if (!opts$overwrite) {
     stop("Output directories already exist. To overwrite them, use the --overwrite flag.")
   } else {
-    # use system to remove, in case one doesn't exist since we used an or above
-    system(glue::glue("rm -rf {opts$s3_files_dir} {opts$bulk_data_dir}"))
+    # use system to remove, in case any don't actually exist
+    system(glue::glue("rm -rf {paste(output_dirs, collapse = ' ')}"))
   }
 }
 
@@ -139,7 +150,6 @@ consensus_files_dir   <- file.path(opts$s3_files_dir, "cell-type-consensus-resul
 celltype_results_dir  <- file.path(opts$s3_files_dir, "celltype_results")
 s3_files_reference_dir <- file.path(opts$s3_files_dir, "reference_files")
 merged_sce_dir <- file.path(opts$s3_files_dir, "SCPCP000003")
-bulk_reference_dir    <- file.path(opts$bulk_data_dir, "references")
 
 # these directories are for temporary file stored in scratch
 merged_scratch_dir <- file.path(opts$scratch_dir, "SCPCP000003_merged")
@@ -150,11 +160,11 @@ citeseq_metadata_scratch_dir <- file.path(opts$scratch_dir, "citeseq-project-met
 fs::dir_create(c(
   opts$scratch_dir,
   opts$bulk_data_dir,
+  opts$bulk_references_dir,
   consensus_files_dir,
   celltype_results_dir,
   s3_files_reference_dir,
   merged_sce_dir,
-  bulk_reference_dir,
   merged_scratch_dir,
   bulk_metadata_scratch_dir,
   citeseq_metadata_scratch_dir
@@ -299,7 +309,11 @@ input_zips |>
         system(glue::glue("rm {project_scratch_dir}/*/*filtered.rds"))
         system(glue::glue("rm {project_scratch_dir}/*/*html"))
 
-        fs::dir_copy(project_scratch_dir, opts$bulk_data_dir, overwrite = TRUE)
+        fs::dir_copy(
+          project_scratch_dir, 
+          file.path(opts$bulk_data_dir, project_id), 
+          overwrite = TRUE
+        )
       }
 
       ####### Step 2: Prepare consensus cell type files #######
@@ -389,11 +403,11 @@ system(
 
 # Panglao marker gene references
 system(
-  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/bone-and-soft-tissue_PanglaoDB_2020-03-27.tsv {bulk_reference_dir} --no-sign-request")
+  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/bone-and-soft-tissue_PanglaoDB_2020-03-27.tsv {opts$bulk_references_dir} --no-sign-request")
 )
 system(
-  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/brain-compartment_PanglaoDB_2020-03-27.tsv {bulk_reference_dir} --no-sign-request")
+  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/brain-compartment_PanglaoDB_2020-03-27.tsv {opts$bulk_references_dir} --no-sign-request")
 )
 system(
-  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/kidney-compartment_PanglaoDB_2020-03-27.tsv {bulk_reference_dir} --no-sign-request")
+  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/kidney-compartment_PanglaoDB_2020-03-27.tsv {opts$bulk_references_dir} --no-sign-request")
 )
