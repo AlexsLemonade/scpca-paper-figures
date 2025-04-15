@@ -79,7 +79,7 @@ option_list <- list(
     "--bulk_data_dir",
     type = "character",
     default = here::here("analysis", "pseudobulk-bulk-prediction", "data"),
-    help = "Output directory for ScPCA data used in the bulk RNA-Seq analysis. Default is `analysis/pseudobulk-bulk-prediction/data`, which is where code expects it to be."
+    help = "Output directory for data used in the bulk RNA-Seq analysis. Default is `analysis/pseudobulk-bulk-prediction/data`, which is where code expects it to be."
   ),
   make_option(
      "--scratch_dir",
