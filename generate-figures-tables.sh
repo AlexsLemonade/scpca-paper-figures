@@ -22,18 +22,11 @@ mkdir -p ${BASEDIR}/figures/pngs
 mkdir -p ${BASEDIR}/figures/pdfs
 mkdir -p ${BASEDIR}/tables
 
-# check if s3 files directory already exists
-# if it does, delete it
-if [ -d "${BASEDIR}/s3_files" ]; then
-  rm -r ${BASEDIR}/s3_files
+# Check if s3 files directory already exists and error if not
+if [ ! -d "${BASEDIR}/s3_files" ]; then
+  echo "The `s3_files` directory does not exist. To create it, please follow the 'Instructions to prepare data' provided in the README file."
+  exit 1
 fi
-mkdir -p ${BASEDIR}/s3_files
-
-# copy over files from S3
-echo "Downloading data files..."
-Rscript ${script_dir}/figure_setup/sync-data-files.R
-Rscript ${script_dir}/figure_setup/sync-metadata.R
-Rscript ${script_dir}/figure_setup/sync-reference-files.R
 
 #########################################################
 #        Generate figures in order of appearance        #

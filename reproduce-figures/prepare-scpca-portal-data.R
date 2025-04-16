@@ -78,8 +78,8 @@ option_list <- list(
   make_option(
     "--bulk_data_dir",
     type = "character",
-    default = here::here("analysis", "pseudobulk-bulk-prediction", "data", "scpca_data"),
-    help = "Output directory for data used in the bulk RNA-Seq analysis. Default is `analysis/pseudobulk-bulk-prediction/data/scpca_data`, which is where code expects it to be."
+    default = here::here("analysis", "pseudobulk-bulk-prediction", "data"),
+    help = "Output directory for data used in the bulk RNA-Seq analysis. Default is `analysis/pseudobulk-bulk-prediction/data`, which is where code expects it to be."
   ),
   make_option(
      "--scratch_dir",
@@ -125,12 +125,21 @@ stopifnot(
 )
 
 # Check output directories
-if ((dir.exists(opts$s3_files_dir) | dir.exists(opts$bulk_data_dir))) {
+
+# first, set up the target bulk dirs
+bulk_scpca_data_dir <- file.path(opts$bulk_data_dir, "scpca_data")
+bulk_references_dir <- file.path(opts$bulk_data_dir, "references")
+output_dirs <- c(
+  opts$s3_files_dir, 
+  bulk_scpca_data_dir, 
+  bulk_references_dir
+)
+if (any(dir.exists(output_dirs))) {
   if (!opts$overwrite) {
     stop("Output directories already exist. To overwrite them, use the --overwrite flag.")
   } else {
-    # use system to remove, in case one doesn't exist since we used an or above
-    system(glue::glue("rm -rf {opts$s3_files_dir} {opts$bulk_data_dir}"))
+    # use system to remove, in case any don't actually exist
+    system(glue::glue("rm -rf {paste(output_dirs, collapse = ' ')}"))
   }
 }
 
@@ -139,7 +148,6 @@ consensus_files_dir   <- file.path(opts$s3_files_dir, "cell-type-consensus-resul
 celltype_results_dir  <- file.path(opts$s3_files_dir, "celltype_results")
 s3_files_reference_dir <- file.path(opts$s3_files_dir, "reference_files")
 merged_sce_dir <- file.path(opts$s3_files_dir, "SCPCP000003")
-bulk_reference_dir    <- file.path(opts$bulk_data_dir, "references")
 
 # these directories are for temporary file stored in scratch
 merged_scratch_dir <- file.path(opts$scratch_dir, "SCPCP000003_merged")
@@ -149,12 +157,11 @@ citeseq_metadata_scratch_dir <- file.path(opts$scratch_dir, "citeseq-project-met
 
 fs::dir_create(c(
   opts$scratch_dir,
-  opts$bulk_data_dir,
+  output_dirs,
   consensus_files_dir,
   celltype_results_dir,
   s3_files_reference_dir,
   merged_sce_dir,
-  bulk_reference_dir,
   merged_scratch_dir,
   bulk_metadata_scratch_dir,
   citeseq_metadata_scratch_dir
@@ -188,7 +195,7 @@ celltype_results_samples <- c(
   "SCPCS000224"
 )
 
-# These are the directories to save to opts$bulk_files_dir
+# These are the directories to save to bulk_scpca_data_dir
 # They should contain processed files organized as expected and the bulk quant TSV file
 bulk_projects <- c(
   "SCPCP000001",
@@ -277,17 +284,17 @@ input_zips |>
             }
 
       })
-      
+
       # Save metadata files to use when preparing the sample and library metadata files later
       project_bulk_tsv <- file.path(project_scratch_dir, glue::glue("{project_id}_bulk_metadata.tsv"))
       if (file.exists(project_bulk_tsv)) {
         fs::file_copy(project_bulk_tsv, bulk_metadata_scratch_dir, overwrite = TRUE)
       }
-      
+
       if (project_id %in% citeseq_projects) {
         fs::file_copy(
-          file.path(project_scratch_dir, glue::glue("single_cell_metadata.tsv")), 
-          file.path(citeseq_metadata_scratch_dir, glue::glue("{project_id}_single_cell_metadata.tsv")), 
+          file.path(project_scratch_dir, glue::glue("single_cell_metadata.tsv")),
+          file.path(citeseq_metadata_scratch_dir, glue::glue("{project_id}_single_cell_metadata.tsv")),
           overwrite = TRUE
         )
       }
@@ -299,7 +306,11 @@ input_zips |>
         system(glue::glue("rm {project_scratch_dir}/*/*filtered.rds"))
         system(glue::glue("rm {project_scratch_dir}/*/*html"))
 
-        fs::dir_copy(project_scratch_dir, opts$bulk_data_dir, overwrite = TRUE)
+        fs::dir_copy(
+          project_scratch_dir, 
+          file.path(bulk_scpca_data_dir, project_id), 
+          overwrite = TRUE
+        )
       }
 
       ####### Step 2: Prepare consensus cell type files #######
@@ -358,14 +369,19 @@ prepare_sample_metadata(
   sample_metadata_file
 )
 
-
 # Create and export library metadata table
 prepare_library_metadata(
-  portal_metadata, 
+  portal_metadata,
   bulk_metadata_scratch_dir,
   citeseq_metadata_scratch_dir,
   library_metadata_file
 )
+
+# Now we can remove the remaining files in scratch
+fs::dir_delete(c(
+  bulk_metadata_scratch_dir,
+  citeseq_metadata_scratch_dir
+))
 
 # Sync reference files from S3 ------------------------------------
 
@@ -379,16 +395,16 @@ system(
 
 # SingleR model files
 system(
-  glue::glue("aws s3 cp s3://scpca-references/celltype/singler_models/ {s3_files_reference_dir} --recursive --exclude '*' --include '*.rds' --no-sign-request")
+  glue::glue("aws s3 cp s3://scpca-references/celltype/singler_models {s3_files_reference_dir}/singler_models --recursive --exclude '*' --include '*.rds' --no-sign-request")
 )
 
 # Panglao marker gene references
 system(
-  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/bone-and-soft-tissue_PanglaoDB_2020-03-27.tsv {bulk_reference_dir} --no-sign-request")
+  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/bone-and-soft-tissue_PanglaoDB_2020-03-27.tsv {bulk_references_dir} --no-sign-request")
 )
 system(
-  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/brain-compartment_PanglaoDB_2020-03-27.tsv {bulk_reference_dir} --no-sign-request")
+  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/brain-compartment_PanglaoDB_2020-03-27.tsv {bulk_references_dir} --no-sign-request")
 )
 system(
-  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/kidney-compartment_PanglaoDB_2020-03-27.tsv {bulk_reference_dir} --no-sign-request")
+  glue::glue("aws s3 cp s3://scpca-references/celltype/cellassign_references/kidney-compartment_PanglaoDB_2020-03-27.tsv {bulk_references_dir} --no-sign-request")
 )
