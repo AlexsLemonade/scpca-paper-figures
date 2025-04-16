@@ -18,40 +18,41 @@ RUN_GSEA=${RUN_GSEA:-0}
 basedir=$(dirname "${BASH_SOURCE[0]}")
 cd "$basedir"
 
-# Define directories
+#### Define directories
+
+# Data directories
 data_dir="data"
-script_dir="scripts"
 scpca_dir="${data_dir}/scpca_data"
 ref_dir="${data_dir}/references"
 pseudobulk_dir="${data_dir}/pseudobulk"
-result_dir="results"
+consensus_celltype_dir="../../s3_files/cell-type-consensus-results"
+
+# Code directories
+script_dir="scripts"
 notebook_dir="notebooks"
+
+# Output directories
+result_dir="results"
 model_html_dir="${notebook_dir}/model-htmls"
 gsea_html_dir="${notebook_dir}/gsea-htmls"
 ora_html_dir="${notebook_dir}/ora-htmls"
 
-mkdir -p $scpca_dir
-mkdir -p $ref_dir
+
+# Check if input directories already exists and error if not
+if [[ ! -d $scpca_dir ]] || [[ ! -d $ref_dir ]] || [[ ! -d $consensus_celltype_dir ]] ; then
+  echo "At least one input data directory does not exist. To prepare input data, please follow the 'Instructions to prepare data' provided in the reproduce-figures/README file."
+  exit 1
+fi
+
+# Create additional directories
 mkdir -p $pseudobulk_dir
 mkdir -p $result_dir
 mkdir -p $model_html_dir
-mkdir -p $gsea_html_dir
 mkdir -p $ora_html_dir
-
-
-# These files are in the top-level s3_files directory
-consensus_celltype_dir="../../s3_files/cell-type-consensus-results"
 
 # This convenience file keeps track of the bulk library & sample ids used
 # This is also used to assist filtering to single-cell processed RDS files of interest based on sample
 map_file="${data_dir}/bulk-library-sample-ids.tsv"
-
-
-# Sync data files from S3
-Rscript ${script_dir}/sync-data-files.R \
-  --output_dir "${scpca_dir}" \
-  --reference_dir "${ref_dir}" \
-  --map_file "${map_file}"
 
 # Prepare bulk counts data for comparisons
 Rscript ${script_dir}/prepare-bulk-counts.R \
@@ -59,7 +60,6 @@ Rscript ${script_dir}/prepare-bulk-counts.R \
   --map_file "${map_file}" \
   --output_counts_file "${data_dir}/normalized-bulk-counts.rds" \
   --output_frac_expressed_file "${data_dir}/fraction-expressed-bulk.tsv"
-
 
 for project_dir in $scpca_dir/*; do
     project_id=$(basename $project_dir)
@@ -114,6 +114,8 @@ done
 
 # If specified, run the GSEA analysis across gene sets and models
 if [[ ${RUN_GSEA} -eq 1 ]]; then
+
+  mkdir -p $gsea_html_dir
 
   gsea_reps=50
   for geneset in "H" "C8"; do
