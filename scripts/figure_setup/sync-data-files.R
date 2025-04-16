@@ -66,7 +66,7 @@ system(sync_call)
 
 # sync processed libraries for plotting a merged subset of SCPCP000003 -----------------------------------
 sample_ids <- c("SCPCS000050", "SCPCS000051", "SCPCS000053", "SCPCS000054")
-s3_dir <- "s3://nextflow-ccdl-results/scpca/processed/results/SCPCP000003" 
+s3_dir <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000003" 
 local_dir <- here::here("s3_files", "SCPCP000003")
 fs::dir_create(local_dir)
 
