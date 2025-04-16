@@ -1,7 +1,8 @@
-# Ignore in the data directory except for the ORA gene sets
+# Ignore most files in the data directory
 data/*
 !/data/README.md
 !/data/*_panglao-genesets.tsv
+!/data/bulk-library-sample-ids.tsv
 
 # Ignore RDS and TSV files in the results/models directory (but keep it present)
 /results/models/*rds
