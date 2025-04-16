@@ -87,7 +87,9 @@ faceted_umap <- ggplot(
       override.aes = list(
         alpha = 1,
         size = 2
-      )
+      ), 
+      # arrange key rowwise, not colwise
+      theme = theme(legend.byrow = TRUE)
     )
   ) +
   theme(legend.position = "bottom")
