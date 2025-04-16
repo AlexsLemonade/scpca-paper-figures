@@ -64,15 +64,18 @@ fs::dir_create(celltype_local_files)
 sync_call <- glue::glue("aws s3 sync '{celltype_s3_files}' '{celltype_local_files}' --exclude '*' --include 'SCPCL000498_processed.rds' --exact-timestamps")
 system(sync_call)
 
-# sync merged object results for SCPCP000003 -----------------------------------
-merged_s3_dir <- "s3://nextflow-ccdl-results/scpca/processed/results/SCPCP000003/merged/"
-merged_local_dir <- here::here("s3_files", "SCPCP000003")
-fs::dir_create(merged_local_dir)
+# sync processed libraries for plotting a merged subset of SCPCP000003 -----------------------------------
+sample_ids <- c("SCPCS000050", "SCPCS000051", "SCPCS000053", "SCPCS000054")
+s3_dir <- "s3://nextflow-ccdl-results/scpca/processed/results/SCPCP000003" 
+local_dir <- here::here("s3_files", "SCPCP000003")
+fs::dir_create(local_dir)
 
-merged_file_name <- "SCPCP000003_merged.rds"
+sample_dirs <- file.path(s3_dir, sample_ids)
+glue::glue(
+  "aws s3 sync '{sample_dirs}/' '{local_dir}' --exclude '*' --include '*_processed.rds' --exact-timestamps"
+) |>
+  purrr::walk(system)
 
-sync_call <- glue::glue("aws s3 sync '{merged_s3_dir}' '{merged_local_dir}' --exclude '*' --include '{merged_file_name}' --exact-timestamps")
-system(sync_call)
 
 # sync results for benchmarking SingleR refs -----------------------------------
 # define project and sample ids needed for syncing
