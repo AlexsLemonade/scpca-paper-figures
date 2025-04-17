@@ -73,9 +73,13 @@ non_multiplex_samples <- readr::read_tsv(library_metadata_file) |>
 
 # Create bar plots -------------------------------------------------------------
 
-# Define width of output PDF for each barplot
-file_widths <- c(18, 15, 15)
-names(file_widths) <- names(output_pdf_files)
+# Define c(width, height) of output PDF for each barplot
+file_sizes <- list(
+  c(17, 8), 
+  c(9, 6), 
+  c(9, 6)
+)
+names(file_sizes) <- names(output_pdf_files)
 
 plot_list <- output_pdf_files |> 
   purrr::iwalk(\(file, group){
@@ -105,7 +109,7 @@ plot_list <- output_pdf_files |>
     barchart <- diagnosis_group_barchart(summary_df, fill_column = "broad_celltype_group", celltype_colors = celltype_colors)
     
     # save plot 
-    ggsave(file, plot = barchart, width = file_widths[[group]], height = 10)
+    ggsave(file, plot = barchart, width = file_sizes[[group]][1], height = file_sizes[[group]][2])
     gc() # clean up after each run
     
   })

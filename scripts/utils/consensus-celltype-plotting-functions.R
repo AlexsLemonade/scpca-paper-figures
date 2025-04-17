@@ -425,6 +425,13 @@ stacked_barchart <- function(
     lumped_label
   )
   
+  # if size is 0, we want element_blank()
+  if (x_axis_text_size == 0) {
+    axis_text_x_theme <- element_blank()
+  } else {
+    axis_text_x_theme <- element_text(angle = 60, hjust = 1, vjust = 1, size = x_axis_text_size)
+  }
+  
   barchart <- ggplot(df) + 
     aes(
       x = library_id, 
@@ -439,7 +446,8 @@ stacked_barchart <- function(
       breaks = plot_breaks
     ) +
     theme_classic() +
-    theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1, size = x_axis_text_size),
+    theme(
+          axis.text.x = axis_text_x_theme,
           strip.background = element_rect(fill = "transparent", color = "black", linewidth = 0.5),
           # add a square around each of the plots
           panel.background = element_rect(colour = "black", linewidth=0.5),
@@ -538,6 +546,7 @@ diagnosis_group_barchart <- function(
         fill_label = fill_label,
         facet_variable = diagnosis_column, 
         facet_col = unique(df$ncol),
+        x_axis_text_size = 0, # blank x-axis text
         legend_position = "none" # don't include legends 
       )
       
