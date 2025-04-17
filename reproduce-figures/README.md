@@ -9,7 +9,6 @@ Please see instructions below for usage.
 * TSV files, `FigS1B-gene-expression-data.tsv` and `FigS1C_FigS1D-cell-metrics-data.tsv`, which are used as input to the script `../scripts/FigS1B-D_method-metrics-comparison.R` to create Figures S1-D.
   * Note that this script expects these TSV files to be present in this directory; please do not move them.
 
-**Caution: This process script requires at least 170 GB free storage space.**
 
 ## Instructions
 
