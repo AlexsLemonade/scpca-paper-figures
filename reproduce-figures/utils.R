@@ -98,12 +98,12 @@ prepare_sample_metadata <- function(
 
   # Prepare data frame with samples whose full metadata is not yet available on the portal
   bulk_only_sample_metadata <-  tibble::tribble(
-    ~scpca_project_id, ~scpca_sample_id, ~diagnosis,        ~disease_timing,     ~is_cell_line,
-    ###########################################################################################
-    "SCPCP000006",     "SCPCS000210",    "Wilms tumor",     "Initial diagnosis", FALSE,
-    "SCPCP000006",     "SCPCS000211",    "Wilms tumor",     "Initial diagnosis", FALSE,
-    "SCPCP000009",     "SCPCS000129",    "Medulloblastoma", "Initial diagnosis", FALSE,
-    "SCPCP000017",     "SCPCS000606",    "Osteosarcoma",    "Recurrence",        FALSE
+    ~scpca_project_id, ~scpca_sample_id, ~diagnosis,        ~disease_timing,     ~is_cell_line, ~is_xenograft,
+    ##########################################################################################################
+    "SCPCP000006",     "SCPCS000210",    "Wilms tumor",     "Initial diagnosis", FALSE,         FALSE,
+    "SCPCP000006",     "SCPCS000211",    "Wilms tumor",     "Initial diagnosis", FALSE,         FALSE,
+    "SCPCP000009",     "SCPCS000129",    "Medulloblastoma", "Initial diagnosis", FALSE,         FALSE,
+    "SCPCP000017",     "SCPCS000606",    "Osteosarcoma",    "Recurrence",        FALSE,         FALSE
   )
 
   sample_metadata |>
