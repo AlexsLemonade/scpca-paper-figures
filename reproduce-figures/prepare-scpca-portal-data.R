@@ -16,9 +16,9 @@
 # please refer to the current directory's `README.md`.
 # Briefly, this script can be run as follows:
 #
+#
 #   Rscript prepare-scpca-portal-data.R \
 #     --portal_projects_dir <path to directory with all project zip files> \
-#     --merged_sce_path <path to merged SCE file> \
 #     --portal_metadata_path <path to portal-wide metadata TSV>
 
 renv::load()
@@ -33,11 +33,6 @@ option_list <- list(
     "--portal_projects_dir",
     type = "character",
     help = "Path to directory containing project ZIP files downloaded from the ScPCA Portal"
-  ),
-  make_option(
-    "--merged_sce_path",
-    type = "character",
-    help = "Path to the merged SCPCP000003 project ZIP file"
   ),
   make_option(
     "--portal_metadata_path",
@@ -89,12 +84,10 @@ source(utils_file)
 # Check files and directories - for user-provided, first if they were specified, then if they exist
 stopifnot(
   "Path to directory with project ZIP files be specified with --portal_projects_dir" = !is.null(opts$portal_projects_dir),
-  "Path to merged SCE for project SCPCP000003 must be specified with --merged_sce_path" = !is.null(opts$merged_sce_path),
   "Portal-wide metadata TSV must be specified with --portal_metadata_path" = !is.null(opts$portal_metadata_path)
 )
 stopifnot(
   "Portal projects directory not found" = dir.exists(opts$portal_projects_dir),
-  "Merged SCE for project SCPCP000003 not found" = file.exists(opts$merged_sce_path),
   "Portal-wide metadata TSV not found" = file.exists(opts$portal_metadata_path),
   "Project whitelist could not be found" = file.exists(opts$project_whitelist)
 )
@@ -125,7 +118,6 @@ s3_files_reference_dir <- file.path(opts$s3_files_dir, "reference_files")
 merged_sce_dir <- file.path(opts$s3_files_dir, "SCPCP000003")
 
 # these directories are for temporary file stored in scratch
-merged_scratch_dir <- file.path(opts$scratch_dir, "SCPCP000003_merged")
 bulk_metadata_scratch_dir <- file.path(opts$scratch_dir, "bulk-metadata")
 citeseq_metadata_scratch_dir <- file.path(opts$scratch_dir, "citeseq-project-metadata")
 
@@ -137,15 +129,10 @@ fs::dir_create(c(
   celltype_results_dir,
   s3_files_reference_dir,
   merged_sce_dir,
-  merged_scratch_dir,
   bulk_metadata_scratch_dir,
   citeseq_metadata_scratch_dir
 ))
 
-# Define marker genes for recreating expression matrices used for consensus cell type dot plots
-marker_genes <- readr::read_tsv(marker_gene_ref_file) |>
-  dplyr::pull(ensembl_gene_id) |>
-  unique()
 
 # These are all output directories at the top-level of s3_files
 ### Some need just processed, and some also need (un)filtered, but scripts specify which one
@@ -183,6 +170,13 @@ bulk_projects <- c(
 # Projects with CITE-seq technology which we'll assign technology to when preparing metadata
 citeseq_projects <- c("SCPCP000003", "SCPCP000007", "SCPCP000008")
 
+# Samples whose libraries we need to obtain for making the SCPCP000003 merged figure
+merged_sce_samples <- c("SCPCS000050", "SCPCS000051", "SCPCS000053", "SCPCS000054")
+
+# Define marker genes for recreating expression matrices used for consensus cell type dot plots
+marker_genes <- readr::read_tsv(marker_gene_ref_file) |>
+  dplyr::pull(ensembl_gene_id) |>
+  unique()
 
 # Define input files ------------------------
 
@@ -207,15 +201,6 @@ stopifnot(
   "The provided input directory does not contain all expected projects. Zip files for all projects listed in the `project-whitelist.txt` file should be present." =
     setequal(names(input_zips), expected_projects)
 )
-
-# First, unzip and copy over the merged SCPCP000003 file -----------------------
-unzip(opts$merged_sce_path, exdir = merged_scratch_dir)
-fs::file_move(
-  file.path(merged_scratch_dir, "SCPCP000003_merged.rds"),
-  merged_sce_dir
-)
-# clean up for space
-fs::dir_delete(merged_scratch_dir)
 
 # Map over project zip files to organize files for reproducibility -------------
 input_zips |>
@@ -272,6 +257,18 @@ input_zips |>
           file.path(citeseq_metadata_scratch_dir, glue::glue("{project_id}_single_cell_metadata.tsv")),
           overwrite = TRUE
         )
+      }
+      
+      # If this project is SCPCP000003, copy over a few of its processed files
+      if (project_id == "SCPCP000003") {
+        merged_sce_samples |>
+          purrr::map(
+            \(sample_id) {
+              # use system since we need to use a glob here
+              system(
+                glue::glue("cp {project_scratch_dir}/{sample_id}/*_processed.rds {merged_sce_dir}")
+              )
+          })
       }
 
       # If this project is used in the bulk analysis, copy to bulk_project_dir
