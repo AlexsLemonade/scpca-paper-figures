@@ -1,7 +1,7 @@
 This directory contains a script and certain data files necessary for reproducing manuscript figures, tables, and analyses.
 It contains the following contents:
 
-* The script `prepare-scpca-portal-data.R` prepares data obtained from the ScPCA Portal and AWS S3 needed to reproduce figures, tables, and the bulk RNA-Seq analysis.
+* The script `prepare-scpca-portal-data.R` which prepares data obtained from the ScPCA Portal and AWS S3 needed to reproduce figures, tables, and the bulk RNA-Seq analysis.
 Please see instructions below for usage.
   * **CAUTION: Running this script requires at least 170 GB of free storage space**
   * This script uses functions provided in `utils.R`
