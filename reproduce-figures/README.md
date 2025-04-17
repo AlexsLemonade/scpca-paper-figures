@@ -28,9 +28,9 @@ Please refer to the [Introduction to `renv` vignette](https://rstudio.github.io/
 You will need to download the following files from the ScPCA Portal <https://scpca.alexslemonade.org/>:
 
 1. All ScPCA projects listed in the [Project Whitelist file](../sample-info/project-whitelist.txt)
-  * Use the project identifiers listed in the project whitelist file to navigate to each project page. 
-For example, to navigate to `SCPCP000001`, use the URL: <https://scpca.alexslemonade.org/projects/SCPCP000001>. 
-* Download each project using the `Download Project` button with the following options selected: 
+  * Use the project identifiers listed in the project whitelist file to navigate to each project page.
+For example, to navigate to `SCPCP000001`, use the URL: <https://scpca.alexslemonade.org/projects/SCPCP000001>.
+* Download each project using the `Download Project` button with the following options selected:
     * Ensure the selected modality is `Single-cell`
     * Ensure the selected Data Format is `SingleCellExperiment (r)`
     * Do _not_ click to merge all objects into the same sample
@@ -47,6 +47,8 @@ Place all downloaded ScPCA project files in the same directory.
 Optionally, you can also store the portal metadata TSV in this directory, but it is not necessary.
 
 ### Step 4: Run the `prepare-scpca-portal-data.R` script
+
+**Caution: Running this script requires at least 170 GB of free storage space.**
 
 Now, you can run the `prepare-scpca-portal-data.R` script specifying the following input arguments:
 
