@@ -1,11 +1,12 @@
 #!/bin/bash
 #
 # This bash script runs all scripts to generate manuscript figures and tables.
-# This script assumes that you already have locally downloaded the necessary data from S3.
-# Currently, this requires that you have access to the relevant S3 bucket as a Data Lab member.
+# This script assumes that you already have locally prepared the necessary input data.
+# For full instructions on preparing the input data, please refer to the repository's `README.md` file.
 #
 # This script can be run as:
 # bash generate-figures-tables.sh
+
 
 # enviroment settings
 set -euo pipefail
