@@ -1,11 +1,10 @@
 #!/usr/bin/env Rscript
-
-# This script organizes and parses data obtained from the ScPCA Portal so that figures and analyses can be reproduced.
-# This script will create two directories you'll need:
-# - `s3_files`: This directory will contain ScPCA data files needed to reproduce tables and figures.
-# - `scpca_data`: This directory will contain ScPCA data files needed to reproduce the bulk expression analysis.
 #
-# For full details and instructions, please refer to the current directory's `README.md`.
+# This script organizes and parses data obtained from the ScPCA Portal so that figures and analyses can be reproduced.
+# This script will create three directories you'll need:
+# - `s3_files`: This directory will contain ScPCA data, metadata, and reference files needed to reproduce figures, tables, and the bulk expression analysis.
+# - `analysis/pseudobulk-bulk-analysis/data/scpca_data`: This directory will contain ScPCA data files needed to reproduce the bulk expression analysis.
+# - `analysis/pseudobulk-bulk-analysis/data/references`: This directory will contain reference files needed to reproduce the bulk expression analysis.
 #
 #####################################################################################
 ### CAUTION! YOU WILL NEED AT LEAST 170 GB OF AVAILABLE SPACE TO RUN THIS SCRIPT. ###
@@ -13,42 +12,20 @@
 ### In addition, it will take roughly 90 minutes to run this script.              ###
 #####################################################################################
 #
+# For full details and usage instructions, including data you need to download before running this script,
+# please refer to the current directory's `README.md`.
+# Briefly, this script can be run as follows:
 #
-# ########################### Instructions ############################
-#
-# Before running this script, you will need to take the following steps:
-#
-# 1. Ensure you have set up the `renv` environment in this project.
-#    For more information, refer to the top-level `README.md` file.
-# 2. Download all projects in the ScPCA Portal that are listed in the file `../sample-info/project-whitelist.txt`, with the following download options:
-#   - Ensure the selected modality is Single-cell
-#   - Ensure the selected Data Format is SingleCellExperiment (r)
-#   - Do _not_ click to merge all objects into the same sample
-#   - If the project contains multiplexed samples, you can exclude those samples (but it will not affect the code if they are included)
-# 3. Download the portal-wide metadata from the ScPCA Portal using the "Get All Sample Metadata" button on the top-right of the portal homepage
-# 4. Place all downlaoded project ZIP files (step 2) a single directory for input to this script.
-#    Optionally, you can also store the portal metadata TSV in this directory, but it is not necessary.
-
-# Then, you can run this script as follows:
 #
 #   Rscript prepare-scpca-portal-data.R \
 #     --portal_projects_dir <path to directory with all project zip files> \
 #     --portal_metadata_path <path to portal-wide metadata TSV>
-#
-# By default, the output directories will be saved in the location in this repository where code expects them:
-# - `s3_files/` will be placed in the top level of the `scpca-paper-figures` repository
-# - `scpca_data/` will be placed inside the bulk analysis data directory, `scpca-paper-figures/pseudobulk-bulk-prediction/data/`
-# You can provide custom directories if you prefer; use the `--help` flag to see all script options.
-# Note that this script will not overwrite existing output directories without the `--overwrite` flag.
-
-
 
 renv::load()
 suppressPackageStartupMessages({
   library(SingleCellExperiment)
   library(optparse)
 })
-
 
 # Parse options --------
 option_list <- list(
@@ -121,8 +98,8 @@ stopifnot(
 bulk_scpca_data_dir <- file.path(opts$bulk_data_dir, "scpca_data")
 bulk_references_dir <- file.path(opts$bulk_data_dir, "references")
 output_dirs <- c(
-  opts$s3_files_dir, 
-  bulk_scpca_data_dir, 
+  opts$s3_files_dir,
+  bulk_scpca_data_dir,
   bulk_references_dir
 )
 if (any(dir.exists(output_dirs))) {
@@ -302,8 +279,8 @@ input_zips |>
         system(glue::glue("rm {project_scratch_dir}/*/*html"))
 
         fs::dir_copy(
-          project_scratch_dir, 
-          file.path(bulk_scpca_data_dir, project_id), 
+          project_scratch_dir,
+          file.path(bulk_scpca_data_dir, project_id),
           overwrite = TRUE
         )
       }
