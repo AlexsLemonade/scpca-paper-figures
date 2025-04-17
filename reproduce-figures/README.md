@@ -3,11 +3,11 @@ It contains the following contents:
 
 * The script `prepare-scpca-portal-data.R` prepares data obtained from the ScPCA Portal and AWS S3 needed to reproduce figures, tables, and the bulk RNA-Seq analysis.
 Please see instructions below for usage.
-  * **Caution: Running this script requires at least 170 GB of free storage space.**
+  * **CAUTION: Running this script requires at least 170 GB of free storage space**
   * This script uses functions provided in `utils.R`
   * This script also uses the `./scratch` directory during file processing
 * TSV files, `FigS1B-gene-expression-data.tsv` and `FigS1C_FigS1D-cell-metrics-data.tsv`, which are used as input to the script `../scripts/FigS1B-D_method-metrics-comparison.R` to create Figures S1-D.
-  * Note that this script expects these TSV files to be present in this directory; please do not move them.
+  * Note that this script expects these TSV files to be present in this directory; please do not move them
 
 
 ## Instructions
@@ -27,7 +27,7 @@ Please refer to the [Introduction to `renv` vignette](https://rstudio.github.io/
 
 You will need to download the following files from the ScPCA Portal <https://scpca.alexslemonade.org/>:
 
-1. All ScPCA projects listed in the [Project Whitelist file](../sample-info/project-whitelist.txt)
+1. All ScPCA projects listed in the [project whitelist file](../sample-info/project-whitelist.txt)
   * Use the project identifiers listed in the project whitelist file to navigate to each project page.
 For example, to navigate to `SCPCP000001`, use the URL: <https://scpca.alexslemonade.org/projects/SCPCP000001>.
 * Download each project using the `Download Project` button with the following options selected:
@@ -48,7 +48,7 @@ Optionally, you can also store the portal metadata TSV in this directory, but it
 
 ### Step 4: Run the `prepare-scpca-portal-data.R` script
 
-**Caution: Running this script requires at least 170 GB of free storage space.**
+**CAUTION: Running this script requires at least 170 GB of free storage space.**
 
 Now, you can run the `prepare-scpca-portal-data.R` script specifying the following input arguments:
 
