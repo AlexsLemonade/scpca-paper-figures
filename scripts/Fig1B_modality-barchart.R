@@ -25,8 +25,8 @@ output_pdf_file <- file.path(pdf_dir, "Fig1B_modality-summary.pdf")
 # set order of modalities for final plot 
 modality_order <- c("Single suspension",
                     "Bulk",
-                    "With CITE-seq",
                     "Spatial transcriptomics",
+                    "With CITE-seq",
                     "With cell hashing"
                     )
 
@@ -42,16 +42,16 @@ sample_whitelist <- readLines(sample_whitelist_file)
 # read in library metadata
 library_metadata_df <- readr::read_tsv(library_metadata_file)
 
-# get library whitelist using sample and project whitelist 
-# this helps make sure we don't lose the multiplexed libraries that have more than one sample ID listed
+
 library_metadata_df <- library_metadata_df |> 
   dplyr::filter(scpca_project_id %in% project_whitelist) |>
+  # separate out multiplexed samples
   dplyr::mutate(scpca_sample_id = stringr::str_split(scpca_sample_id, ";")) |> 
   tidyr::unnest(scpca_sample_id) |> 
   # now that sample ids are separated, filter to whitelist 
   dplyr::filter(scpca_sample_id %in% sample_whitelist) |> 
+  # get one row per sample, seq unit, and tech combo 
   dplyr::select(scpca_project_id, scpca_sample_id, seq_unit, technology) |> 
-  unique() |> 
   # create a modality column that labels everything as single suspension, bulk, spatial, or CITE
   dplyr::mutate(
     modality = dplyr::case_when(
@@ -103,6 +103,7 @@ filtered_modality_df <- library_metadata_df |>
   # also rename to be more specific when creating legend
   dplyr::mutate(
     seq_unit = dplyr::case_when(
+      # two samples are sequenced using both cell and nuclei so count them separately 
       scpca_sample_id %in% c("SCPCS000250", "SCPCS000251") & seq_unit == "cell" ~ "Single-cell",
       scpca_sample_id %in% c("SCPCS000250", "SCPCS000251") & seq_unit == "nucleus" ~ "Single-nuclei",
       scpca_sample_id %in% all_single_cell ~ "Single-cell",
@@ -110,8 +111,7 @@ filtered_modality_df <- library_metadata_df |>
     )
   ) |> 
   unique() |> 
-  # first combine all modalities for each sample id into one list
-  # make sure to keep seq unit
+  # counts for seq unit and modality combos 
   dplyr::add_count(seq_unit, modality, name = "total_per_modality") |> 
   # add a column to help pull out additional modalities into its own facet 
   dplyr::mutate(
