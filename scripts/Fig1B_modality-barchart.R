@@ -42,20 +42,16 @@ sample_whitelist <- readLines(sample_whitelist_file)
 # read in library metadata
 library_metadata_df <- readr::read_tsv(library_metadata_file)
 
-# get library whitelist using sample and project whitelist 
-# this helps make sure we don't lose the multiplexed libraries that have more than one sample ID listed
-library_whitelist <- library_metadata_df |> 
+
+library_metadata_df <- library_metadata_df |> 
   dplyr::filter(scpca_project_id %in% project_whitelist) |>
+  # separate out multiplexed samples
   dplyr::mutate(scpca_sample_id = stringr::str_split(scpca_sample_id, ";")) |> 
   tidyr::unnest(scpca_sample_id) |> 
   # now that sample ids are separated, filter to whitelist 
   dplyr::filter(scpca_sample_id %in% sample_whitelist) |> 
-  dplyr::pull(scpca_library_id)
-  
-library_metadata_df <- library_metadata_df |> 
-  # filter to library whitelist 
-  dplyr::filter(scpca_library_id %in% library_whitelist) |> 
-  dplyr::select(scpca_project_id, scpca_sample_id, scpca_library_id, seq_unit, technology) |> 
+  # get one row per sample, seq unit, and tech combo 
+  dplyr::select(scpca_project_id, scpca_sample_id, seq_unit, technology) |> 
   # create a modality column that labels everything as single suspension, bulk, spatial, or CITE
   dplyr::mutate(
     modality = dplyr::case_when(
@@ -65,28 +61,35 @@ library_metadata_df <- library_metadata_df |>
       stringr::str_detect(technology, "cellhash") ~ "With cell hashing",
       seq_unit %in% c("cell", "nucleus") ~ "Single suspension"
     )
-  )
+  ) |> 
+  unique()
+
 
 # get a list of all bulk and spatial samples
 # these will be checked against all single-cell/ nuc samples to look for matching samples
 all_bulk <- library_metadata_df |> 
   dplyr::filter(modality == "Bulk") |> 
-  dplyr::pull(scpca_sample_id)
+  dplyr::pull(scpca_sample_id) |> 
+  unique()
 
 all_spatial <- library_metadata_df |> 
   dplyr::filter(modality == "Spatial transcriptomics") |>
-  dplyr::pull(scpca_sample_id)
+  dplyr::pull(scpca_sample_id) |> 
+  unique()
 
 # get list of all single cell and all single nuclei
 all_single_cell <- library_metadata_df |> 
   dplyr::filter(seq_unit == "cell" & modality == "Single suspension") |> 
-  dplyr::pull(scpca_sample_id)
+  dplyr::pull(scpca_sample_id) |>
+  unique()
 all_single_nuc <- library_metadata_df |> 
   dplyr::filter(seq_unit == "nucleus" & modality == "Single suspension") |> 
-  dplyr::pull(scpca_sample_id)
+  dplyr::pull(scpca_sample_id) |>
+  unique()
 
 # get list of all bulk and spatial samples that don't have a corresponding cell/nucleus sample
-all_suspension <- c(all_single_cell, all_single_nuc)
+all_suspension <- c(all_single_cell, all_single_nuc) |> 
+  unique() # account for two libraries that have both cell and nucleus
 bulk_only <- setdiff(all_bulk, all_suspension)
 spatial_only <- setdiff(all_spatial, all_suspension)
 
@@ -94,24 +97,22 @@ spatial_only <- setdiff(all_spatial, all_suspension)
 # remove bulk and spatial only from metadata
 filtered_modality_df <- library_metadata_df |> 
   dplyr::filter(!(scpca_sample_id %in% c(bulk_only, spatial_only))) |>
+  # two samples were sequenced using different 10x kits, so we don't want to double count them 
+  dplyr::select(-technology) |> 
   # make sure all bulk and spatial get designated with cell or nucleus
   # also rename to be more specific when creating legend
   dplyr::mutate(
     seq_unit = dplyr::case_when(
+      # two samples are sequenced using both cell and nuclei so count them separately 
+      scpca_sample_id %in% c("SCPCS000250", "SCPCS000251") & seq_unit == "cell" ~ "Single-cell",
+      scpca_sample_id %in% c("SCPCS000250", "SCPCS000251") & seq_unit == "nucleus" ~ "Single-nuclei",
       scpca_sample_id %in% all_single_cell ~ "Single-cell",
       scpca_sample_id %in% all_single_nuc ~ "Single-nuclei"
     )
   ) |> 
-  # first combine all modalities for each sample id into one list
-  # make sure to keep seq unit
-  dplyr::group_by(scpca_sample_id, seq_unit) |>
-  dplyr::summarise(modality = paste(modality, collapse = ";")) |> 
-  # split any lists of modalities so we have one row per sample per modality
-  dplyr::mutate(modality = stringr::str_split(modality, ";")) |> 
-  tidyr::unnest(modality) |>
-  dplyr::group_by(modality) |> 
-  # get the total for each modality to use for specifying order in plot
-  dplyr::add_tally(name = "total_per_modality") |>
+  unique() |> 
+  # counts for seq unit and modality combos 
+  dplyr::add_count(seq_unit, modality, name = "total_per_modality") |> 
   # add a column to help pull out additional modalities into its own facet 
   dplyr::mutate(
     additional_mods = ifelse(
@@ -122,6 +123,7 @@ filtered_modality_df <- library_metadata_df |>
     # set custom order
     # with cite and with cell hash should be together 
     modality = forcats::fct_relevel(modality, modality_order))
+
 
 # Plot -------------------------------------------------------------------------
 
