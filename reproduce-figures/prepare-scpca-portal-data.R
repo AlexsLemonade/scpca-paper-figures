@@ -19,7 +19,7 @@
 #
 #   Rscript prepare-scpca-portal-data.R \
 #     --portal_projects_dir <path to directory with all project zip files> \
-#     --portal_metadata_path <path to portal-wide metadata TSV>
+#     --portal_metadata_path <path to portal-wide metadata zip file>
 
 renv::load()
 suppressPackageStartupMessages({
@@ -37,7 +37,7 @@ option_list <- list(
   make_option(
     "--portal_metadata_path",
     type = "character",
-    help = "Path to the the portal-wide metadata TSV"
+    help = "Path to the the portal-wide metadata file as a compressed ZIP file"
   ),
   make_option(
     "--s3_files_dir",
@@ -88,9 +88,11 @@ stopifnot(
 )
 stopifnot(
   "Portal projects directory not found" = dir.exists(opts$portal_projects_dir),
-  "Portal-wide metadata TSV not found" = file.exists(opts$portal_metadata_path),
+  "Portal-wide metadata file not found" = file.exists(opts$portal_metadata_path),
   "Project whitelist could not be found" = file.exists(opts$project_whitelist)
 )
+
+
 
 # Check output directories
 
@@ -118,20 +120,35 @@ s3_files_reference_dir <- file.path(opts$s3_files_dir, "reference_files")
 merged_sce_dir <- file.path(opts$s3_files_dir, "SCPCP000003")
 
 # these directories are for temporary file stored in scratch
+portal_metadata_scratch_dir <- file.path(opts$scratch_dir, "portal-metadata")
 bulk_metadata_scratch_dir <- file.path(opts$scratch_dir, "bulk-metadata")
 citeseq_metadata_scratch_dir <- file.path(opts$scratch_dir, "citeseq-project-metadata")
 
 
 fs::dir_create(c(
-  opts$scratch_dir,
   output_dirs,
   consensus_files_dir,
   celltype_results_dir,
   s3_files_reference_dir,
   merged_sce_dir,
   bulk_metadata_scratch_dir,
-  citeseq_metadata_scratch_dir
+  citeseq_metadata_scratch_dir, 
+  portal_metadata_scratch_dir
 ))
+
+
+# Read input metadata file and define output metadata files
+# Note that we need directory definitions before reading this in
+# first, confirm it's a zip file
+stopifnot(
+  "The portal metadata file is expected to be a compressed ZIP file." = stringr::str_ends(tolower(opts$portal_metadata_path), "zip")
+)
+unzip(opts$portal_metadata_path, exdir = portal_metadata_scratch_dir)
+portal_metadata <- readr::read_tsv(
+  file.path(portal_metadata_scratch_dir, "metadata.tsv") # The downloaded metadata from the portal is literally named metadata.tsv
+)
+sample_metadata_file <- file.path(opts$s3_files_dir, "scpca-sample-metadata.tsv")
+library_metadata_file <- file.path(opts$s3_files_dir, "scpca-library-metadata.tsv")
 
 
 # These are all output directories at the top-level of s3_files
@@ -329,11 +346,6 @@ input_zips |>
 
 
 # Prepare sample and library metadata files ---------------------------
-
-# Read input metadata file
-portal_metadata <- readr::read_tsv(opts$portal_metadata_path)
-sample_metadata_file <- file.path(opts$s3_files_dir, "scpca-sample-metadata.tsv")
-library_metadata_file <- file.path(opts$s3_files_dir, "scpca-library-metadata.tsv")
 
 # Create and export sample metadata table
 prepare_sample_metadata(
