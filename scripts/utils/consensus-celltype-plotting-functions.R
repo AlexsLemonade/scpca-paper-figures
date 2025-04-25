@@ -97,7 +97,7 @@ marker_gene_dotplot <- function(
       percent_exp = (detected_count / total_cells) * 100,
       # account for NA/unknowns and set axes order
       broad_celltype_group = tidyr::replace_na(broad_celltype_group, "unknown") |>
-        factor(levels = c(names(celltype_colors), "unknown"))
+        factor(levels = unique(c(names(celltype_colors), "unknown")))
     )
 
   # get list of celltypes to keep and assign colors
