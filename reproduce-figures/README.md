@@ -28,17 +28,18 @@ Please refer to the [Introduction to `renv` vignette](https://rstudio.github.io/
 You will need to download the following files from the ScPCA Portal <https://scpca.alexslemonade.org/>:
 
 1. All ScPCA projects listed in the [project whitelist file](../sample-info/project-whitelist.txt)
-  * Use the project identifiers listed in the project whitelist file to navigate to each project page.
-For example, to navigate to `SCPCP000001`, use the URL: <https://scpca.alexslemonade.org/projects/SCPCP000001>.
+  * Use the project identifiers listed in the project whitelist file to navigate to each project page
+For example, to navigate to `SCPCP000001`, use the URL: <https://scpca.alexslemonade.org/projects/SCPCP000001>
 * Download each project using the `Download Project` button with the following options selected:
     * Ensure the selected modality is `Single-cell`
     * Ensure the selected Data Format is `SingleCellExperiment (r)`
     * Do _not_ click to merge all objects into the same sample
     * If the project contains multiplexed samples, you can exclude those samples (but it will not affect the code if they are included)
-  * These projects will download as zip files; you should leave them in this compressed format, and _do not rename them_.
+  * These projects will download as zip files; you should leave them in this compressed format, and _do not rename them_
 
-2. The portal-wide metadata TSV file
-  * You can download this single TSV file using the "Get All Sample Metadata" button on the top-right of the portal homepage.
+2. The portal-wide metadata file
+  * You can download this file using the "Get All Sample Metadata" button on the top-right of the portal homepage
+  * This will download as a zip file; you should leave it in this compressed format
 
 
 ### Step 3: Organize your downloaded files
@@ -74,6 +75,6 @@ For more options, use the `--help` flag.
 
 Once `prepare-scpca-portal-data.R` script has successfully completed running, you will be able to run the following repository scripts to reproduce figures and results:
 
-* [`generate-figures-tables.sh`](../generate-figures-tables.sh): This script creates figure panels and tables used in the manuscript by running all R scripts in `scripts/`.
-  * As such you can now run individual scripts in `scripts/`; however, the scripts in `scripts/figure_setup/` are intended for internal Data Lab use only.
-* [`analysis/pseudobulk-bulk-prediction/run-prediction.sh`](../analysis/pseudobulk-bulk-prediction/run-prediction.sh): This script runs the bulk/pseudobulk expression analysis, which may take several hours to complete.
+* [`generate-figures-tables.sh`](../generate-figures-tables.sh): This script creates figure panels and tables used in the manuscript by running all R scripts in `../scripts/`
+  * As such you can now run individual scripts in `../scripts/`; however, the scripts in `../scripts/figure_setup/` are intended for internal Data Lab use only
+* [`analysis/pseudobulk-bulk-prediction/run-prediction.sh`](../analysis/pseudobulk-bulk-prediction/run-prediction.sh): This script runs the bulk/pseudobulk expression analysis, which may take several hours to complete
