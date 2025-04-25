@@ -11,9 +11,7 @@ prepare_consensus_tsv <- function(sce, output_tsv){
   # Define consensus cell types since they won't be present in SCEs which were not
   #  annotated with both SingleR and CellAssign
   if ("consensus_celltype_annotation" %in% names(colData(sce))) {
-    # TODO: This column needs to be updated
-    # See https://github.com/AlexsLemonade/scpca-paper-figures/issues/253
-    consensus_celltypes <- sce$singler_celltype_annotation
+    consensus_celltypes <- sce$consensus_celltype_annotation
   } else {
     consensus_celltypes <- NA
   }
