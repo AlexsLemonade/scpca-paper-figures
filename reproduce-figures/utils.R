@@ -106,6 +106,8 @@ prepare_sample_metadata <- function(
 
   sample_metadata |>
     dplyr::bind_rows(bulk_only_sample_metadata) |>
+    # ensure no duplicate rows
+    unique() |>
     readr::write_tsv(output_tsv)
 }
 
