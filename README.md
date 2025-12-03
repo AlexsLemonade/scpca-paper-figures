@@ -6,19 +6,18 @@ This repo contains the figures and tables included in the ScPCA manuscript.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [scpca-paper-figures](#scpca-paper-figures)
-  - [Summary of figures and tables](#summary-of-figures-and-tables)
-  - [Generating figures and tables](#generating-figures-and-tables)
-    - [Instructions to prepare data](#instructions-to-prepare-data)
-      - [Instructions for Data Lab members](#instructions-for-data-lab-members)
-  - [Additional repository contents](#additional-repository-contents)
-    - [Sample info](#sample-info)
-    - [Color palettes](#color-palettes)
-    - [Manuscript numbers](#manuscript-numbers)
-    - [Nextflow logs](#nextflow-logs)
-    - [Analysis](#analysis)
-  - [Renv](#renv)
-  - [Contributing](#contributing)
+- [Summary of figures and tables](#summary-of-figures-and-tables)
+- [Generating figures and tables](#generating-figures-and-tables)
+  - [Instructions to prepare data](#instructions-to-prepare-data)
+    - [Instructions for Data Lab members](#instructions-for-data-lab-members)
+- [Additional repository contents](#additional-repository-contents)
+  - [Sample info](#sample-info)
+  - [Color palettes](#color-palettes)
+  - [Manuscript numbers](#manuscript-numbers)
+  - [Nextflow logs](#nextflow-logs)
+  - [Analysis](#analysis)
+- [Renv](#renv)
+- [Contributing](#contributing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
