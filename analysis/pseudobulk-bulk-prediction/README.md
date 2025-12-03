@@ -25,7 +25,7 @@ To prepare and obtain all files needed for analysis input, please follow the ins
 ### Instructions for Data Lab members
 
 To prepare data for analysis, you will need to take the following steps.
-Note that you may need to preface these lines with `op run --` if you are using 1Password to manage AWS credentials.
+Note that you may need to preface these calls with `op run --` if you are using 1Password to manage AWS credentials, except when running `sync-consensus-celltype-results.R`. 
 
 1. Sync files to `./data/`:
 
@@ -36,10 +36,10 @@ Rscript scripts/sync-data-files.R \
   --map_file "data/bulk-library-sample-ids.tsv"
 ```
 
-1. Ensure additional input files have been synced to `../../s3_files`:
+2. Ensure additional input files have been synced to `../../s3_files`:
 
 ```sh
 # These should be run from top-level of the repository
-Rscript scripts/figure_setup/sync-consensus-celltype-results.R
+Rscript scripts/figure_setup/sync-consensus-celltype-results.R --profile <aws profile>
 Rscript scripts/figure_setup/sync-metadata.R
 ```

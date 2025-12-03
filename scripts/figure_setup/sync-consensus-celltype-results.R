@@ -13,6 +13,12 @@ option_list <- list(
     opt_str = c("--profile"),
     type = "character",
     help = "name of AWS profile to use for copying files"
+  ),
+  make_option(
+    opt_str = c("--openscpca_release"),
+    type = "character",
+    default = "2025-06-30",
+    help = "OpenScPCA release date to download consensus cell type results from"
   )
 )
 
@@ -27,10 +33,12 @@ project_whitelist_file <- here::here("sample-info", "project-whitelist.txt")
 project_ids <- readLines(project_whitelist_file)
 
 # where openscpca results live
-s3_results_bucket <- "s3://openscpca-nf-workflow-results/2024-11-25/cell-type-consensus"
+s3_results_bucket <- glue::glue(
+  "s3://openscpca-nf-workflow-results/{opt$openscpca_release}/cell-type-consensus"
+)
 all_s3_dirs <- glue::glue("{s3_results_bucket}/{project_ids}")
 
-# specify local directories and create them 
+# specify local directories and create them
 local_results_dir <- here::here("s3_files", "cell-type-consensus-results")
 all_results_dir <- glue::glue("{local_results_dir}/{project_ids}")
 fs::dir_create(all_results_dir)

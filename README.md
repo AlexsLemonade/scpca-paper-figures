@@ -142,7 +142,7 @@ To prepare data for figure and table generation, you will need to run the figure
 Rscript scripts/figure_setup/sync-metadata.R
 Rscript scripts/figure_setup/sync-data-files.R
 Rscript scripts/figure_setup/sync-reference-files.R
-Rscript scripts/figure_setup/sync-consensus-celltype-results.R
+Rscript scripts/figure_setup/sync-consensus-celltype-results.R --profile <name of AWS profile>
 ```
 
 If you have setup `1Password` to handle your AWS credentials, you will need to prefix scripts beginning with `sync-` with `op run --`, specifically:
