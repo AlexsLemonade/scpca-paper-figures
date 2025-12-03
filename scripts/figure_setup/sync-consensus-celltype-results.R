@@ -33,7 +33,9 @@ project_whitelist_file <- here::here("sample-info", "project-whitelist.txt")
 project_ids <- readLines(project_whitelist_file)
 
 # where openscpca results live
-s3_results_bucket <- glue::glue("s3://openscpca-nf-workflow-results/{opt$openscpca_release}/cell-type-consensus"
+s3_results_bucket <- glue::glue(
+  "s3://openscpca-nf-workflow-results/{opt$openscpca_release}/cell-type-consensus"
+)
 all_s3_dirs <- glue::glue("{s3_results_bucket}/{project_ids}")
 
 # specify local directories and create them
