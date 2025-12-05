@@ -1,5 +1,5 @@
 geneset_cell_type	modality	odds_ratio	p_value	p_adj_bh
-B cell	bulk	2.767721309668173	0.3076692330766923	0.6153384661533846
+B cell	bulk	2.767666188953809	0.3056694330566943	0.6113388661133886
 B cell	pseudobulk	0	1	1
 blood vessel endothelial cell	bulk	0	1	1
 blood vessel endothelial cell	pseudobulk	0	1	1
@@ -7,51 +7,51 @@ CD4-positive, alpha-beta T cell	bulk	0	1	1
 CD4-positive, alpha-beta T cell	pseudobulk	0	1	1
 dendritic cell	bulk	0	1	1
 dendritic cell	pseudobulk	0	1	1
-endothelial cell	bulk	0.9495909962231206	0.6513348665133487	1
+endothelial cell	bulk	0.94957201692953	0.6542345765423457	1
 endothelial cell	pseudobulk	0	1	1
-eosinophil	bulk	10.019928258270227	0.09819018098190181	0.19638036196380362
+eosinophil	bulk	10.019728975687526	0.098990100989901	0.197980201979802
 eosinophil	pseudobulk	0	1	1
 epithelial cell	bulk	0	1	1
 epithelial cell	pseudobulk	0	1	1
-granulocyte	bulk	3.4599199779249448	0.12168783121687832	0.24337566243375663
+granulocyte	bulk	3.4598509933774833	0.11898810118988101	0.23797620237976203
 granulocyte	pseudobulk	0	1	1
 innate lymphoid cell	bulk	0	1	1
 innate lymphoid cell	pseudobulk	0	1	1
-lymphocyte of B lineage	bulk	2.5966521558872304	0.1805819418058194	0.3611638836116388
+lymphocyte of B lineage	bulk	2.5966003316749586	0.17848215178482152	0.35696430356964304
 lymphocyte of B lineage	pseudobulk	0	1	1
-macrophage	bulk	3.929589598997494	0.10318968103189681	0.20637936206379362
+macrophage	bulk	3.929511278195488	0.09959004099590041	0.19918008199180082
 macrophage	pseudobulk	0	1	1
 mature alpha-beta T cell	bulk	0	1	1
 mature alpha-beta T cell	pseudobulk	0	1	1
 mature B cell	bulk	0	1	1
 mature B cell	pseudobulk	0	1	1
-mature T cell	bulk	1.780112144225992	0.4273572642735726	0.8547145285471452
+mature T cell	bulk	1.7800766555468805	0.42615738426157385	0.8523147685231477
 mature T cell	pseudobulk	0	1	1
-megakaryocyte	bulk	5.661184951565668	0.16108389161083891	0.32216778322167783
+megakaryocyte	bulk	5.661072313584141	0.1670832916708329	0.3341665833416658
 megakaryocyte	pseudobulk	0	1	1
 memory B cell	bulk	0	1	1
 memory B cell	pseudobulk	0	1	1
-memory T cell	bulk	4.821723277681826	0.18708129187081293	0.37416258374162586
+memory T cell	bulk	4.821627326808674	0.19008099190080993	0.38016198380161986
 memory T cell	pseudobulk	0	1	1
 mesangial cell	bulk	0	1	1
 mesangial cell	pseudobulk	0	1	1
 microvascular endothelial cell	bulk	0	1	1
 microvascular endothelial cell	pseudobulk	0	1	1
-monocyte	bulk	8.214986910994764	0.006799320067993201	0.013598640135986401
+monocyte	bulk	8.21482329842932	0.006799320067993201	0.013598640135986401
 monocyte	pseudobulk	0	1	1
-mononuclear phagocyte	bulk	3.3754803046985598	0.06529347065293471	0.13058694130586943
+mononuclear phagocyte	bulk	3.3754128935127965	0.06239376062393761	0.12478752124787522
 mononuclear phagocyte	pseudobulk	0	1	1
-myeloid leukocyte	bulk	3.018960444589735	0.030596940305969402	0.061193880611938804
+myeloid leukocyte	bulk	3.0188999067717606	0.027997200279972004	0.05599440055994401
 myeloid leukocyte	pseudobulk	0	1	1
 naive B cell	bulk	0	1	1
 naive B cell	pseudobulk	0	1	1
-natural killer cell	bulk	3.2942218141273694	0.26647335266473354	0.5329467053294671
+natural killer cell	bulk	3.294156227454581	0.2665733426657334	0.5331466853314668
 natural killer cell	pseudobulk	0	1	1
-neutrophil	bulk	3.82794879609875	0.23357664233576642	0.46715328467153283
+neutrophil	bulk	3.8278725998171286	0.23367663233676633	0.46735326467353266
 neutrophil	pseudobulk	0	1	1
-pericyte	bulk	2.343042524389675	0.3464653534646535	0.692930706929307
+pericyte	bulk	2.342995845586519	0.35376462353764626	0.7075292470752925
 pericyte	pseudobulk	0	1	1
-plasma cell	bulk	6.458976337448559	0.0425957404259574	0.0851914808519148
+plasma cell	bulk	6.458847736625514	0.0400959904009599	0.0801919808019198
 plasma cell	pseudobulk	0	1	1
 regulatory T cell	bulk	0	1	1
 regulatory T cell	pseudobulk	0	1	1
@@ -59,5 +59,5 @@ somatic stem cell	bulk	0	1	1
 somatic stem cell	pseudobulk	0	1	1
 stem cell	bulk	0	1	1
 stem cell	pseudobulk	0	1	1
-T cell	bulk	3.814552919708029	0.10038996100389962	0.20077992200779923
+T cell	bulk	3.8144768856447686	0.0974902509749025	0.194980501949805
 T cell	pseudobulk	0	1	1

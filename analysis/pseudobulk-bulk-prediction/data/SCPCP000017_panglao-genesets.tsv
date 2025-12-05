@@ -298,19 +298,19 @@ blood vessel endothelial cell	ENSG00000163710	TRUE
 blood vessel endothelial cell	ENSG00000124212	TRUE
 blood vessel endothelial cell	ENSG00000159640	TRUE
 blood vessel endothelial cell	ENSG00000172986	TRUE
-CD4-positive, alpha-beta T cell	ENSG00000117586	FALSE
-CD4-positive, alpha-beta T cell	ENSG00000188389	FALSE
-CD4-positive, alpha-beta T cell	ENSG00000066294	FALSE
-CD4-positive, alpha-beta T cell	ENSG00000160683	FALSE
-CD4-positive, alpha-beta T cell	ENSG00000117090	FALSE
-CD4-positive, alpha-beta T cell	ENSG00000091972	FALSE
-CD4-positive, alpha-beta T cell	ENSG00000163600	FALSE
-CD4-positive, alpha-beta T cell	ENSG00000010610	FALSE
-CD4-positive, alpha-beta T cell	ENSG00000167286	FALSE
-CD4-positive, alpha-beta T cell	ENSG00000113916	FALSE
-CD4-positive, alpha-beta T cell	ENSG00000160712	FALSE
-CD4-positive, alpha-beta T cell	ENSG00000102245	FALSE
-CD4-positive, alpha-beta T cell	ENSG00000089041	FALSE
+CD4-positive, alpha-beta T cell	ENSG00000117586	TRUE
+CD4-positive, alpha-beta T cell	ENSG00000188389	TRUE
+CD4-positive, alpha-beta T cell	ENSG00000066294	TRUE
+CD4-positive, alpha-beta T cell	ENSG00000160683	TRUE
+CD4-positive, alpha-beta T cell	ENSG00000117090	TRUE
+CD4-positive, alpha-beta T cell	ENSG00000091972	TRUE
+CD4-positive, alpha-beta T cell	ENSG00000163600	TRUE
+CD4-positive, alpha-beta T cell	ENSG00000010610	TRUE
+CD4-positive, alpha-beta T cell	ENSG00000167286	TRUE
+CD4-positive, alpha-beta T cell	ENSG00000113916	TRUE
+CD4-positive, alpha-beta T cell	ENSG00000160712	TRUE
+CD4-positive, alpha-beta T cell	ENSG00000102245	TRUE
+CD4-positive, alpha-beta T cell	ENSG00000089041	TRUE
 chondrocyte	ENSG00000128602	TRUE
 chondrocyte	ENSG00000183691	TRUE
 chondrocyte	ENSG00000116690	TRUE
@@ -1192,94 +1192,94 @@ granulocyte	ENSG00000159322	TRUE
 granulocyte	ENSG00000140368	TRUE
 granulocyte	ENSG00000107099	TRUE
 granulocyte	ENSG00000162711	TRUE
-hematopoietic precursor cell	ENSG00000107485	FALSE
-hematopoietic precursor cell	ENSG00000137462	FALSE
-hematopoietic precursor cell	ENSG00000197471	FALSE
-hematopoietic precursor cell	ENSG00000121966	FALSE
-hematopoietic precursor cell	ENSG00000081237	FALSE
-hematopoietic precursor cell	ENSG00000152804	FALSE
-hematopoietic precursor cell	ENSG00000185291	FALSE
-hematopoietic precursor cell	ENSG00000179348	FALSE
-hematopoietic precursor cell	ENSG00000105383	FALSE
-hematopoietic precursor cell	ENSG00000026508	FALSE
-hematopoietic precursor cell	ENSG00000122025	FALSE
-hematopoietic precursor cell	ENSG00000157404	FALSE
-hematopoietic precursor cell	ENSG00000101000	FALSE
-hematopoietic precursor cell	ENSG00000120156	FALSE
-hematopoietic precursor cell	ENSG00000110799	FALSE
-hematopoietic precursor cell	ENSG00000118777	FALSE
-hematopoietic precursor cell	ENSG00000154133	FALSE
-hematopoietic precursor cell	ENSG00000136114	FALSE
-hematopoietic precursor cell	ENSG00000157554	FALSE
-hematopoietic precursor cell	ENSG00000174059	FALSE
-hematopoietic precursor cell	ENSG00000154783	FALSE
-hematopoietic precursor cell	ENSG00000119919	FALSE
-hematopoietic precursor cell	ENSG00000159640	FALSE
-hematopoietic precursor cell	ENSG00000154096	FALSE
-hematopoietic precursor cell	ENSG00000120738	FALSE
-hematopoietic precursor cell	ENSG00000159216	FALSE
-hematopoietic precursor cell	ENSG00000205336	FALSE
-hematopoietic precursor cell	ENSG00000162367	FALSE
-hematopoietic precursor cell	ENSG00000117400	FALSE
-hematopoietic precursor cell	ENSG00000007062	FALSE
-hematopoietic precursor cell	ENSG00000117090	FALSE
-hematopoietic precursor cell	ENSG00000085563	FALSE
-hematopoietic precursor cell	ENSG00000164929	FALSE
-hematopoietic precursor cell	ENSG00000163814	FALSE
-hematopoietic precursor cell	ENSG00000179820	FALSE
-hematopoietic precursor cell	ENSG00000049130	FALSE
-hematopoietic precursor cell	ENSG00000092969	FALSE
-hematopoietic precursor cell	ENSG00000132334	FALSE
-hematopoietic precursor cell	ENSG00000178913	FALSE
-hematopoietic precursor cell	ENSG00000174946	FALSE
-hematopoietic precursor cell	ENSG00000154188	FALSE
-hematopoietic precursor cell	ENSG00000123405	FALSE
-hematopoietic precursor cell	ENSG00000143995	FALSE
-hematopoietic precursor cell	ENSG00000104903	FALSE
-hematopoietic precursor cell	ENSG00000120690	FALSE
-hematopoietic precursor cell	ENSG00000108924	FALSE
-hematopoietic precursor cell	ENSG00000150681	FALSE
-hematopoietic precursor cell	ENSG00000120279	FALSE
-hematopoietic precursor cell	ENSG00000088305	FALSE
-hematopoietic precursor cell	ENSG00000134323	FALSE
-hematopoietic precursor cell	ENSG00000116017	FALSE
-hematopoietic precursor cell	ENSG00000005961	FALSE
-hematopoietic precursor cell	ENSG00000164093	FALSE
-hematopoietic precursor cell	ENSG00000265972	FALSE
-hematopoietic precursor cell	ENSG00000105426	FALSE
-hematopoietic precursor cell	ENSG00000162676	FALSE
-hematopoietic precursor cell	ENSG00000117091	FALSE
-hematopoietic precursor cell	ENSG00000029993	FALSE
-hematopoietic precursor cell	ENSG00000134982	FALSE
-hematopoietic precursor cell	ENSG00000163938	FALSE
-hematopoietic precursor cell	ENSG00000008394	FALSE
-hematopoietic precursor cell	ENSG00000123689	FALSE
-hematopoietic precursor cell	ENSG00000171867	FALSE
-hematopoietic precursor cell	ENSG00000168283	FALSE
-hematopoietic precursor cell	ENSG00000085063	FALSE
-hematopoietic precursor cell	ENSG00000115232	FALSE
-hematopoietic precursor cell	ENSG00000166825	FALSE
-hematopoietic precursor cell	ENSG00000136630	FALSE
-hematopoietic precursor cell	ENSG00000167034	FALSE
-hematopoietic precursor cell	ENSG00000196498	FALSE
-hematopoietic precursor cell	ENSG00000085276	FALSE
-hematopoietic precursor cell	ENSG00000119326	FALSE
-hematopoietic precursor cell	ENSG00000204304	FALSE
-hematopoietic precursor cell	ENSG00000067141	FALSE
-hematopoietic precursor cell	ENSG00000179388	FALSE
-hematopoietic precursor cell	ENSG00000185022	FALSE
-hematopoietic precursor cell	ENSG00000091409	FALSE
-hematopoietic precursor cell	ENSG00000169562	FALSE
-hematopoietic precursor cell	ENSG00000170558	FALSE
-hematopoietic precursor cell	ENSG00000165092	FALSE
-hematopoietic precursor cell	ENSG00000165702	FALSE
-hematopoietic precursor cell	ENSG00000148400	FALSE
-hematopoietic precursor cell	ENSG00000134250	FALSE
-hematopoietic precursor cell	ENSG00000120594	FALSE
-hematopoietic precursor cell	ENSG00000149564	FALSE
-hematopoietic precursor cell	ENSG00000137672	FALSE
-hematopoietic precursor cell	ENSG00000120075	FALSE
-hematopoietic precursor cell	ENSG00000168769	FALSE
+hematopoietic precursor cell	ENSG00000107485	TRUE
+hematopoietic precursor cell	ENSG00000137462	TRUE
+hematopoietic precursor cell	ENSG00000197471	TRUE
+hematopoietic precursor cell	ENSG00000121966	TRUE
+hematopoietic precursor cell	ENSG00000081237	TRUE
+hematopoietic precursor cell	ENSG00000152804	TRUE
+hematopoietic precursor cell	ENSG00000185291	TRUE
+hematopoietic precursor cell	ENSG00000179348	TRUE
+hematopoietic precursor cell	ENSG00000105383	TRUE
+hematopoietic precursor cell	ENSG00000026508	TRUE
+hematopoietic precursor cell	ENSG00000122025	TRUE
+hematopoietic precursor cell	ENSG00000157404	TRUE
+hematopoietic precursor cell	ENSG00000101000	TRUE
+hematopoietic precursor cell	ENSG00000120156	TRUE
+hematopoietic precursor cell	ENSG00000110799	TRUE
+hematopoietic precursor cell	ENSG00000118777	TRUE
+hematopoietic precursor cell	ENSG00000154133	TRUE
+hematopoietic precursor cell	ENSG00000136114	TRUE
+hematopoietic precursor cell	ENSG00000157554	TRUE
+hematopoietic precursor cell	ENSG00000174059	TRUE
+hematopoietic precursor cell	ENSG00000154783	TRUE
+hematopoietic precursor cell	ENSG00000119919	TRUE
+hematopoietic precursor cell	ENSG00000159640	TRUE
+hematopoietic precursor cell	ENSG00000154096	TRUE
+hematopoietic precursor cell	ENSG00000120738	TRUE
+hematopoietic precursor cell	ENSG00000159216	TRUE
+hematopoietic precursor cell	ENSG00000205336	TRUE
+hematopoietic precursor cell	ENSG00000162367	TRUE
+hematopoietic precursor cell	ENSG00000117400	TRUE
+hematopoietic precursor cell	ENSG00000007062	TRUE
+hematopoietic precursor cell	ENSG00000117090	TRUE
+hematopoietic precursor cell	ENSG00000085563	TRUE
+hematopoietic precursor cell	ENSG00000164929	TRUE
+hematopoietic precursor cell	ENSG00000163814	TRUE
+hematopoietic precursor cell	ENSG00000179820	TRUE
+hematopoietic precursor cell	ENSG00000049130	TRUE
+hematopoietic precursor cell	ENSG00000092969	TRUE
+hematopoietic precursor cell	ENSG00000132334	TRUE
+hematopoietic precursor cell	ENSG00000178913	TRUE
+hematopoietic precursor cell	ENSG00000174946	TRUE
+hematopoietic precursor cell	ENSG00000154188	TRUE
+hematopoietic precursor cell	ENSG00000123405	TRUE
+hematopoietic precursor cell	ENSG00000143995	TRUE
+hematopoietic precursor cell	ENSG00000104903	TRUE
+hematopoietic precursor cell	ENSG00000120690	TRUE
+hematopoietic precursor cell	ENSG00000108924	TRUE
+hematopoietic precursor cell	ENSG00000150681	TRUE
+hematopoietic precursor cell	ENSG00000120279	TRUE
+hematopoietic precursor cell	ENSG00000088305	TRUE
+hematopoietic precursor cell	ENSG00000134323	TRUE
+hematopoietic precursor cell	ENSG00000116017	TRUE
+hematopoietic precursor cell	ENSG00000005961	TRUE
+hematopoietic precursor cell	ENSG00000164093	TRUE
+hematopoietic precursor cell	ENSG00000265972	TRUE
+hematopoietic precursor cell	ENSG00000105426	TRUE
+hematopoietic precursor cell	ENSG00000162676	TRUE
+hematopoietic precursor cell	ENSG00000117091	TRUE
+hematopoietic precursor cell	ENSG00000029993	TRUE
+hematopoietic precursor cell	ENSG00000134982	TRUE
+hematopoietic precursor cell	ENSG00000163938	TRUE
+hematopoietic precursor cell	ENSG00000008394	TRUE
+hematopoietic precursor cell	ENSG00000123689	TRUE
+hematopoietic precursor cell	ENSG00000171867	TRUE
+hematopoietic precursor cell	ENSG00000168283	TRUE
+hematopoietic precursor cell	ENSG00000085063	TRUE
+hematopoietic precursor cell	ENSG00000115232	TRUE
+hematopoietic precursor cell	ENSG00000166825	TRUE
+hematopoietic precursor cell	ENSG00000136630	TRUE
+hematopoietic precursor cell	ENSG00000167034	TRUE
+hematopoietic precursor cell	ENSG00000196498	TRUE
+hematopoietic precursor cell	ENSG00000085276	TRUE
+hematopoietic precursor cell	ENSG00000119326	TRUE
+hematopoietic precursor cell	ENSG00000204304	TRUE
+hematopoietic precursor cell	ENSG00000067141	TRUE
+hematopoietic precursor cell	ENSG00000179388	TRUE
+hematopoietic precursor cell	ENSG00000185022	TRUE
+hematopoietic precursor cell	ENSG00000091409	TRUE
+hematopoietic precursor cell	ENSG00000169562	TRUE
+hematopoietic precursor cell	ENSG00000170558	TRUE
+hematopoietic precursor cell	ENSG00000165092	TRUE
+hematopoietic precursor cell	ENSG00000165702	TRUE
+hematopoietic precursor cell	ENSG00000148400	TRUE
+hematopoietic precursor cell	ENSG00000134250	TRUE
+hematopoietic precursor cell	ENSG00000120594	TRUE
+hematopoietic precursor cell	ENSG00000149564	TRUE
+hematopoietic precursor cell	ENSG00000137672	TRUE
+hematopoietic precursor cell	ENSG00000120075	TRUE
+hematopoietic precursor cell	ENSG00000168769	TRUE
 hematopoietic stem cell	ENSG00000107485	FALSE
 hematopoietic stem cell	ENSG00000137462	FALSE
 hematopoietic stem cell	ENSG00000197471	FALSE
@@ -2163,22 +2163,22 @@ memory T cell	ENSG00000158987	TRUE
 memory T cell	ENSG00000076928	TRUE
 memory T cell	ENSG00000075884	TRUE
 memory T cell	ENSG00000180448	TRUE
-microvascular endothelial cell	ENSG00000118777	FALSE
-microvascular endothelial cell	ENSG00000137273	FALSE
-microvascular endothelial cell	ENSG00000131095	FALSE
-microvascular endothelial cell	ENSG00000170075	FALSE
-microvascular endothelial cell	ENSG00000164707	FALSE
-microvascular endothelial cell	ENSG00000173638	FALSE
-microvascular endothelial cell	ENSG00000089057	FALSE
-microvascular endothelial cell	ENSG00000188338	FALSE
-microvascular endothelial cell	ENSG00000127863	FALSE
-microvascular endothelial cell	ENSG00000146072	FALSE
-microvascular endothelial cell	ENSG00000183770	FALSE
-microvascular endothelial cell	ENSG00000164379	FALSE
-microvascular endothelial cell	ENSG00000138795	FALSE
-microvascular endothelial cell	ENSG00000112033	FALSE
-microvascular endothelial cell	ENSG00000156925	FALSE
-microvascular endothelial cell	ENSG00000170017	FALSE
+microvascular endothelial cell	ENSG00000118777	TRUE
+microvascular endothelial cell	ENSG00000137273	TRUE
+microvascular endothelial cell	ENSG00000131095	TRUE
+microvascular endothelial cell	ENSG00000170075	TRUE
+microvascular endothelial cell	ENSG00000164707	TRUE
+microvascular endothelial cell	ENSG00000173638	TRUE
+microvascular endothelial cell	ENSG00000089057	TRUE
+microvascular endothelial cell	ENSG00000188338	TRUE
+microvascular endothelial cell	ENSG00000127863	TRUE
+microvascular endothelial cell	ENSG00000146072	TRUE
+microvascular endothelial cell	ENSG00000183770	TRUE
+microvascular endothelial cell	ENSG00000164379	TRUE
+microvascular endothelial cell	ENSG00000138795	TRUE
+microvascular endothelial cell	ENSG00000112033	TRUE
+microvascular endothelial cell	ENSG00000156925	TRUE
+microvascular endothelial cell	ENSG00000170017	TRUE
 monocyte	ENSG00000136869	TRUE
 monocyte	ENSG00000163563	TRUE
 monocyte	ENSG00000169083	TRUE
