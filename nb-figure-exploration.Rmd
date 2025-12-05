@@ -1,0 +1,170 @@
+---
+title: "Can we have a NB figure?"
+output: html_notebook
+---
+
+```{r}
+suppressPackageStartupMessages({
+  library(SingleCellExperiment)
+  library(ggplot2)
+  library(patchwork)
+  library(ComplexHeatmap)
+})
+theme_set(theme_bw())
+```
+
+
+```{r}
+sce <- readRDS("~/Desktop/SCPCP000004_merged.rds")
+sce_metadata <- metadata(sce)
+```
+
+
+```{r}
+immune_celltypes <- c(
+  "RBCs", 
+  "CD4+ T cell" , 
+  "Macrophage", 
+  "cDC2/DC3", 
+  "cDC", 
+  "T cell", 
+  "CD8+ T cell", 
+  "Patrolling monocyte", 
+  "Classical monocyte", 
+  "Resident NK cell", 
+  "Circulating NK cell", 
+  "Treg", 
+  "Monocyte", 
+  "B cell", 
+  "Plasma", 
+  "cDC1", 
+  "pDC", 
+  ""
+  )
+```
+
+
+
+```{r}
+umap_df <- reducedDim(sce, "UMAP") |>
+  as.data.frame() |>
+  tibble::rownames_to_column("barcode")
+
+sce_df <- colData(sce) |>
+  as.data.frame() |>
+  tibble::rownames_to_column("barcode") |>
+  dplyr::select(barcode, library_id, infercnv_total_cnv, is_infercnv_reference, openscpca_celltype_annotation) |>
+  dplyr::left_join(umap_df, by = "barcode") |>
+  dplyr::mutate(
+    cell_category = ifelse(openscpca_celltype_annotation == "Neuroendocrine", "malignant", "non-malignant"),
+    cell_category_fine = dplyr::case_when(
+      openscpca_celltype_annotation == "Neuroendocrine" ~ "malignant", 
+      openscpca_celltype_annotation %in% c("Fibroblast", "Endothelial", "Schwann", "Unknown", "openscpca-excluded") ~ openscpca_celltype_annotation,
+      .default = "immune"
+    )
+  )
+
+rm(sce)
+gc()
+```
+
+How many samples don't have inferCNV estimates?
+
+```{r}
+sce_df |>
+  dplyr::filter(is_infercnv_reference) |>
+  dplyr::count(library_id) |>
+  dplyr::filter(n <= 100) |>
+  dplyr::tally()
+```
+
+We expect that 16 samples were not processed with `inferCNV` due to an insufficient number of reference cells.
+Let's confirm:
+
+```{r}
+processed_libraries <- sce_df |>
+  dplyr::filter(is_infercnv_reference) |>
+  dplyr::count(library_id) |>
+  dplyr::filter(n > 100) |>
+  dplyr::pull(library_id)
+
+sce_df |>
+  dplyr::filter(library_id %in% processed_libraries) |>
+  dplyr::filter(is.na(infercnv_total_cnv))
+```
+
+Aside from these 16 libraries, there are three cells which were not annotated, so we can confirm we indeed have 26 samples with CNV annotations.
+
+How many openscpca-excluded cells are there?
+
+```{r}
+sce_df |>
+  dplyr::filter(library_id %in% processed_libraries) |>
+  dplyr::filter(openscpca_celltype_annotation == "openscpca-excluded")
+```
+Very few!! We can definitely lump this with unknown.
+
+```{r}
+sce_df <- sce_df |>
+  dplyr::mutate(cell_category = ifelse(
+    cell_category == "openscpca-excluded", 
+    "Unknown", 
+    cell_category
+  ))
+```
+
+
+## Let's make some UMAPs
+
+### Colored by cell type
+
+
+
+```{r, fig.width = 12, fig.height = 6}
+category_umap <- ggplot(sce_df) + 
+  aes(x = UMAP1, y = UMAP2, color = cell_category) + 
+  geom_point(alpha = 0.6, size = 0.1) + 
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 1.5))) +
+  scale_color_brewer(palette = "Set1") +
+  theme(
+    axis.text = element_blank(), 
+    axis.ticks = element_blank(), 
+    legend.position = "bottom"
+  )
+
+celltype_umap <- ggplot(sce_df) + 
+  aes(x = UMAP1, y = UMAP2, color = cell_category_fine) + 
+  geom_point(alpha = 0.6, size = 0.1) + 
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 1.5))) +
+  scale_color_brewer(palette = "Dark2") +
+  theme(
+    axis.text = element_blank(), 
+    axis.ticks = element_blank(), 
+    legend.position = "bottom"
+  ) + 
+  labs(subtitle = "obviously needs factor/color fixing!")
+
+category_umap + celltype_umap
+```
+
+
+### Colored by total CNV
+
+We'll plot this next to a cell type one for interpretation
+
+```{r, fig.width = 12, fig.height = 6}
+infercnv_umap <- ggplot(sce_df) + 
+  aes(x = UMAP1, y = UMAP2, color = infercnv_total_cnv) + 
+  geom_point(alpha = 0.6, size = 0.1) + 
+  scale_color_viridis_c() +
+  theme(
+    axis.text = element_blank(), 
+    axis.ticks = element_blank(), 
+    legend.position = "bottom"
+  ) 
+
+
+infercnv_umap + celltype_umap
+```
+
+Looks ok.
