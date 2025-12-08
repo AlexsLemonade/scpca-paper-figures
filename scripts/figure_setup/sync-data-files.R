@@ -9,7 +9,9 @@ qc_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000001/SCPCS0
 qc_local_files <- here::here("s3_files", "SCPCS000001")
 fs::dir_create(qc_local_files)
 
-sync_call <- glue::glue("aws s3 sync '{qc_s3_files}' '{qc_local_files}' --exclude '*' --include '*.rds' --exact-timestamps")
+sync_call <- glue::glue(
+  "aws s3 sync '{qc_s3_files}' '{qc_local_files}' --exclude '*' --include '*.rds' --exact-timestamps"
+)
 system(sync_call)
 
 # sync results for SCPCS000216 (for ADT plots) ---------------------------------
@@ -18,13 +20,22 @@ adt_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000007/SCPCS
 adt_local_files <- here::here("s3_files", "SCPCS000216")
 fs::dir_create(adt_local_files)
 
-sync_call <- glue::glue("aws s3 sync '{adt_s3_files}' '{adt_local_files}' --exclude '*' --include '*.rds' --exact-timestamps")
+sync_call <- glue::glue(
+  "aws s3 sync '{adt_s3_files}' '{adt_local_files}' --exclude '*' --include '*.rds' --exact-timestamps"
+)
 system(sync_call)
 
 # sync results for benchmarking libraries --------------------------------------
 
 # define ids and s3 directories
-benchmarking_run_ids <- c("SCPCR000003", "SCPCR000126", "SCPCR000127", "SCPCR000220", "SCPCR000221", "SCPCR000495")
+benchmarking_run_ids <- c(
+  "SCPCR000003",
+  "SCPCR000126",
+  "SCPCR000127",
+  "SCPCR000220",
+  "SCPCR000221",
+  "SCPCR000495"
+)
 alevin_s3_dir <- "s3://nextflow-ccdl-results/scpca/alevin-fry-unfiltered-quant"
 cellranger_s3_dir <- "s3://nextflow-ccdl-results/scpca/cellranger-quant"
 
@@ -37,7 +48,9 @@ fs::dir_create(cellranger_local_dir)
 
 # get list of directories containing results we want to copy over
 # we only want the specific benchmarking runs that use splici, salign, and cr-like-em
-af_dirs <- glue::glue("{alevin_s3_dir}/{benchmarking_run_ids}-Homo_sapiens.GRCh38.104.spliced_intron.txome-salign-cr-like-em")
+af_dirs <- glue::glue(
+  "{alevin_s3_dir}/{benchmarking_run_ids}-Homo_sapiens.GRCh38.104.spliced_intron.txome-salign-cr-like-em"
+)
 
 # we only want alevin folder and any json files
 # copy to folder labeled with run id
@@ -47,7 +60,9 @@ glue::glue(
   purrr::walk(system)
 
 # list of cellranger directories to copy over
-cellranger_dirs <- glue::glue("{cellranger_s3_dir}/{benchmarking_run_ids}-GRCh38_104_cellranger_full-mRNA")
+cellranger_dirs <- glue::glue(
+  "{cellranger_s3_dir}/{benchmarking_run_ids}-GRCh38_104_cellranger_full-mRNA"
+)
 
 # we only need the filtered h5 file
 # copy each file to folder labeled with run id
@@ -61,12 +76,14 @@ celltype_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000005/
 celltype_local_files <- here::here("s3_files", "SCPCS000251")
 fs::dir_create(celltype_local_files)
 
-sync_call <- glue::glue("aws s3 sync '{celltype_s3_files}' '{celltype_local_files}' --exclude '*' --include 'SCPCL000498_processed.rds' --exact-timestamps")
+sync_call <- glue::glue(
+  "aws s3 sync '{celltype_s3_files}' '{celltype_local_files}' --exclude '*' --include 'SCPCL000498_processed.rds' --exact-timestamps"
+)
 system(sync_call)
 
 # sync processed libraries for plotting a merged subset of SCPCP000003 -----------------------------------
 sample_ids <- c("SCPCS000050", "SCPCS000051", "SCPCS000053", "SCPCS000054")
-s3_dir <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000003" 
+s3_dir <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000003"
 local_dir <- here::here("s3_files", "SCPCP000003")
 fs::dir_create(local_dir)
 
@@ -90,9 +107,11 @@ sample_ids <- c(
   "SCPCS000258",
   "SCPCS000262"
 )
-project_ids <- c(rep("SCPCP000001", 3),
-                 rep("SCPCP000007", 3),
-                 rep("SCPCP000005", 3))
+project_ids <- c(
+  rep("SCPCP000001", 3),
+  rep("SCPCP000007", 3),
+  rep("SCPCP000005", 3)
+)
 
 # define directory to each sample
 scpca_prod_dir <- "s3://nextflow-ccdl-results/scpca-prod/results"
@@ -113,6 +132,31 @@ celltype_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000005/
 celltype_local_files <- here::here("s3_files", "SCPCS000264")
 fs::dir_create(celltype_local_files)
 
-sync_call <- glue::glue("aws s3 sync '{celltype_s3_files}' '{celltype_local_files}' --exclude '*' --include 'SCPCL000490_processed.rds' --exact-timestamps")
+sync_call <- glue::glue(
+  "aws s3 sync '{celltype_s3_files}' '{celltype_local_files}' --exclude '*' --include 'SCPCL000490_processed.rds' --exact-timestamps"
+)
 system(sync_call)
 
+
+# sync results files for SCPCP000004 (NB panels) ----------
+
+# processed object
+qc_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000004/SCPCS000112"
+qc_local_files <- here::here("s3_files", "SCPCP000004", "SCPCS000112")
+fs::dir_create(qc_local_files)
+
+sync_call <- glue::glue(
+  "aws s3 sync '{qc_s3_files}' '{qc_local_files}' --exclude '*' --include 'SCPCL000130_processed.rds' --exact-timestamps"
+)
+system(sync_call)
+
+
+# merged object
+qc_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000004/merged"
+qc_local_files <- here::here("s3_files", "SCPCP000004")
+fs::dir_create(qc_local_files)
+
+sync_call <- glue::glue(
+  "aws s3 sync '{qc_s3_files}' '{qc_local_files}' --exclude '*' --include 'SCPCP000004_merged.rds' --exact-timestamps"
+)
+system(sync_call)
