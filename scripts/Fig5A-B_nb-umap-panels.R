@@ -43,25 +43,33 @@ output_panel_b_file <- here::here("figures", "pdfs", "Fig5B-umap-infercnv.pdf")
 merged_sce_df <- merged_sce_df |>
   dplyr::mutate(
     cell_category = dplyr::case_when(
-      openscpca_celltype_annotation == "Neuroendocrine" ~ "Malignant cell", 
-      openscpca_celltype_annotation %in% c("Unknown", "openscpca-excluded") ~ "Unknown",
-      openscpca_celltype_annotation %in% c("Fibroblast", "Endothelial", "Schwann") ~ glue::glue("{openscpca_celltype_annotation} cell"),
+      openscpca_celltype_annotation == "Neuroendocrine" ~ "malignant", 
+      openscpca_celltype_annotation %in% c("Unknown", "openscpca-excluded") ~ "unknown",
+      openscpca_celltype_annotation %in% c("Fibroblast", "Endothelial", "Schwann") ~ openscpca_celltype_annotation,
       # everything else is a type of immune cell
-      .default = "Immune cell"
+      .default = "immune cell"
     ),
+    # tack on "cell" in a few spots
+    cell_category = ifelse(
+      cell_category %in% c("Endothelial", "Schwann", "malignant"), 
+      glue::glue("{cell_category} cell"), 
+      cell_category
+    ),
+    # make everything lowercase, consistent with other figures
+    cell_category = stringr::str_to_lower(cell_category),
     # determine factor order based on frequency, with Unknown last
     cell_category = forcats::fct_infreq(cell_category), 
-    cell_category = forcats::fct_relevel(cell_category, "Unknown", after = Inf)
+    cell_category = forcats::fct_relevel(cell_category, "unknown", after = Inf)
   )
 
 # TODO this needs to be in its own file read in as input
 cell_palette <- c(
-  "Malignant cell" = "rosybrown4",
-  "Immune cell" = "darkgreen",
-  "Endothelial cell" = "#FC1CBF",
-  "Fibroblast cell" = "#B10DA1", 
-  "Schwann cell" = "chocolate1",
-  "Unknown" = "gray70" # darker than validation palette since we have some standalone unknown clumps
+  "malignant cell" = "rosybrown4",
+  "immune cell" = "darkgreen",
+  "endothelial cell" = "#FC1CBF",
+  "fibroblast" = "#B10DA1", 
+  "schwann cell" = "chocolate1",
+  "unknown" = "gray70" # darker than validation palette since we have some standalone unknown clumps
 )
 
 # Panel A ------------------
@@ -75,7 +83,7 @@ celltype_umap <- ggplot(merged_sce_df) +
   labs(
     x = "UMAP1", 
     y = "UMAP2", 
-    color = "OpenScPCA broad cell type"
+    color = "OpenScPCA broad\ncell type annotation"
   ) +
   theme(
     legend.position = "bottom", 
