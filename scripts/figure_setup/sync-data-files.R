@@ -141,22 +141,22 @@ system(sync_call)
 # sync results files for SCPCP000004 (NB panels) ----------
 
 # processed object
-qc_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000004/SCPCS000112"
-qc_local_files <- here::here("s3_files", "SCPCP000004", "SCPCS000112")
-fs::dir_create(qc_local_files)
+nb_sample_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000004/SCPCS000112"
+nb_sample_local_files <- here::here("s3_files", "SCPCP000004", "SCPCS000112")
+fs::dir_create(nb_sample_local_files)
 
 sync_call <- glue::glue(
-  "aws s3 sync '{qc_s3_files}' '{qc_local_files}' --exclude '*' --include 'SCPCL000130_processed.rds' --exact-timestamps"
+  "aws s3 sync '{nb_sample_s3_files}' '{nb_sample_local_files}' --exclude '*' --include 'SCPCL000130_processed.rds' --exact-timestamps"
 )
 system(sync_call)
 
 
 # merged object
-qc_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000004/merged"
-qc_local_files <- here::here("s3_files", "SCPCP000004")
-fs::dir_create(qc_local_files)
+nb_merged_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000004/merged"
+nb_merged_local_files <- here::here("s3_files", "SCPCP000004")
+fs::dir_create(nb_merged_local_files)
 
 sync_call <- glue::glue(
-  "aws s3 sync '{qc_s3_files}' '{qc_local_files}' --exclude '*' --include 'SCPCP000004_merged.rds' --exact-timestamps"
+  "aws s3 sync '{nb_merged_s3_files}' '{nb_merged_local_files}' --exclude '*' --include 'SCPCP000004_merged.rds' --exact-timestamps"
 )
 system(sync_call)
