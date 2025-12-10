@@ -44,7 +44,7 @@ library_metadata_file <- file.path(s3_dir, "scpca-library-metadata.tsv")
 consensus_results_dir <- file.path(s3_dir, "cell-type-consensus-results")
 
 # validation group url 
-validation_group_url <- "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-consensus/references/consensus-validation-groups.tsv"
+validation_group_url <- "https://raw.githubusercontent.com/AlexsLemonade/scpca-nf/refs/tags/v0.9.2/references/consensus-validation-groups.tsv"
 
 # output file 
 immune_cells_file <- file.path(sample_info_dir, "brain-immune-celltypes.tsv")
@@ -93,7 +93,7 @@ non_immune_celltypes <- setdiff(brain_consensus_celltypes, celltype_order) |>
 
 # print them out so we can check that this is correct
 message(
-  glue::glue("The following cell types are found but will not be showin the dotplot:
+  glue::glue("The following cell types are found but will not be shown the dotplot:
              
              {non_immune_celltypes}
              ")
@@ -114,11 +114,11 @@ immune_cells_df <- data.frame(
   dplyr::left_join(validation_group_df, by = c("consensus_annotation")) |> 
   dplyr::mutate(
     marker_gene_lineage = dplyr::case_when(
-      validation_group_annotation  %in% myeloid_types ~ "myeloid cell",
+      validation_group_annotation %in% myeloid_types ~ "myeloid cell",
       validation_group_annotation == "plasma cell" ~ "B cell",
       .default = validation_group_annotation
     )
   )
 
-readr::write_tsv(immune_cells_df, "sample-info/brain-immune-celltypes.tsv")
+readr::write_tsv(immune_cells_df, immune_cells_file)
 
