@@ -22,6 +22,7 @@ theme_set(
 
 project_id <- "SCPCP000004"
 data_dir <- here::here("s3_files", project_id)
+palette_file <- here::here("palettes", "nb-annotation-palette.tsv")
 
 merged_sce_file <- file.path(data_dir, glue::glue("{project_id}_merged.rds"))
 merged_sce_df <- readr::read_rds(merged_sce_file) |>
@@ -73,15 +74,11 @@ merged_sce_df <- merged_sce_df |>
     cell_category = forcats::fct_relevel(cell_category, "unknown", after = Inf)
   )
 
-# define nbatlas condensed palette
-cell_palette <- c(
-  "malignant cell" = "rosybrown4",
-  "immune cell" = "darkgreen",
-  "endothelial cell" = "#FC1CBF",
-  "fibroblast" = "#B10DA1",
-  "schwann cell" = "chocolate1",
-  "unknown" = "gray70" # darker than validation palette since we have some standalone unknown clumps
-)
+# prepare palette
+nb_palette <- readr::read_tsv(palette_file)
+cell_palette <- nb_palette$color
+names(cell_palette) <- nb_palette$celltype
+
 
 # Panel A ------------------
 celltype_umap <- ggplot(merged_sce_df) +
