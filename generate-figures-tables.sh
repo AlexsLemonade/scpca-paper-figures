@@ -52,14 +52,12 @@ Rscript ${script_dir}/Fig2B-F_qc-plots.R
 # Figure 3C
 Rscript ${script_dir}/Fig3C_singler-cellassign-heatmap.R
 
+# Figure 4A and S5
+Rscript ${script_dir}/Fig4A-S5_consensus-cell-type-dotplots.R
+
 # Figure 5A-B
 Rscript ${script_dir}/Fig5A-B_nb-umap-panels.R.R
 
-# TODO: this figure will be moving:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure 5A
-# also supplemental figure 6
-Rscript ${script_dir}/Fig5A-S6_consensus-cell-type-dotplots.R
 
 # TODO: this figure will be moving:
 # https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
