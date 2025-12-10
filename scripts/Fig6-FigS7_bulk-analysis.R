@@ -63,7 +63,7 @@ data_files <- list.files(
 # Output files
 bulk_numbers_tsv <- file.path(tables_dir, "bulk-analysis-counts.tsv")
 main_pdf <- file.path(pdf_dir, "Fig6_bulk-results.pdf")
-si_pdf <- file.path(pdf_dir, "FigS8_bulk-results.pdf")
+si_pdf <- file.path(pdf_dir, "FigS7_bulk-results.pdf")
 
 # Functions --------------------------------------------------------------------
 

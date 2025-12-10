@@ -66,11 +66,8 @@ Rscript ${script_dir}/Fig5A-S6_consensus-cell-type-dotplots.R
 # Figures 5B-C
 Rscript ${script_dir}/Fig5B-C_brain-barplots.R
 
-# TODO: this figure will be moving:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure 6
-# also supplemental figure 8
-Rscript ${script_dir}/Fig6-FigS8_bulk-analysis.R
+# Figure 6 and S7
+Rscript ${script_dir}/Fig6-FigS7_bulk-analysis.R
 
 
 ### Supplementary text figures ###
