@@ -28,6 +28,8 @@ Supplemental Figure 6A-C include dot plots summarizing marker gene expression ac
 Figure 5B shows the percentage of each library that is annotated as each of the consensus cell types for all libraries in High-grade and Low-grade glioma samples.
 Figure 5C shows the percentage of each library that is annotated as each of the _immune_ consensus cell types, emphasizing myeloid and lymphocyte cell types, for all libraries in High-grade and Low-grade glioma samples.
 
+* `Fig4D_immune-only-dotplot.R`: This script is used to generate Figure 4D, which shows the expression of marker genes for all immune consensus cell types in Brain and CNS samples in a dot plot.
+
 * `Fig6-FigS8_bulk-analysis.R `: This script is used to generate Figures 6 and S8.
 Figure 6 shows (A) scatterplots of the relationship between bulk and pseudobulk counts for relevant Brain and CNS projects, and (B) bar plots of odds ratios from overrepresentation analysis of bulk expression data for relevant Brain and CNS projects.
 Figure S8 shows (A) scatterplots of the relationship between bulk and pseudobulk counts for projects not shown in Figure 6A, and (B) bar plots of odds ratios from overrepresentation analysis of bulk expression data for projects not shown in Figure 6B.
