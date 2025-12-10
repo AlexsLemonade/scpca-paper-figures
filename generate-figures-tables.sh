@@ -49,11 +49,6 @@ Rscript ${script_dir}/Fig2B-F_qc-plots.R
 
 # TODO: this figure will be moving:
 # https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure 3D
-Rscript ${script_dir}/Fig3D_merged-umaps.R
-
-# TODO: this figure will be moving:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
 # Figure 4B
 Rscript ${script_dir}/Fig4B_singler-cellassign-heatmap.R
 
@@ -71,11 +66,8 @@ Rscript ${script_dir}/Fig5A-S6_consensus-cell-type-dotplots.R
 # Figures 5B-C
 Rscript ${script_dir}/Fig5B-C_brain-barplots.R
 
-# TODO: this figure will be moving:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure 6
-# also supplemental figure 8
-Rscript ${script_dir}/Fig6-FigS8_bulk-analysis.R
+# Figure 6 and S7
+Rscript ${script_dir}/Fig6-FigS7_bulk-analysis.R
 
 
 ### Supplementary text figures ###
@@ -89,15 +81,8 @@ Rscript ${script_dir}/FigS1B-D_method-metrics-comparison.R
 # Figure S2B
 Rscript ${script_dir}/FigS2B-D_adt-plots.R
 
-# TODO: this figure is being removed:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure S4
-Rscript ${script_dir}/FigS4_celldex-ref-comparison.R
-
-# TODO: this figure is being removed:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure S5A
-Rscript ${script_dir}/FigS5A_cellassign-justification.R
+# Figure S3D
+Rscript ${script_dir}/FigS3D_merged-umaps.R
 
 # TODO: this figure will be moving TBD:
 # https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
