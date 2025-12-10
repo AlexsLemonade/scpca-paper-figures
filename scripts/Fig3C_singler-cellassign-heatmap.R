@@ -1,4 +1,6 @@
-# This script is used to generate a heatmap comparing SingleR to CellAssign cell type annotations
+# This script is currently used to generate a heatmap comparing SingleR to CellAssign cell type annotations
+
+# TODO We plan to update this script as described: https://github.com/AlexsLemonade/scpca-paper-figures/issues/290
 
 # load project
 renv::load()
@@ -22,7 +24,8 @@ processed_sce <- readr::read_rds(processed_sce_file)
 
 # define output file paths 
 figure_dir <- here::here("figures", "pdfs")
-output_file <- file.path(figure_dir, "Fig4B_singler-cellassign-heatmap.pdf")
+# TODO: update output file name with correct figure description
+output_file <- file.path(figure_dir, "Fig3C_singler-cellassign-heatmap.pdf")
 
 # source in helper functions for plotting
 function_file <- here::here("scripts", "utils", "celltype-plot-helper-functions.R")
