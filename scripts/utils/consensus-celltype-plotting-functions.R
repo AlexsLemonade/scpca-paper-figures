@@ -22,9 +22,8 @@ marker_gene_dotplot <- function(
     validation_groups_df,
     markers_df,
     celltype_colors, 
-    dotplot_size_range = c(1,6),
-    annotation_column = "broad_celltype_group",
-    annotation_label = "Broad cell type annotation") {
+    dotplot_size_range = c(1,6) 
+){
   
   # list all cell type assignments files
   consensus_results_files <- list.files(
