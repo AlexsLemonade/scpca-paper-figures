@@ -87,10 +87,8 @@ Rscript ${script_dir}/FigS3D_merged-umaps.R
 # Figure S5B
 Rscript ${script_dir}/FigS5B_submitter-celltypes-heatmap.R
 
-# TODO: this figure will be moving:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure S7
-Rscript ${script_dir}/FigS7_consensus-bar-plots.R
+# Figure S6
+Rscript ${script_dir}/FigS6_consensus-bar-plots.R
 
 ##########################################################
 #         Generate tables in order of appearance         #
