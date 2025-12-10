@@ -114,3 +114,6 @@ To run the script use the following command:
 ```sh
 Rscript prepare-sample-whitelist.R
 ```
+
+* `prepare-brain-immune-cells-table.R`: This script is used to prepare the file `../sample-info/brain-immune-celltypes.tsv`, which contains a table of all immune consensus cell types with at least 50 assigned cells in the brain and CNS samples. 
+This table is used to specify which cell types should be shown in the dot plot displaying all immune cell types and their associated marker genes.
