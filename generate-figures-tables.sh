@@ -47,10 +47,10 @@ Rscript ${script_dir}/Fig1B_modality-barchart.R
 # Figure 2B
 Rscript ${script_dir}/Fig2B-F_qc-plots.R
 
-# TODO: this figure will be moving:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure 4B
-Rscript ${script_dir}/Fig4B_singler-cellassign-heatmap.R
+# TODO: this script will be updated as described in this issue
+# https://github.com/AlexsLemonade/scpca-paper-figures/issues/290
+# Figure 3C
+Rscript ${script_dir}/Fig3C_singler-cellassign-heatmap.R
 
 # Figure 5A-B
 Rscript ${script_dir}/Fig5A-B_nb-umap-panels.R.R
