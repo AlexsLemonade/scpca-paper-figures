@@ -87,16 +87,6 @@ Rscript ${script_dir}/FigS2B-D_adt-plots.R
 # Figure S3D
 Rscript ${script_dir}/FigS3D_merged-umaps.R
 
-# TODO: this figure is being removed:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure S4
-Rscript ${script_dir}/FigS4_celldex-ref-comparison.R
-
-# TODO: this figure is being removed:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure S5A
-Rscript ${script_dir}/FigS5A_cellassign-justification.R
-
 # TODO: this figure will be moving TBD:
 # https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
 # Figure S5B
