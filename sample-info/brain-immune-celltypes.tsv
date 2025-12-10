@@ -1,0 +1,23 @@
+consensus_annotation	consensus_ontology	validation_group_ontology	validation_group_annotation
+B cell	CL:0000236	CL:0000236	B cell
+lymphocyte of B lineage	CL:0000945	CL:0000236	B cell
+naive B cell	CL:0000788	CL:0000236	B cell
+mature B cell	CL:0000785	CL:0000236	B cell
+memory B cell	CL:0000787	CL:0000236	B cell
+plasma cell	CL:0000786	CL:0000786	plasma cell
+T cell	CL:0000084	CL:0000084	T cell
+mature T cell	CL:0002419	CL:0000084	T cell
+mature alpha-beta T cell	CL:0000791	CL:0000084	T cell
+CD8-positive, alpha-beta T cell	CL:0000625	CL:0000084	T cell
+CD8-positive, alpha-beta memory T cell	CL:0000909	CL:0000084	T cell
+CD4-positive, alpha-beta T cell	CL:0000624	CL:0000084	T cell
+memory T cell	CL:0000813	CL:0000084	T cell
+regulatory T cell	CL:0000815	CL:0000084	T cell
+mononuclear phagocyte	CL:0000113	CL:0000763	myeloid cell
+myeloid leukocyte	CL:0000766	CL:0000763	myeloid cell
+macrophage	CL:0000235	CL:0000235	macrophage
+tissue-resident macrophage	CL:0000864	CL:0000235	macrophage
+monocyte	CL:0000576	CL:0000576	monocyte
+microglial cell	CL:0000129	CL:0000235	macrophage
+dendritic cell	CL:0000451	CL:0000451	dendritic cell
+natural killer cell	CL:0000623	CL:0000623	natural killer cell
