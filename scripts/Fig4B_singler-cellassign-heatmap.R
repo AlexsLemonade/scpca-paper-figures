@@ -1,4 +1,5 @@
-# This script is used to generate a heatmap comparing SingleR to CellAssign cell type annotations
+# This script is currently used to generate a heatmap comparing SingleR to CellAssign cell type annotations
+# This script will be updated as part of https://github.com/AlexsLemonade/scpca-paper-figures/issues/290 to create a new version for 3C.
 
 # load project
 renv::load()
@@ -14,24 +15,28 @@ ComplexHeatmap::ht_opt(TITLE_PADDING = grid::unit(0.2, "in"))
 # folder where any local data lives
 local_results_dir <- here::here("s3_files", "SCPCS000001")
 
-# define file paths to downloaded files 
+# define file paths to downloaded files
 processed_sce_file <- file.path(local_results_dir, "SCPCL000001_processed.rds")
 
-# read in sce objects 
+# read in sce objects
 processed_sce <- readr::read_rds(processed_sce_file)
 
-# define output file paths 
+# define output file paths
 figure_dir <- here::here("figures", "pdfs")
 output_file <- file.path(figure_dir, "Fig4B_singler-cellassign-heatmap.pdf")
 
 # source in helper functions for plotting
-function_file <- here::here("scripts", "utils", "celltype-plot-helper-functions.R")
+function_file <- here::here(
+  "scripts",
+  "utils",
+  "celltype-plot-helper-functions.R"
+)
 source(function_file)
 
 # Prep data for plotting -------------------------------------------------------
 # Create data frame of cell types
 celltype_df <- create_celltype_df(processed_sce)
-  
+
 # Calculate jaccard matrix
 singler_cellassign_matrix <- make_jaccard_matrix(
   celltype_df,
@@ -69,9 +74,9 @@ heatmap <- ComplexHeatmap::Heatmap(
     legend_width = grid::unit(1.5, "in")
   )
 ) |>
-ComplexHeatmap::draw(
-  heatmap_legend_side = "right"
-)
+  ComplexHeatmap::draw(
+    heatmap_legend_side = "right"
+  )
 
 # save heatmap to pdf
 pdf(output_file, width = 9, height = 9, useDingbats = FALSE)

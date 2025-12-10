@@ -50,9 +50,9 @@ Rscript ${script_dir}/Fig2B-F_qc-plots.R
 # Figure 3D
 Rscript ${script_dir}/Fig3D_merged-umaps.R
 
-# TODO: this figure will be moving:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure 4B
+# Figure 4C
+# TODO: this script will need to be updated: 
+# https://github.com/AlexsLemonade/scpca-paper-figures/issues/290
 Rscript ${script_dir}/Fig4B_singler-cellassign-heatmap.R
 
 # Figure 5A-B
