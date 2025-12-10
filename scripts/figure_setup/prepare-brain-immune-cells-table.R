@@ -9,6 +9,8 @@ options(readr.show_col_types = FALSE)
 # Set up -----------------------------------------------------------------------
 
 # define the cell type order that we want in the dotplot
+# these were originally identified by looking at all cell types in the brain/cns samples
+# and pulling out the immune cell types with > 50 cells assigned to that cell type
 celltype_order <- c(
   "B cell", 
   "lymphocyte of B lineage",
