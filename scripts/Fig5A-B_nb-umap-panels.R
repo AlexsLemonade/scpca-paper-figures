@@ -40,8 +40,8 @@ merged_sce_df <- readr::read_rds(merged_sce_file) |>
   tibble::as_tibble()
 
 # define output files
-output_panel_a_file <- here::here("figures", "pdfs", "Fig5A-umap-celltypes.pdf")
-output_panel_b_file <- here::here("figures", "pdfs", "Fig5B-umap-infercnv.pdf")
+output_panel_a_file <- here::here("figures", "pdfs", "Fig5A_umap-celltypes.pdf")
+output_panel_b_file <- here::here("figures", "pdfs", "Fig5B_umap-infercnv.pdf")
 
 
 # Prepare data for plotting ----------------------------------------------------
@@ -75,9 +75,8 @@ merged_sce_df <- merged_sce_df |>
   )
 
 # prepare palette
-nb_palette <- readr::read_tsv(palette_file)
-cell_palette <- nb_palette$color
-names(cell_palette) <- nb_palette$celltype
+cell_palette <- readr::read_tsv(palette_file) |> 
+  tibble::deframe()
 
 
 # Panel A ------------------
