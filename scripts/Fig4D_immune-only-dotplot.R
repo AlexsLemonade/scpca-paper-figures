@@ -38,22 +38,12 @@ output_pdf_file <- here::here("figures", "pdfs", "Fig4D_brain-immune-dotplot.pdf
 
 # Prep cell type and marker gene info ------------------------------------------
 
-
-# table of immune cell types and lineages
-immune_cells_df <- readr::read_tsv(immune_cells_file) |> 
-  dplyr::select(consensus_annotation, marker_gene_lineage)
-
 # define the order of celltypes to use throughout 
 celltype_order <- readr::read_tsv(immune_cells_file) |>
   dplyr::pull(consensus_annotation)
 
 # read in validation markers
 markers_df <- readr::read_tsv(marker_gene_table_url) |> 
-  #dplyr::filter(consensus_annotation %in% all_immune_cells) |> 
-  dplyr::right_join(immune_cells_df, by = c("consensus_annotation")) |> 
-  tidyr::drop_na() |> # drop cell types with no marker genes 
-  dplyr::rename("validation_group_annotation" = consensus_annotation)
-
   # only keep markers that are in our immune cell list
   dplyr::filter(consensus_annotation %in% celltype_order) |> 
   dplyr::rename("validation_group_annotation" = consensus_annotation) 
@@ -63,13 +53,6 @@ unique_markers <- markers_df |>
   dplyr::count(gene_symbol) |> 
   # only keep genes that are unique to the cell types being shown
   dplyr::filter(n <= 1) |> 
-  dplyr::pull(gene_symbol)
-
-lineage_markers <- markers_df |> 
-  dplyr::select(gene_symbol, marker_gene_lineage) |> 
-  unique() |> 
-  dplyr::count(gene_symbol) |> 
-  dplyr::filter( n <= 1) |> 
   dplyr::pull(gene_symbol)
 
 # filter to genes that are only found in one lineage 
