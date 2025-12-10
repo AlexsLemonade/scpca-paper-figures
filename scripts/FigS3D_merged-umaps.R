@@ -1,4 +1,4 @@
-# This script is used to generate a small version of the merged UMAP for Figure 3D
+# This script is used to generate a small version of the merged UMAP for Figure S3D
 # By default, it used 4 threads.
 
 # load project
@@ -64,15 +64,15 @@ rds_files <- list.files(
 # Ensure we have the correct libraries
 rds_files <- rds_files[libraries_to_plot]
 stopifnot(
-  "Libraries needed to make figure 3D are not all present" = length(setdiff(libraries_to_plot, names(rds_files))) == 0
+  "Libraries needed to make figure S3D are not all present" = length(setdiff(libraries_to_plot, names(rds_files))) == 0
 )
 
 # define output file paths 
 png_dir <- here::here("figures", "pngs") 
-output_png_file <- file.path(png_dir, "Fig3D_merged-umaps.png")
+output_png_file <- file.path(png_dir, "FigS3D_merged-umaps.png")
 
 pdf_dir <- here::here("figures", "pdfs") 
-output_pdf_file <- file.path(pdf_dir, "Fig3D_merged-umaps.pdf")
+output_pdf_file <- file.path(pdf_dir, "FigS3D_merged-umaps.pdf")
 
 
 # Read, merge, and process objects ------------------------------------------------
