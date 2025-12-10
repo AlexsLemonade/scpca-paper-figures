@@ -47,6 +47,8 @@ Rscript ${script_dir}/Fig1B_modality-barchart.R
 # Figure 2B
 Rscript ${script_dir}/Fig2B-F_qc-plots.R
 
+# TODO: this figure will be moving:
+# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
 # Figure 3D
 Rscript ${script_dir}/Fig3D_merged-umaps.R
 
