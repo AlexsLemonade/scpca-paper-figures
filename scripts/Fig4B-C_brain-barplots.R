@@ -14,8 +14,8 @@ source(celltype_plotting_functions) # imports `stacked_barchart()`, `create_cell
 
 # output files 
 pdf_dir <- here::here("figures", "pdfs")
-output_5b_pdf_file <- file.path(pdf_dir, "Fig5B_brain-barchart-all-celltypes.pdf")
-output_5c_pdf_file <- file.path(pdf_dir, "Fig5C_brain-barchart-immune.pdf")
+output_5b_pdf_file <- file.path(pdf_dir, "Fig4B_brain-barchart-all-celltypes.pdf")
+output_5c_pdf_file <- file.path(pdf_dir, "Fig4C_brain-barchart-immune.pdf")
 
 # all metadata files 
 sample_info_dir <- here::here("sample-info")
@@ -87,7 +87,7 @@ consensus_results_files <- list.files(
 celltype_files <- consensus_results_files[basename(dirname(consensus_results_files)) %in% sample_ids]
 
 
-# Prep and plot 5B -----------------------------------------------------
+# Prep and plot 4B -----------------------------------------------------
 
 # prep data frame for plotting
 summary_df <- create_celltype_summary(celltype_files, validation_groups_df) |> 
@@ -105,7 +105,7 @@ ggsave(output_5b_pdf_file, plot = hgg_lgg_barplot, width = 12, height = 5)
 
 
 
-# Prep and plot 5C -----------------------------------------------------
+# Prep and plot 4C -----------------------------------------------------
 
 
 summary_immune_df <- create_immune_celltype_summary(
