@@ -47,11 +47,6 @@ Rscript ${script_dir}/Fig1B_modality-barchart.R
 # Figure 2B
 Rscript ${script_dir}/Fig2B-F_qc-plots.R
 
-# TODO: this figure will be moving:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure 3D
-Rscript ${script_dir}/Fig3D_merged-umaps.R
-
 # Figure 4C
 # TODO: this script will need to be updated: 
 # https://github.com/AlexsLemonade/scpca-paper-figures/issues/290
@@ -88,6 +83,9 @@ Rscript ${script_dir}/FigS1B-D_method-metrics-comparison.R
 
 # Figure S2B
 Rscript ${script_dir}/FigS2B-D_adt-plots.R
+
+# Figure S3D
+Rscript ${script_dir}/FigS3D_merged-umaps.R
 
 # TODO: this figure is being removed:
 # https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
