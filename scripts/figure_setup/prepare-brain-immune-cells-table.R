@@ -2,7 +2,7 @@
 
 # This script is used to create a table with immune cell types 
 # to be displayed in the dotplot for Fig 4D
-# we also include the validation group for each immune cell type as those are used to get marker genes to display 
+# we also include the lineage group for each immune cell type as those are used to get marker genes to display 
 
 options(readr.show_col_types = FALSE)
 
@@ -51,6 +51,8 @@ immune_cells_file <- file.path(sample_info_dir, "brain-immune-celltypes.tsv")
 
 # Get consensus results for brain samples --------------------------------------
 
+# note this code is copied over from Fig4B-C_brain-barplots.R 
+# and is the same code used to get the consensus cell types for brain samples in the plots
 # brain projects 
 brain_project_ids <- c("SCPCP000001", "SCPCP000002", "SCPCP000010", "SCPCP000021", "SCPCP000009")
 # pull out those that are non-multiplex single cell/nuc
@@ -102,11 +104,21 @@ message(
 # read in existing validation groups
 validation_group_df <- readr::read_tsv(validation_group_url)
 
+# list of validation groups that will be combined into myeloid for marker gene lineages
+myeloid_types <- c("macrophage", "monocyte", "dendritic cell")
+
 # export immune cell order as a data frame
 immune_cells_df <- data.frame(
   consensus_annotation = celltype_order
 ) |> 
-  dplyr::left_join(validation_group_df, by = c("consensus_annotation"))
+  dplyr::left_join(validation_group_df, by = c("consensus_annotation")) |> 
+  dplyr::mutate(
+    marker_gene_lineage = dplyr::case_when(
+      validation_group_annotation  %in% myeloid_types ~ "myeloid cell",
+      validation_group_annotation == "plasma cell" ~ "B cell",
+      .default = validation_group_annotation
+    )
+  )
 
 readr::write_tsv(immune_cells_df, "sample-info/brain-immune-celltypes.tsv")
 
