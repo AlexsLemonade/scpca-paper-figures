@@ -1,4 +1,7 @@
 # This script is used to generate the heatmap comparing submitter annotations to SingleR and CellAssign
+# TODO: This script will either need to be updated with all cell type annotations, or it
+# may be replaced with a different script to make this UMAP as described:
+# https://github.com/AlexsLemonade/scpca-paper-figures/issues/299
 
 # load project
 renv::load()
@@ -22,7 +25,7 @@ processed_sce <- readr::read_rds(processed_sce_file)
 
 # define output file paths
 pdf_dir <- here::here("figures", "pdfs")
-output_pdf_file <- file.path(pdf_dir, "FigS5B_submitter-heatmap.pdf")
+output_pdf_file <- file.path(pdf_dir, "FigS4_submitter-heatmap.pdf")
 
 # source in helper functions for plotting
 function_file <- here::here("scripts", "utils", "celltype-plot-helper-functions.R")
