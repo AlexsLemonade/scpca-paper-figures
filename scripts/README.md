@@ -30,7 +30,9 @@ Figure 4C shows the percentage of each library that is annotated as each of the 
 Figure 5A shows an unintegrated UMAP of Neuroblastoma samples from project `SCPCP000004` colored by broad cell type annotation as performed through the OpenScPCA Project.
 Figure 5B shows an unintegrated UMAP of Neuroblastoma samples from project `SCPCP000004` colored by the total CNV as inferred by `inferCNV`.
 
-* `Fig6-Fig78_bulk-analysis.R `: This script is used to generate Figures 6 and S8.
+* `Fig5C_nb-cnv-heatmaps.R`: This script is used to generate Figure 5C, which contains CNV heatmaps for chromosomes with canonical events for a single Neuroblastoma sample.
+
+* `Fig6-FigS7_bulk-analysis.R `: This script is used to generate Figures 6 and S8.
 Figure 6 shows (A) scatterplots of the relationship between bulk and pseudobulk counts for relevant Brain and CNS projects, and (B) bar plots of odds ratios from overrepresentation analysis of bulk expression data for relevant Brain and CNS projects.
 Figure S7 shows (A) scatterplots of the relationship between bulk and pseudobulk counts for projects not shown in Figure 6A, and (B) bar plots of odds ratios from overrepresentation analysis of bulk expression data for projects not shown in Figure 6B.
 
