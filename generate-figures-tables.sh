@@ -47,35 +47,25 @@ Rscript ${script_dir}/Fig1B_modality-barchart.R
 # Figure 2B
 Rscript ${script_dir}/Fig2B-F_qc-plots.R
 
-# TODO: this figure will be moving:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure 3D
-Rscript ${script_dir}/Fig3D_merged-umaps.R
 
-# TODO: this figure will be moving:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure 4B
-Rscript ${script_dir}/Fig4B_singler-cellassign-heatmap.R
+# Figure 3C
+# TODO: this script will be updated as described in this issue
+# https://github.com/AlexsLemonade/scpca-paper-figures/issues/290
+Rscript ${script_dir}/Fig3C_singler-cellassign-heatmap.R
+
+# Figure 4A and S5
+Rscript ${script_dir}/Fig4A-S5_consensus-cell-type-dotplots.R
+
+# Figures 4B-C
+# TODO: this script needs to be re-run as described in this issue
+# https://github.com/AlexsLemonade/scpca-paper-figures/issues/297
+Rscript ${script_dir}/Fig4B-C_brain-barplots.R
 
 # Figure 5A-B
 Rscript ${script_dir}/Fig5A-B_nb-umap-panels.R.R
 
-# TODO: this figure will be moving:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure 5A
-# also supplemental figure 6
-Rscript ${script_dir}/Fig5A-S6_consensus-cell-type-dotplots.R
-
-# TODO: this figure will be moving:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figures 5B-C
-Rscript ${script_dir}/Fig5B-C_brain-barplots.R
-
-# TODO: this figure will be moving:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure 6
-# also supplemental figure 8
-Rscript ${script_dir}/Fig6-FigS8_bulk-analysis.R
+# Figure 6 and S7
+Rscript ${script_dir}/Fig6-FigS7_bulk-analysis.R
 
 
 ### Supplementary text figures ###
@@ -89,25 +79,17 @@ Rscript ${script_dir}/FigS1B-D_method-metrics-comparison.R
 # Figure S2B
 Rscript ${script_dir}/FigS2B-D_adt-plots.R
 
-# TODO: this figure is being removed:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
+# Figure S3D
+Rscript ${script_dir}/FigS3D_merged-umaps.R
+
 # Figure S4
-Rscript ${script_dir}/FigS4_celldex-ref-comparison.R
+# TODO: this script represents an older version of the heatmap, and it may be updated to use in S4
+# Or, it may not be used since we may be changing this figure to UMAPs as described:
+#https://github.com/AlexsLemonade/scpca-paper-figures/issues/299
+Rscript ${script_dir}/FigS4_submitter-celltypes-heatmap.R
 
-# TODO: this figure is being removed:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure S5A
-Rscript ${script_dir}/FigS5A_cellassign-justification.R
-
-# TODO: this figure will be moving TBD:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure S5B
-Rscript ${script_dir}/FigS5B_submitter-celltypes-heatmap.R
-
-# TODO: this figure will be moving:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure S7
-Rscript ${script_dir}/FigS7_consensus-bar-plots.R
+# Figure S6
+Rscript ${script_dir}/FigS6_consensus-bar-plots.R
 
 ##########################################################
 #         Generate tables in order of appearance         #
