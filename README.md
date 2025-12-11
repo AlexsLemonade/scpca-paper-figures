@@ -180,6 +180,7 @@ The `palettes/` folder contains any palettes used in generating the figures.
 * `suspension-palette.tsv`: This is the palette used to color libraries by `Single-cell` or `Single-nuclei`.
 * `method-palette.tsv`: This is the palette used to color by quantification method used, either `Alevin-fry` or `Cell Ranger`.
 * `validation-group-palette.tsv`: This is the palette used to color broad cell type annotations used to assess consensus cell types.
+* `nb-annotation-palette.tsv`: This is the palette used to color Neuroblastoma broad cell type annotations.
 
 ### Manuscript numbers
 

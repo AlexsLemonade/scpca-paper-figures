@@ -15,9 +15,9 @@ source(celltype_plotting_functions) # imports `create_celltype_summary()` and `s
 # output files 
 pdf_dir <- here::here("figures", "pdfs")
 output_pdf_files <- c(
-  "Leukemia" = file.path(pdf_dir, "FigS7A_leukemia-barplot.pdf"),
-  "Sarcoma" = file.path(pdf_dir, "FigS7B_sarcoma-barplot.pdf"),
-  "Other solid tumors" = file.path(pdf_dir, "FigS7C_other-solid-tumors-barplot.pdf")
+  "Leukemia" = file.path(pdf_dir, "FigS6A_leukemia-barplot.pdf"),
+  "Sarcoma" = file.path(pdf_dir, "FigS6B_sarcoma-barplot.pdf"),
+  "Other solid tumors" = file.path(pdf_dir, "FigS6C_other-solid-tumors-barplot.pdf")
 )
 # all metadata files 
 sample_info_dir <- here::here("sample-info")

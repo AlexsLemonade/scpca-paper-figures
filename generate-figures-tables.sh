@@ -82,15 +82,14 @@ Rscript ${script_dir}/FigS2B-D_adt-plots.R
 # Figure S3D
 Rscript ${script_dir}/FigS3D_merged-umaps.R
 
-# TODO: this figure will be moving TBD:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure S5B
-Rscript ${script_dir}/FigS5B_submitter-celltypes-heatmap.R
+# Figure S4
+# TODO: this script represents an older version of the heatmap, and it may be updated to use in S4
+# Or, it may not be used since we may be changing this figure to UMAPs as described:
+#https://github.com/AlexsLemonade/scpca-paper-figures/issues/299
+Rscript ${script_dir}/FigS4_submitter-celltypes-heatmap.R
 
-# TODO: this figure will be moving:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/315
-# Figure S7
-Rscript ${script_dir}/FigS7_consensus-bar-plots.R
+# Figure S6
+Rscript ${script_dir}/FigS6_consensus-bar-plots.R
 
 ##########################################################
 #         Generate tables in order of appearance         #
