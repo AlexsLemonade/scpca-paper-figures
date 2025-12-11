@@ -9,8 +9,6 @@ suppressPackageStartupMessages({
   library(ggplot2)
 })
 
-
-
 # Set up -----------------------------------------------------------------------
 
 project_id <- "SCPCP000004"
@@ -28,22 +26,20 @@ output_chr11_file <- here::here("figures", "pdfs", "Fig5C_chr11-heatmap.pdf")
 output_chr17_file <- here::here("figures", "pdfs", "Fig5C_chr17-heatmap.pdf")
 legend_file <- here::here("figures", "pdfs", "Fig5C_legend.pdf")
 
-
-
-
-chrs_to_plot <- c(1, 11, 17) |>
-  purrr::set_names() |>
-  purrr::map(
-    \(chr) paste0(rep(chr, each = 2), c("p","q"))
-  )
-
-# define as a list for use within purrr::map
+# define heatmap pdfs as a list for use within purrr::map
 output_files <- list(
   output_chr1_file, 
   output_chr11_file, 
   output_chr17_file
 ) |>
   purrr::set_names(names(chrs_to_plot))
+
+# chromosomes to make heatmaps for
+chrs_to_plot <- c(1, 11, 17) |>
+  purrr::set_names() |>
+  purrr::map(
+    \(chr) paste0(rep(chr, each = 2), c("p","q"))
+  )
 
 # Define helper functions ----------------
 
@@ -126,9 +122,6 @@ make_heatmap <- function(df, category) {
   )
 }
 
-
-
-
 # Prepare data for plotting ----------------------
 sce <- readr::read_rds(sce_file)
 
@@ -142,12 +135,12 @@ cnv_palette <- readr::read_tsv(cnv_palette_file) |>
     )
   ) |>
   dplyr::arrange(value)
-
 col_fun <- circlize::colorRamp2(
   cnv_palette$value,
   cnv_palette$color
 )
 
+# define cell type categories
 unknown_celltypes <- c("Unknown", "openscpca-excluded")
 celltypes_df <- colData(sce) |>
   as.data.frame() |>
@@ -198,7 +191,6 @@ heatmap_list <- chrs_to_plot |>
     pdf(output_files[[as.character(chr)]], height = 4.5, width = 0.75)
     draw(stacked, ht_gap = grid::unit(c(2, 4), "mm")) # bigger gap before unknown
     dev.off()
-    
   }
 ) 
 
