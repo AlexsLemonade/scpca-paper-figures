@@ -23,7 +23,7 @@ Figure 4A includes a dot plot summarizing marker gene expression across all cons
 Supplemental Figure 5A-C include dot plots summarizing marker gene expression across all consensus cell types in the other diagnosis groups, leukemia, sarcoma, and other solid tumors.
 
 * `Fig4B-C_brain-barplots.R`: This script is used to generate Figures 4B and 4C.
-Figure 4BB shows the percentage of each library that is annotated as each of the consensus cell types for all libraries in High-grade and Low-grade glioma samples.
+Figure 4B shows the percentage of each library that is annotated as each of the consensus cell types for all libraries in High-grade and Low-grade glioma samples.
 Figure 4C shows the percentage of each library that is annotated as each of the _immune_ consensus cell types, emphasizing myeloid and lymphocyte cell types, for all libraries in High-grade and Low-grade glioma samples.
 
 * `Fig5A-B_nb-umap-panels.R`: This script is used to generate Figures 5A and 5B.
