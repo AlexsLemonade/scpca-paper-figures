@@ -46,7 +46,14 @@ output_files <- list(
 
 # Define helper functions ----------------
 
-# Used to create a data frame of either gain ("dupli") or loss events per cell, with cell types
+#' Create a data frame of CNV events per cell, for a given CNV type
+#'
+#' @param metadata_table infercnv metadata table with HMM results
+#' @param celltypes_df data frame with OpenScPCA cell types
+#' @param arms_to_keep vector of chromosome arms to keep
+#' @param cnv_type which type of CNV to tabulate, either "dupli" or "loss"
+#'
+#' @returns Data frame with CNV events per cell, where loss CNVs are negative
 prepare_percell_cnv_df <- function(
     metadata_table, 
     celltypes_df, 
@@ -73,11 +80,17 @@ prepare_percell_cnv_df <- function(
     dplyr::filter(chr %in% arms_to_keep) |>
     # need rowwise for _only_ this operation
     dplyr::rowwise() |>
-    dplyr::mutate(cnv = ifelse(cnv_type == "loss", -1*cnv, cnv) # losses are recorded as negative
-    )
+    # record losses as negative for plotting
+    dplyr::mutate(cnv = ifelse(cnv_type == "loss", -1*cnv, cnv))
 }
 
 
+#' Make a heatmap of CNV events for a given category of cells
+#'
+#' @param df Data frame with per cell cnv events and cell type categories
+#' @param category Cell type category to plot
+#'
+#' @returns a ComplexHeatmap object
 make_heatmap <- function(df, category) {
   
   # create matrix for plotting heatmap
