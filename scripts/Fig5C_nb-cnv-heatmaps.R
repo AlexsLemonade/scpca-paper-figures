@@ -6,6 +6,7 @@ renv::load()
 suppressPackageStartupMessages({
   library(SingleCellExperiment)
   library(ComplexHeatmap)
+  library(ggplot2)
 })
 
 
@@ -22,10 +23,10 @@ cnv_palette_file <- here::here("palettes", "nb-cnv-palette.tsv")
 
 # define output files; we need a separate file for each heatmap since 
 # each is already vertically concatenated, and ComplexHeatmap can't horizontally concatenate them
-output_chr1_file <- here::here("figures", "pdfs", "Fig5C-chr1-heatmap.pdf")
-output_chr11_file <- here::here("figures", "pdfs", "Fig5C-chr11-heatmap.pdf")
-output_chr17_file <- here::here("figures", "pdfs", "Fig5C-chr17-heatmap.pdf")
-legend_file <- here::here("figures", "pdfs", "Fig5C-legend.pdf")
+output_chr1_file <- here::here("figures", "pdfs", "Fig5C_chr1-heatmap.pdf")
+output_chr11_file <- here::here("figures", "pdfs", "Fig5C_chr11-heatmap.pdf")
+output_chr17_file <- here::here("figures", "pdfs", "Fig5C_chr17-heatmap.pdf")
+legend_file <- here::here("figures", "pdfs", "Fig5C_legend.pdf")
 
 
 
@@ -201,5 +202,21 @@ heatmap_list <- chrs_to_plot |>
   }
 ) 
 
+# Make a legend ------------------------------------------
 
-
+# dummy data frame for getting a line segment
+df <- data.frame(
+  cnv_type = rep(cnv_palette$cnv_type, each = 2),
+  x = rep(c(1, 2), times = 3),
+  y = c(1,1, 2,2, 3,3)   # keeps lines separate but simple
+)
+plot_3col <- ggplot(df) + 
+  aes(x, y, color = cnv_type) +
+  geom_line(linewidth = 1) +
+  theme_void() +
+  scale_color_manual(
+    name = "CNV type",
+    values = cnv_palette$color |> rlang::set_names(cnv_palette$cnv_type)) +
+  theme(legend.key = element_rect(fill = "grey75", color = NA))
+legend_3col <- cowplot::get_legend(plot_3col)
+ggsave(legend_file, legend_3col, width = 0.75, height = 1)
