@@ -61,6 +61,9 @@ Rscript ${script_dir}/Fig4A-S5_consensus-cell-type-dotplots.R
 # https://github.com/AlexsLemonade/scpca-paper-figures/issues/297
 Rscript ${script_dir}/Fig4B-C_brain-barplots.R
 
+# Figure 4D 
+Rscript ${script_dir}/Fig4D_immune-only-dotplot.R
+
 # Figure 5A-B
 Rscript ${script_dir}/Fig5A-B_nb-umap-panels.R.R
 
