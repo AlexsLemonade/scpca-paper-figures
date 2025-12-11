@@ -76,8 +76,8 @@ non_multiplex_samples <- readr::read_tsv(library_metadata_file) |>
 # read in sample metadata and select samples
 sample_df <- readr::read_tsv(sample_metadata_file) |> 
   dplyr::filter(
-     scpca_project_id %in% brain_project_ids,
-     scpca_sample_id %in% non_multiplex_samples
+    scpca_project_id %in% brain_project_ids,
+    scpca_sample_id %in% non_multiplex_samples
   )
 
 
