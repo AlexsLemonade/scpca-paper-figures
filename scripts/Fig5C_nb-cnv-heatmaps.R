@@ -26,6 +26,13 @@ output_chr11_file <- here::here("figures", "pdfs", "Fig5C_chr11-heatmap.pdf")
 output_chr17_file <- here::here("figures", "pdfs", "Fig5C_chr17-heatmap.pdf")
 legend_file <- here::here("figures", "pdfs", "Fig5C_legend.pdf")
 
+# chromosomes to make heatmaps for
+chrs_to_plot <- c(1, 11, 17) |>
+  purrr::set_names() |>
+  purrr::map(
+    \(chr) paste0(rep(chr, each = 2), c("p","q"))
+  )
+
 # define heatmap pdfs as a list for use within purrr::map
 output_files <- list(
   output_chr1_file, 
@@ -33,13 +40,6 @@ output_files <- list(
   output_chr17_file
 ) |>
   purrr::set_names(names(chrs_to_plot))
-
-# chromosomes to make heatmaps for
-chrs_to_plot <- c(1, 11, 17) |>
-  purrr::set_names() |>
-  purrr::map(
-    \(chr) paste0(rep(chr, each = 2), c("p","q"))
-  )
 
 # Define helper functions ----------------
 
@@ -197,12 +197,12 @@ heatmap_list <- chrs_to_plot |>
 # Make a legend ------------------------------------------
 
 # dummy data frame for getting a line segment
-df <- data.frame(
+plot_3col  <- data.frame(
   cnv_type = rep(cnv_palette$cnv_type, each = 2),
-  x = rep(c(1, 2), times = 3),
-  y = c(1,1, 2,2, 3,3)   # keeps lines separate but simple
-)
-plot_3col <- ggplot(df) + 
+  x = 1:6,
+  y = 6:11
+) |>
+  ggplot() +
   aes(x, y, color = cnv_type) +
   geom_line(linewidth = 1) +
   theme_void() +
