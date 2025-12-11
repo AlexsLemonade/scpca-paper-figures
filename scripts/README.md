@@ -26,6 +26,8 @@ Supplemental Figure 5A-C include dot plots summarizing marker gene expression ac
 Figure 4B shows the percentage of each library that is annotated as each of the consensus cell types for all libraries in High-grade and Low-grade glioma samples.
 Figure 4C shows the percentage of each library that is annotated as each of the _immune_ consensus cell types, emphasizing myeloid and lymphocyte cell types, for all libraries in High-grade and Low-grade glioma samples.
 
+* `Fig4D_immune-only-dotplot.R`: This script is used to generate Figure 4D, which shows the expression of marker genes for all immune consensus cell types in Brain and CNS samples in a dot plot.
+
 * `Fig5A-B_nb-umap-panels.R`: This script is used to generate Figures 5A and 5B.
 Figure 5A shows an unintegrated UMAP of Neuroblastoma samples from project `SCPCP000004` colored by broad cell type annotation as performed through the OpenScPCA Project.
 Figure 5B shows an unintegrated UMAP of Neuroblastoma samples from project `SCPCP000004` colored by the total CNV as inferred by `inferCNV`.

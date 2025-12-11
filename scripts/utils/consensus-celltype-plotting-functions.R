@@ -22,7 +22,8 @@ marker_gene_dotplot <- function(
     validation_groups_df,
     markers_df,
     celltype_colors, 
-    dotplot_size_range = c(1,6)) {
+    dotplot_size_range = c(1,6) 
+){
   
   # list all cell type assignments files
   consensus_results_files <- list.files(
@@ -142,7 +143,33 @@ marker_gene_dotplot <- function(
       validation_group_annotation = factor(validation_group_annotation, levels = celltype_order)
     )
 
+  combined_plot <- make_dotplot(
+    dotplot_df,
+    cell_type_label = "Broad cell type annotation",
+    celltype_colors,
+    dotplot_size_range
+  )
+  suppressMessages(duckplyr::methods_restore()) # back to dplyr outside the function
+  return(combined_plot)
+}
 
+
+#' Helper function for creating the dot plots directly from the pre-formatted dataframes
+#'
+#' @param dotplot_df Data frame with y_label, gene_symbol, mean_exp, percent_exp, 
+#'   and validation_group_annotation columns to use for plotting
+#' @param cell_type_label Label to use for y axis of dotplot
+#' @param celltype_colors Colors to use for cell type annotation bar
+#' @param dotplot_size_range Vector specifying the point size range for dotplots, with a default of `c(1,6)` which matches the `ggplot2` default
+#'
+#' @returns dotplot with annotation bar
+make_dotplot <- function(
+    dotplot_df,
+    cell_type_label,
+    celltype_colors,
+    dotplot_size_range = c(1,6)
+) {
+  
   # make dotplot with marker gene exp
   dotplot <- ggplot(dotplot_df, aes(y = y_label, x = gene_symbol, color = mean_exp, size = percent_exp)) +
     geom_point() +
@@ -161,12 +188,12 @@ marker_gene_dotplot <- function(
     ) +
     labs(
       x = "",
-      y = "Broad cell type annotation",
+      y = cell_type_label,
       color = "Mean gene expression",
       size = "Percent cells expressed"
     )
-
-
+  
+  
   # add annotation bar aligning marker genes with validation group
   color_bar <- ggplot(dotplot_df, aes(x = gene_symbol, y = 1, fill = validation_group_annotation)) +
     geom_tile() +
@@ -182,14 +209,13 @@ marker_gene_dotplot <- function(
       strip.clip = "off"
     ) +
     labs(fill = "")
-
+  
   combined_plot <- color_bar / dotplot +
     patchwork::plot_layout(ncol = 1, heights = c(0.1, 4))
-
-  suppressMessages(duckplyr::methods_restore()) # back to dplyr outside the function
+  
   return(combined_plot)
+  
 }
-
 
 #' Prep data frame to use for creating stacked bar plots showing all cell types 
 #'
