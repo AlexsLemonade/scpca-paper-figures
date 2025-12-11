@@ -144,7 +144,6 @@ col_fun <- circlize::colorRamp2(
 unknown_celltypes <- c("Unknown", "openscpca-excluded")
 celltypes_df <- colData(sce) |>
   as.data.frame() |>
-  dplyr::select(barcodes, openscpca_celltype_annotation) |>
   dplyr::mutate(
     cell_category = dplyr::case_when(
       openscpca_celltype_annotation == "Neuroendocrine" ~ "malignant", 
@@ -196,8 +195,8 @@ heatmap_list <- chrs_to_plot |>
 
 # Make a legend ------------------------------------------
 
-# dummy data frame for getting a line segment
-plot_3col  <- data.frame(
+# use a dummy data frame for getting a line legend
+plot_3col <- data.frame(
   cnv_type = rep(cnv_palette$cnv_type, each = 2),
   x = 1:6,
   y = 6:11
