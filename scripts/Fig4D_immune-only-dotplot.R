@@ -3,6 +3,8 @@
 # This script is used to generate the dot plots looking at expression of cell type markers
 # in immune consensus cell types for brain and CNS tumors included in Fig 4
 
+renv::load()
+
 library(ggplot2)
 library(patchwork)
 
@@ -73,7 +75,10 @@ non_multiplex_samples <- readr::read_tsv(library_metadata_file) |>
 # get sample information
 # read in sample metadata and select samples
 sample_df <- readr::read_tsv(sample_metadata_file) |> 
-  dplyr::filter(scpca_project_id %in% brain_project_ids & scpca_sample_id %in% non_multiplex_samples)
+  dplyr::filter(
+     scpca_project_id %in% brain_project_ids,
+     scpca_sample_id %in% non_multiplex_samples
+  )
 
 
 sample_ids <- sample_df$scpca_sample_id
@@ -163,7 +168,8 @@ celltype_groups <- group_stats_df |>
 # we will only plot the marker genes for cell types that are present and only include marker genes that are present
 filtered_markers_df <- markers_df |>
   dplyr::filter(
-    validation_group_annotation %in% celltype_groups & gene_symbol %in% group_stats_df$gene_symbol
+    validation_group_annotation %in% celltype_groups,
+    gene_symbol %in% group_stats_df$gene_symbol
   ) |> 
   # ensure order matches the order of the legend
   dplyr::mutate(
