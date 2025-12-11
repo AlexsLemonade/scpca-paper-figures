@@ -1,10 +1,13 @@
-# This script generates heatmaps for Figure 5C
+# This script generates heatmaps of CNV events for a Neuroblastoma sample
 
 # load project
 renv::load()
 
-library(SingleCellExperiment)
-library(ComplexHeatmap)
+suppressPackageStartupMessages({
+  library(SingleCellExperiment)
+  library(ComplexHeatmap)
+})
+
 
 
 # Set up -----------------------------------------------------------------------
@@ -15,7 +18,7 @@ library_id <- "SCPCL000130"
 data_dir <- here::here("s3_files", project_id, sample_id)
 
 sce_file <- file.path(data_dir, glue::glue("{library_id}_processed.rds"))
-sce <- readr::read_rds(sce_file)
+cnv_palette_file <- here::here("palettes", "nb-cnv-palette.tsv")
 
 # define output files; we need a separate file for each heatmap since 
 # each is already vertically concatenated, and ComplexHeatmap can't horizontally concatenate them
@@ -25,14 +28,6 @@ output_chr17_file <- here::here("figures", "pdfs", "Fig5C-chr17-heatmap.pdf")
 legend_file <- here::here("figures", "pdfs", "Fig5C-legend.pdf")
 
 
-gain_color <- "firebrick4"
-loss_color <- "blue"
-none_color <- "white"
-
-col_fun <- circlize::colorRamp2(
-  c(-1, 0, 1),
-  c(loss_color, none_color, gain_color)
-)
 
 
 chrs_to_plot <- c(1, 11, 17) |>
@@ -52,7 +47,12 @@ output_files <- list(
 # Define helper functions ----------------
 
 # Used to create a data frame of either gain ("dupli") or loss events per cell, with cell types
-prepare_percell_cnv_df <- function(metadata_table, celltypes_df, cnv_type) {
+prepare_percell_cnv_df <- function(
+    metadata_table, 
+    celltypes_df, 
+    arms_to_keep, 
+    cnv_type
+  ) {
   keep_col_starts <- glue::glue("has_{cnv_type}_chr")
   
   metadata_table |>
@@ -67,8 +67,10 @@ prepare_percell_cnv_df <- function(metadata_table, celltypes_df, cnv_type) {
     # prepare for plotting
     dplyr::mutate(
       chr = stringr::str_replace(chr, keep_col_starts, ""),
-      barcode_type = glue::glue("{barcodes}_{cnv_type}")
+      barcodes = glue::glue("{barcodes}_{cnv_type}")
     ) |>
+    # only keep relevant barcodes
+    dplyr::filter(chr %in% arms_to_keep) |>
     # need rowwise for _only_ this operation
     dplyr::rowwise() |>
     dplyr::mutate(cnv = ifelse(cnv_type == "loss", -1*cnv, cnv) # losses are recorded as negative
@@ -86,8 +88,8 @@ make_heatmap <- function(df, category) {
       names_from = chr,
       values_from = cnv
     ) |>
-    dplyr::arrange(barcode_type) |>
-    tibble::column_to_rownames("barcode_type") |>
+    dplyr::arrange(barcodes) |>
+    tibble::column_to_rownames("barcodes") |>
     as.matrix()
   
   # height should be scaled based on the number of cells
@@ -97,12 +99,15 @@ make_heatmap <- function(df, category) {
   Heatmap(
     heatmap_mat,
     col = col_fun,
-    name = "cnv",
     cluster_rows = FALSE,
     cluster_columns = FALSE,
     show_row_names = FALSE,
-    show_column_names = TRUE, # will be removed in illustrator 
+    show_column_names = TRUE, 
+    column_names_rot = 0,
+    column_names_gp = gpar(fontsize = 10),
+    column_names_centered = TRUE,
     show_heatmap_legend = FALSE, # we're making our own legend
+    border = TRUE, # helps to see chr with few CNV events
     height = grid::unit(heatmap_height, "mm")
   )
 }
@@ -111,6 +116,24 @@ make_heatmap <- function(df, category) {
 
 
 # Prepare data for plotting ----------------------
+sce <- readr::read_rds(sce_file)
+
+# define palette
+cnv_palette <- readr::read_tsv(cnv_palette_file) |>
+  dplyr::mutate(
+    value = dplyr::case_when(
+      cnv_type == "gain" ~ 1,
+      cnv_type == "loss" ~ -1,
+      cnv_type == "none" ~ 0
+    )
+  ) |>
+  dplyr::arrange(value)
+
+col_fun <- circlize::colorRamp2(
+  cnv_palette$value,
+  cnv_palette$color
+)
+
 unknown_celltypes <- c("Unknown", "openscpca-excluded")
 celltypes_df <- colData(sce) |>
   as.data.frame() |>
@@ -126,25 +149,23 @@ celltypes_df <- colData(sce) |>
 
 
 # Create data frame with per-cell events, with gain and loss on separate rows
+all_arms <- purrr::reduce(chrs_to_plot, c)
 dupli_df <- prepare_percell_cnv_df(
-  metadata(sce)$infercnv_table, celltypes_df, "dupli"
+  metadata(sce)$infercnv_table, celltypes_df, all_arms, "dupli"
 )
 loss_df <- prepare_percell_cnv_df(
-  metadata(sce)$infercnv_table, celltypes_df, "loss"
+  metadata(sce)$infercnv_table, celltypes_df, all_arms, "loss"
 )
-event_df <- dplyr::bind_rows(dupli_df, loss_df) |>
-  dplyr::filter(chr %in% purrr::reduce(chrs_to_plot, c))
+event_df <- dplyr::bind_rows(dupli_df, loss_df) 
 
-# Set order of cells: gain above loss
-all_barcodes <- event_df$barcodes |>
-  stringr::str_replace("_\\w{4}$", "") |>
-  unique()
-barcode_levels <- paste0(rep(all_barcodes, each = 2), c("_dupli", "_loss"))
+# Set order of cells:
+# each cell will be represented with two rows: gain event, and then loss event
+# this code orders barcodes in order gain/loss
+barcode_levels <- paste0(rep(colnames(sce), each = 2), c("_dupli", "_loss"))
 event_df <- event_df |>
   dplyr::mutate(
-    barcode_type = factor(barcode_type, levels = barcode_levels)
-  ) |>
-  dplyr::select(-barcodes)
+    barcodes = factor(barcodes, levels = barcode_levels)
+  ) 
 
 # Make and export a heatmap per chromosome ------------------------------
 heatmap_list <- chrs_to_plot |>
