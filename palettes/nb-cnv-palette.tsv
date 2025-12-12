@@ -1,4 +1,5 @@
 cnv_type	color
-gain 	#8B1A1A
-loss	#0000FF
+dupli 	#8B1A1A
 none	#FFFFFF
+loss	#3366CC
+
