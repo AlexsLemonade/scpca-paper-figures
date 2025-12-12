@@ -84,12 +84,11 @@ celltypes_df <- colData(sce) |>
 
 
 # Create data frame with per-cell events, with gain and loss on separate rows
-all_arms <- purrr::reduce(chrs_to_plot, c)
 dupli_df <- prepare_percell_cnv_df(
-  metadata(sce)$infercnv_table, celltypes_df, all_arms, "dupli"
+  metadata(sce)$infercnv_table, celltypes_df, chrs_to_plot, "dupli"
 )
 loss_df <- prepare_percell_cnv_df(
-  metadata(sce)$infercnv_table, celltypes_df, all_arms, "loss"
+  metadata(sce)$infercnv_table, celltypes_df, chrs_to_plot, "loss"
 )
 
 # Set order of cells:
