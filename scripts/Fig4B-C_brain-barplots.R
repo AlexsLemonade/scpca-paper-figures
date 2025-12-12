@@ -8,14 +8,14 @@ library(patchwork)
 options(readr.show_col_types = FALSE)
 
 celltype_plotting_functions <- here::here("scripts", "utils", "consensus-celltype-plotting-functions.R")
-source(celltype_plotting_functions) # imports `stacked_barchart()`, `create_celltype_summary()` (for 5B), and `create_immune_celltype_summary()` (for 5C)
+source(celltype_plotting_functions) # imports `stacked_barchart()`, `create_celltype_summary()` (for 4b), and `create_immune_celltype_summary()` (for 4c)
 
 # Set up paths -----------------------------------------------------------------
 
 # output files 
 pdf_dir <- here::here("figures", "pdfs")
-output_5b_pdf_file <- file.path(pdf_dir, "Fig4B_brain-barchart-all-celltypes.pdf")
-output_5c_pdf_file <- file.path(pdf_dir, "Fig4C_brain-barchart-immune.pdf")
+output_4b_pdf_file <- file.path(pdf_dir, "Fig4B_brain-barchart-all-celltypes.pdf")
+output_4c_pdf_file <- file.path(pdf_dir, "Fig4C_brain-barchart-immune.pdf")
 
 # all metadata files 
 sample_info_dir <- here::here("sample-info")
@@ -44,7 +44,7 @@ immune_url <- "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysi
 all_immune_celltypes <- readr::read_tsv(immune_url) |> 
   dplyr::pull(consensus_annotation)
 
-# cell types which will be emphasized in 5C plot
+# cell types which will be emphasized in 4c plot
 tcell_celltypes <- c("T cell", "mature T cell", "memory T cell", "regulatory T cell", "CD4-positive alpha-beta T cell", "mature alpha-beta T cell")
 myeloid_celltypes <- c("macrophage", "mononuclear phagocyte", "monocyte", "myeloid leukocyte", "neutrophil", "dendritic cell") # we do not include granulocytes since they are only in 1 sample
 
@@ -100,7 +100,7 @@ summary_df <- create_celltype_summary(celltype_files, validation_groups_df) |>
 hgg_lgg_barplot <- stacked_barchart(summary_df, fill_column = "broad_celltype_group", celltype_colors = celltype_colors_all, facet_variable = "subdiagnosis_group")
 
 # save plot 
-ggsave(output_5b_pdf_file, plot = hgg_lgg_barplot, width = 12, height = 5)
+ggsave(output_4b_pdf_file, plot = hgg_lgg_barplot, width = 12, height = 5)
 
 
 
@@ -133,4 +133,4 @@ hgg_lgg_immune_barplot <- stacked_barchart(
 )
 
 # save plot 
-ggsave(output_5c_pdf_file, plot = hgg_lgg_immune_barplot, width = 12, height = 5)
+ggsave(output_4c_pdf_file, plot = hgg_lgg_immune_barplot, width = 12, height = 5)
