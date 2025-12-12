@@ -23,44 +23,6 @@ output_heatmap_file <- here::here("figures", "pdfs", "Fig5C_cnv-heatmap.pdf")
 # chromosomes to include in heatmap
 chrs_to_plot <- paste0(rep(c(1, 11, 17), each = 2), c("p","q"))
 
-# Define helper function ---------------------------------
-
-#' Create a data frame of CNV events per cell, for a given CNV type
-#'
-#' @param metadata_table infercnv metadata table with HMM results
-#' @param celltypes_df data frame with OpenScPCA cell types
-#' @param arms_to_keep vector of chromosome arms to keep
-#' @param cnv_type which type of CNV to tabulate, either "dupli" or "loss"
-#'
-#' @returns Data frame with CNV events per cell, where events are coded as discrete values
-prepare_percell_cnv_df <- function(
-    metadata_table, 
-    celltypes_df, 
-    arms_to_keep, 
-    cnv_type
-  ) {
-  keep_col_starts <- glue::glue("has_{cnv_type}_chr")
-  
-  metadata_table |>
-    dplyr::select(barcodes, starts_with(keep_col_starts)) |>
-    tidyr::pivot_longer(
-      -barcodes,
-      names_to = "chr",
-      values_to = "cnv"
-    ) |>
-    # combine with cell type information
-    dplyr::left_join(celltypes_df, by = "barcodes") |>
-    # prepare for plotting
-    dplyr::mutate(
-      chr = stringr::str_replace(chr, keep_col_starts, ""),
-      barcodes = glue::glue("{barcodes}_{cnv_type}")
-    ) |>
-    # only keep relevant barcodes
-    dplyr::filter(chr %in% arms_to_keep) |>
-    # make it discrete
-    dplyr::mutate(cnv = ifelse(cnv == 0, "none", cnv_type))
-}
-
 
 # Prepare data for plotting ----------------------
 sce <- readr::read_rds(sce_file)
@@ -83,40 +45,53 @@ celltypes_df <- colData(sce) |>
   dplyr::select(barcodes, cell_category)
 
 
-# Create data frame with per-cell events, with gain and loss on separate rows
-dupli_df <- prepare_percell_cnv_df(
-  metadata(sce)$infercnv_table, celltypes_df, chrs_to_plot, "dupli"
-)
-loss_df <- prepare_percell_cnv_df(
-  metadata(sce)$infercnv_table, celltypes_df, chrs_to_plot, "loss"
-)
-
-# Set order of cells:
+# Define order of cells:
 # each cell will be represented with two rows: gain event, and then loss event
 # this code orders barcodes in order gain/loss
 barcode_levels <- paste0(rep(colnames(sce), each = 2), c("_dupli", "_loss"))
-event_df <- dupli_df |> 
-  dplyr::bind_rows(loss_df) |>
-  # pivot for making a matrix
-  tidyr::pivot_wider(
-    names_from = chr,
-    values_from = cnv
+
+# Create data frame with per-cell events, with gain and loss on separate rows
+event_df <- metadata(sce)$infercnv_table |>
+  dplyr::select(barcodes, starts_with(c("has_dupli", "has_loss"))) |> 
+  tidyr::pivot_longer(
+    -barcodes,
+    names_to = "chr",
+    values_to = "cnv"
+  ) |>
+  # combine with cell type information
+  dplyr::left_join(celltypes_df, by = "barcodes") |>
+  tidyr::separate_wider_delim(
+    chr, 
+    delim = "_",
+    names = c("drop", "cnv_type", "chr")
   ) |>
   dplyr::mutate(
+    chr = stringr::str_remove(chr, "chr"),
+    barcodes = glue::glue("{barcodes}_{cnv_type}"), 
     barcodes = factor(barcodes, levels = barcode_levels),
     cell_category = factor(cell_category, levels = c("malignant", "normal", "unknown"))
   ) |>
-  dplyr::arrange(cell_category, barcodes)
+  # only keep relevant barcodes
+  dplyr::filter(chr %in% chrs_to_plot) |>
+  # make it discrete
+  dplyr::rowwise() |>
+  dplyr::mutate(cnv = ifelse(cnv == 0, "none", cnv_type)) |>
+  # order and arrange before making into a matrix
+  dplyr::select(barcodes, chr, cnv, cell_category) |>
+  dplyr::arrange(cell_category, barcodes) |>
+  tidyr::pivot_wider(
+    names_from = chr,
+    values_from = cnv
+  ) 
 
-# Extract discrete matrix
+# Make and export the heatmap ----------------------------------
 event_mat <- event_df |>
   dplyr::select(-barcodes, -cell_category) |>
   as.matrix()
 
-# Make and export the heatmap ----------------------------------
-
 # scale height based on nubmer of cells
 heatmap_height <- nrow(event_mat) * 0.01
+
 
 # make the heatmap
 ht <- ComplexHeatmap::Heatmap(
