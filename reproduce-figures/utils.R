@@ -94,21 +94,7 @@ prepare_sample_metadata <- function(
     # remove duplicate rows, which occur when there are multiple libraries per sample
     dplyr::distinct()
 
-  # Prepare data frame with samples whose full metadata is not yet available on the portal
-  bulk_only_sample_metadata <-  tibble::tribble(
-    ~scpca_project_id, ~scpca_sample_id, ~diagnosis,        ~disease_timing,     ~is_cell_line, ~is_xenograft,
-    ##########################################################################################################
-    "SCPCP000006",     "SCPCS000210",    "Wilms tumor",     "Initial diagnosis", FALSE,         FALSE,
-    "SCPCP000006",     "SCPCS000211",    "Wilms tumor",     "Initial diagnosis", FALSE,         FALSE,
-    "SCPCP000009",     "SCPCS000129",    "Medulloblastoma", "Initial diagnosis", FALSE,         FALSE,
-    "SCPCP000017",     "SCPCS000606",    "Osteosarcoma",    "Recurrence",        FALSE,         FALSE
-  )
-
-  sample_metadata |>
-    dplyr::bind_rows(bulk_only_sample_metadata) |>
-    # ensure no duplicate rows
-    unique() |>
-    readr::write_tsv(output_tsv)
+  readr::write_tsv(sample_metadata, output_tsv)
 }
 
 
