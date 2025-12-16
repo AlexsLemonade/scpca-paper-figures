@@ -49,7 +49,9 @@ This script uses the trace files found in `nextflow_logs/`.
 
 * `FigS3D_merged-umaps.R`: This script is used to generate Figure 3SD, which includes an example of the UMAPs shown in the merged report.
 
-* `FigS4_t-cell-umap.R`: This script is used to generate Supplemental figure 4A, which shows a faceted UMAP of the top T cell types labeled by each automated method for `SCPCL000049`. 
+* `FigS4_celltype-method-umaps.R`: This script is used to generate Supplemental figure 4A-B.
+Panel A shows a faceted UMAP of the top T cell types labeled by each automated method for `SCPCL000049`. 
+Panel B shows a UMAP of consensus cell types side by side with total CNV events in `SCPCL000049`.
 
 * [TODO] `FigS4_submitter-celltypes-heatmap.R`: This script is used to generate supplemental Figure 5, which includes a heatmap comparing the `CellAssign` and `SingleR` annotations to submitter-provided annotations for an example library.
 
