@@ -11,7 +11,6 @@ library(patchwork)
 theme_set(
   theme_classic() +
     theme(
-      #plot.margin = margin(rep(20, 4)),
       strip.background = element_rect(fill = "transparent", linewidth = 0.5),
       # no axis ticks or labels
       axis.line = element_blank(),
@@ -74,7 +73,7 @@ all_plot_list <- celltype_columns |>
           # keep T cells with the original annotation and leave all others as NA
           !!sym(celltype_column) %in% t_cell_types,
           !!sym(celltype_column),
-          NA
+          NA_character_
         ) |> 
           # get just the top 3 T cell types and then lump all others together
           forcats::fct_lump_n(n = 3, other_level = "Other T cells") |> 
@@ -126,7 +125,7 @@ y_label_global <- wrap_elements(grid::textGrob("UMAP2", rot = -90))
 x_label_global <- wrap_elements(grid::textGrob("UMAP1"))
 
 # wrap main plot otherwise patchwork complains when making the layout
-main_grob  <- wrap_elements(panel = all_plot_list)
+main_grob <- wrap_elements(panel = all_plot_list)
 
 # make the combined plot with x and y axes labels
 # use units/null in plot layout to make sure the main plot takes up all the space and x axis label is small
