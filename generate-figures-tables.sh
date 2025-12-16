@@ -47,11 +47,8 @@ Rscript ${script_dir}/Fig1B_modality-barchart.R
 # Figure 2B
 Rscript ${script_dir}/Fig2B-F_qc-plots.R
 
-
 # Figure 3C
-# TODO: this script will be updated as described in this issue
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/290
-Rscript ${script_dir}/Fig3C_singler-cellassign-heatmap.R
+Rscript ${script_dir}/Fig3C_celltype-methods-heatmap.R
 
 # Figure 4A and S5
 Rscript ${script_dir}/Fig4A-S5_consensus-cell-type-dotplots.R
