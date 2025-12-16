@@ -70,6 +70,9 @@ Rscript ${script_dir}/Fig5A-B_nb-umap-panels.R
 # Figure 5C
 Rscript ${script_dir}/Fig5C_nb-cnv-heatmaps.R 
 
+# Figure 5D
+Rscript ${script_dir}/Fig5D_nb-ridgeplot.R 
+
 # Figure 6 and S7
 Rscript ${script_dir}/Fig6-FigS7_bulk-analysis.R
 
