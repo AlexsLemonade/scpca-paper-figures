@@ -1,0 +1,29 @@
+activated CD8-positive, alpha-beta T cell
+alpha-beta T cell
+CD4-positive helper T cell
+CD4-positive, alpha-beta cytotoxic T cell
+CD4-positive, alpha-beta memory T cell
+CD4-positive, alpha-beta T cell
+CD4-positive, CD25-positive, alpha-beta regulatory T cell
+CD8-positive, alpha-beta cytotoxic T cell
+CD8-positive, alpha-beta memory T cell
+CD8-positive, alpha-beta T cell
+central memory CD4-positive, alpha-beta T cell
+central memory CD8-positive, alpha-beta T cell
+effector CD4-positive, alpha-beta T cell
+effector CD8-positive, alpha-beta T cell
+effector memory CD4-positive, alpha-beta T cell
+effector memory CD8-positive, alpha-beta T cell
+Gamma delta T cells
+mature alpha-beta T cell
+mature NK T cell
+mature T cell
+memory T cell
+mucosal invariant T cell
+naive thymus-derived CD4-positive, alpha-beta T cell
+regulatory T cell
+T cell
+T cells
+T cytotoxic cells
+T memory cells
+T regulatory cells
