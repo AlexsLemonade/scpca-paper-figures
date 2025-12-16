@@ -1,4 +1,4 @@
-# This script generates UMAP panels 5A and 5B
+# This script generates UMAP panels of the Neuroblastoma project samples, colored by cell types and CNV events
 
 # load project
 renv::load()
