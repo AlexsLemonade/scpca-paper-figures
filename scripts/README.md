@@ -53,8 +53,6 @@ This script uses the trace files found in `nextflow_logs/`.
 Panel A shows a faceted UMAP of the top T cell types labeled by each automated method for `SCPCL000049`. 
 Panel B shows a UMAP of consensus cell types side by side with total CNV events in `SCPCL000049`.
 
-* [TODO] `FigS4_submitter-celltypes-heatmap.R`: This script is used to generate supplemental Figure 5, which includes a heatmap comparing the `CellAssign` and `SingleR` annotations to submitter-provided annotations for an example library.
-
 * `FigS6_consensus-bar-plots.R`: This script is used to generate Supplemental figure 7A-C, which show the percentage of each library that is annotated as each of the consensus cell types for all libraries in each diagnosis group, excluding the Brain and CNS samples.
 
 * `TableS1_modality-summary.R`: This script is used to generate supplemental Table 1, which contains a summary of the types of libraries found in each project.
@@ -66,6 +64,8 @@ Panel B shows a UMAP of consensus cell types side by side with total CNV events 
 The `old_figures` folder contains the scripts used to generate figures present in previous versions of the manuscript.
 
 * `FigS4_celldex-ref-comparison.R `: This script is used to generate a previous version of supplemental Figure 4, which included a figure comparing `celldex` references across samples.
+
+* `FigS4_submitter-celltypes-heatmap.R`: This script is used to generate a previous version of supplemental Figure 4, which included a heatmap comparing the `CellAssign` and `SingleR` annotations to submitter-provided annotations for an example library.
 
 * `FigS5A_cellassign-justification.R`: This script is used to generate a previous version of supplemental Figure 5A, which included a faceted UMAP of automated cell type annotations determined by `CellAssign`.
 
