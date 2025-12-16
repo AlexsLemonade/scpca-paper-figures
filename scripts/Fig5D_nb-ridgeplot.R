@@ -30,16 +30,35 @@ celltype_df <- colData(sce) |>
   as.data.frame() |>
   dplyr::select(infercnv_total_cnv, celltype = consensus_celltype_annotation) |>
   dplyr::mutate(
-    celltype = stringr::str_to_lower(celltype), # be consistent with other paper figures
+    # lowercase for consistency with other paper figures
+    celltype = stringr::str_to_lower(celltype), 
+    # show top 7 only
     celltype = forcats::fct_lump_n(
       celltype, 7, other_level = "all remaining cell types", ties.method = "first"
     ),
+    # arrange in order of count, with unknown and all remaining at the end
     celltype = forcats::fct_infreq(celltype),
     celltype = forcats::fct_relevel(
       celltype, "unknown", "all remaining cell types", after = Inf
-    ), 
-    celltype = forcats::fct_rev(celltype)
+    )
   )
+
+# Update labels to include counts, and then reverse the order
+celltype_labels <- celltype_df |>
+  dplyr::count(celltype) |>
+  dplyr::arrange(celltype) |>
+  dplyr::mutate( 
+    celltype_n = glue::glue("{celltype} (n = {n})")
+  ) |>
+  dplyr::pull(celltype_n)
+
+celltype_df$celltype <- factor(
+  celltype_df$celltype, 
+  levels = levels(celltype_df$celltype), 
+  labels = celltype_labels
+) |>
+  forcats::fct_rev()
+  
 
 # Make and export plot -----------------------------
 
