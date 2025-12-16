@@ -138,7 +138,7 @@ ggsave(tcell_umap_file, combined_plot, width = 10, height = 10)
 
 # Consensus/inferCNV UMAPs -----------------------------------------------------
 
-# TODO: Consensus cell types and inferCNV 
+# TODO: Add this in here or move to another script
 # Uncomment out section and clean up code for additional panels
 # colors <- c(palette.colors(n = 8, palette = "Dark2"), "gray80")
 # names(colors) <- levels(umap_df$consensus_lumped)
