@@ -92,6 +92,9 @@ Rscript ${script_dir}/FigS2B-D_adt-plots.R
 Rscript ${script_dir}/FigS3D_merged-umaps.R
 
 # Figure S4
+Rscript ${script_dir}/FigS4_celltype-method-umaps.R
+
+# Figure S4
 # TODO: this script represents an older version of the heatmap, and it may be updated to use in S4
 # Or, it may not be used since we may be changing this figure to UMAPs as described:
 #https://github.com/AlexsLemonade/scpca-paper-figures/issues/299

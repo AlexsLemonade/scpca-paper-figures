@@ -160,3 +160,14 @@ sync_call <- glue::glue(
   "aws s3 sync '{nb_merged_s3_files}' '{nb_merged_local_files}' --exclude '*' --include 'SCPCP000004_merged.rds' --exact-timestamps"
 )
 system(sync_call)
+
+# sync results for SCPCS000049 (T cell UMAPs) ----------
+
+lgg_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000002/SCPCS000049"
+lgg_local_files <- here::here("s3_files", "SCPCS000049")
+fs::dir_create(lgg_local_files)
+
+sync_call <- glue::glue(
+  "aws s3 sync '{lgg_s3_files}' '{lgg_local_files}' --exclude '*' --include 'SCPCL000049_processed.rds' --exact-timestamps"
+)
+system(sync_call)
