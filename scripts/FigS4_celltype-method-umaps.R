@@ -152,7 +152,6 @@ ggsave(tcell_umap_file, combined_plot, width = 10, height = 10)
 umap_df <- umap_df |> 
   dplyr::mutate(
     consensus_lumped = forcats::fct_lump_n(consensus_celltype_annotation, n = 7, other_level = "All remaining cell types") |> 
-      #stringr::str_wrap(25) |> # wrap the long names
       forcats::fct_infreq() |> 
       forcats::fct_relevel("Unknown", "All remaining cell types", after = Inf)
   )
