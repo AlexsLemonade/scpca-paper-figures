@@ -187,6 +187,7 @@ celltype_plot <- ggplot(umap_df, aes(x = UMAP.1, y = UMAP.2, color = celltype_la
     color = guide_legend(override.aes = list(alpha = 1, size = 1.5))
   )
 
+# cnv umap
 cnv_plot <- ggplot(umap_df) +
   aes(x = UMAP.1, y = UMAP.2, color = infercnv_total_cnv) +
   geom_point(alpha = 0.25, size = 0.25) +
@@ -197,6 +198,7 @@ cnv_plot <- ggplot(umap_df) +
     color = "Total CNV"
   ) 
 
+# combine and export
 combined_plot <- celltype_plot + cnv_plot
 
 ggsave(consensus_cnv_umap_file, combined_plot, width = 10, height = 8)
