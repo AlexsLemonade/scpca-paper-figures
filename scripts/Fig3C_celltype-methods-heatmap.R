@@ -116,9 +116,9 @@ jaccard_list <- method_names |>
 
 # show methods in alphabetical order
 method_names <- c(
+  "SingleR annotations" = "singler",
   "CellAssign annotations" = "cellassign", 
-  "SCimilarity annotations" = "scimilarity",
-  "SingleR annotations" = "singler"
+  "SCimilarity annotations" = "scimilarity"
 )
 
 ## VERTICAL VERSION
