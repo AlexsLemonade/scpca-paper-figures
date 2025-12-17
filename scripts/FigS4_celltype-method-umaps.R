@@ -78,9 +78,22 @@ all_plot_list <- celltype_columns |>
           forcats::fct_relevel("Other T cells", after = Inf)
       )
     
-    # filter to only keep panels that have T cells
-    # otherwise we get an NA panel 
+    # update the labels to include counts, drop NA since that's not going to be a level
+    celltype_labels <- celltype_df |> 
+      dplyr::count(t_cell_group) |> 
+      dplyr::mutate(
+        facet_label = glue::glue("{t_cell_group} (n = {n})")
+      ) |> 
+      tidyr::drop_na() |> 
+      dplyr::pull(facet_label)
+    
+    # add a new column for labels and filter
     plot_df <- celltype_df |> 
+      dplyr::mutate(
+        facet_label = factor(t_cell_group, levels = levels(t_cell_group), labels = celltype_labels)
+      ) |> 
+      # filter to only keep panels that have T cells
+      # otherwise we get an NA panel 
       dplyr::filter(!is.na(t_cell_group))
     
     ggplot(
@@ -106,7 +119,7 @@ all_plot_list <- celltype_columns |>
         y = method # label with celltype method
       ) +
       # facet by t cell type
-      facet_grid(cols = vars(t_cell_group)) +
+      facet_grid(cols = vars(facet_label)) +
       theme(
         # Ensure plot margins are tight so the axis labels can be as close as possible
         plot.margin = margin(1, 0, 0, 1)
