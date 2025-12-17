@@ -1,4 +1,5 @@
-
+# This script generates the panels of S4 which shows detailed cell type annotations 
+# and CNV information for a single sample, SCPCS000049/SCPCL000049
 
 # load project
 renv::load()
@@ -29,6 +30,7 @@ sce_file <- here::here("s3_files", "SCPCS000049", "SCPCL000049_processed.rds")
 
 # define output files
 tcell_umap_file <- here::here("figures", "pdfs", "FigS4A_tcell-umaps.pdf")
+consensus_cnv_umap_file <- here::here("figures", "pdfs", "FigS4B_consensus-cnv-umaps.pdf")
 
 # get cell types and umap embeddings for plotting
 umap_df <- readr::read_rds(sce_file) |>
@@ -146,35 +148,56 @@ ggsave(tcell_umap_file, combined_plot, width = 10, height = 10)
 
 # Consensus/inferCNV UMAPs -----------------------------------------------------
 
-# TODO: Add this in here or move to another script
-# Uncomment out section and clean up code for additional panels
-# colors <- c(palette.colors(n = 8, palette = "Dark2"), "gray80")
-# names(colors) <- levels(umap_df$consensus_lumped)
-# 
-# ggplot(umap_df, aes(x = UMAP.1, y = UMAP.2, color = consensus_lumped)) +
-#   geom_point(
-#     alpha = 0.5,
-#     size = 0.3
-#   ) +
-#   scale_color_manual(values = colors) +
-#   # set points for desired cell type
-#   geom_point(size = 0.3, alpha = 0.5) +
-#   labs(
-#     x = "UMAP1",
-#     y = "UMAP2"
-#   ) +
-#   guides(
-#     color = guide_legend(override.aes = list(alpha = 1, size = 1.5))
-#   )
-# 
-# ggplot(umap_df) +
-#   aes(x = UMAP.1, y = UMAP.2, color = infercnv_total_cnv) +
-#   geom_point(alpha = 0.25, size = 0.25) +
-#   scale_color_viridis_c(na.value = "grey70") +
-#   labs(
-#     x = "UMAP1",
-#     y = "UMAP2",
-#     color = "Total CNV"
-#   ) +
-#   theme(legend.position = "bottom")
+# lump consensus cell types 
+umap_df <- umap_df |> 
+  dplyr::mutate(
+    consensus_lumped = forcats::fct_lump_n(consensus_celltype_annotation, n = 7, other_level = "All remaining cell types") |> 
+      forcats::fct_infreq() |> 
+      forcats::fct_relevel("Unknown", "All remaining cell types", after = Inf)
+  )
 
+# get total cell number labels 
+celltype_labels <- umap_df |> 
+  dplyr::count(consensus_lumped) |> 
+  dplyr::mutate(
+    celltype_label = glue::glue("{consensus_lumped} (n = {n})")
+  ) |> 
+  dplyr::pull(celltype_label)
+
+# add a new column for labels
+umap_df <- umap_df |> 
+  dplyr::mutate(
+    celltype_label = factor(consensus_lumped, levels = levels(consensus_lumped), labels = celltype_labels)
+  )
+
+# UMAP showing consensus cell types
+celltype_plot <- ggplot(umap_df, aes(x = UMAP.1, y = UMAP.2, color = celltype_label)) +
+  geom_point(
+    alpha = 0.5,
+    size = 0.3
+  ) +
+  scale_color_brewer(palette = "Dark2") +
+  labs(
+    x = "UMAP1",
+    y = "UMAP2",
+    color = "Consensus cell type annotation"
+  ) +
+  guides(
+    color = guide_legend(override.aes = list(alpha = 1, size = 1.5))
+  )
+
+# cnv umap
+cnv_plot <- ggplot(umap_df) +
+  aes(x = UMAP.1, y = UMAP.2, color = infercnv_total_cnv) +
+  geom_point(alpha = 0.25, size = 0.25) +
+  scale_color_viridis_c(na.value = "grey70") +
+  labs(
+    x = "UMAP1",
+    y = "UMAP2",
+    color = "Total CNV"
+  ) 
+
+# combine and export
+combined_plot <- celltype_plot + cnv_plot
+
+ggsave(consensus_cnv_umap_file, combined_plot, width = 10, height = 8)
