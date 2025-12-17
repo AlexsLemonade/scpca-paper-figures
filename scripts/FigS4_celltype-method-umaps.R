@@ -27,10 +27,6 @@ theme_set(
 
 sce_file <- here::here("s3_files", "SCPCS000049", "SCPCL000049_processed.rds")
 
-# t cell list
-# includes a list of all T cell types across all methods that are found in this sample
-t_cell_types <- readLines(here::here("sample-info", "SCPCS000049_T-cell-types.txt")) 
-
 # define output files
 tcell_umap_file <- here::here("figures", "pdfs", "FigS4A_tcell-umaps.pdf")
 
@@ -71,7 +67,7 @@ all_plot_list <- celltype_columns |>
       dplyr::mutate(
         t_cell_group = dplyr::if_else(
           # keep T cells with the original annotation and leave all others as NA
-          !!sym(celltype_column) %in% t_cell_types,
+          stringr::str_detect(!!sym(celltype_column), "T[- ]"),
           !!sym(celltype_column),
           NA_character_
         ) |> 
