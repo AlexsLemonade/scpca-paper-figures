@@ -48,7 +48,8 @@ celltype_labels <- celltype_df |>
   dplyr::count(celltype) |>
   dplyr::arrange(celltype) |>
   dplyr::mutate( 
-    celltype_n = glue::glue("{celltype} (n = {n})")
+    celltype_n = glue::glue("{celltype} (n = {n})"), 
+    celltype_n = stringr::str_wrap(celltype_n, 25 )
   ) |>
   dplyr::pull(celltype_n)
 
