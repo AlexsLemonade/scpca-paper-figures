@@ -176,6 +176,10 @@ make_dotplot <- function(
     scale_size(range = dotplot_size_range) + 
     scale_color_viridis_c(option = "magma") +
     facet_grid(cols = vars(validation_group_annotation), scales = "free", space = "free") +
+    guides(
+      color = guide_colorbar(order = 1), 
+      size = guide_legend(order = 2) 
+    ) +
     theme_classic() +
     theme(
       strip.background = element_rect(fill = "transparent", color = NA),
@@ -419,6 +423,7 @@ create_immune_celltype_summary <- function(
 #' @param facet_variable Column to use for faceting, default is NULL 
 #' @param x_axis_text_size Size of x-axis text, default is 4
 #' @param facet_col Number of columns to use in faceting, default is 2
+#' @param facet_row Number of rows to use in faceting, default is 1
 #' @param legend_position Where to put the legend, default is "right"
 #'
 #' @returns
@@ -435,6 +440,7 @@ stacked_barchart <- function(
     facet_variable = NULL, # use for faceting HGG vs. LGG 
     x_axis_text_size = 4, 
     facet_col = 2,
+    facet_row = 1,
     legend_position = "right"
 ){
   
