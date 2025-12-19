@@ -29,8 +29,8 @@ theme_set(
 sce_file <- here::here("s3_files", "SCPCS000049", "SCPCL000049_processed.rds")
 
 # define output files
-tcell_umap_file <- here::here("figures", "pdfs", "FigS4A_tcell-umaps.pdf")
-consensus_cnv_umap_file <- here::here("figures", "pdfs", "FigS4B_consensus-cnv-umaps.pdf")
+tcell_umap_file <- here::here("figures", "pngs", "FigS4A_tcell-umaps.png")
+consensus_cnv_umap_file <- here::here("figures", "pngs", "FigS4B_consensus-cnv-umaps.png")
 
 # get cell types and umap embeddings for plotting
 umap_df <- readr::read_rds(sce_file) |>
