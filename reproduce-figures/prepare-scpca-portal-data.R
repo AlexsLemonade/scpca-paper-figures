@@ -52,7 +52,7 @@ option_list <- list(
     help = "Output directory for data used in the bulk RNA-Seq analysis. Default is `analysis/pseudobulk-bulk-prediction/data`, which is where code expects it to be."
   ),
   make_option(
-     "--scratch_dir",
+    "--scratch_dir",
     type = "character",
     default = here::here("reproduce-figures", "scratch"),
     help = "Scratch directory for holding temporary files during processing"
@@ -93,7 +93,6 @@ stopifnot(
 )
 
 
-
 # Check output directories
 
 # first, set up the target bulk dirs
@@ -114,8 +113,8 @@ if (any(dir.exists(output_dirs))) {
 }
 
 # Define and create directories
-consensus_files_dir   <- file.path(opts$s3_files_dir, "cell-type-consensus-results")
-celltype_results_dir  <- file.path(opts$s3_files_dir, "celltype_results")
+consensus_files_dir <- file.path(opts$s3_files_dir, "cell-type-consensus-results")
+celltype_results_dir <- file.path(opts$s3_files_dir, "celltype_results")
 s3_files_reference_dir <- file.path(opts$s3_files_dir, "reference_files")
 merged_sce_dir <- file.path(opts$s3_files_dir, "SCPCP000003")
 
@@ -132,7 +131,7 @@ fs::dir_create(c(
   s3_files_reference_dir,
   merged_sce_dir,
   bulk_metadata_scratch_dir,
-  citeseq_metadata_scratch_dir, 
+  citeseq_metadata_scratch_dir,
   portal_metadata_scratch_dir
 ))
 
@@ -157,7 +156,7 @@ library_metadata_file <- file.path(opts$s3_files_dir, "scpca-library-metadata.ts
 standalone_sample_dirs <- c(
   "SCPCS000001",
   "SCPCS000216",
-  "SCPCS000251",
+  "SCPCS000049",
   "SCPCS000264"
 )
 
@@ -209,10 +208,14 @@ input_zips <- list.files(
   ignore.case = TRUE # case insensitive regex
 ) |>
   # remove any merged objects
-  purrr::discard(\(x){grepl("_merged_", x, ignore.case = TRUE)}) |>
+  purrr::discard(\(x){
+    grepl("_merged_", x, ignore.case = TRUE)
+  }) |>
   # name by project
   purrr::set_names(
-    \(x) {stringr::str_split_i(basename(x), "_", 1)}
+    \(x) {
+      stringr::str_split_i(basename(x), "_", 1)
+    }
   )
 stopifnot(
   "The provided input directory does not contain all expected projects. Zip files for all projects listed in the `project-whitelist.txt` file should be present." =
@@ -223,7 +226,6 @@ stopifnot(
 input_zips |>
   purrr::iwalk(
     \(project_zip, project_id){
-
       # scratch directory to store unzipped files during processing
       project_scratch_dir <- file.path(opts$scratch_dir, project_id)
       fs::dir_create(project_scratch_dir)
@@ -237,16 +239,21 @@ input_zips |>
         project_scratch_dir,
         full.names = TRUE
       ) |>
-        purrr::set_names(\(x) {basename(x)}) |>
+        purrr::set_names(\(x) {
+          basename(x)
+        }) |>
         # get rid of itself & multiplexed samples
-        purrr::discard_at(\(x) {stringr::str_detect(x, project_id)}) |>
-        purrr::discard_at(\(x) {stringr::str_detect(x, "_")})
+        purrr::discard_at(\(x) {
+          stringr::str_detect(x, project_id)
+        }) |>
+        purrr::discard_at(\(x) {
+          stringr::str_detect(x, "_")
+        })
 
       ####### Step 1: Copy RDS files to target directories #######
       sample_dirs |>
         purrr::iwalk(
           \(sample_dir, sample_id) {
-
             # Copy processed rds files to celltype_results_files
             # The next step will parse these files into TSVs
             if (sample_id %in% celltype_results_samples) {
@@ -259,8 +266,8 @@ input_zips |>
               fs::dir_create(standalone_dir)
               system(glue::glue("cp -r {sample_dir}/*rds {standalone_dir}"))
             }
-
-      })
+          }
+        )
 
       # Save metadata files to use when preparing the sample and library metadata files later
       project_bulk_tsv <- file.path(project_scratch_dir, glue::glue("{project_id}_bulk_metadata.tsv"))
@@ -275,7 +282,7 @@ input_zips |>
           overwrite = TRUE
         )
       }
-      
+
       # If this project is SCPCP000003, copy over a few of its processed files
       if (project_id == "SCPCP000003") {
         merged_sce_samples |>
@@ -285,7 +292,8 @@ input_zips |>
               system(
                 glue::glue("cp {project_scratch_dir}/{sample_id}/*_processed.rds {merged_sce_dir}")
               )
-          })
+            }
+          )
       }
 
       # If this project is used in the bulk analysis, copy to bulk_project_dir
@@ -306,7 +314,6 @@ input_zips |>
       sample_dirs |>
         purrr::iwalk(
           \(sample_dir, sample_id) {
-
             # Map over all rds files for each sample
             list.files(
               path = sample_dir,
@@ -314,7 +321,6 @@ input_zips |>
               full.names = TRUE
             ) |>
               purrr::walk(\(rds) {
-
                 # Define output file paths
                 outdir <- file.path(consensus_files_dir, project_id, sample_id)
                 fs::dir_create(outdir)
@@ -336,13 +342,14 @@ input_zips |>
 
                 # Prepare and export marker gene expression tsv
                 prepare_gene_expression_tsv(sce, marker_genes, output_gene_expr_tsv)
-
-            })
-      })
+              })
+          }
+        )
 
       # Now that this project has been processed, we can clean out the scratch directory
       fs::dir_delete(project_scratch_dir)
-})
+    }
+  )
 
 
 # Prepare sample and library metadata files ---------------------------
