@@ -12,6 +12,7 @@ options(readr.show_col_types = FALSE)
 
 celltype_plotting_functions <- here::here("scripts", "utils", "consensus-celltype-plotting-functions.R")
 source(celltype_plotting_functions) # imports `make_dotplot()`
+set.seed(2026) # random marker gene selection; max 10 per validation group
 
 # Define file paths ------------------------------------------------------------
 
@@ -48,7 +49,11 @@ celltype_order <- readr::read_tsv(immune_cells_file) |>
 markers_df <- readr::read_tsv(marker_gene_table_url) |> 
   # only keep markers that are in our immune cell list
   dplyr::filter(consensus_annotation %in% celltype_order) |> 
-  dplyr::rename("validation_group_annotation" = consensus_annotation) 
+  dplyr::rename("validation_group_annotation" = consensus_annotation) |>
+  # randomly select 10 genes per group
+  dplyr::group_by(validation_group_annotation) |>
+  dplyr::slice_sample(n = 10) |>
+  dplyr::ungroup()
 
 # get marker genes that are unique to the included cell types
 unique_markers <- markers_df |> 
