@@ -50,6 +50,10 @@ marker_gene_dotplot <- function(
   validation_groups_df <- as.data.frame(validation_groups_df) |> duckplyr::as_duckdb_tibble()
   markers_df <- as.data.frame(markers_df) |> duckplyr::as_duckdb_tibble()
 
+  # we do not want to show groups without markers in the plot
+  # include NA_character_ here to ensure we keep the unknown cells, since we can't directly filter on that value in duckplyr
+  allowed_groups <- c(unique(markers_df$validation_group_annotation), NA_character_)
+
   # read in files directly to duckdb tables
   # specify all varchar for consensus to avoid parsing error
   consensus_df <- duckplyr::read_csv_duckdb(celltype_files, options = list(sep = "\t", union_by_name = TRUE)) 
@@ -65,7 +69,9 @@ marker_gene_dotplot <- function(
     dplyr::left_join(gene_exp_df, by = c("barcodes", "library_id")) |>
     # add marker gene information (associated validation group annotation, gene observed count, percent tissues)
     # account for the same gene being present in multiple cell types
-    dplyr::left_join(markers_df, by = "ensembl_gene_id", relationship = "many-to-many")
+    dplyr::left_join(markers_df, by = "ensembl_gene_id", relationship = "many-to-many") |>
+    # only keep groups for which we have marker genes
+    dplyr::filter(broad_celltype_group %in% allowed_groups)
 
   # prep for plots
   # get total number of cells per final annotation group
