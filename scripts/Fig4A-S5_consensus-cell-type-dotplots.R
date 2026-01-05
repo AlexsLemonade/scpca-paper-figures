@@ -55,6 +55,13 @@ markers_df <- readr::read_tsv(marker_gene_table_url) |>
   # for HPC we keep all 6 marker genes
   dplyr::filter(gene_observed_count == 1 | validation_group_annotation == "hematopoietic precursor cell")
 
+# update celltype_colors to remove ones we don't have marker genes for (but keep "unknown")
+keep_colors <- intersect(
+  names(celltype_colors), 
+  c(unique(markers_df$validation_group_annotation), "unknown")
+)
+celltype_colors <- celltype_colors[keep_colors]
+
 validation_groups_df <- readr::read_tsv(validation_group_url) |> 
   # rename final assigned group to avoid conflicts when merging in marker gene expression 
   # we want to separate the marker gene group from the actual cell type annotation
