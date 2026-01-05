@@ -95,7 +95,8 @@ marker_gene_dotplot <- function(
     ) |>
     # add in validation group for marker genes
     # this includes all possible marker genes and all possible validation group assignments
-    dplyr::left_join(markers_df, by = c("ensembl_gene_id", "validation_group_annotation"), relationship = "many-to-many") |> # add total cells
+    dplyr::left_join(markers_df, by = c("ensembl_gene_id", "validation_group_annotation"), relationship = "many-to-many") |> 
+    # add total cells
     dplyr::left_join(total_cells_df, by = c("broad_celltype_group")) |>
     # for plotting we're only going to look at any cell types with > 50 cells otherwise these plots can get wild
     dplyr::filter(total_cells > 50) |>
@@ -104,7 +105,9 @@ marker_gene_dotplot <- function(
       percent_exp = (detected_count / total_cells) * 100,
       # account for NA/unknowns and set axes order
       broad_celltype_group = tidyr::replace_na(broad_celltype_group, "unknown") |>
-        factor(levels = unique(c(names(celltype_colors), "unknown")))
+        factor(levels = unique(c(names(celltype_colors), "unknown"))) |>
+        # ensure unknown is at the end
+        forcats::fct_relevel("unknown", after = Inf)
     )
 
   # get list of celltypes to keep and assign colors
@@ -112,7 +115,7 @@ marker_gene_dotplot <- function(
     dplyr::pull(broad_celltype_group) |>
     unique() |>
     as.character()
-
+  
   # filter markers to those that are actually relevant
   # we will only plot the marker genes for cell types that are part of the assigned broad validation group for this group of samples
   # we don't care about plotting marker genes for cell types that aren't present here
@@ -130,7 +133,7 @@ marker_gene_dotplot <- function(
   # specify x axis order for dotplot
   marker_gene_order <- filtered_markers_df |>
     dplyr::pull(gene_symbol)
-
+  
   # set order for cell types
   celltype_order <- unique(filtered_markers_df$validation_group_annotation)
 
