@@ -211,6 +211,6 @@ combined_plot <- make_dotplot(
   celltype_colors = immune_colors
 )
 
-ggsave(output_pdf_file, plot = combined_plot, width = 30, height = 10)
+ggsave(output_pdf_file, plot = combined_plot, width = 25, height = 10)
 
 suppressMessages(duckplyr::methods_restore()) # back to dplyr
