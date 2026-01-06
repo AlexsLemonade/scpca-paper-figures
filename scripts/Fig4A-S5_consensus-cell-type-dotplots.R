@@ -93,11 +93,14 @@ non_multiplex_samples <- readr::read_tsv(library_metadata_file) |>
 
 # Define width of output PDF for each dotplot
 file_widths <- c(24, 16, 24, 24)
+file_heights <- c(10, 7, 9, 9)
 names(file_widths) <- names(output_pdf_files)
+names(file_heights) <- names(output_pdf_files)
 dotplot_size_range <- c(5, 6, 5, 5)
 names(dotplot_size_range) <- names(output_pdf_files)
 
 plot_list <- output_pdf_files |> 
+  purrr::discard_at("Brain and CNS") |>
   purrr::iwalk(\(file, group){
     
     # get only samples in that diag group
@@ -118,7 +121,7 @@ plot_list <- output_pdf_files |>
     )
     
     # save plot 
-    ggsave(file, plot = combined_plot, width = file_widths[group], height = 10)
+    ggsave(file, plot = combined_plot, width = file_widths[group], height = file_heights[group])
     gc() # clean up after each run
   })
 
