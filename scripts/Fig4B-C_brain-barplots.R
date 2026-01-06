@@ -97,15 +97,23 @@ summary_df <- create_celltype_summary(celltype_files, validation_groups_df) |>
   dplyr::filter(subdiagnosis_group %in% c("High-grade glioma", "Low-grade glioma")) 
 
 # make stacked bar chart and facet 
-hgg_lgg_barplot <- stacked_barchart(summary_df, fill_column = "broad_celltype_group", celltype_colors = celltype_colors_all, facet_variable = "subdiagnosis_group")
+hgg_lgg_barplot <- stacked_barchart(
+  summary_df, 
+  fill_column = "broad_celltype_group", 
+  celltype_colors = celltype_colors_all, 
+  facet_variable = "subdiagnosis_group", 
+  facet_col = 1,
+  facet_row = 2
+) +
+  theme(axis.text.x = element_blank())
 
 # save plot 
-ggsave(output_4b_pdf_file, plot = hgg_lgg_barplot, width = 12, height = 5)
+ggsave(output_4b_pdf_file, plot = hgg_lgg_barplot, width = 8, height = 8)
 
 
 
 
-# Prep and plot 4C -----------------------------------------------------
+ # Prep and plot 4C -----------------------------------------------------
 
 
 summary_immune_df <- create_immune_celltype_summary(
@@ -129,8 +137,11 @@ hgg_lgg_immune_barplot <- stacked_barchart(
   fill_label = "Immune cell type annotation",
   y_label = "Percent of immune cells",
   lumped_label = "other",
-  facet_variable = "subdiagnosis_group"
-)
+  facet_variable = "subdiagnosis_group", 
+  facet_col = 1,
+  facet_row = 2
+) +
+  theme(axis.text.x = element_blank())
 
 # save plot 
-ggsave(output_4c_pdf_file, plot = hgg_lgg_immune_barplot, width = 12, height = 5)
+ggsave(output_4c_pdf_file, plot = hgg_lgg_immune_barplot, width = 6.75, height = 8)

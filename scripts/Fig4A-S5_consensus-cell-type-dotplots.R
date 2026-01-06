@@ -11,6 +11,7 @@ options(readr.show_col_types = FALSE)
 
 celltype_plotting_functions <- here::here("scripts", "utils", "consensus-celltype-plotting-functions.R")
 source(celltype_plotting_functions) # imports `marker_gene_dotplot()`
+set.seed(2026) # random marker gene selection; max 10 per validation group
 
 # Set up paths -----------------------------------------------------------------
 
@@ -53,7 +54,19 @@ project_whitelist <- readLines(project_whitelist_file)
 markers_df <- readr::read_tsv(marker_gene_table_url) |> 
   # only keep genes unique to a single cell type except HPC which doesn't have any unique genes
   # for HPC we keep all 6 marker genes
-  dplyr::filter(gene_observed_count == 1 | validation_group_annotation == "hematopoietic precursor cell")
+  dplyr::filter(gene_observed_count == 1 | validation_group_annotation == "hematopoietic precursor cell") |>
+  # keep a random set of 10 marker genes for each validation group
+  dplyr::group_by(validation_group_annotation) |>
+  dplyr::slice_sample(n = 10) |>
+  dplyr::ungroup()
+
+
+# update celltype_colors: remove colors we don't have marker genes for (but keep "unknown")
+keep_colors <- intersect(
+  names(celltype_colors), 
+  c(unique(markers_df$validation_group_annotation), "unknown")
+)
+celltype_colors <- celltype_colors[keep_colors]
 
 validation_groups_df <- readr::read_tsv(validation_group_url) |> 
   # rename final assigned group to avoid conflicts when merging in marker gene expression 
@@ -79,7 +92,7 @@ non_multiplex_samples <- readr::read_tsv(library_metadata_file) |>
 # Create dot plots -------------------------------------------------------------
 
 # Define width of output PDF for each dotplot
-file_widths <- c(26, 18, 27, 26)
+file_widths <- c(24, 16, 24, 24)
 names(file_widths) <- names(output_pdf_files)
 dotplot_size_range <- c(5, 6, 5, 5)
 names(dotplot_size_range) <- names(output_pdf_files)
