@@ -106,8 +106,8 @@
     <path d="M66.5,48h-3c0,.4,0,.9,0,1.3h2.3l6.3,10.7-1.2,3.1c.4.3.8.5,1.2.7l1.5-4-7-11.9Z"/>
   </g>
   <g class="st1">
-    <text class="st3" transform="translate(17.2 325.8)"><tspan x="0" y="0">Marker Gene List </tspan></text>
-    <text class="st3" transform="translate(20.2 346.8)"><tspan x="0" y="0">from PanglaoDB</tspan></text>
+    <text class="st3" transform="translate(17.2 324.8)"><tspan x="0" y="0">Marker Gene List </tspan></text>
+    <text class="st3" transform="translate(20.2 345.8)"><tspan x="0" y="0">from PanglaoDB</tspan></text>
   </g>
   <g>
     <path d="M113.1,266.6h-2.1v-19.8c0-.3-.1-.6-.3-.7l-15.7-15.4c-.2-.2-.5-.3-.7-.3h-27c-3.4,0-6.2,2.9-6.2,6.4v29.8h-2.1c-.6,0-1.1.4-1.1,1v17.7c0,.6.5,1,1.1,1h2.1v3.7c0,3.5,2.8,6.4,6.2,6.4h37.6c3.4,0,6.2-2.9,6.2-6.4v-3.7h2.1c.6,0,1.1-.4,1.1-1v-17.7c0-.6-.5-1-1.1-1h0ZM95.2,233.9l12.2,11.9h-9.8c-.6,0-1.3-.3-1.7-.7-.5-.5-.7-1.1-.7-1.7v-9.5ZM63.2,236.8c0-2.4,1.9-4.3,4.1-4.3h25.9v10.9c0,1.2.5,2.4,1.3,3.2.8.9,2,1.3,3.2,1.4h11.3v18.7h-45.8v-29.8ZM109,289.9c0,2.4-1.9,4.3-4.1,4.3h-37.6c-2.2,0-4.1-1.9-4.1-4.3v-3.7h45.8v3.7ZM112.1,284.2h-52.1v-15.4h52.1v15.4Z"/>
@@ -170,8 +170,8 @@
     <text class="st2" transform="translate(631.7 228.1)"><tspan x="0" y="0">Assign the consensus cell type and </tspan><tspan x="0" y="19.2">add annotations to Processed Object</tspan></text>
   </g>
   <g class="st1">
-    <text class="st3" transform="translate(195.5 323.7)"><tspan x="0" y="0">Processed </tspan></text>
-    <text class="st3" transform="translate(245 344.9)"><tspan x="0" y="0" xml:space="preserve"> Object</tspan></text>
+    <text class="st3" transform="translate(195.5 324.7)"><tspan x="0" y="0">Processed </tspan></text>
+    <text class="st3" transform="translate(245 345.9)"><tspan x="0" y="0" xml:space="preserve"> Object</tspan></text>
   </g>
   <path d="M260.9,266.6h-2.1v-19.8c0-.3-.1-.6-.3-.7l-15.7-15.4c-.2-.2-.5-.3-.7-.3h-27c-3.4,0-6.2,2.9-6.2,6.4v29.8h-2.1c-.6,0-1.1.4-1.1,1v17.7c0,.6.5,1,1.1,1h2.1v3.7c0,3.5,2.8,6.4,6.2,6.4h37.6c3.4,0,6.2-2.9,6.2-6.4v-3.7h2.1c.6,0,1.1-.4,1.1-1v-17.7c0-.6-.5-1-1.1-1h0ZM243,233.9l12.2,11.9h-9.8c-.6,0-1.3-.3-1.7-.7-.5-.5-.7-1.1-.7-1.7v-9.5ZM210.9,236.8c0-2.4,1.9-4.3,4.1-4.3h25.9v10.9c0,1.2.5,2.4,1.3,3.2.8.9,2,1.3,3.2,1.4h11.3v18.7h-45.8v-29.8ZM256.7,289.9c0,2.4-1.9,4.3-4.1,4.3h-37.6c-2.2,0-4.1-1.9-4.1-4.3v-3.7h45.8v3.7ZM259.9,284.2h-52.1v-15.4h52.1v15.4Z"/>
   <g class="st1">
@@ -190,11 +190,11 @@
   <path d="M217.7,239.1l.9.9-3.7,3.7-.9-.9,3.7-3.7Z"/>
   <path d="M214.2,250.6h-3c0,.4,0,.9,0,1.3h2.3l6.3,10.7-1.2,3.1c.4.3.8.5,1.2.7l1.5-4-7-11.9Z"/>
   <g class="st1">
-    <text class="st0" transform="translate(174.4 544.8)"><tspan x="0" y="0">AnnData</tspan></text>
+    <text class="st0" transform="translate(174.4 542.8)"><tspan x="0" y="0">AnnData</tspan></text>
   </g>
   <g class="st1">
-    <text class="st3" transform="translate(194.1 524.8)"><tspan x="0" y="0">Processed </tspan></text>
-    <text class="st3" transform="translate(242.1 545.8)"><tspan x="0" y="0" xml:space="preserve"> Object</tspan></text>
+    <text class="st3" transform="translate(194.1 522.4)"><tspan x="0" y="0">Processed </tspan></text>
+    <text class="st3" transform="translate(242.1 543.4)"><tspan x="0" y="0" xml:space="preserve"> Object</tspan></text>
   </g>
   <g>
     <path d="M260.9,464.3h-2.1v-19.8c0-.3-.1-.6-.3-.7l-15.7-15.4c-.2-.2-.5-.3-.7-.3h-27c-3.4,0-6.2,2.9-6.2,6.4v29.8h-2.1c-.6,0-1.1.4-1.1,1v17.7c0,.6.5,1,1.1,1h2.1v3.7c0,3.5,2.8,6.4,6.2,6.4h37.6c3.4,0,6.2-2.9,6.2-6.4v-3.7h2.1c.6,0,1.1-.4,1.1-1v-17.7c0-.6-.5-1-1.1-1h0ZM243,431.5l12.2,11.9h-9.8c-.6,0-1.3-.3-1.7-.7-.5-.5-.7-1.1-.7-1.7v-9.5ZM210.9,434.4c0-2.4,1.9-4.3,4.1-4.3h25.9v10.9c0,1.2.5,2.4,1.3,3.2.8.9,2,1.3,3.2,1.4h11.3v18.7h-45.8v-29.8ZM256.7,487.6c0,2.4-1.9,4.3-4.1,4.3h-37.6c-2.2,0-4.1-1.9-4.1-4.3v-3.7h45.8v3.7ZM259.9,481.8h-52.1v-15.4h52.1v15.4Z"/>
@@ -233,7 +233,7 @@
     <line class="st5" x1="80.9" y1="456.5" x2="70.1" y2="449.5"/>
   </g>
   <g class="st1">
-    <text class="st3" transform="translate(46.3 519.8)"><tspan x="0" y="0">Foundation</tspan><tspan x="20.5" y="21.6">Model</tspan></text>
+    <text class="st3" transform="translate(46.3 522.1)"><tspan x="0" y="0">Foundation</tspan><tspan x="20.5" y="21.6">Model</tspan></text>
   </g>
   <g class="st1">
     <text class="st0" transform="translate(313.2 463.3)"><tspan x="0" y="0">SCimilarity</tspan></text>
@@ -271,6 +271,6 @@
     <polygon points="932 268 945 260.5 932 253.1 932 268"/>
   </g>
   <g class="st1">
-    <text class="st0" transform="translate(178.6 344.4)"><tspan x="0" y="0">AnnData</tspan></text>
+    <text class="st0" transform="translate(178.6 345.4)"><tspan x="0" y="0">AnnData</tspan></text>
   </g>
 </svg>
