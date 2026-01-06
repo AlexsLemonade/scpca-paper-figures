@@ -12,13 +12,16 @@ theme_set(
   theme_classic() +
     theme(
       #plot.margin = margin(rep(20, 4)),
-      strip.background = element_rect(fill = "transparent"),
+      strip.background = element_rect(fill = "transparent", linewidth = 0.5),
       # no background box for legend
       legend.background = element_blank(),
       # no axis ticks or labels
       axis.line = element_blank(),
       axis.ticks = element_blank(),
       axis.text = element_blank(),
+      # font sizing
+      axis.title = element_text(size = 10),
+      strip.text = element_text(size = 8),
       # add a square around each of the plots
       panel.background = element_rect(colour = "black", linewidth=0.5),
       aspect.ratio = 1
@@ -43,9 +46,9 @@ filtered_sce <- readr::read_rds(filtered_sce_file)
 processed_sce <- readr::read_rds(processed_sce_file)
 
 # define output file paths 
-pdf_dir <- here::here("figures", "pdfs") 
-output_pdf_file <- file.path(pdf_dir, "Fig2B-F_mini-qc-plots.pdf")
-output_pdf_file_hvgs <- file.path(pdf_dir, "Fig2G_mini-qc-hvgs.pdf")
+png_dir <- here::here("figures", "pngs") 
+output_png_file <- file.path(png_dir, "Fig2B-F_mini-qc-plots.png")
+output_png_file_hvgs <- file.path(png_dir, "Fig2G_mini-qc-hvgs.png")
 
 # Knee plot --------------------------------------------------------------------
 
@@ -276,9 +279,9 @@ plot_list <- list(knee_plot,
                   miQC_plot,
                   filtered_plot,
                   umap_plot)
-combined_plot <- patchwork::wrap_plots(plot_list, ncol = 3) &
+combined_plot <- patchwork::wrap_plots(plot_list, ncol = 2) &
   theme(text = element_text(size = 10))
 
 # save files 
-ggsave(output_pdf_file, plot = combined_plot, width = 8.5, height = 5.5, units = "in")
-ggsave(output_pdf_file_hvgs, plot = hvg_plot, width = 3, height = 2.75, units = "in")
+ggsave(output_png_file, plot = combined_plot, width = 5.5, height = 8.5, units = "in")
+ggsave(output_png_file_hvgs, plot = hvg_plot, width = 3, height = 2.75, units = "in")
