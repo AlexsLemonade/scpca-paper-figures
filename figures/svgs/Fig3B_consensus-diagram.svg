@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" width="612" height="343" version="1.1" viewBox="0 0 612 343">
+  <!-- Generator: Adobe Illustrator 30.1.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 136)  -->
+  <defs>
+    <style>
+      .st0 {
+        stroke: #f15a29;
+      }
+
+      .st0, .st1, .st2, .st3, .st4, .st5, .st6, .st7 {
+        fill: none;
+        stroke-miterlimit: 10;
+      }
+
+      .st0, .st1, .st2, .st3, .st4, .st5, .st7 {
+        stroke-width: 4px;
+      }
+
+      .st1 {
+        stroke: #662d91;
+      }
+
+      .st8, .st9, .st10 {
+        fill: #231f20;
+      }
+
+      .st2, .st3, .st4, .st5 {
+        stroke: #27aae1;
+      }
+
+      .st3 {
+        stroke-dasharray: 12 12;
+      }
+
+      .st9 {
+        font-size: 24px;
+      }
+
+      .st9, .st10 {
+        font-family: ArialMT, Arial;
+      }
+
+      .st10 {
+        font-size: 18px;
+      }
+
+      .st4 {
+        stroke-dasharray: 12;
+      }
+
+      .st5 {
+        stroke-dasharray: 13.5 13.5;
+      }
+
+      .st6 {
+        stroke: #231f20;
+        stroke-width: 2px;
+      }
+
+      .st7 {
+        stroke: #2bb673;
+      }
+    </style>
+  </defs>
+  <text class="st9" transform="translate(248.7 48.5)"><tspan x="0" y="0">T cell (166)</tspan></text>
+  <text class="st9" transform="translate(78.4 280.5)"><tspan x="0" y="0">CD4-positive, </tspan><tspan x="-38" y="28.8">alpha-beta T cell (34)</tspan></text>
+  <text class="st9" transform="translate(170.6 193.5)"><tspan x="0" y="0">mature alpha-beta T cell (84)</tspan></text>
+  <text class="st9" transform="translate(194.8 120.2)"><tspan x="0" y="0">alpha-beta T cell (103)</tspan></text>
+  <text class="st9" transform="translate(336.9 295.8)"><tspan x="0" y="0">mature NK T cell (14)</tspan></text>
+  <rect class="st0" x="238.3" y="19.6" width="145.3" height="38"/>
+  <g>
+    <polyline class="st2" points="394.2 59.1 394.2 65.1 388.2 65.1"/>
+    <line class="st3" x1="376.3" y1="65.1" x2="238.5" y2="65.1"/>
+    <polyline class="st2" points="232.6 65.1 226.6 65.1 226.6 59.1"/>
+    <line class="st5" x1="226.6" y1="45.5" x2="226.6" y2="25.2"/>
+    <polyline class="st2" points="226.6 18.4 226.6 12.4 232.6 12.4"/>
+    <line class="st3" x1="244.5" y1="12.4" x2="382.3" y2="12.4"/>
+    <polyline class="st2" points="388.2 12.4 394.2 12.4 394.2 18.4"/>
+    <line class="st5" x1="394.2" y1="32" x2="394.2" y2="52.3"/>
+  </g>
+  <rect class="st4" x="159.4" y="167.4" width="330.5" height="38"/>
+  <rect class="st1" x="31.6" y="254.2" width="246.7" height="67.3"/>
+  <rect class="st7" x="324.6" y="254.2" width="252" height="67.3"/>
+  <line class="st6" x1="310.4" y1="66.1" x2="310.4" y2="104"/>
+  <line class="st6" x1="310.4" y1="125.3" x2="310.4" y2="163.3"/>
+  <line class="st6" x1="306" y1="211.3" x2="143.8" y2="254.2"/>
+  <line class="st6" x1="306" y1="211.3" x2="454.8" y2="254.2"/>
+  <text class="st10" transform="translate(31.6 28.4)"><tspan x="0" y="0">CellAssign</tspan></text>
+  <text class="st10" transform="translate(31.6 61)"><tspan x="0" y="0">SCimilarity</tspan></text>
+  <text class="st10" transform="translate(33.6 94)"><tspan x="0" y="0">SingleR</tspan></text>
+  <text class="st10" transform="translate(32.9 125.3)"><tspan x="0" y="0">Latest common</tspan><tspan x="0" y="21.6">ancestor</tspan></text>
+  <rect class="st0" x="8.3" y="13.3" width="19" height="19"/>
+  <rect class="st7" x="8.3" y="45.5" width="19" height="19"/>
+  <rect class="st1" x="8.3" y="77.7" width="19" height="19"/>
+  <g>
+    <polyline class="st2" points="27.3 125.6 27.3 131.6 21.3 131.6"/>
+    <polyline class="st2" points="14.3 131.6 8.3 131.6 8.3 125.6"/>
+    <polyline class="st2" points="8.3 118.5 8.3 112.5 14.3 112.5"/>
+    <polyline class="st2" points="21.3 112.5 27.3 112.5 27.3 118.5"/>
+  </g>
+  <text/>
+  <path class="st8" d="M503.7,189.7c2,1.7,3.7,3.6,5.1,5.8s2.3,1.7,3.4.9c7.2-5.5,14.7-10.7,22.4-15.6s.2-6-2.5-4.3c-7.7,4.8-15.2,10-22.4,15.6l3.4.9c-1.6-2.5-3.6-4.8-5.9-6.8s-2.5-1-3.5,0-1,2.7,0,3.5h0Z"/>
+</svg>
