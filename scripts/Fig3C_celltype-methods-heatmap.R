@@ -32,6 +32,12 @@ top_n_consensus <- 7 # show the top 7 consensus cell types
 n_cells <- 3 # we'll only show cell types with >= 3 cells
 unknown_labels <- c("Unclassified cell", "Unknown", "other") # collapse into one unknown grouping
 
+method_names <- c(
+  "SingleR" = "singler",
+  "CellAssign" = "cellassign", 
+  "SCimilarity" = "scimilarity"
+)
+
 # data frame of cell types
 celltype_df <- colData(processed_sce) |>
   as.data.frame() |>
@@ -114,13 +120,6 @@ jaccard_list <- method_names |>
 
 ################## TODO: PICK A VERSION TO PROCEED WITH ################
 
-# show methods in alphabetical order
-method_names <- c(
-  "SingleR annotations" = "singler",
-  "CellAssign annotations" = "cellassign", 
-  "SCimilarity annotations" = "scimilarity"
-)
-
 ## VERTICAL VERSION
 heatmap_list <- jaccard_list |>
   purrr::imap(
@@ -135,7 +134,7 @@ heatmap_list <- jaccard_list |>
         row_title_side = "left",
         row_title = name,
         row_names_side = "right",
-        row_names_gp = grid::gpar(fontsize = 10),
+        row_names_gp = grid::gpar(fontsize = 8),
         ## Column parameters
         cluster_columns = FALSE,
         column_title = "Consensus cell type annotations",
@@ -149,7 +148,7 @@ heatmap_list <- jaccard_list |>
           legend_width = grid::unit(1.5, "in")
         ),
         # make sure we only have 1 legend
-        show_heatmap_legend = name == "SingleR annotations",
+        show_heatmap_legend = name == "SingleR",
       )
     }
   ) |>
@@ -157,52 +156,16 @@ heatmap_list <- jaccard_list |>
   purrr::reduce(ComplexHeatmap::`%v%`) # use + for horizontal
 
 final_heatmap <- ComplexHeatmap::draw(
-  heatmap_list_vertical,
+  heatmap_list,
   heatmap_legend_side = "bottom"
 )
 
-
-## HORIZONTAL VERSION
-heatmap_list <- jaccard_list |>
-  purrr::imap(
-    \(mat, name) {
-      ComplexHeatmap::Heatmap(
-        mat, 
-        col = circlize::colorRamp2(c(0, 1), colors = c("white", "darkslateblue")),
-        border = TRUE, # each heatmap gets its own outline
-        ## Row parameters
-        cluster_rows = FALSE,
-        row_title_gp = grid::gpar(fontsize = 10),
-        row_title_side = "left",
-        row_title = "Consensus cell type annotations",
-        row_names_side = "right",
-        row_names_gp = grid::gpar(fontsize = 10),
-        ## Column parameters
-        cluster_columns = FALSE,
-        column_title = name,
-        column_title_gp = grid::gpar(fontsize = 10),
-        column_names_side = "bottom",
-        column_names_gp = grid::gpar(fontsize = 10),
-        ## Legend parameters
-        heatmap_legend_param = list(
-          title = "Jaccard index",
-          direction = "horizontal",
-          legend_width = grid::unit(1.5, "in")
-        ),
-        # make sure we only have 1 legend
-        show_heatmap_legend = name == "SingleR annotations",
-      )
-    }
-  ) |>
-  # concatenate TBD into HeatmapList object
-  purrr::reduce(`+`) 
-###############################################################################
-
-
 # save heatmap to pdf
-pdf(output_file, width = 9, height = 9, useDingbats = FALSE) # TODO: determine dimensions
+pdf(output_file, width = 4, height = 7, useDingbats = FALSE) 
 ComplexHeatmap::draw(
   heatmap_list,
   heatmap_legend_side = "bottom"
 )
 dev.off()
+
+
