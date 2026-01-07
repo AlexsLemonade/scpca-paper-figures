@@ -59,6 +59,7 @@ Panel B shows a UMAP of consensus cell types side by side with total CNV events 
 
 * `TableS2_cellassign-ref-summary.R`: This script is used to generate supplemental Table 2, which includes one row for each ScPCA project on the Portal and the associated diagnoses, reference used from `PanglaoDB`, and list of organs used to construct the reference.
 
+
 ## Old figures
 
 The `old_figures` folder contains the scripts used to generate figures present in previous versions of the manuscript.
@@ -67,13 +68,14 @@ The `old_figures` folder contains the scripts used to generate figures present i
 
 * `FigS4_celldex-ref-comparison.R `: This script is used to generate a previous version of supplemental Figure 4, which included a figure comparing `celldex` references across samples.
 
-* `FigS4_submitter-celltypes-heatmap.R`: This script is used to generate a previous version of supplemental Figure 4, which included a heatmap comparing the `CellAssign` and `SingleR` annotations to submitter-provided annotations for an example library.
-
 * `FigS5A_cellassign-justification.R`: This script is used to generate a previous version of supplemental Figure 5A, which included a faceted UMAP of automated cell type annotations determined by `CellAssign`.
 
-* `FigS5B_cellassign-heatmap.R`: This script is used to generate a previous version of supplemental Figure 5B, which included an example heatmap comparing submitter provided annotations to automated annotations from `CellAssign`.
+* `FigS5B_submitter-celltypes-heatmap.R`: This script is used to generate a previous version of supplemental Figure 5B, which includes a heatmap comparing the CellAssign and SingleR annotations to submitter-provided annotations for an example library.
+
+* `FigS5B_cellassign-heatmap.R`: This script is used to generate an (even earlier) previous version of supplemental Figure 5B, which included an example heatmap comparing submitter provided annotations to automated annotations from `CellAssign`.
 
 * `FigS6A-B_celltype-diagnostic-plots.R`: This script is used to generate a previous version of supplemental Figure 6A-B, which included examples of the diagnostic plots for annotating cell types with `SingleR` and `CellAssign`.
+
 
 
 ## Figure set up

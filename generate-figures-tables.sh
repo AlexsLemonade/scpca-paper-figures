@@ -54,8 +54,6 @@ Rscript ${script_dir}/Fig3C_celltype-methods-heatmap.R
 Rscript ${script_dir}/Fig4A-S5_consensus-cell-type-dotplots.R
 
 # Figures 4B-C
-# TODO: this script needs to be re-run as described in this issue
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/297
 Rscript ${script_dir}/Fig4B-C_brain-barplots.R
 
 # Figure 4D 
@@ -91,12 +89,6 @@ Rscript ${script_dir}/FigS3D_merged-umaps.R
 # Figure S4
 Rscript ${script_dir}/FigS4_celltype-method-umaps.R
 
-# Figure S4
-# TODO: this script represents an older version of the heatmap, and it may be updated to use in S4
-# Or, it may not be used since we may be changing this figure to UMAPs as described:
-#https://github.com/AlexsLemonade/scpca-paper-figures/issues/299
-Rscript ${script_dir}/FigS4_submitter-celltypes-heatmap.R
-
 # Figure S6
 Rscript ${script_dir}/FigS6_consensus-bar-plots.R
 
@@ -110,7 +102,6 @@ Rscript ${script_dir}/FigS6_consensus-bar-plots.R
 Rscript ${script_dir}/TableS1_modality-summary.R
 
 Rscript ${script_dir}/TableS2_cellassign-ref-summary.R
-
 
 
 
