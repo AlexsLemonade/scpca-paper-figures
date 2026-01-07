@@ -145,13 +145,15 @@ Rscript scripts/figure_setup/sync-reference-files.R
 Rscript scripts/figure_setup/sync-consensus-celltype-results.R --profile <name of AWS profile>
 ```
 
-If you have setup `1Password` to handle your AWS credentials, you will need to prefix scripts beginning with `sync-` with `op run --`, specifically:
+If you have setup `1Password` to handle your AWS credentials, you will need to prefix these scripts beginning with `sync-` with `op run --`:
 
 ```sh
 op run -- Rscript scripts/figure_setup/sync-metadata.R
 op run -- Rscript scripts/figure_setup/sync-data-files.R
 op run -- Rscript scripts/figure_setup/sync-reference-files.R
 ```
+
+More detailed information about these scripts is available in `scripts/README.md`.
 
 ## Additional repository contents
 
@@ -160,6 +162,7 @@ op run -- Rscript scripts/figure_setup/sync-reference-files.R
 The `sample-info/` folder contains metadata files used to create figures and tables.
 
 * `brain-classifications-no-multiplexed.tsv`: This tsv file classifies brain-related diagnoses in the ScPCA Portal into "High-grade glioma" and "Low-grade glioma" for plotting.
+* `brain-immune-celltypes.tsv`: This tsv file contains all consensus immune cell types present in samples in the `Brain and CNS` plotting group.
 * `celltype-reference-metadata.tsv`: This tsv file contains information about references used for CellAssign and SingleR cell type annotation on the ScPCA Portal.
 * `diagnosis-groupings.tsv`: This tsv file contains one row per `submitted_diagnosis` associated with samples on the ScPCA Portal.
 For each `submitted_diagnosis`, a `diagnosis_group` is assigned.
@@ -177,10 +180,11 @@ The `palettes/` folder contains any palettes used in generating the figures.
 * `diagnosis-group-palette.tsv`: This is the palette used to color the `diagnosis_group` for each sample.
 * `disease-timing-palette.tsv`: This is the palette used to color the `disease_timing` for each sample.
 * `immune-palette.tsv`: This is the palette used to color certain immune cell types from the overall consensus cell types.
-* `suspension-palette.tsv`: This is the palette used to color libraries by `Single-cell` or `Single-nuclei`.
 * `method-palette.tsv`: This is the palette used to color by quantification method used, either `Alevin-fry` or `Cell Ranger`.
-* `validation-group-palette.tsv`: This is the palette used to color broad cell type annotations used to assess consensus cell types.
 * `nb-annotation-palette.tsv`: This is the palette used to color Neuroblastoma broad cell type annotations.
+* `nb-cnv-palette.tsv`: This is the palette used to color CNV events.
+* `suspension-palette.tsv`: This is the palette used to color libraries by `Single-cell` or `Single-nuclei`.
+* `validation-group-palette.tsv`: This is the palette used to color broad cell type annotations used to assess consensus cell types.
 
 ### Manuscript numbers
 
