@@ -63,6 +63,8 @@ Panel B shows a UMAP of consensus cell types side by side with total CNV events 
 
 The `old_figures` folder contains the scripts used to generate figures present in previous versions of the manuscript.
 
+* `Fig4B_singler-cellassign-heatmap.R`: This script is used to generate a previous version of Figure 4B, which includes an example of the heatmap comparing cell type annotations from SingleR to CellAssign.
+
 * `FigS4_celldex-ref-comparison.R `: This script is used to generate a previous version of supplemental Figure 4, which included a figure comparing `celldex` references across samples.
 
 * `FigS4_submitter-celltypes-heatmap.R`: This script is used to generate a previous version of supplemental Figure 4, which included a heatmap comparing the `CellAssign` and `SingleR` annotations to submitter-provided annotations for an example library.
