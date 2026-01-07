@@ -16,7 +16,7 @@ The following scripts can be used to generate figures and tables:
 
 * `Fig2B-F_qc-plots.R`: This script is used to generate panels Figure 2B-F, which includes simplified and miniature versions of the plots found in the main QC report included with each sample download.
 
-* `Fig3C_singler-cellassign-heatmap.R`: This script is used to generate figure 3C, which is a heatmap comparing cell type annotations from automated methods to consensus cell types.
+* `Fig3C_celltype-methods-heatmap.R`: This script is used to generate figure 3C, which is a heatmap comparing cell type annotations from automated methods to consensus cell types.
 
 * `Fig4A-S5_consensus-cell-type-dotplots.R`: This script is used to generate Figure 4A and supplemental figure 5A-C.
 Figure 4A includes a dot plot summarizing marker gene expression across all consensus cell types in the Brain and CNS samples.
@@ -62,6 +62,8 @@ Panel B shows a UMAP of consensus cell types side by side with total CNV events 
 ## Old figures
 
 The `old_figures` folder contains the scripts used to generate figures present in previous versions of the manuscript.
+
+* `Fig4B_singler-cellassign-heatmap.R`: This script is used to generate a previous version of Figure 4B, which includes an example of the heatmap comparing cell type annotations from SingleR to CellAssign.
 
 * `FigS4_celldex-ref-comparison.R `: This script is used to generate a previous version of supplemental Figure 4, which included a figure comparing `celldex` references across samples.
 

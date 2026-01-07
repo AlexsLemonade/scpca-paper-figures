@@ -1,6 +1,4 @@
-# This script is currently used to generate a heatmap comparing SingleR to CellAssign cell type annotations
-
-# TODO We plan to update this script as described: https://github.com/AlexsLemonade/scpca-paper-figures/issues/290
+# This script generates a heatmap comparing SingleR to CellAssign cell type annotations
 
 # load project
 renv::load()
