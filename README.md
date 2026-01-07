@@ -29,30 +29,35 @@ Below is a summary of all figures and tables in the paper.
 
 - A. Bar chart summarizing the types of diagnoses found on the Portal.
 - B. Bar chart summarizing the types of modalities found on the Portal.
-- C. Example project card as shown on the Portal.
+- C. Example project card as shown on Portal, with Cell Browser view shown as an inset. 
 
 **Figure 2**
 
 - A. Overview of main workflow.
 - B-G. Simplified versions of plots in the main QC report.
+- H. Illustration of a `SingleCellExperiement`-formatted project download folder.
+- I. Illustration of a `SingleCellExperiement`-formatted  merged project download folder.
+
 
 **Figure 3**
 
-- A. Illustration of individual sample download folder.
-- B. Illustration of merged project download folder.
-- C. Overview of merged workflow.
-- D. Example UMAPs found in merged report.
+- A. Overview of cell type annotation workflow.
+- B. Diagram of ontology-aware consensus cell type assignment.
+- C. Comparison of consensus cell type annotations to automated cell type annotations made by `SingleR`, `CellAssign`, and `SCimilarity`. 
 
 **Figure 4**
-
-- A. Overview of cell type annotation workflow.
-- B. Comparison of cell type annotations obtained using `SingleR` and `CellAssign`.
-
-**Figure 5**
 
 - A. Dot plot summarizing marker gene expression in consensus cell types in Brain and CNS samples.
 - B. Bar plot summarizing the percentage of cells annotated as each consensus cell type in High-grade and Low-grade glioma samples.
 - C. Bar plot summarizing the percentage of cells annotated as each immune consensus cell type, with an emphasis on cells in the T-cell and myeloid lineages, in High-grade and Low-grade glioma samples.
+- D. Dot plot summarizing marker gene expression in immune-only consensus cell types in Brain and CNS samples.
+
+**Figure 5**
+
+- A. UMAP displaying OpenScPCA project cell type annotations for (not batch corrected) samples in `SCPCP000004`.  
+- B. UMAP displaying total CNV estimates for (not batch corrected) samples in `SCPCP000004`. 
+- C. Heatmaps of chromsomes with canonical Neuroblastoma CNV events detected with `InferCNV` for a single sample, shown for cell type anotation groups derived from the OpenScPCA project.
+- D. Distributions of total CNV events per cell across consensus cell type annotations for the sample sample shown in Panel 5C. 
 
 **Figure 6**
 
