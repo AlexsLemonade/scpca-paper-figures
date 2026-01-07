@@ -139,8 +139,8 @@ heatmap_list <- jaccard_list |>
         ## Legend parameters
         heatmap_legend_param = list(
           title = "Jaccard index",
-          direction = "horizontal",
-          legend_width = grid::unit(1.5, "in")
+          direction = "vertical",
+          legend_height = grid::unit(1.5, "in")
         ),
         # make sure we only have 1 legend
         show_heatmap_legend = name == "SingleR",
@@ -148,17 +148,14 @@ heatmap_list <- jaccard_list |>
     }
   ) |>
   # concatenate TBD into HeatmapList object
-  purrr::reduce(ComplexHeatmap::`%v%`) # use + for horizontal
+  purrr::reduce(ComplexHeatmap::`%v%`)
 
-final_heatmap <- ComplexHeatmap::draw(
-  heatmap_list,
-  heatmap_legend_side = "bottom"
-)
+
 
 # save heatmap to pdf
-pdf(output_file, width = 4, height = 7, useDingbats = FALSE) 
+pdf(output_file, width = 5, height = 7, useDingbats = FALSE) 
 ComplexHeatmap::draw(
   heatmap_list,
-  heatmap_legend_side = "bottom"
+  heatmap_legend_side = "right"
 )
 dev.off()
