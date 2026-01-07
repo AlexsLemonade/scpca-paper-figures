@@ -96,13 +96,13 @@ Below is a summary of all figures and tables in the paper.
 - B. Dot plot summarizing marker gene expression in consensus cell types in Sarcoma samples.
 - C. Dot plot summarizing marker gene expression in consensus cell types in Other solid tumor samples.
 
-**Supplemental Figure 7**
+**Supplemental Figure 6**
 
 - A. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Leukemia samples.
 - B. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Sarcoma samples.
 - C. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Other solid tumor samples.
 
-**Supplemental Figure 8**
+**Supplemental Figure 7**
 
 - A. Scatterplots of the relationship between bulk and pseudobulk counts for projects not shown in Figure 6A.
 - B. Bar plots of odds ratios from overrepresentation analysis of bulk expression data for projects not shown in Figure 6B.
