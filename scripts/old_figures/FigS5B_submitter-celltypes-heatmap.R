@@ -1,7 +1,4 @@
 # This script is used to generate the heatmap comparing submitter annotations to SingleR and CellAssign
-# TODO: This script will either need to be updated with all cell type annotations, or it
-# may be replaced with a different script to make this UMAP as described:
-# https://github.com/AlexsLemonade/scpca-paper-figures/issues/299
 
 # load project
 renv::load()
