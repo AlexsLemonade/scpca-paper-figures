@@ -1,10 +1,11 @@
-# This script generates UMAP panels 5A and 5B
+# This script generates UMAP panels of the Neuroblastoma project samples, colored by cell types and CNV events
 
 # load project
 renv::load()
 
 library(SingleCellExperiment)
 library(ggplot2)
+library(patchwork)
 
 # set default ggplot theme for UMAPs
 theme_set(
@@ -39,9 +40,9 @@ merged_sce_df <- readr::read_rds(merged_sce_file) |>
   # remove rownames
   tibble::as_tibble()
 
-# define output files
-output_panel_a_file <- here::here("figures", "pdfs", "Fig5A_umap-celltypes.pdf")
-output_panel_b_file <- here::here("figures", "pdfs", "Fig5B_umap-infercnv.pdf")
+# define output file
+# we'll export both panels at one for improved alignment
+output_panel_ab_file <- here::here("figures", "pngs", "Fig5A-B_umap-celltypes-infercnv.png")
 
 
 # Prepare data for plotting ----------------------------------------------------
@@ -85,7 +86,7 @@ celltype_umap <- ggplot(merged_sce_df) +
   geom_point(alpha = 0.25, size = 0.25) +
   scale_color_manual(values = cell_palette) +
   guides(
-    color = guide_legend(override.aes = list(alpha = 1, size = 1.5))
+    color = guide_legend(override.aes = list(alpha = 1, size = 3))
   ) +
   labs(
     x = "UMAP1",
@@ -112,5 +113,6 @@ infercnv_umap <- ggplot(merged_sce_df) +
 
 
 # Export --------------------------------
-ggsave(output_panel_a_file, celltype_umap, width = 6, height = 6)
-ggsave(output_panel_b_file, infercnv_umap, width = 6, height = 6)
+combined_plot <- celltype_umap + infercnv_umap
+ggsave(output_panel_ab_file, combined_plot, width = 10, height = 6)
+

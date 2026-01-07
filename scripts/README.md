@@ -34,6 +34,8 @@ Figure 5B shows an unintegrated UMAP of Neuroblastoma samples from project `SCPC
 
 * `Fig5C_nb-cnv-heatmaps.R`: This script is used to generate Figure 5C, which contains CNV heatmaps for chromosomes with canonical events for a single Neuroblastoma sample.
 
+* `Fig5D_nb-ridgeplot.R`: This script is used to generate Figure 5D, which contains a ridgeplot of CNV events across top consensus cell types for a single Neuroblastoma sample.
+
 * `Fig6-FigS7_bulk-analysis.R `: This script is used to generate Figures 6 and S8.
 Figure 6 shows (A) scatterplots of the relationship between bulk and pseudobulk counts for relevant Brain and CNS projects, and (B) bar plots of odds ratios from overrepresentation analysis of bulk expression data for relevant Brain and CNS projects.
 Figure S7 shows (A) scatterplots of the relationship between bulk and pseudobulk counts for projects not shown in Figure 6A, and (B) bar plots of odds ratios from overrepresentation analysis of bulk expression data for projects not shown in Figure 6B.
@@ -47,7 +49,9 @@ This script uses the trace files found in `nextflow_logs/`.
 
 * `FigS3D_merged-umaps.R`: This script is used to generate Figure 3SD, which includes an example of the UMAPs shown in the merged report.
 
-* [TODO] `FigS4_submitter-celltypes-heatmap.R`: This script is used to generate supplemental Figure 5, which includes a heatmap comparing the `CellAssign` and `SingleR` annotations to submitter-provided annotations for an example library.
+* `FigS4_celltype-method-umaps.R`: This script is used to generate Supplemental figure 4A-B.
+Panel A shows a faceted UMAP of the top T cell types labeled by each automated method for `SCPCL000049`. 
+Panel B shows a UMAP of consensus cell types side by side with total CNV events in `SCPCL000049`.
 
 * `FigS6_consensus-bar-plots.R`: This script is used to generate Supplemental figure 7A-C, which show the percentage of each library that is annotated as each of the consensus cell types for all libraries in each diagnosis group, excluding the Brain and CNS samples.
 
@@ -60,6 +64,8 @@ This script uses the trace files found in `nextflow_logs/`.
 The `old_figures` folder contains the scripts used to generate figures present in previous versions of the manuscript.
 
 * `FigS4_celldex-ref-comparison.R `: This script is used to generate a previous version of supplemental Figure 4, which included a figure comparing `celldex` references across samples.
+
+* `FigS4_submitter-celltypes-heatmap.R`: This script is used to generate a previous version of supplemental Figure 4, which included a heatmap comparing the `CellAssign` and `SingleR` annotations to submitter-provided annotations for an example library.
 
 * `FigS5A_cellassign-justification.R`: This script is used to generate a previous version of supplemental Figure 5A, which included a faceted UMAP of automated cell type annotations determined by `CellAssign`.
 

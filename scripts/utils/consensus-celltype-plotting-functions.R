@@ -50,6 +50,10 @@ marker_gene_dotplot <- function(
   validation_groups_df <- as.data.frame(validation_groups_df) |> duckplyr::as_duckdb_tibble()
   markers_df <- as.data.frame(markers_df) |> duckplyr::as_duckdb_tibble()
 
+  # we do not want to show groups without markers in the plot
+  # include NA_character_ here to ensure we keep the unknown cells, since we can't directly filter on that value in duckplyr
+  allowed_groups <- c(unique(markers_df$validation_group_annotation), NA_character_)
+
   # read in files directly to duckdb tables
   # specify all varchar for consensus to avoid parsing error
   consensus_df <- duckplyr::read_csv_duckdb(celltype_files, options = list(sep = "\t", union_by_name = TRUE)) 
@@ -65,7 +69,9 @@ marker_gene_dotplot <- function(
     dplyr::left_join(gene_exp_df, by = c("barcodes", "library_id")) |>
     # add marker gene information (associated validation group annotation, gene observed count, percent tissues)
     # account for the same gene being present in multiple cell types
-    dplyr::left_join(markers_df, by = "ensembl_gene_id", relationship = "many-to-many")
+    dplyr::left_join(markers_df, by = "ensembl_gene_id", relationship = "many-to-many") |>
+    # only keep groups for which we have marker genes
+    dplyr::filter(broad_celltype_group %in% allowed_groups)
 
   # prep for plots
   # get total number of cells per final annotation group
@@ -89,7 +95,8 @@ marker_gene_dotplot <- function(
     ) |>
     # add in validation group for marker genes
     # this includes all possible marker genes and all possible validation group assignments
-    dplyr::left_join(markers_df, by = c("ensembl_gene_id", "validation_group_annotation"), relationship = "many-to-many") |> # add total cells
+    dplyr::left_join(markers_df, by = c("ensembl_gene_id", "validation_group_annotation"), relationship = "many-to-many") |> 
+    # add total cells
     dplyr::left_join(total_cells_df, by = c("broad_celltype_group")) |>
     # for plotting we're only going to look at any cell types with > 50 cells otherwise these plots can get wild
     dplyr::filter(total_cells > 50) |>
@@ -98,7 +105,9 @@ marker_gene_dotplot <- function(
       percent_exp = (detected_count / total_cells) * 100,
       # account for NA/unknowns and set axes order
       broad_celltype_group = tidyr::replace_na(broad_celltype_group, "unknown") |>
-        factor(levels = unique(c(names(celltype_colors), "unknown")))
+        factor(levels = unique(c(names(celltype_colors), "unknown"))) |>
+        # ensure unknown is at the end
+        forcats::fct_relevel("unknown", after = Inf)
     )
 
   # get list of celltypes to keep and assign colors
@@ -106,7 +115,7 @@ marker_gene_dotplot <- function(
     dplyr::pull(broad_celltype_group) |>
     unique() |>
     as.character()
-
+  
   # filter markers to those that are actually relevant
   # we will only plot the marker genes for cell types that are part of the assigned broad validation group for this group of samples
   # we don't care about plotting marker genes for cell types that aren't present here
@@ -124,7 +133,7 @@ marker_gene_dotplot <- function(
   # specify x axis order for dotplot
   marker_gene_order <- filtered_markers_df |>
     dplyr::pull(gene_symbol)
-
+  
   # set order for cell types
   celltype_order <- unique(filtered_markers_df$validation_group_annotation)
 
@@ -176,6 +185,10 @@ make_dotplot <- function(
     scale_size(range = dotplot_size_range) + 
     scale_color_viridis_c(option = "magma") +
     facet_grid(cols = vars(validation_group_annotation), scales = "free", space = "free") +
+    guides(
+      color = guide_colorbar(order = 1), 
+      size = guide_legend(order = 2) 
+    ) +
     theme_classic() +
     theme(
       strip.background = element_rect(fill = "transparent", color = NA),
@@ -419,6 +432,7 @@ create_immune_celltype_summary <- function(
 #' @param facet_variable Column to use for faceting, default is NULL 
 #' @param x_axis_text_size Size of x-axis text, default is 4
 #' @param facet_col Number of columns to use in faceting, default is 2
+#' @param facet_row Number of rows to use in faceting, default is 1
 #' @param legend_position Where to put the legend, default is "right"
 #'
 #' @returns
@@ -435,6 +449,7 @@ stacked_barchart <- function(
     facet_variable = NULL, # use for faceting HGG vs. LGG 
     x_axis_text_size = 4, 
     facet_col = 2,
+    facet_row = 1,
     legend_position = "right"
 ){
   

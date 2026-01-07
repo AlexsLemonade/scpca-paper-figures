@@ -71,15 +71,6 @@ glue::glue(
 ) |>
   purrr::walk(system)
 
-# sync results files for SCPCL000498 (for submitter cell type heatmap) ---------
-celltype_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000005/SCPCS000251"
-celltype_local_files <- here::here("s3_files", "SCPCS000251")
-fs::dir_create(celltype_local_files)
-
-sync_call <- glue::glue(
-  "aws s3 sync '{celltype_s3_files}' '{celltype_local_files}' --exclude '*' --include 'SCPCL000498_processed.rds' --exact-timestamps"
-)
-system(sync_call)
 
 # sync processed libraries for plotting a merged subset of SCPCP000003 -----------------------------------
 sample_ids <- c("SCPCS000050", "SCPCS000051", "SCPCS000053", "SCPCS000054")
@@ -158,5 +149,16 @@ fs::dir_create(nb_merged_local_files)
 
 sync_call <- glue::glue(
   "aws s3 sync '{nb_merged_s3_files}' '{nb_merged_local_files}' --exclude '*' --include 'SCPCP000004_merged.rds' --exact-timestamps"
+)
+system(sync_call)
+
+# sync results for SCPCS000049 (T cell UMAPs) ----------
+
+lgg_s3_files <- "s3://nextflow-ccdl-results/scpca-prod/results/SCPCP000002/SCPCS000049"
+lgg_local_files <- here::here("s3_files", "SCPCS000049")
+fs::dir_create(lgg_local_files)
+
+sync_call <- glue::glue(
+  "aws s3 sync '{lgg_s3_files}' '{lgg_local_files}' --exclude '*' --include 'SCPCL000049_processed.rds' --exact-timestamps"
 )
 system(sync_call)
