@@ -1,4 +1,4 @@
-# This script is generates a heatmap comparing automated method cell type annotations to consensus cell type annotations
+# This script generates a heatmap comparing automated method cell type annotations to consensus cell type annotations
 
 # load project
 renv::load()
