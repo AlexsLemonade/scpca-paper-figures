@@ -116,11 +116,6 @@ jaccard_list <- method_names |>
   })
 
 # Make and export the heatmap -------------------------
-
-
-################## TODO: PICK A VERSION TO PROCEED WITH ################
-
-## VERTICAL VERSION
 heatmap_list <- jaccard_list |>
   purrr::imap(
     \(mat, name) {
@@ -167,5 +162,3 @@ ComplexHeatmap::draw(
   heatmap_legend_side = "bottom"
 )
 dev.off()
-
-
