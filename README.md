@@ -35,8 +35,8 @@ Below is a summary of all figures and tables in the paper.
 
 - A. Overview of main workflow.
 - B-G. Simplified versions of plots in the main QC report.
-- H. Illustration of a `SingleCellExperiement`-formatted project download folder.
-- I. Illustration of a `SingleCellExperiement`-formatted  merged project download folder.
+- H. Illustration of a `SingleCellExperiment`-formatted project download folder.
+- I. Illustration of a `SingleCellExperiment`-formatted merged project download folder.
 
 
 **Figure 3**
@@ -73,7 +73,7 @@ Below is a summary of all figures and tables in the paper.
 
 **Supplemental Figure 2**
 
-- A. Overview of cell type annotation workflow.
+- A. Overview of a CITE-seq library workflow.
 - B-D. Simplified versions of plots found in the ADT section of the main QC report.
 - E. Overview of multiplexed library workflow.
 
@@ -81,17 +81,16 @@ Below is a summary of all figures and tables in the paper.
 
 - A. Overview of bulk RNA-seq workflow.
 - B. Overview of spatial transcriptomics workflow.
+- C. Overview of merged workflow.
+- D. Example UMAPs found in merged report.
 
 **Supplemental Figure 4**
 
-Comparison of delta median statistic obtained from running `SingleR` with different `celldex` references.
+- A. UMAP highlighting T cell annotations from `SingleR`, `CellAssign`, `SCimilarity`, and consensus cell types for a single sample.
+- B. UMAP displaying the top seven consensus cell types for the same sample as shown in Panel S4A.
+- C. UMAP displaying total CNV estimates for the same sample as shown in Panel S4A.
 
 **Supplemental Figure 5**
-
-- A. UMAP displaying cell type annotations from `CellAssign` for an example ScPCA library.
-- B. Heatmap comparing submitter provided annotations to `CellAssign` and `SingleR` annotations for an example ScPCA library.
-
-**Supplemental Figure 6**
 
 - A. Dot plot summarizing marker gene expression in consensus cell types in Leukemia samples.
 - B. Dot plot summarizing marker gene expression in consensus cell types in Sarcoma samples.
