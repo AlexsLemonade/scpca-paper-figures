@@ -29,30 +29,35 @@ Below is a summary of all figures and tables in the paper.
 
 - A. Bar chart summarizing the types of diagnoses found on the Portal.
 - B. Bar chart summarizing the types of modalities found on the Portal.
-- C. Example project card as shown on the Portal.
+- C. Example project card as shown on Portal, with Cell Browser view shown as an inset. 
 
 **Figure 2**
 
 - A. Overview of main workflow.
 - B-G. Simplified versions of plots in the main QC report.
+- H. Illustration of a `SingleCellExperiment`-formatted project download folder.
+- I. Illustration of a `SingleCellExperiment`-formatted merged project download folder.
+
 
 **Figure 3**
 
-- A. Illustration of individual sample download folder.
-- B. Illustration of merged project download folder.
-- C. Overview of merged workflow.
-- D. Example UMAPs found in merged report.
+- A. Overview of cell type annotation workflow.
+- B. Diagram of ontology-aware consensus cell type assignment.
+- C. Comparison of consensus cell type annotations to automated cell type annotations made by `SingleR`, `CellAssign`, and `SCimilarity`. 
 
 **Figure 4**
-
-- A. Overview of cell type annotation workflow.
-- B. Comparison of cell type annotations obtained using `SingleR` and `CellAssign`.
-
-**Figure 5**
 
 - A. Dot plot summarizing marker gene expression in consensus cell types in Brain and CNS samples.
 - B. Bar plot summarizing the percentage of cells annotated as each consensus cell type in High-grade and Low-grade glioma samples.
 - C. Bar plot summarizing the percentage of cells annotated as each immune consensus cell type, with an emphasis on cells in the T-cell and myeloid lineages, in High-grade and Low-grade glioma samples.
+- D. Dot plot summarizing marker gene expression in immune-only consensus cell types in Brain and CNS samples.
+
+**Figure 5**
+
+- A. UMAP displaying OpenScPCA project cell type annotations for (not batch corrected) samples in `SCPCP000004`.  
+- B. UMAP displaying total CNV estimates for (not batch corrected) samples in `SCPCP000004`. 
+- C. Heatmaps of chromosomes with canonical Neuroblastoma CNV events detected with `InferCNV` for a single sample, shown for cell type annotation groups derived from the OpenScPCA project.
+- D. Distributions of total CNV events per cell across consensus cell type annotations for the sample shown in Panel 5C. 
 
 **Figure 6**
 
@@ -68,7 +73,7 @@ Below is a summary of all figures and tables in the paper.
 
 **Supplemental Figure 2**
 
-- A. Overview of cell type annotation workflow.
+- A. Overview of a CITE-seq library workflow.
 - B-D. Simplified versions of plots found in the ADT section of the main QC report.
 - E. Overview of multiplexed library workflow.
 
@@ -76,29 +81,28 @@ Below is a summary of all figures and tables in the paper.
 
 - A. Overview of bulk RNA-seq workflow.
 - B. Overview of spatial transcriptomics workflow.
+- C. Overview of merged workflow.
+- D. Example UMAPs found in merged report.
 
 **Supplemental Figure 4**
 
-Comparison of delta median statistic obtained from running `SingleR` with different `celldex` references.
+- A. UMAP highlighting T cell annotations from `SingleR`, `CellAssign`, `SCimilarity`, and consensus cell types for a single sample.
+- B. UMAP displaying the top seven consensus cell types for the same sample as shown in Panel S4A.
+- C. UMAP displaying total CNV estimates for the same sample as shown in Panel S4A.
 
 **Supplemental Figure 5**
-
-- A. UMAP displaying cell type annotations from `CellAssign` for an example ScPCA library.
-- B. Heatmap comparing submitter provided annotations to `CellAssign` and `SingleR` annotations for an example ScPCA library.
-
-**Supplemental Figure 6**
 
 - A. Dot plot summarizing marker gene expression in consensus cell types in Leukemia samples.
 - B. Dot plot summarizing marker gene expression in consensus cell types in Sarcoma samples.
 - C. Dot plot summarizing marker gene expression in consensus cell types in Other solid tumor samples.
 
-**Supplemental Figure 7**
+**Supplemental Figure 6**
 
 - A. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Leukemia samples.
 - B. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Sarcoma samples.
 - C. Bar plot summarizing the percentage of cells annotated as each consensus cell type in Other solid tumor samples.
 
-**Supplemental Figure 8**
+**Supplemental Figure 7**
 
 - A. Scatterplots of the relationship between bulk and pseudobulk counts for projects not shown in Figure 6A.
 - B. Bar plots of odds ratios from overrepresentation analysis of bulk expression data for projects not shown in Figure 6B.
@@ -145,13 +149,15 @@ Rscript scripts/figure_setup/sync-reference-files.R
 Rscript scripts/figure_setup/sync-consensus-celltype-results.R --profile <name of AWS profile>
 ```
 
-If you have setup `1Password` to handle your AWS credentials, you will need to prefix scripts beginning with `sync-` with `op run --`, specifically:
+If you have setup `1Password` to handle your AWS credentials, you will need to prefix these scripts beginning with `sync-` with `op run --`:
 
 ```sh
 op run -- Rscript scripts/figure_setup/sync-metadata.R
 op run -- Rscript scripts/figure_setup/sync-data-files.R
 op run -- Rscript scripts/figure_setup/sync-reference-files.R
 ```
+
+More detailed information about these scripts is available in `scripts/README.md`.
 
 ## Additional repository contents
 
@@ -160,6 +166,7 @@ op run -- Rscript scripts/figure_setup/sync-reference-files.R
 The `sample-info/` folder contains metadata files used to create figures and tables.
 
 * `brain-classifications-no-multiplexed.tsv`: This tsv file classifies brain-related diagnoses in the ScPCA Portal into "High-grade glioma" and "Low-grade glioma" for plotting.
+* `brain-immune-celltypes.tsv`: This tsv file contains all consensus immune cell types present in samples in the `Brain and CNS` plotting group.
 * `celltype-reference-metadata.tsv`: This tsv file contains information about references used for CellAssign and SingleR cell type annotation on the ScPCA Portal.
 * `diagnosis-groupings.tsv`: This tsv file contains one row per `submitted_diagnosis` associated with samples on the ScPCA Portal.
 For each `submitted_diagnosis`, a `diagnosis_group` is assigned.
@@ -177,10 +184,11 @@ The `palettes/` folder contains any palettes used in generating the figures.
 * `diagnosis-group-palette.tsv`: This is the palette used to color the `diagnosis_group` for each sample.
 * `disease-timing-palette.tsv`: This is the palette used to color the `disease_timing` for each sample.
 * `immune-palette.tsv`: This is the palette used to color certain immune cell types from the overall consensus cell types.
-* `suspension-palette.tsv`: This is the palette used to color libraries by `Single-cell` or `Single-nuclei`.
 * `method-palette.tsv`: This is the palette used to color by quantification method used, either `Alevin-fry` or `Cell Ranger`.
-* `validation-group-palette.tsv`: This is the palette used to color broad cell type annotations used to assess consensus cell types.
 * `nb-annotation-palette.tsv`: This is the palette used to color Neuroblastoma broad cell type annotations.
+* `nb-cnv-palette.tsv`: This is the palette used to color CNV events.
+* `suspension-palette.tsv`: This is the palette used to color libraries by `Single-cell` or `Single-nuclei`.
+* `validation-group-palette.tsv`: This is the palette used to color broad cell type annotations used to assess consensus cell types.
 
 ### Manuscript numbers
 
