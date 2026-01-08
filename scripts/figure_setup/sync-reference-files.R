@@ -15,8 +15,3 @@ annotation_s3 <- "s3://scpca-references/homo_sapiens/ensembl-104/annotation"
 mito_s3 <- file.path(annotation_s3, "Homo_sapiens.GRCh38.104.mitogenes.txt")
 sync_call <- glue::glue("aws s3 cp '{mito_s3}' '{local_s3_dir}'")
 system(sync_call)
-
-# sync t2g file -----
-t2g_s3 <- file.path(annotation_s3, "Homo_sapiens.GRCh38.104.spliced_cdna.tx2gene.tsv")
-sync_call <- glue::glue("aws s3 cp '{t2g_s3}' '{local_s3_dir}'")
-system(sync_call)

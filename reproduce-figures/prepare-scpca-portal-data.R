@@ -343,9 +343,6 @@ prepare_library_metadata(
 
 # annotation files
 system(
-  glue::glue("aws s3 cp s3://scpca-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens.GRCh38.104.spliced_cdna.tx2gene.tsv {s3_files_reference_dir} --no-sign-request")
-)
-system(
   glue::glue("aws s3 cp s3://scpca-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens.GRCh38.104.mitogenes.txt {s3_files_reference_dir} --no-sign-request")
 )
 
