@@ -263,20 +263,6 @@ expected_projects |>
           }
         )
 
-      # Save metadata files to use when preparing the sample and library metadata files later
-      project_bulk_tsv <- file.path(project_download_dir, glue::glue("{project_id}_bulk_metadata.tsv"))
-      if (file.exists(project_bulk_tsv)) {
-        fs::file_copy(project_bulk_tsv, bulk_metadata_scratch_dir, overwrite = TRUE)
-      }
-
-      if (project_id %in% citeseq_projects) {
-        fs::file_copy(
-          file.path(project_download_dir, glue::glue("single-cell_metadata.tsv")),
-          file.path(citeseq_metadata_scratch_dir, glue::glue("{project_id}_single_cell_metadata.tsv")),
-          overwrite = TRUE
-        )
-      }
-
       # If this project is SCPCP000003, copy over a few of its processed files
       if (project_id == "SCPCP000003") {
         SCPCP000003_samples |>
@@ -358,6 +344,8 @@ expected_projects |>
 # Prepare sample and library metadata files ---------------------------
 
 # Create and export sample metadata table
+# NOTE: CONFRIMED WE STILL NEED THIS!!!!!!!!
+# those 4 samples are only going to appear in the portal-wide metadata
 prepare_sample_metadata(
   portal_metadata,
   sample_metadata_file
@@ -366,8 +354,7 @@ prepare_sample_metadata(
 # Create and export library metadata table
 prepare_library_metadata(
   portal_metadata,
-  bulk_metadata_scratch_dir,
-  citeseq_metadata_scratch_dir,
+  opts$portal_download_dir,
   library_metadata_file
 )
 
