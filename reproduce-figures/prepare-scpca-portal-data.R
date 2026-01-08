@@ -32,25 +32,25 @@ option_list <- list(
   make_option(
     "--portal_download_dir",
     type = "character",
-    default = "",
+    default = "~/Desktop/portal-wide_single-cell-experiment_2026-01-08",
     help = "Path to directory containing the portal-wide download TODO: COMPRESSED OR NOT? WE'RE JUST GOING TO UNCOMPRESS IT ANYWAYS." # TODO!!!!!!!!!!!!!!!!!!!!!!
   ),
   make_option(
     "--portal_metadata_dir",
     type = "character",
-    default = "",
+    default = "~/Desktop/portal-wide_metadata_2026-01-08",
     help = "Path to directory containing the portal-wide metadata file" # TODO!!!!!!!!!!!!!!!!!!!!!!
   ),
   make_option(
     "--merged_project_dir",
     type = "character",
-    default = "",
+    default = "~/Desktop/SCPCP000004_single-cell-experiment_2026-01-08",
     help = "Path to directory containing the SCPCP000004 merged object download" # TODO!!!!!!!!!!!!!!!!!!!!!!
   ),
   make_option(
     "--s3_files_dir",
     type = "character",
-    default = here::here("s3_files"),
+    default = here::here("s3_files_2026"),
     help = "Output directory for `s3_files`. Default is in the top-level of the repository, which is where code expects it to be."
   ),
   make_option(
@@ -90,15 +90,15 @@ stopifnot(
   "Directory containing the portal-wide metadata download must be specified with --portal_metadata_dir. Check the provided path as needed." = 
     dir.exists(opts$portal_metadata_dir),
   "Directory containing the merged object download for SCPCP000004 must be specified with --merged_project_dir" = 
-    dir.exist(opts$merged_project_dir), 
+    dir.exists(opts$merged_project_dir), 
   "Project whitelist could not be found" = file.exists(opts$project_whitelist)
 )
 
 
 # Check output directories
 # first, set up the target bulk dirs
-bulk_scpca_data_dir <- file.path(opts$bulk_data_dir, "scpca_data")
-bulk_references_dir <- file.path(opts$bulk_data_dir, "references")
+bulk_scpca_data_dir <- file.path(opts$bulk_data_dir, "scpca_data_2026")
+bulk_references_dir <- file.path(opts$bulk_data_dir, "references_2026")
 output_dirs <- c(
   opts$s3_files_dir,
   bulk_scpca_data_dir,
@@ -115,6 +115,16 @@ if (any(dir.exists(output_dirs))) {
 
 # Read whitelist so we can check that all projects are present
 expected_projects <- readLines(opts$project_whitelist)
+
+# These are the projects we'll need to save to bulk_scpca_data_dir
+# In the end, they should contain processed files organized as expected and the bulk quant TSV file
+bulk_projects <- c(
+  "SCPCP000001",
+  "SCPCP000002",
+  "SCPCP000006",
+  "SCPCP000009",
+  "SCPCP000017"
+)
 
 # Check for all project folders
 expected_singlecell <- glue::glue("{expected_projects}_single-cell")
@@ -143,13 +153,6 @@ fs::dir_create(c(
   SCPCP000004_sce_dir
 ))
 
-
-# Read input metadata file and define output metadata files ----------------
-portal_metadata <- readr::read_tsv(
-  file.path(opts$portal_metadata_dir, "metadata.tsv") 
-)
-sample_metadata_file <- file.path(opts$s3_files_dir, "scpca-sample-metadata.tsv")
-library_metadata_file <- file.path(opts$s3_files_dir, "scpca-library-metadata.tsv")
 
 # Define marker genes for recreating expression matrices used for consensus cell type dot plots
 marker_genes <- readr::read_tsv(marker_gene_ref_file) |>
@@ -181,15 +184,6 @@ celltype_results_samples <- c(
   "SCPCS000224"
 )
 
-# These are the directories to save to bulk_scpca_data_dir
-# They should contain processed files organized as expected and the bulk quant TSV file
-bulk_projects <- c(
-  "SCPCP000001",
-  "SCPCP000002",
-  "SCPCP000006",
-  "SCPCP000009",
-  "SCPCP000017"
-)
 
 # Projects with CITE-seq technology which we'll assign technology to when preparing metadata
 citeseq_projects <- c("SCPCP000003", "SCPCP000007", "SCPCP000008")
@@ -274,13 +268,27 @@ expected_projects |>
 
   
       ####### Step 2: Copy bulk results as needed to target analysis directories #######
-      # note that we can use these bulk TSVs for later metadata parsing
       if (project_id %in% bulk_projects) {
-        fs::dir_copy(
-          file.path(opts$portal_download_dir, glue::glue("{project_id}_bulk_rna")),
-          file.path(file.path(bulk_scpca_data_dir, project_id)),
+        target_dir <- file.path(file.path(bulk_scpca_data_dir, project_id))
+        fs::dir_create(target_dir)
+        
+        fs::file_copy(
+          file.path(opts$portal_download_dir, glue::glue("{project_id}_bulk_rna"), glue::glue("{project_id}_bulk_quant.tsv")),
+          target_dir,
           overwrite = TRUE
         )
+        sample_dirs |>
+          purrr::iwalk(
+            \(sample_dir, sample_id) {
+              fs::dir_create(file.path(target_dir, sample_id))
+              # use system for glob since we just want the processed SCEs
+              system(
+                glue::glue(
+                  "cp {sample_dir}/*processed.rds {file.path(target_dir, sample_id)}"
+                )
+              )
+            }
+          )
       }
 
       ####### Step 3: Prepare consensus cell type files #######
@@ -324,9 +332,15 @@ expected_projects |>
 
 # Prepare sample and library metadata files ---------------------------
 
+# Read input metadata file and define output metadata files
+portal_metadata <- readr::read_tsv(
+  file.path(opts$portal_metadata_dir, "metadata.tsv") 
+)
+sample_metadata_file <- file.path(opts$s3_files_dir, "scpca-sample-metadata.tsv")
+library_metadata_file <- file.path(opts$s3_files_dir, "scpca-library-metadata.tsv")
+
+
 # Create and export sample metadata table
-# NOTE: CONFRIMED WE STILL NEED THIS!!!!!!!!
-# those 4 samples are only going to appear in the portal-wide metadata
 prepare_sample_metadata(
   portal_metadata,
   sample_metadata_file
