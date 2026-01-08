@@ -56,8 +56,8 @@ Below is a summary of all figures and tables in the paper.
 
 - A. UMAP displaying OpenScPCA project cell type annotations for (not batch corrected) samples in `SCPCP000004`.  
 - B. UMAP displaying total CNV estimates for (not batch corrected) samples in `SCPCP000004`. 
-- C. Heatmaps of chromsomes with canonical Neuroblastoma CNV events detected with `InferCNV` for a single sample, shown for cell type anotation groups derived from the OpenScPCA project.
-- D. Distributions of total CNV events per cell across consensus cell type annotations for the sample sample shown in Panel 5C. 
+- C. Heatmaps of chromosomes with canonical Neuroblastoma CNV events detected with `InferCNV` for a single sample, shown for cell type annotation groups derived from the OpenScPCA project.
+- D. Distributions of total CNV events per cell across consensus cell type annotations for the sample shown in Panel 5C. 
 
 **Figure 6**
 
