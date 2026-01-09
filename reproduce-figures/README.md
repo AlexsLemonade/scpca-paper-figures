@@ -8,7 +8,9 @@ Please see instructions below for usage.
   * Note that this script expects these TSV files to be present in this directory; please do not move them.
 
 
-**CAUTION: You will need at least 300 GB of free storage space for downloaded ScCPA Portal data and associated data preparation.**
+**CAUTION: You may need up to 300 GB of free storage space for downloaded ScCPA Portal data and associated data preparation.**
+As part of data download as described below, you will need to download ZIP files from the ScPCA Portal.
+The 300 GB space requirement assumes ZIP files are retained after extraction; deleting ZIP files immediately will reduce the required space.
 
 ## Instructions
 
@@ -64,7 +66,7 @@ Rscript prepare-scpca-portal-data.R \
   --merged_project_dir <path to directory with merged project SCPCP000004>
 ```
 
-This script will run for roughly 90 minutes, and it will create three directories within this repository with files organized as code expects:
+This script will run for roughly 75 minutes, and it will create three directories within this repository with files organized as code expects:
 
 * `../s3_files`: This directory will contain ScPCA data, metadata, and reference files needed to reproduce figures, tables, and the bulk expression analysis
 * `../analysis/pseudobulk-bulk-prediction/data/scpca_data`: This directory will contain ScPCA data files needed to reproduce the bulk expression analysis
