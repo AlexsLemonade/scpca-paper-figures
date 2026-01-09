@@ -139,12 +139,12 @@ prepare_library_metadata <- function(
 
   # Define bulk and cite-seq project metadata files
   bulk_files <- file.path(
-    opts$portal_download_dir, 
+    portal_download_dir, 
     glue::glue("{bulk_projects}_bulk_rna"), 
     glue::glue("{bulk_projects}_bulk_metadata.tsv") 
   )
   citeseq_files <- file.path(
-    opts$portal_download_dir, 
+    portal_download_dir, 
     glue::glue("{citeseq_projects}_single-cell"), 
     "single-cell_metadata.tsv"
   )
