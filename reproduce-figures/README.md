@@ -8,7 +8,7 @@ Please see instructions below for usage.
   * Note that this script expects these TSV files to be present in this directory; please do not move them.
 
 
-**CAUTION: You will need at least 250 GB of free storage space for downloaded ScCPA Portal data.**
+**CAUTION: You will need at least 300 GB of free storage space for downloaded ScCPA Portal data and associated data preparation.**
 
 ## Instructions
 
@@ -24,7 +24,7 @@ Please refer to the [Introduction to `renv` vignette](https://rstudio.github.io/
 
 ### Step 2: Download files from the ScPCA Portal
 
-You will need to download all single-cell data and metadata from the ScPCA Portal, along with 
+You will need to download all single-cell data and metadata from the ScPCA Portal, along with one stand-alone project.
 Take the following steps:
 
 1. Navigate to the `Portal-wide downloads` page of the ScPCA Portal: <https://scpca.alexslemonade.org/portal-wide>
