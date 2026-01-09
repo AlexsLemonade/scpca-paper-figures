@@ -104,14 +104,12 @@ prepare_sample_metadata <- function(
 #' Prepare and export library metadata file
 #'
 #' @param portal_metadata Data frame of portal-wide metadata
-#' @param bulk_metadata_dir Directory with bulk metadata TSV files
-#' @param project_metadata_dir Directory with project-specific metadata TSV files
+#' @param portal_download_dir Directory of the portal-wide download
 #' @param output_tsv Path to output TSV file
 #'
 prepare_library_metadata <- function(
     portal_metadata,
-    bulk_metadata_dir,
-    project_metadata_dir,
+    portal_download_dir,
     output_tsv) {
 
   # final columns to include in the exported library metadata tsv
@@ -139,16 +137,16 @@ prepare_library_metadata <- function(
     dplyr::bind_rows(cellhash_rows) |>
     dplyr::select(-has_cellhash)
 
-  # Define bulk and project metadata files
-  bulk_files <- list.files(
-    path = bulk_metadata_dir,
-    pattern = "*_bulk_metadata\\.tsv",
-    full.names = TRUE
+  # Define bulk and cite-seq project metadata files
+  bulk_files <- file.path(
+    portal_download_dir, 
+    glue::glue("{bulk_projects}_bulk_rna"), 
+    glue::glue("{bulk_projects}_bulk_metadata.tsv") 
   )
-  citeseq_files <- list.files(
-    path = project_metadata_dir,
-    pattern = "*_single_cell_metadata\\.tsv",
-    full.names = TRUE
+  citeseq_files <- file.path(
+    portal_download_dir, 
+    glue::glue("{citeseq_projects}_single-cell"), 
+    "single-cell_metadata.tsv"
   )
 
   # Parse bulk metadata
