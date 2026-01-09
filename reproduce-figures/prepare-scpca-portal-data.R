@@ -6,20 +6,22 @@
 # - `analysis/pseudobulk-bulk-analysis/data/scpca_data`: This directory will contain ScPCA data files needed to reproduce the bulk expression analysis.
 # - `analysis/pseudobulk-bulk-analysis/data/references`: This directory will contain reference files needed to reproduce the bulk expression analysis.
 #
-#####################################################################################
-### CAUTION! YOU WILL NEED AT LEAST 170 GB OF AVAILABLE SPACE TO RUN THIS SCRIPT. ###
-###                                                                               ###
-### In addition, it will take roughly 90 minutes to run this script.              ###
-#####################################################################################
+###########################################################################################################
+### CAUTION! YOU WILL NEED AT LEAST 300 GB OF AVAILABLE SPACE FOR THE DATA REQUIRED TO RUN THIS SCRIPT. ###
+###                                                                                                     ###
+### In addition, it will take roughly 75 minutes to run this script.                                    ###
+###########################################################################################################
 #
 # For full details and usage instructions, including data you need to download before running this script,
 # please refer to the current directory's `README.md`.
+# 
 # Briefly, this script can be run as follows:
 #
-#
 #   Rscript prepare-scpca-portal-data.R \
-#     --portal_download_dir <path to directory with portal-wide download> \
-#     --portal_metadata_path <path to portal-wide metadata zip file>
+#     --portal_download_dir <path to directory with portal-wide single-cell data download> \
+#     --portal_metadata_dir <path to directory with portal-wide metadata download> \
+#     --merged_project_dir <path to directory with merged project SCPCP000004 download>
+#
 
 renv::load()
 suppressPackageStartupMessages({
@@ -32,25 +34,25 @@ option_list <- list(
   make_option(
     "--portal_download_dir",
     type = "character",
-    default = "~/Desktop/portal-wide_single-cell-experiment_2026-01-08",
-    help = "Path to directory containing the portal-wide download TODO: COMPRESSED OR NOT? WE'RE JUST GOING TO UNCOMPRESS IT ANYWAYS." # TODO!!!!!!!!!!!!!!!!!!!!!!
+    default = "",
+    help = "Path to directory containing the portal-wide download"
   ),
   make_option(
     "--portal_metadata_dir",
     type = "character",
-    default = "~/Desktop/portal-wide_metadata_2026-01-08",
-    help = "Path to directory containing the portal-wide metadata file" # TODO!!!!!!!!!!!!!!!!!!!!!!
+    default = "",
+    help = "Path to directory containing the portal-wide metadata file"
   ),
   make_option(
     "--merged_project_dir",
     type = "character",
-    default = "~/Desktop/SCPCP000004_single-cell-experiment_2026-01-08",
-    help = "Path to directory containing the SCPCP000004 merged object download" # TODO!!!!!!!!!!!!!!!!!!!!!!
+    default = "",
+    help = "Path to directory containing the SCPCP000004 merged object download"
   ),
   make_option(
     "--s3_files_dir",
     type = "character",
-    default = here::here("s3_files_2026"),
+    default = here::here("s3_files"),
     help = "Output directory for `s3_files`. Default is in the top-level of the repository, which is where code expects it to be."
   ),
   make_option(
@@ -97,8 +99,8 @@ stopifnot(
 
 # Check output directories
 # first, set up the target bulk dirs
-bulk_scpca_data_dir <- file.path(opts$bulk_data_dir, "scpca_data_2026")
-bulk_references_dir <- file.path(opts$bulk_data_dir, "references_2026")
+bulk_scpca_data_dir <- file.path(opts$bulk_data_dir, "scpca_data")
+bulk_references_dir <- file.path(opts$bulk_data_dir, "references")
 output_dirs <- c(
   opts$s3_files_dir,
   bulk_scpca_data_dir,
@@ -240,7 +242,7 @@ expected_projects |>
 
       # If this project is SCPCP000003, copy over a few of its processed files
       if (project_id == "SCPCP000003") {
-        SCPCP000003_sample_ids |>
+        SCPCP000003_samples |>
           purrr::map(
             \(sample_id) {
               # use system since we need to use a glob here
@@ -253,14 +255,15 @@ expected_projects |>
 
       # If this project is SCPCP000004, copy over its sample and merged object
       if (project_id == "SCPCP000004") {
-        fs::dir_copy(
-          file.path(project_download_dir, nb_sample), 
-          SCPCP000004_sce_dir, 
-          overwrite = TRUE
+        target_dir <- file.path(SCPCP000004_sce_dir, nb_sample)
+        fs::dir_create(target_dir)
+        # use system since we need to use a glob here
+        system(
+          glue::glue("cp {project_download_dir}/{nb_sample}/*_processed.rds {target_dir}")
         )
         
-        fs::dir_copy(
-          file.path(opts$merged_project_dir),
+        fs::file_copy(
+          file.path(opts$merged_project_dir, "SCPCP000004_single-cell_merged", "SCPCP000004_merged.rds"),
           SCPCP000004_sce_dir, 
           overwrite = TRUE
         )
