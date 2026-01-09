@@ -31,25 +31,25 @@ Take the following steps:
 
 1. Navigate to the `Portal-wide downloads` page of the ScPCA Portal: <https://scpca.alexslemonade.org/portal-wide>
 2. From this page, download the `Sample Metadata Download`.
-  * This will download a ZIP file called `portal-wide_metadata_<accessed-date>.zip`.
-    You should unzip this file, which will create a directory `portal-wide_metadata_<accessed-date>`.
-    Note the location of this directory for script input.
-    You can delete the ZIP file at this point if you prefer.
+    * This will download a ZIP file called `portal-wide_metadata_<accessed-date>.zip`.
+      You should unzip this file, which will create a directory `portal-wide_metadata_<accessed-date>`.
+      Note the location of this directory for script input.
+      You can delete the ZIP file at this point if you prefer, which will help to save storage safe.
 3. From this page, download the `SingleCellExperiment (R) Download`.
-  * Do _not_ click "Merge samples into one project per sample."
-  * This will download a ZIP file called `portal-wide_single-cell-experiment_<accessed-date>.zip`.
-    You should unzip this file, which will create a directory `portal-wide_single-cell-experiment_<accessed-date>`.
-    Note the location of this directory for script input.
-    You can delete the ZIP file at this point if you prefer.
+    * Do _not_ click "Merge samples into one project per sample."
+    * This will download a ZIP file called `portal-wide_single-cell-experiment_<accessed-date>.zip`.
+      You should unzip this file, which will create a directory `portal-wide_single-cell-experiment_<accessed-date>`.
+      Note the location of this directory for script input.
+      You can delete the ZIP file at this point if you prefer, which will help to save storage safe.
 4. Next, navigate to the Portal project page for `SCPCP000004`: <https://scpca.alexslemonade.org/projects/SCPCP000004>
-  * Click `Download Now` to download this project as a single merged object, selecting the following settings:
-    * Modality: `Single-cell`
-    * Data Format: `SingleCellExperiment (R)`
-    * **Check the box to** `Merge samples into 1 object`
-  * This will download a ZIP file called `SCPCP000004_single-cell-experiment_<accessed-date>.zip`.
-    You should unzip this file, which will create a directory `SCPCP000004_single-cell-experiment_<accessed-date>`.
-    Note the location of this directory for script input.
-    You can delete the ZIP file at this point if you prefer.
+     * Click `Download Now` to download this project as a single merged object, selecting the following settings:
+       * Modality: `Single-cell`
+       * Data Format: `SingleCellExperiment (R)`
+       * **Check the box to** `Merge samples into 1 object`
+     * This will download a ZIP file called `SCPCP000004_single-cell-experiment_<accessed-date>.zip`.
+       You should unzip this file, which will create a directory `SCPCP000004_single-cell-experiment_<accessed-date>`.
+       Note the location of this directory for script input.
+       You can delete the ZIP file at this point if you prefer, which will help to save storage safe.
 
 ### Step 3: Run the `prepare-scpca-portal-data.R` script
 
