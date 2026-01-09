@@ -75,9 +75,9 @@ This script will run for roughly 75 minutes, and it will create three directorie
 Note that this script will not overwrite existing output directories without the `--overwrite` flag.
 For more options, use the `--help` flag.
 
-After running the script, you can remove all downloaded portal ZIP files and directories as desired.
+After running the script, you can remove all downloaded portal ZIP files and directories.
 
-### Step 5: Run repository code
+### Step 4: Run repository code
 
 Once `prepare-scpca-portal-data.R` script has successfully completed running, you will be able to run the following repository scripts to reproduce figures and results:
 
