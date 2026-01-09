@@ -8,7 +8,7 @@ Please see instructions below for usage.
   * Note that this script expects these TSV files to be present in this directory; please do not move them.
 
 
-**CAUTION: You may need up to 300 GB of free storage space for downloaded ScCPA Portal data and associated data preparation.**
+**CAUTION: You may need up to 300 GB of free storage space for downloaded ScPCA Portal data and associated data preparation.**
 As part of data download as described below, you will need to download ZIP files from the ScPCA Portal.
 The 300 GB space requirement assumes ZIP files are retained after extraction; deleting ZIP files immediately will reduce the required space.
 
