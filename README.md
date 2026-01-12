@@ -197,7 +197,7 @@ These tables are not included in the final manuscript and were created as follow
 
 * `bulk-analysis-counts.tsv` was created by `../scripts/Fig6-FigS8_bulk-analysis.R`
 * `diagnosis-group-counts.tsv` and `disease-timing-counts.tsv` were created by `../scripts/Fig1A_sample-disease-barchart.R`
-
+* `SCPCP000004_labeled-cells.tsv` was created by `../scripts/Fig5A-B_nb-umap-panels.R`
 
 ### Nextflow logs
 

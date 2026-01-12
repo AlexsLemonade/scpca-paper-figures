@@ -1,4 +1,5 @@
 # This script generates UMAP panels of the Neuroblastoma project samples, colored by cell types and CNV events
+# It also exports a table for manuscript-numbers giving the total percent of labeled cells for both OpenScPCA and consensus annotations
 
 # load project
 renv::load()
@@ -33,7 +34,8 @@ merged_sce_df <- readr::read_rds(merged_sce_file) |>
       "cell_id",
       "library_id",
       "infercnv_total_cnv",
-      "openscpca_celltype_annotation"
+      "openscpca_celltype_annotation",
+      "consensus_celltype_annotation"
     ),
     use.dimred = "UMAP"
   ) |>
@@ -43,7 +45,7 @@ merged_sce_df <- readr::read_rds(merged_sce_file) |>
 # define output file
 # we'll export both panels at one for improved alignment
 output_panel_ab_file <- here::here("figures", "pngs", "Fig5A-B_umap-celltypes-infercnv.png")
-
+numbers_file <- here::here("manuscript-numbers", "SCPCP000004_labeled-cells.tsv")
 
 # Prepare data for plotting ----------------------------------------------------
 # Collapse cell types
@@ -116,3 +118,13 @@ infercnv_umap <- ggplot(merged_sce_df) +
 combined_plot <- celltype_umap + infercnv_umap
 ggsave(output_panel_ab_file, combined_plot, width = 10, height = 6)
 
+# Calculate manuscript numbers and export
+unknown_labels <- c("Unknown", "openscpca-excluded") # only Unknown for consensus, but same result
+percent_openscpca <- sum(!(merged_sce_df$openscpca_celltype_annotation %in% unknown_labels)) / nrow(merged_sce_df)
+percent_consensus <- sum(!(merged_sce_df$consensus_celltype_annotation %in% unknown_labels)) / nrow(merged_sce_df)
+
+tibble::tribble(
+  ~percent_labeled_openscpca, ~percent_labeled_consensus,
+  percent_openscpca, percent_consensus
+) |>
+  readr::write_tsv(numbers_file)
