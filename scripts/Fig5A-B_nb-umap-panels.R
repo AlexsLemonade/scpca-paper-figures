@@ -1,5 +1,5 @@
 # This script generates UMAP panels of the Neuroblastoma project samples, colored by cell types and CNV events
-# It also exports a table for manuscript-numbers giving the total number of labeled cells
+# It also exports a table for manuscript-numbers giving the total percent of labeled cells for both OpenScPCA and consensus annotations
 
 # load project
 renv::load()
