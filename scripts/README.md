@@ -49,7 +49,7 @@ This script uses the trace files found in `nextflow_logs/`.
 
 * `FigS3D_merged-umaps.R`: This script is used to generate Figure 3SD, which includes an example of the UMAPs shown in the merged report.
 
-* `FigS4_celltype-method-umaps.R`: This script is used to generate Supplemental figure 4A-B.
+* `FigS4_celltype-method-umaps.R`: This script is used to generate Supplemental figure 4A-C.
 Panel A shows a faceted UMAP of the top T cell types labeled by each automated method for `SCPCL000049`. 
 Panel B shows a UMAP of consensus cell types in `SCPCL000049`.
 Panel C shows a UMAP of fotal CNV events in `SCPCL000049`.
