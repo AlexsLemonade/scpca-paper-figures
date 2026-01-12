@@ -51,7 +51,8 @@ This script uses the trace files found in `nextflow_logs/`.
 
 * `FigS4_celltype-method-umaps.R`: This script is used to generate Supplemental figure 4A-B.
 Panel A shows a faceted UMAP of the top T cell types labeled by each automated method for `SCPCL000049`. 
-Panel B shows a UMAP of consensus cell types side by side with total CNV events in `SCPCL000049`.
+Panel B shows a UMAP of consensus cell types in `SCPCL000049`.
+Panel C shows a UMAP of fotal CNV events in `SCPCL000049`.
 
 * `FigS6_consensus-bar-plots.R`: This script is used to generate Supplemental figure 7A-C, which show the percentage of each library that is annotated as each of the consensus cell types for all libraries in each diagnosis group, excluding the Brain and CNS samples.
 
