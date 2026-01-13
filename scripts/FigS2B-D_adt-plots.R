@@ -145,4 +145,4 @@ combined_plot <- patchwork::wrap_plots(
   )) & theme(plot.margin = margin(0.2, 0.2, 0.2, 0.2, "cm"))
 
 
-ggsave(output_plot_file, combined_plot, width = 8.25, height = 5)
+ggsave(output_plot_file, combined_plot, width = 8.5, height = 5)
