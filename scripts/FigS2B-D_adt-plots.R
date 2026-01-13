@@ -10,12 +10,10 @@ theme_set(
   theme_classic() +
     theme(
       strip.background = element_rect(fill = "transparent", linewidth = 0.5),
-      # no axis ticks or labels
       axis.line = element_blank(),
-      axis.ticks = element_blank(),
-      axis.text = element_blank(),
       # font sizing
       axis.title = element_text(size = 10),
+      axis.text = element_text(size = 7),
       strip.text = element_text(size = 8),
       # add a square around each of the plots
       panel.background = element_rect(colour = "black", linewidth=0.5),
@@ -124,16 +122,25 @@ adt_umap_plot <- ggplot(umap_df, aes(x = UMAP1, y = UMAP2, color = adt_expressio
   facet_wrap(vars(ADT)) +
   scale_color_viridis_c() +
   labs(
-    color = "Log-normalized ADT expression"
+    color = "Log-normalized\nADT expression"
   ) +
-  # remove axis numbers and background grid
-  scale_x_continuous(labels = NULL, breaks = NULL) +
-  scale_y_continuous(labels = NULL, breaks = NULL) +
-  coord_fixed()
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(), 
+    legend.position = "bottom"
+  )
+
+
+
 
 # Combine and export -----------------------------------------------------------
 
-combined_plot <- patchwork::wrap_plots(list(filtered_plot, adt_density_plot, adt_umap_plot)) & theme(plot.margin = margin(0.2, 0.2, 0.2, 0.2, "cm"))
+combined_plot <- patchwork::wrap_plots(
+  list(
+    filtered_plot, 
+    adt_density_plot, 
+    adt_umap_plot 
+  )) & theme(plot.margin = margin(0.2, 0.2, 0.2, 0.2, "cm"))
 
-ggsave(output_plot_file, combined_plot, width = 8.5, height = 3.5)
 
+ggsave(output_plot_file, combined_plot, width = 8, height = 5)
