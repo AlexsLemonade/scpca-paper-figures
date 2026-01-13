@@ -127,7 +127,9 @@ adt_umap_plot <- ggplot(umap_df, aes(x = UMAP1, y = UMAP2, color = adt_expressio
   theme(
     axis.text = element_blank(),
     axis.ticks = element_blank(), 
-    legend.position = "bottom"
+    legend.position = "bottom", 
+    legend.title = element_text(size = 8),
+    legend.text = element_text(size = 7)
   )
 
 
@@ -143,4 +145,4 @@ combined_plot <- patchwork::wrap_plots(
   )) & theme(plot.margin = margin(0.2, 0.2, 0.2, 0.2, "cm"))
 
 
-ggsave(output_plot_file, combined_plot, width = 8, height = 5)
+ggsave(output_plot_file, combined_plot, width = 8.25, height = 5)
