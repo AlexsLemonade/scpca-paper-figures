@@ -74,10 +74,10 @@ all_plot_list <- celltype_columns |>
           NA_character_
         ) |> 
           # get just the top 3 T cell types and then lump all others together
-          forcats::fct_lump_n(n = 3, other_level = "Other T cells") |> 
+          forcats::fct_lump_n(n = 3, other_level = "other T cells") |> 
           stringr::str_wrap(25) |> # wrap the long names
           forcats::fct_infreq() |> 
-          forcats::fct_relevel("Other T cells", after = Inf)
+          forcats::fct_relevel("other T cells", after = Inf)
       )
     
     # update the labels to include counts, drop NA since that's not going to be a level
@@ -151,9 +151,16 @@ ggsave(tcell_umap_file, combined_plot, width = 10, height = 10)
 # lump consensus cell types 
 umap_df <- umap_df |> 
   dplyr::mutate(
-    consensus_lumped = forcats::fct_lump_n(consensus_celltype_annotation, n = 7, other_level = "All remaining cell types") |> 
+    # first make sure the unknown category is lowercase
+    # we can't use str_to_lower for all cell types since we have T/B cells
+    consensus_celltype_annotation = dplyr::if_else(
+      consensus_celltype_annotation == "Unknown", 
+      "unknown", 
+      consensus_celltype_annotation
+    ),
+    consensus_lumped = forcats::fct_lump_n(consensus_celltype_annotation, n = 7, other_level = "all remaining cell types") |> 
       forcats::fct_infreq() |> 
-      forcats::fct_relevel("Unknown", "All remaining cell types", after = Inf)
+      forcats::fct_relevel("unknown", "all remaining cell types", after = Inf)
   )
 
 # get total cell number labels 
