@@ -115,8 +115,13 @@ suppressMessages(duckplyr::methods_overwrite())
 # convert to duckdb (intermediate data frame to avoid duckdb error with readr objects)
 markers_df <- as.data.frame(markers_df) |> duckplyr::as_duckdb_tibble()
 
+# we do not want to show groups without markers in the plot
+allowed_groups <- unique(markers_df$validation_group_annotation)
+
 consensus_df <- duckplyr::read_csv_duckdb(celltype_files, options = list(sep = "\t", union_by_name = TRUE)) |> 
-  dplyr::filter(consensus_annotation %in% celltype_order)
+  dplyr::filter(consensus_annotation %in% celltype_order &
+                  # only keep groups for which we have marker genes
+                  consensus_annotation %in% allowed_groups)
 
 gene_exp_df <- duckplyr::read_csv_duckdb(gene_exp_files, options = list(sep = "\t", union_by_name = TRUE)) |>
   dplyr::mutate(detected = logcounts > 0) 
