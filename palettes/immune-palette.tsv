@@ -4,15 +4,16 @@ mature T cell	#53b5e0
 memory T cell	#246eab
 regulatory T cell	#4764df
 CD4-positive, alpha-beta T cell	#1F5F9A
-CD8-positive, alpha-beta T cell	#71bee4
+CD8-positive, alpha-beta T cell	#ADD8E6
 CD8-positive, alpha-beta memory T cell	#3A9CFF
 mature alpha-beta T cell	#7184b7
 macrophage	#1C8356
-monocyte	#1CBE4F
+monocyte	#56DB82
 dendritic cell	#16FF32
 mononuclear phagocyte	#6f9e44
 myeloid leukocyte	#005700
 microglial cell	#2CA84A
+tissue-resident macrophage	#CBE6D2
 neutrophil	#b7e86c
 B cell	#AA0DFE
 naive B cell	#C9A0FF
