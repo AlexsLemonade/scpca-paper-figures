@@ -388,7 +388,7 @@ create_immune_celltype_summary <- function(
     dplyr::filter(total_cells < minimum_cell_count) |> 
     dplyr::pull(immune_celltype_group)
   
-  if(length(low_count_celltypes) > 0){
+  if (length(low_count_celltypes) > 0) {
     celltype_message <- paste0(low_count_celltypes, collapse="\n")
     message(glue::glue("The following T/myeloid cell types have less than {minimum_cell_count} cells and will be grouped with 'other':\n{celltype_message}
     "))
