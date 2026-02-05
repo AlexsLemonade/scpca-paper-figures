@@ -382,13 +382,9 @@ create_immune_celltype_summary <- function(
   
   # get the total for all cell types 
   # we have a lot of T/myeloid cells, so we only are going to show the top ones in the plot
-  all_celltype_totals <- summary_df |> 
+  low_count_celltypes <- summary_df |> 
     dplyr::group_by(immune_celltype_group) |> 
-    dplyr::summarise(total_cells = sum(total_cells_per_annotation)) |> 
-    dplyr::arrange(desc(total_cells))
-  
-  # filter 
-  low_count_celltypes <- all_celltype_totals |> 
+    dplyr::summarize(total_cells = sum(total_cells_per_annotation)) |> 
     dplyr::filter(total_cells < minimum_cell_count) |> 
     dplyr::pull(immune_celltype_group)
   
