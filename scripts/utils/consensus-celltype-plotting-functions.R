@@ -308,6 +308,7 @@ create_celltype_summary <- function(
 #' @param tcell_celltypes Vector of T cell types to plot 
 #' @param myeloid_celltypes Vector of myeloid cell types to plot 
 #' @param frac_immune_threshold Threshold of fraction of immune cells in library required to include a library in the figure
+#' @param minimum_cell_count Minimum threshold for the number of cells required to include the cell type in the plot
 #'
 #' @returns Summarized data frame for input to plotting
 create_immune_celltype_summary <- function(
@@ -315,7 +316,8 @@ create_immune_celltype_summary <- function(
     all_immune_celltypes, 
     tcell_celltypes, 
     myeloid_celltypes, 
-    frac_immune_threshold
+    frac_immune_threshold,
+    minimum_cell_count
 ){
   
   # read in consensus files and create data frame
@@ -378,6 +380,31 @@ create_immune_celltype_summary <- function(
                      percent_cells_annotation = round((total_cells_per_annotation / total_cells_per_library) * 100, 2)) |>
     dplyr::ungroup()
   
+  # get the total for all cell types 
+  # we have a lot of T/myeloid cells, so we only are going to show the top ones in the plot
+  all_celltype_totals <- summary_df |> 
+    dplyr::group_by(immune_celltype_group) |> 
+    dplyr::summarise(total_cells = sum(total_cells_per_annotation)) |> 
+    dplyr::arrange(desc(total_cells))
+  
+  # filter 
+  low_count_celltypes <- all_celltype_totals |> 
+    dplyr::filter(total_cells < minimum_cell_count) |> 
+    dplyr::pull(immune_celltype_group)
+  
+  if(length(low_count_celltypes) > 0){
+    celltype_message <- paste0(low_count_celltypes, collapse="\n")
+    message(glue::glue("The following T/myeloid cell types have less than {minimum_cell_count} cells and will be grouped with 'other':\n{celltype_message}
+    "))
+  }
+  
+  summary_df <- summary_df |>
+    # now make sure any of the cell types with < minimum cell count get grouped with other immune
+    dplyr::mutate(
+      immune_celltype_group = dplyr::if_else(immune_celltype_group %in% low_count_celltypes,
+                                             "other",
+                                             immune_celltype_group)
+    )
   
   # Determine the order for immune cell categories based on:
   # - myeloid and t-cell types should be grouped together
