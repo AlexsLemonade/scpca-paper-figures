@@ -21,6 +21,7 @@ celltype_order <- c(
   "T cell",
   "mature T cell",
   "mature alpha-beta T cell",
+  "alpha-beta T cell",
   "CD8-positive, alpha-beta T cell",
   "CD8-positive, alpha-beta memory T cell",
   "CD4-positive, alpha-beta T cell",
@@ -46,7 +47,7 @@ library_metadata_file <- file.path(s3_dir, "scpca-library-metadata.tsv")
 consensus_results_dir <- file.path(s3_dir, "cell-type-consensus-results")
 
 # validation group url 
-validation_group_url <- "https://raw.githubusercontent.com/AlexsLemonade/scpca-nf/refs/tags/v0.9.2/references/consensus-validation-groups.tsv"
+validation_group_url <- "https://raw.githubusercontent.com/AlexsLemonade/scpca-nf/refs/tags/v0.9.3/references/consensus-validation-groups.tsv"
 
 # output file 
 immune_cells_file <- file.path(sample_info_dir, "brain-immune-celltypes.tsv")
