@@ -96,6 +96,17 @@ marker_gene_dotplot <- function(
     message("All cell types will be shown")
   }
   
+  # check which colors may be missing from the validation palette
+  colors_needed <- intersect(all_diagnosis_celltype_groups, allowed_groups) |> 
+    tidyr::drop_na() #remove NA/unknown for this since those won't have a color
+  missing_colors <- setdiff(colors_needed, names(celltype_colors)) |> 
+    paste(collapse = ",")
+  if(missing_colors != ""){
+    message(glue::glue("The following validation groups are missing colors: {missing_colors}")) 
+  } else {
+    message("All validation groups to plot have assigned colors")
+  }
+  
 
   # table with one row per unique broad cell type/ marker gene combination
   # first all cells in with the same broad_celltype_group (determined based on consensus_annotation) are grouped together
