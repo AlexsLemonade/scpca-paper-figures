@@ -106,6 +106,8 @@ ggsave(output_4b_pdf_file, plot = hgg_lgg_barplot, width = 8, height = 8)
  # Prep and plot 4C -----------------------------------------------------
 
 # get all possible immune cell types
+# use the validation groups from consensus-validation-groups.tsv that have immune cells
+# don't include HSPCs since they are borderline "immune"
 all_immune_groups <- c(
   "B cell", 
   "T cell", 
