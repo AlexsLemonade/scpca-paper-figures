@@ -122,10 +122,6 @@ all_immune_groups <- c(
 tcell_groups <- "T cell"
 myeloid_groups <- c("macrophage", "monocyte", "myeloid cell")
 
-# cell types which will be emphasized in 4c plot
-#tcell_celltypes <- c("T cell", "mature T cell", "memory T cell", "regulatory T cell", "CD4-positive alpha-beta T cell", "mature alpha-beta T cell")
-#myeloid_celltypes <- c("macrophage", "mononuclear phagocyte", "monocyte", "myeloid leukocyte", "neutrophil", "dendritic cell") # we do not include granulocytes since they are only in 1 sample
-
 # define all immune cell types 
 all_immune_celltypes <- validation_groups_df |> 
   dplyr::filter(broad_celltype_group %in% all_immune_groups) |>
