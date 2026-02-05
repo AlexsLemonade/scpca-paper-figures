@@ -8,6 +8,7 @@ plasma cell	CL:0000786	CL:0000786	plasma cell	B cell
 T cell	CL:0000084	CL:0000084	T cell	T cell
 mature T cell	CL:0002419	CL:0000084	T cell	T cell
 mature alpha-beta T cell	CL:0000791	CL:0000084	T cell	T cell
+alpha-beta T cell	CL:0000789	CL:0000084	T cell	T cell
 CD8-positive, alpha-beta T cell	CL:0000625	CL:0000084	T cell	T cell
 CD8-positive, alpha-beta memory T cell	CL:0000909	CL:0000084	T cell	T cell
 CD4-positive, alpha-beta T cell	CL:0000624	CL:0000084	T cell	T cell
