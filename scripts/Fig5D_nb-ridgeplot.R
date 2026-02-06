@@ -65,7 +65,7 @@ celltype_df$celltype <- factor(
 
 nb_ridgeplot <- ggplot(celltype_df) +
   aes(x = infercnv_total_cnv, y = celltype, fill = celltype) +
-  ggridges::geom_density_ridges2(scale = 0.9) +
+  ggridges::geom_density_ridges2(scale = 0.825) +
   scale_fill_brewer(palette = "Dark2", direction = -1) +
   labs(
     x = "Total CNV events per cell",
