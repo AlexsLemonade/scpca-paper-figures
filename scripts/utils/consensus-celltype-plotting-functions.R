@@ -78,34 +78,15 @@ marker_gene_dotplot <- function(
     dplyr::distinct() |>
     dplyr::count(broad_celltype_group, name = "total_cells")
   
-  # check which broad cell type groups do not have marker genes
+  # to check which broad cell type groups do not have marker genes
   # only consider cell types with > 50 cells
   all_diagnosis_celltype_groups <- total_cells_df |> 
     dplyr::filter(total_cells > 50) |>
     dplyr::pull(broad_celltype_group) |>
     unique()
   
-  missing_groups <- setdiff(all_diagnosis_celltype_groups, allowed_groups) |> 
-    paste(collapse = ",")
-  
-  # print out a message to show the cell types that are not visible
-  # add these cell types to the legends
-  if(missing_groups != ""){
-    message(glue::glue("The following cell types will not be shown in this plot: {missing_groups}")) 
-  } else {
-    message("All cell types will be shown")
-  }
-  
-  # check which colors may be missing from the validation palette
-  colors_needed <- intersect(all_diagnosis_celltype_groups, allowed_groups) |> 
-    tidyr::drop_na() #remove NA/unknown for this since those won't have a color
-  missing_colors <- setdiff(colors_needed, names(celltype_colors)) |> 
-    paste(collapse = ",")
-  if(missing_colors != ""){
-    message(glue::glue("The following validation groups are missing colors: {missing_colors}")) 
-  } else {
-    message("All validation groups to plot have assigned colors")
-  }
+  # print out any cell types without marker genes or validation colors
+  check_celltype_groups(all_diagnosis_celltype_groups, allowed_groups, celltype_colors)
   
 
   # table with one row per unique broad cell type/ marker gene combination
@@ -258,6 +239,43 @@ make_dotplot <- function(
   
   return(combined_plot)
   
+}
+
+#' Check any cell types that will be excluded and for any missing colors in the validation palette
+#'
+#' @param all_celltypes Vector of cell types present in the data
+#' @param groups_to_plot cell type groups to be included in the plot
+#' @param celltype_colors Vector of colors with the names corresponding to cell types
+#'
+#' @returns message about excluded cell types and missing colors
+#'
+check_celltype_groups <- function(
+    all_celltypes, 
+    groups_to_plot,
+    celltype_colors
+){
+  
+  missing_groups <- setdiff(all_celltypes, groups_to_plot) |> 
+    paste(collapse = ",")
+  
+  # print out a message to show the cell types that are not visible
+  # add these cell types to the legends
+  if(missing_groups != ""){
+    message(glue::glue("The following cell types will not be shown in this plot: {missing_groups}")) 
+  } else {
+    message("All cell types will be shown")
+  }
+  
+  # check which colors may be missing from the validation palette
+  colors_needed <- intersect(all_celltypes, groups_to_plot) |> 
+    purrr::discard(is.na) #remove NA/unknown for this since those won't have a color
+  missing_colors <- setdiff(colors_needed, names(celltype_colors)) |> 
+    paste(collapse = ",")
+  if(missing_colors != ""){
+    message(glue::glue("The following validation groups are missing colors: {missing_colors}")) 
+  } else {
+    message("All validation groups to plot have assigned colors")
+  }
 }
 
 #' Prep data frame to use for creating stacked bar plots showing all cell types 
