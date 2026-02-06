@@ -69,16 +69,25 @@ marker_gene_dotplot <- function(
     dplyr::left_join(gene_exp_df, by = c("barcodes", "library_id")) |>
     # add marker gene information (associated validation group annotation, gene observed count, percent tissues)
     # account for the same gene being present in multiple cell types
-    dplyr::left_join(markers_df, by = "ensembl_gene_id", relationship = "many-to-many") |>
-    # only keep groups for which we have marker genes
-    dplyr::filter(broad_celltype_group %in% allowed_groups)
-
+    dplyr::left_join(markers_df, by = "ensembl_gene_id", relationship = "many-to-many") 
+  
   # prep for plots
   # get total number of cells per final annotation group
   total_cells_df <- consensus_df |>
     dplyr::select(library_id, barcodes, broad_celltype_group) |>
     dplyr::distinct() |>
     dplyr::count(broad_celltype_group, name = "total_cells")
+  
+  # to check which broad cell type groups do not have marker genes
+  # only consider cell types with > 50 cells
+  all_diagnosis_celltype_groups <- total_cells_df |> 
+    dplyr::filter(total_cells > 50) |>
+    dplyr::pull(broad_celltype_group) |>
+    unique()
+  
+  # print out any cell types without marker genes or validation colors
+  check_celltype_groups(all_diagnosis_celltype_groups, allowed_groups, celltype_colors)
+  
 
   # table with one row per unique broad cell type/ marker gene combination
   # first all cells in with the same broad_celltype_group (determined based on consensus_annotation) are grouped together
@@ -86,6 +95,8 @@ marker_gene_dotplot <- function(
   # do this for every possible marker gene/ validation group assignment
   # second we calculate the mean expression and mean percentage of all marker genes in a given validation group (this value is used only in the second section of the report)
   group_stats_df <- consensus_df |>
+    # only keep groups for which we have marker genes
+    dplyr::filter(broad_celltype_group %in% allowed_groups) |>
     # for each assigned cell type/marker gene combo get total detected and mean expression
     # group by both broad group and validation group to account for genes that are expressed in more than one cell type
     dplyr::summarize(
@@ -228,6 +239,43 @@ make_dotplot <- function(
   
   return(combined_plot)
   
+}
+
+#' Check any cell types that will be excluded and for any missing colors in the validation palette
+#'
+#' @param all_celltypes Vector of cell types present in the data
+#' @param groups_to_plot cell type groups to be included in the plot
+#' @param celltype_colors Vector of colors with the names corresponding to cell types
+#'
+#' @returns message about excluded cell types and missing colors
+#'
+check_celltype_groups <- function(
+    all_celltypes, 
+    groups_to_plot,
+    celltype_colors
+){
+  
+  missing_groups <- setdiff(all_celltypes, groups_to_plot) |> 
+    paste(collapse = ",")
+  
+  # print out a message to show the cell types that are not visible
+  # add these cell types to the legends
+  if(missing_groups != ""){
+    message(glue::glue("The following cell types will not be shown in this plot: {missing_groups}")) 
+  } else {
+    message("All cell types will be shown")
+  }
+  
+  # check which colors may be missing from the validation palette
+  colors_needed <- intersect(all_celltypes, groups_to_plot) |> 
+    purrr::discard(is.na) #remove NA/unknown for this since those won't have a color
+  missing_colors <- setdiff(colors_needed, names(celltype_colors)) |> 
+    paste(collapse = ",")
+  if(missing_colors != ""){
+    message(glue::glue("The following validation groups are missing colors: {missing_colors}")) 
+  } else {
+    message("All validation groups to plot have assigned colors")
+  }
 }
 
 #' Prep data frame to use for creating stacked bar plots showing all cell types 
