@@ -1,63 +1,89 @@
 geneset_cell_type	modality	odds_ratio	p_value	p_adj_bh
-B cell	bulk	2.767666188953809	0.3056694330566943	0.6113388661133886
-B cell	pseudobulk	0	1	1
-blood vessel endothelial cell	bulk	0	1	1
-blood vessel endothelial cell	pseudobulk	0	1	1
-CD4-positive, alpha-beta T cell	bulk	0	1	1
-CD4-positive, alpha-beta T cell	pseudobulk	0	1	1
-dendritic cell	bulk	0	1	1
-dendritic cell	pseudobulk	0	1	1
-endothelial cell	bulk	0.94957201692953	0.6542345765423457	1
-endothelial cell	pseudobulk	0	1	1
-eosinophil	bulk	10.019728975687526	0.098990100989901	0.197980201979802
-eosinophil	pseudobulk	0	1	1
-epithelial cell	bulk	0	1	1
-epithelial cell	pseudobulk	0	1	1
-granulocyte	bulk	3.4598509933774833	0.11898810118988101	0.23797620237976203
-granulocyte	pseudobulk	0	1	1
-innate lymphoid cell	bulk	0	1	1
-innate lymphoid cell	pseudobulk	0	1	1
-lymphocyte of B lineage	bulk	2.5966003316749586	0.17848215178482152	0.35696430356964304
-lymphocyte of B lineage	pseudobulk	0	1	1
-macrophage	bulk	3.929511278195488	0.09959004099590041	0.19918008199180082
-macrophage	pseudobulk	0	1	1
-mature alpha-beta T cell	bulk	0	1	1
-mature alpha-beta T cell	pseudobulk	0	1	1
-mature B cell	bulk	0	1	1
-mature B cell	pseudobulk	0	1	1
-mature T cell	bulk	1.7800766555468805	0.42615738426157385	0.8523147685231477
-mature T cell	pseudobulk	0	1	1
-megakaryocyte	bulk	5.661072313584141	0.1670832916708329	0.3341665833416658
-megakaryocyte	pseudobulk	0	1	1
-memory B cell	bulk	0	1	1
-memory B cell	pseudobulk	0	1	1
-memory T cell	bulk	4.821627326808674	0.19008099190080993	0.38016198380161986
-memory T cell	pseudobulk	0	1	1
-mesangial cell	bulk	0	1	1
-mesangial cell	pseudobulk	0	1	1
-microvascular endothelial cell	bulk	0	1	1
-microvascular endothelial cell	pseudobulk	0	1	1
-monocyte	bulk	8.21482329842932	0.006799320067993201	0.013598640135986401
-monocyte	pseudobulk	0	1	1
-mononuclear phagocyte	bulk	3.3754128935127965	0.06239376062393761	0.12478752124787522
-mononuclear phagocyte	pseudobulk	0	1	1
-myeloid leukocyte	bulk	3.0188999067717606	0.027997200279972004	0.05599440055994401
-myeloid leukocyte	pseudobulk	0	1	1
-naive B cell	bulk	0	1	1
-naive B cell	pseudobulk	0	1	1
-natural killer cell	bulk	3.294156227454581	0.2665733426657334	0.5331466853314668
-natural killer cell	pseudobulk	0	1	1
-neutrophil	bulk	3.8278725998171286	0.23367663233676633	0.46735326467353266
-neutrophil	pseudobulk	0	1	1
-pericyte	bulk	2.342995845586519	0.35376462353764626	0.7075292470752925
-pericyte	pseudobulk	0	1	1
-plasma cell	bulk	6.458847736625514	0.0400959904009599	0.0801919808019198
-plasma cell	pseudobulk	0	1	1
-regulatory T cell	bulk	0	1	1
-regulatory T cell	pseudobulk	0	1	1
-somatic stem cell	bulk	0	1	1
-somatic stem cell	pseudobulk	0	1	1
-stem cell	bulk	0	1	1
-stem cell	pseudobulk	0	1	1
-T cell	bulk	3.8144768856447686	0.0974902509749025	0.194980501949805
-T cell	pseudobulk	0	1	1
+B cells	bulk	2.767666188953809	0.3056694330566943	0.6113388661133886
+B cells	pseudobulk	0	1	1
+B cells memory	bulk	0	1	1
+B cells memory	pseudobulk	0	1	1
+B cells naive	bulk	0	1	1
+B cells naive	pseudobulk	0	1	1
+Basophils	bulk	3.7723210933393405	0.24217578242175783	0.48435156484351566
+Basophils	pseudobulk	0	1	1
+Dendritic cells	bulk	0	1	1
+Dendritic cells	pseudobulk	0	1	1
+Distal tubule cells	bulk	0	1	1
+Distal tubule cells	pseudobulk	0	1	1
+Endothelial cells	bulk	1.3961502033539475	0.5127487251274873	1
+Endothelial cells	pseudobulk	0	1	1
+Endothelial cells (aorta)	bulk	0	1	1
+Endothelial cells (aorta)	pseudobulk	0	1	1
+Endothelial cells (blood brain barrier)	bulk	0	1	1
+Endothelial cells (blood brain barrier)	pseudobulk	0	1	1
+Eosinophils	bulk	10.019728975687526	0.098990100989901	0.197980201979802
+Eosinophils	pseudobulk	0	1	1
+Epiblast cells	bulk	0	1	1
+Epiblast cells	pseudobulk	0	1	1
+Gamma delta T cells	bulk	5.105557248806258	0.1822817718228177	0.3645635436456354
+Gamma delta T cells	pseudobulk	0	1	1
+Hemangioblasts	bulk	0	1	1
+Hemangioblasts	pseudobulk	0	1	1
+Intercalated cells	bulk	0	1	1
+Intercalated cells	pseudobulk	0	1	1
+Juxtaglomerular cells	bulk	0	1	1
+Juxtaglomerular cells	pseudobulk	0	1	1
+Kidney progenitor cells	bulk	0	1	1
+Kidney progenitor cells	pseudobulk	0	1	1
+Loop of Henle cells	bulk	0	1	1
+Loop of Henle cells	pseudobulk	0	1	1
+Macrophages	bulk	4.181666666666667	0.08859114088591141	0.17718228177182282
+Macrophages	pseudobulk	0	1	1
+Mast cells	bulk	1.897356378351802	0.40605939406059394	0.8121187881211879
+Mast cells	pseudobulk	0	1	1
+Megakaryocytes	bulk	5.661072313584141	0.1670832916708329	0.3341665833416658
+Megakaryocytes	pseudobulk	0	1	1
+Mesangial cells	bulk	0	1	1
+Mesangial cells	pseudobulk	0	1	1
+Monocytes	bulk	8.21482329842932	0.006799320067993201	0.013598640135986401
+Monocytes	pseudobulk	0	1	1
+Myeloid-derived suppressor cells	bulk	18.612509252405623	0.0547945205479452	0.1095890410958904
+Myeloid-derived suppressor cells	pseudobulk	0	1	1
+Natural killer T cells	bulk	0	1	1
+Natural killer T cells	pseudobulk	0	1	1
+Neutrophils	bulk	3.8278725998171286	0.23367663233676633	0.46735326467353266
+Neutrophils	pseudobulk	0	1	1
+NK cells	bulk	3.294156227454581	0.2665733426657334	0.5331466853314668
+NK cells	pseudobulk	0	1	1
+Nuocytes	bulk	0	1	1
+Nuocytes	pseudobulk	0	1	1
+Pericytes	bulk	4.267731249469125	0.21197880211978803	0.42395760423957607
+Pericytes	pseudobulk	0	1	1
+Plasma cells	bulk	6.458847736625514	0.0400959904009599	0.0801919808019198
+Plasma cells	pseudobulk	0	1	1
+Plasmacytoid dendritic cells	bulk	0	1	1
+Plasmacytoid dendritic cells	pseudobulk	0	1	1
+Podocytes	bulk	0	1	1
+Podocytes	pseudobulk	0	1	1
+Principal cells	bulk	0	1	1
+Principal cells	pseudobulk	0	1	1
+Proximal tubule cells	bulk	0	1	1
+Proximal tubule cells	pseudobulk	0	1	1
+Red pulp macrophages	bulk	0	1	1
+Red pulp macrophages	pseudobulk	0	1	1
+T cells	bulk	2.767666188953809	0.30256974302569745	0.6051394860513949
+T cells	pseudobulk	0	1	1
+T cytotoxic cells	bulk	0	1	1
+T cytotoxic cells	pseudobulk	0	1	1
+T follicular helper cells	bulk	0	1	1
+T follicular helper cells	pseudobulk	0	1	1
+T helper cells	bulk	0	1	1
+T helper cells	pseudobulk	0	1	1
+T memory cells	bulk	4.821627326808674	0.19008099190080993	0.38016198380161986
+T memory cells	pseudobulk	0	1	1
+T regulatory cells	bulk	0	1	1
+T regulatory cells	pseudobulk	0	1	1
+Transient cells	bulk	0	1	1
+Transient cells	pseudobulk	0	1	1
+Trophoblast cells	bulk	0	1	1
+Trophoblast cells	pseudobulk	0	1	1
+Trophoblast progenitor cells	bulk	0	1	1
+Trophoblast progenitor cells	pseudobulk	0	1	1
+Trophoblast stem cells	bulk	0	1	1
+Trophoblast stem cells	pseudobulk	0	1	1

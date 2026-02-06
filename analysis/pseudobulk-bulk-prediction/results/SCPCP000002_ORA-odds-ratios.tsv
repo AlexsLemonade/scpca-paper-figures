@@ -1,73 +1,137 @@
 geneset_cell_type	modality	odds_ratio	p_value	p_adj_bh
-astrocyte	bulk	13.982916412446615	9.999000099990002e-5	1.9998000199980003e-4
-astrocyte	pseudobulk	0	1	1
-B cell	bulk	0	1	1
-B cell	pseudobulk	0	1	1
-blood vessel endothelial cell	bulk	13.374374999999999	9.999000099990002e-5	1.9998000199980003e-4
-blood vessel endothelial cell	pseudobulk	0	1	1
-CD4-positive, alpha-beta T cell	bulk	0	1	1
-CD4-positive, alpha-beta T cell	pseudobulk	0	1	1
-dendritic cell	bulk	0	1	1
-dendritic cell	pseudobulk	0	1	1
-ecto-epithelial cell	bulk	3.736461505002175	0.048295170482951705	0.09659034096590341
-ecto-epithelial cell	pseudobulk	0	1	1
-endothelial cell	bulk	19.53412843495695	9.999000099990002e-5	1.9998000199980003e-4
-endothelial cell	pseudobulk	0	1	1
-eosinophil	bulk	0	1	1
-eosinophil	pseudobulk	0	1	1
-epithelial cell	bulk	3.736461505002175	0.048295170482951705	0.09659034096590341
-epithelial cell	pseudobulk	0	1	1
-extracellular matrix secreting cell	bulk	20.07431693989071	0.005599440055994401	0.011198880111988802
-extracellular matrix secreting cell	pseudobulk	0	1	1
-glial cell	bulk	4.699900674726856	0.0016998300169983002	0.0033996600339966003
-glial cell	pseudobulk	0	1	1
-granulocyte	bulk	3.032453196750265	0.07979202079792021	0.15958404159584041
-granulocyte	pseudobulk	0	1	1
-innate lymphoid cell	bulk	0	1	1
-innate lymphoid cell	pseudobulk	0	1	1
-lymphocyte of B lineage	bulk	0	1	1
-lymphocyte of B lineage	pseudobulk	0	1	1
-macroglial cell	bulk	0	1	1
-macroglial cell	pseudobulk	0	1	1
-macrophage	bulk	0.8170291796135576	0.6998300169983002	1
-macrophage	pseudobulk	0	1	1
-mature alpha-beta T cell	bulk	4.285714285714286	0.21407859214078592	0.42815718428157185
-mature alpha-beta T cell	pseudobulk	0	1	1
-mature B cell	bulk	0	1	1
-mature B cell	pseudobulk	0	1	1
-mature T cell	bulk	3.1380893640350878	0.0736926307369263	0.1473852614738526
-mature T cell	pseudobulk	0.5048511356319797	0.8601139886011399	0.8601139886011399
-megakaryocyte	bulk	3.260088093208298	0.271972802719728	0.543945605439456
-megakaryocyte	pseudobulk	0	1	1
-memory B cell	bulk	0	1	1
-memory B cell	pseudobulk	0	1	1
-memory T cell	bulk	2.776627935124667	0.30826917308269175	0.6165383461653835
-memory T cell	pseudobulk	0	1	1
-microvascular endothelial cell	bulk	21.508665105386417	0.004999500049995001	0.009999000099990002
-microvascular endothelial cell	pseudobulk	0	1	1
-monocyte	bulk	1.5285114045618244	0.48455154484551544	0.9691030896910309
-monocyte	pseudobulk	0	1	1
-mononuclear phagocyte	bulk	0.6382464666778392	0.7984201579842016	1
-mononuclear phagocyte	pseudobulk	0	1	1
-myeloid leukocyte	bulk	1.5879020314639392	0.2126787321267873	0.4253574642535746
-myeloid leukocyte	pseudobulk	0	1	1
-naive B cell	bulk	0	1	1
-naive B cell	pseudobulk	0	1	1
-natural killer cell	bulk	0	1	1
-natural killer cell	pseudobulk	0.9343905791600845	0.6519348065193481	1
-neuron	bulk	2.7521252870517574	0.0041995800419958006	0.008399160083991601
-neuron	pseudobulk	0.11726172174248385	0.9996000399960004	0.9996000399960004
-neuron associated cell	bulk	9.037172816146326	4.999500049995e-4	9.99900009999e-4
-neuron associated cell	pseudobulk	0	1	1
-neutrophil	bulk	2.2042964244521337	0.36626337366263373	0.7325267473252675
-neutrophil	pseudobulk	0	1	1
-pericyte	bulk	22.73306082001734	9.999000099990002e-5	1.9998000199980003e-4
-pericyte	pseudobulk	0	1	1
-plasma cell	bulk	0	1	1
-plasma cell	pseudobulk	0	1	1
-regulatory T cell	bulk	7.502450980392157	0.12988701129887012	0.25977402259774024
-regulatory T cell	pseudobulk	0	1	1
-somatic stem cell	bulk	0	1	1
-somatic stem cell	pseudobulk	0	1	1
-T cell	bulk	2.1920784970683256	0.23827617238276172	0.47655234476552344
-T cell	pseudobulk	0.5342118243957438	0.8471152884711529	0.8471152884711529
+Adrenergic neurons	bulk	0	1	1
+Adrenergic neurons	pseudobulk	0	1	1
+Anterior pituitary gland cells	bulk	0	1	1
+Anterior pituitary gland cells	pseudobulk	0	1	1
+Astrocytes	bulk	25.406976744186043	9.999000099990002e-5	1.9998000199980003e-4
+Astrocytes	pseudobulk	0	1	1
+B cells	bulk	0	1	1
+B cells	pseudobulk	0	1	1
+B cells memory	bulk	0	1	1
+B cells memory	pseudobulk	0	1	1
+B cells naive	bulk	0	1	1
+B cells naive	pseudobulk	0	1	1
+Basophils	bulk	4.380347593582887	0.08139186081391861	0.16278372162783722
+Basophils	pseudobulk	0	1	1
+Bergmann glia	bulk	12.460097719869706	0.0031996800319968005	0.006399360063993601
+Bergmann glia	pseudobulk	0	1	1
+Cajal-Retzius cells	bulk	0	1	1
+Cajal-Retzius cells	pseudobulk	0	1	1
+Cholinergic neurons	bulk	0	1	1
+Cholinergic neurons	pseudobulk	0	1	1
+Choroid plexus cells	bulk	7.430258899676375	0.1272872712728727	0.2545745425457454
+Choroid plexus cells	pseudobulk	0	1	1
+Dendritic cells	bulk	0	1	1
+Dendritic cells	pseudobulk	0	1	1
+Dopaminergic neurons	bulk	0	1	1
+Dopaminergic neurons	pseudobulk	0	1	1
+Endothelial cells	bulk	26.193970070422537	9.999000099990002e-5	1.9998000199980003e-4
+Endothelial cells	pseudobulk	0	1	1
+Endothelial cells (aorta)	bulk	13.243110561056104	9.999000099990002e-5	1.9998000199980003e-4
+Endothelial cells (aorta)	pseudobulk	0	1	1
+Endothelial cells (blood brain barrier)	bulk	21.301020408163264	0.0040995900409959	0.0081991800819918
+Endothelial cells (blood brain barrier)	pseudobulk	0	1	1
+Eosinophils	bulk	0	1	1
+Eosinophils	pseudobulk	0	1	1
+Ependymal cells	bulk	8.623214733149588	0.006399360063993601	0.012798720127987202
+Ependymal cells	pseudobulk	0	1	1
+Epiblast cells	bulk	0	1	1
+Epiblast cells	pseudobulk	0	1	1
+GABAergic neurons	bulk	0	1	1
+GABAergic neurons	pseudobulk	0	1	1
+Gamma delta T cells	bulk	0	1	1
+Gamma delta T cells	pseudobulk	0	1	1
+Glutaminergic neurons	bulk	0	1	1
+Glutaminergic neurons	pseudobulk	0	1	1
+Glycinergic neurons	bulk	0	1	1
+Glycinergic neurons	pseudobulk	0	1	1
+Hemangioblasts	bulk	0	1	1
+Hemangioblasts	pseudobulk	0	1	1
+Immature neurons	bulk	4.014869238170209	0.23587641235876414	0.4717528247175283
+Immature neurons	pseudobulk	0	1	1
+Interneurons	bulk	2.8601807549175966	0.055594440555944404	0.11118888111188881
+Interneurons	pseudobulk	0.34328132559264635	0.942005799420058	0.942005799420058
+Macrophages	bulk	0	1	1
+Macrophages	pseudobulk	0	1	1
+Mast cells	bulk	0	1	1
+Mast cells	pseudobulk	0	1	1
+Megakaryocytes	bulk	3.2287181651892496	0.2776722327767223	0.5553444655534446
+Megakaryocytes	pseudobulk	0	1	1
+Meningeal cells	bulk	19.88051948051948	0.0059994000599940004	0.011998800119988001
+Meningeal cells	pseudobulk	0	1	1
+Microglia	bulk	2.151400028141269	0.37516248375162486	0.7503249675032497
+Microglia	pseudobulk	0	1	1
+Monocytes	bulk	1.5138035796843008	0.49165083491650835	0.9833016698330167
+Monocytes	pseudobulk	0	1	1
+Motor neurons	bulk	0	1	1
+Motor neurons	pseudobulk	0	1	1
+Myeloid-derived suppressor cells	bulk	0	1	1
+Myeloid-derived suppressor cells	pseudobulk	0	1	1
+Natural killer T cells	bulk	6.754486613709915	0.14708529147085292	0.29417058294170584
+Natural killer T cells	pseudobulk	0	1	1
+Neural stem/precursor cells	bulk	11.317301763472685	4.999500049995e-4	9.99900009999e-4
+Neural stem/precursor cells	pseudobulk	0	1	1
+Neuroblasts	bulk	3.030843405323294	0.29027097290270976	0.5805419458054195
+Neuroblasts	pseudobulk	0	1	1
+Neuroendocrine cells	bulk	0	1	1
+Neuroendocrine cells	pseudobulk	0	1	1
+Neurons	bulk	3.050753634787248	0.0451954804519548	0.0903909609039096
+Neurons	pseudobulk	0	1	1
+Neutrophils	bulk	2.183085855701504	0.36996300369963003	0.7399260073992601
+Neutrophils	pseudobulk	0	1	1
+NK cells	bulk	0	1	1
+NK cells	pseudobulk	0.9239086335605322	0.664033596640336	1
+Noradrenergic neurons	bulk	0	1	1
+Noradrenergic neurons	pseudobulk	0	1	1
+Nuocytes	bulk	0	1	1
+Nuocytes	pseudobulk	0	1	1
+Oligodendrocyte progenitor cells	bulk	5.503056454512764	0.1713828617138286	0.3427657234276572
+Oligodendrocyte progenitor cells	pseudobulk	0	1	1
+Oligodendrocytes	bulk	0	1	1
+Oligodendrocytes	pseudobulk	0	1	1
+Pericytes	bulk	22.50919793966151	9.999000099990002e-5	1.9998000199980003e-4
+Pericytes	pseudobulk	0	1	1
+Pinealocytes	bulk	0	1	1
+Pinealocytes	pseudobulk	0	1	1
+Plasma cells	bulk	0	1	1
+Plasma cells	pseudobulk	0	1	1
+Plasmacytoid dendritic cells	bulk	0	1	1
+Plasmacytoid dendritic cells	pseudobulk	0	1	1
+Purkinje neurons	bulk	0	1	1
+Purkinje neurons	pseudobulk	0	1	1
+Pyramidal cells	bulk	0	1	1
+Pyramidal cells	pseudobulk	0	1	1
+Radial glia cells	bulk	24.852272727272727	0.005099490050994901	0.010198980101989802
+Radial glia cells	pseudobulk	0	1	1
+Red pulp macrophages	bulk	0	1	1
+Red pulp macrophages	pseudobulk	0	1	1
+Retinal ganglion cells	bulk	2.2157175288605515	0.35706429357064295	0.7141285871412859
+Retinal ganglion cells	pseudobulk	0	1	1
+Satellite glial cells	bulk	30.012418300653597	9.999000099990002e-5	1.9998000199980003e-4
+Satellite glial cells	pseudobulk	0	1	1
+Schwann cells	bulk	6.93083660525521	0.035396460353964605	0.07079292070792921
+Schwann cells	pseudobulk	0	1	1
+Serotonergic neurons	bulk	0	1	1
+Serotonergic neurons	pseudobulk	0	1	1
+T cells	bulk	3.201089233347298	0.1317868213178682	0.2635736426357364
+T cells	pseudobulk	0.776220676486634	0.7219278072192781	0.7219278072192781
+T cytotoxic cells	bulk	0	1	1
+T cytotoxic cells	pseudobulk	0	1	1
+T follicular helper cells	bulk	0	1	1
+T follicular helper cells	pseudobulk	0	1	1
+T helper cells	bulk	0	1	1
+T helper cells	pseudobulk	1.237641242937853	0.5636436356364364	1
+T memory cells	bulk	2.749910104279036	0.3053694630536946	0.6107389261073892
+T memory cells	pseudobulk	0	1	1
+T regulatory cells	bulk	7.430258899676375	0.1327867213278672	0.2655734426557344
+T regulatory cells	pseudobulk	0	1	1
+Tanycytes	bulk	0	1	1
+Tanycytes	pseudobulk	0	1	1
+Trigeminal neurons	bulk	10.67868776174965	0.0032996700329967	0.0065993400659934
+Trigeminal neurons	pseudobulk	0	1	1
+Trophoblast cells	bulk	5.123312130342596	0.18858114188581143	0.37716228377162286
+Trophoblast cells	pseudobulk	0	1	1
+Trophoblast progenitor cells	bulk	0	1	1
+Trophoblast progenitor cells	pseudobulk	0	1	1
+Trophoblast stem cells	bulk	0	1	1
+Trophoblast stem cells	pseudobulk	0	1	1
