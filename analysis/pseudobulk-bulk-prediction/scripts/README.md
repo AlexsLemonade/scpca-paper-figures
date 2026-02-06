@@ -12,4 +12,7 @@ TSV files are exported to `../data/tpm/<project id>-tpm.tsv`.
 * `calculate-pseudobulk.R`: This script creates a TSV of pseudobulk values, using two different approaches, for all samples in a given project.
 TSV files are exported to `../data/pseudobulk/<project id>-pseudobulk.tsv`.
 * `prepare-ora-gene-sets.R`: This script prepares TSVs of consensus cell type gene sets for use in ORA.
-TSV files are exported to `../data/<project id>_panglao-genesets.tsv`.
+This script is no longer used in analysis, but was used with a prior version.
+
+
+
