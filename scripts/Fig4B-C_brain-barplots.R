@@ -39,16 +39,6 @@ color_palette_immune_file <- here::here("palettes", "immune-palette.tsv")
 celltype_colors_immune <- readr::read_tsv(color_palette_immune_file) |> 
   tibble::deframe()
 
-# get all possible immune cell types
-immune_url <- "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-consensus/references/consensus-immune-cell-types.tsv"
-all_immune_celltypes <- readr::read_tsv(immune_url) |> 
-  dplyr::pull(consensus_annotation)
-
-# cell types which will be emphasized in 4c plot
-tcell_celltypes <- c("T cell", "mature T cell", "memory T cell", "regulatory T cell", "CD4-positive alpha-beta T cell", "mature alpha-beta T cell")
-myeloid_celltypes <- c("macrophage", "mononuclear phagocyte", "monocyte", "myeloid leukocyte", "neutrophil", "dendritic cell") # we do not include granulocytes since they are only in 1 sample
-
-
 # Prep metadata ----------------------------------------------------------------
 
 # get validation groups to use for grouping cells 
@@ -115,19 +105,53 @@ ggsave(output_4b_pdf_file, plot = hgg_lgg_barplot, width = 8, height = 8)
 
  # Prep and plot 4C -----------------------------------------------------
 
+# get all possible immune cell types
+# use the validation groups from consensus-validation-groups.tsv that have immune cells
+# don't include HSPCs since they are borderline "immune"
+all_immune_groups <- c(
+  "B cell", 
+  "T cell", 
+  "dendritic cell", 
+  "histamine secreting cell", 
+  "innate lymphoid cell", 
+  "macrophage", 
+  "monocyte", 
+  "myeloid cell", 
+  "natural killer cell"
+)
 
+# define cell type groups for T and myeloid cells
+tcell_groups <- "T cell"
+myeloid_groups <- c("macrophage", "monocyte", "myeloid cell")
+
+# define all immune cell types 
+all_immune_celltypes <- validation_groups_df |> 
+  dplyr::filter(broad_celltype_group %in% all_immune_groups) |>
+  dplyr::pull(consensus_annotation)
+
+# all possible t cell types
+tcell_celltypes <- validation_groups_df |> 
+  dplyr::filter(broad_celltype_group %in% tcell_groups) |>
+  dplyr::pull(consensus_annotation)
+
+# all possible myeloid cell types 
+myeloid_celltypes <- validation_groups_df |> 
+  dplyr::filter(broad_celltype_group %in% myeloid_groups) |>
+  dplyr::pull(consensus_annotation)
+
+# summarize immune cells and report any that don't pass filtering
 summary_immune_df <- create_immune_celltype_summary(
   celltype_files,
   all_immune_celltypes, 
   tcell_celltypes, 
   myeloid_celltypes,
-  frac_immune_threshold = 0.01
+  frac_immune_threshold = 0.01,
+  minimum_cell_count = 1000
 ) |>
   # join with sample metadata
   dplyr::left_join(sample_df, by = c("project_id" = "scpca_project_id", "sample_id" = "scpca_sample_id")) |> 
   # only keep HGG and LGG 
   dplyr::filter(subdiagnosis_group %in% c("High-grade glioma", "Low-grade glioma"))
-
 
 
 hgg_lgg_immune_barplot <- stacked_barchart(
