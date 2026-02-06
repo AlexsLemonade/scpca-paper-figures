@@ -74,7 +74,7 @@ all_plot_list <- celltype_columns |>
           NA_character_
         ) |> 
           # get just the top 3 T cell types and then lump all others together
-          forcats::fct_lump_n(n = 3, other_level = "other T cells") |> 
+          forcats::fct_lump_n(n = 3, other_level = "other T cells", ties.method = "first") |> 
           stringr::str_wrap(25) |> # wrap the long names
           forcats::fct_infreq() |> 
           forcats::fct_relevel("other T cells", after = Inf)
