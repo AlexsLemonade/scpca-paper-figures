@@ -1,3 +1,8 @@
+####################################################################################################
+# DEPRECATED: This script was used in a prior version of this analysis, but is no longer used.     #
+# Panglao gene sets are directly used instead as input for ORA.                                    #
+####################################################################################################
+
 # This script prepares gene sets for input to over-representation analysis (ORA) for a given ScPCA project as follows:
 #
 # 1. Identify all possible consensus cell types which _could_ have been called for the project
