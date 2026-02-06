@@ -6,13 +6,20 @@
 # ./run-prediction.sh
 #
 # To also run the GSEA analysis (not presented in the manuscript), use:
-# RUN_GSEA=1 ./run-prediction.sh
-#
+# run_gsea=1 ./run-prediction.sh
+# 
+# To write model HTMLs considering a different threshold for expressed genes across samples to consider, use:
+# expr_threshold=0.25 ./run-prediction.sh # for a 0.25 threshold
+# expr_threshold=-1 ./run-prediction.sh   # for no threshold
+
 
 set -euo pipefail
 
 # controls whether to run the GSEA analysis, which is very time-consuming and not ultimately part of the paper
-RUN_GSEA=${RUN_GSEA:-0}
+run_gsea=${run_gsea:-0}
+
+# controls the expression threshold to use when modeling; default (used in paper) is 0
+expr_threshold=${expr_threshold:-0}
 
 # Run script from its location
 basedir=$(dirname "${BASH_SOURCE[0]}")
@@ -44,6 +51,13 @@ if [[ ! -d $scpca_dir ]] || [[ ! -d $ref_dir ]] || [[ ! -d $consensus_celltype_d
   exit 1
 fi
 
+# set up usage of expr_threshold
+if [[ ${expr_threshold} == -1 ]]; then
+  threshold_str="all-genes"
+else
+  threshold_str="threshold-${expr_threshold}"
+fi
+
 # Create additional directories
 mkdir -p $pseudobulk_dir
 mkdir -p $result_dir
@@ -66,7 +80,6 @@ for project_dir in $scpca_dir/*; do
 
     pseudobulk_file="${pseudobulk_dir}/${project_id}_pseudobulk.tsv"
     fraction_expressed_file="${data_dir}/${project_id}_fraction-expressed-single-cell.tsv"
-    geneset_file="${data_dir}/${project_id}_panglao-genesets.tsv"
 
     # Calculate pseudobulk matrices for each project
     Rscript ${script_dir}/calculate-pseudobulk.R \
@@ -75,7 +88,39 @@ for project_dir in $scpca_dir/*; do
       --output_pseudobulk_file "${pseudobulk_file}" \
       --output_frac_expressed_file "${fraction_expressed_file}"
 
-    # Prepare gene set lists for over-representation analysis
+done
+
+# Build and export models to results/models at a 0 threshold
+Rscript -e "rmarkdown::render(
+  '${notebook_dir}/build-assess-models.Rmd',
+  params = list(expr_threshold = ${expr_threshold}),
+  output_file = 'build-assess-models_${threshold_str}.nb.html',
+  output_dir = '${model_html_dir}'
+)"
+
+
+
+# If specified, run the GSEA analysis across gene sets and models
+if [[ ${run_gsea} -eq 1 ]]; then
+  mkdir -p $gsea_html_dir
+
+  gsea_reps=50
+  for geneset in "H" "C8"; do
+    Rscript -e "rmarkdown::render('${notebook_dir}/perform-gsea.Rmd',
+                params = list(msigdbr_category = '$geneset', reps = ${gsea_reps}, model_expr_threshold = ${expr_threshold}),
+                output_file = 'perform-gsea_${geneset}_${threshold_str}.nb.html',
+                output_dir = '${gsea_html_dir}')"
+  done
+fi
+
+# Run the overrepresentation analysis across gene sets using the model with genes present in at least one modality per sample
+ora_reps=10000 # replicates for permutation p-value calculation
+summary_function="median" # use median of residuals when summarizing project
+sd_threshold=2.5 # outliers are >2.5 sd
+for project_dir in $scpca_dir/*; do
+  project_id=$(basename $project_dir)
+  
+    # Determine Panglao file with gene sets use for ORA
     case ${project_id} in
          "SCPCP000001" | "SCPCP000002" | "SCPCP000009")
           panglao_file="brain-compartment_PanglaoDB_2020-03-27.tsv"
@@ -88,68 +133,16 @@ for project_dir in $scpca_dir/*; do
           ;;
       esac
 
-    Rscript ${script_dir}/prepare-ora-gene-sets.R \
-      --project_id "${project_id}" \
-      --celltype_dir "${consensus_celltype_dir}/${project_id}" \
-      --panglao_geneset_file "${ref_dir}/${panglao_file}" \
-      --output_file "${geneset_file}"
-
-done
-
-# Build and export models to results/models across different thresholds for expression
-for expr_threshold in -1 0 0.25; do
-
-  if [[ ${expr_threshold} == -1 ]]; then
-    threshold_str="all-genes"
-  else
-    threshold_str="threshold-${expr_threshold}"
-  fi
-
-  Rscript -e "rmarkdown::render('${notebook_dir}/build-assess-models.Rmd',
-              params = list(expr_threshold = ${expr_threshold}),
-              output_file = 'build-assess-models_${threshold_str}.nb.html',
-              output_dir = '${model_html_dir}')"
-done
-
-
-# If specified, run the GSEA analysis across gene sets and models
-if [[ ${RUN_GSEA} -eq 1 ]]; then
-
-  mkdir -p $gsea_html_dir
-
-  gsea_reps=50
-  for geneset in "H" "C8"; do
-    for expr_threshold in -1 0 0.25; do
-
-      if [[ ${expr_threshold} == -1 ]]; then
-        threshold_str="all-genes"
-      else
-        threshold_str="threshold-${expr_threshold}"
-      fi
-
-      Rscript -e "rmarkdown::render('${notebook_dir}/perform-gsea.Rmd',
-                  params = list(msigdbr_category = '$geneset', reps = ${gsea_reps}, model_expr_threshold = ${expr_threshold}),
-                  output_file = 'perform-gsea_${geneset}_${threshold_str}.nb.html',
-                  output_dir = '${gsea_html_dir}')"
-    done
-  done
-
-fi
-
-# Run the overrepresentation analysis across gene sets using the model with genes present in at least one modality per sample
-ora_reps=10000
-summary_function="median" # use median of residuals when summarizing project
-sd_threshold=2.5 # outliers are >2.5 sd
-use_observed_only=0 # use all genesets, not only those for observed cell types
-for project_dir in $scpca_dir/*; do
-  project_id=$(basename $project_dir)
-
   Rscript -e "rmarkdown::render('${notebook_dir}/perform-ora.Rmd',
-                    params = list(project_id = '$project_id',
-                                  reps = ${ora_reps},
-                                  summary_function = '${summary_function}',
-                                  sd_threshold = ${sd_threshold},
-                                  use_observed_only = ${use_observed_only}),
-                    output_file = 'perform-ora_${project_id}.nb.html',
-                    output_dir = '${ora_html_dir}')"
+                   params = list(project_id = '$project_id',
+                                 reps = ${ora_reps},
+                                 summary_function = '${summary_function}',
+                                 sd_threshold = ${sd_threshold},
+                                 panglao_file = '${panglao_file}'),
+                   output_file = 'perform-ora_${project_id}.nb.html',
+                   output_dir = '${ora_html_dir}')"
 done
+
+
+# render the quick visualization notebook
+Rscript -e "rmarkdown::render('exploratory-notebooks/view-ora-results.Rmd')"
