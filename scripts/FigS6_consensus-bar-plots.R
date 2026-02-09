@@ -76,7 +76,7 @@ non_multiplex_samples <- readr::read_tsv(library_metadata_file) |>
 # Define c(width, height) of output PDF for each barplot
 file_sizes <- list(
   c(17, 8), 
-  c(9, 7), 
+  c(10, 7), 
   c(10, 7)
 )
 names(file_sizes) <- names(output_pdf_files)
