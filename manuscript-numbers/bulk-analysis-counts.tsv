@@ -1,7 +1,7 @@
-scpca_project_id	n_samples_total	n_samples_low_quality	n_samples_used
-SCPCP000001	18	1	17
-SCPCP000002	20	2	18
-SCPCP000006	39	4	35
-SCPCP000009	4	0	4
-SCPCP000017	24	1	23
-total	105	8	97
+scpca_project_id	n_samples_total	n_samples_low_quality	n_samples_used	panglao_group	n_genesets
+SCPCP000001	18	1	17	brain-compartment	68
+SCPCP000002	20	2	18	brain-compartment	68
+SCPCP000006	39	4	35	kidney-compartment	44
+SCPCP000009	4	0	4	brain-compartment	68
+SCPCP000017	24	1	23	bone-and-soft-tissue	50
+total	105	8	97	NA	NA

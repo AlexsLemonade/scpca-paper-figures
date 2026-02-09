@@ -36,6 +36,16 @@ sample_metadata_file <- here::here("s3_files", "scpca-library-metadata.tsv")
 # low-quality samples were removed
 map_file <- file.path(analysis_dir, "data", "bulk-library-sample-ids.tsv")
 
+# The Panglao DB reference files
+geneset_files <- list.files(
+  path = file.path(analysis_dir, "data", "references"), 
+  pattern = "\\.tsv$", 
+  full.names = TRUE
+) |>
+  purrr::set_names(
+    \(x) {stringr::str_remove(basename(x), "_PanglaoDB_2020-03-27.tsv")}
+  )
+
 # The TSV files containing odds ratio results from overrepresentation analysis
 odds_files <- list.files(
   path = result_dir,
@@ -101,8 +111,6 @@ plot_odds_ratios <- function(df) {
     theme(axis.text.y = element_text(size = 7))
 }
 
-
-
 # First, create the manuscript-numbers table -----------------------------------
 
 # Define vector of low-quality samples which were removed
@@ -137,6 +145,30 @@ excluded_table <- bulk_ids_df |>
   dplyr::filter(low_quality) |>
   dplyr::count(scpca_project_id, name = "n_samples_low_quality")
 
+# Create data frame with the number of gene sets tested per project
+n_genes_df <- geneset_files |>
+  purrr::map(
+    \(f) {
+      # all columns except `ensembl_id` and `other`
+      n_genesets <- ncol(readr::read_tsv(f)) - 2
+    }) |>
+  tibble::enframe() |>
+  tidyr::unnest(value) |>
+  dplyr::rename(
+    panglao_group = name, 
+    n_genesets = value
+  )
+n_genesets_df <- tibble::tribble(
+  ~scpca_project_id, ~panglao_group, 
+  ##############################
+  "SCPCP000001", "brain-compartment", 
+  "SCPCP000002", "brain-compartment", 
+  "SCPCP000006", "kidney-compartment",
+  "SCPCP000009", "brain-compartment", 
+  "SCPCP000017", "bone-and-soft-tissue"
+) |>
+  dplyr::left_join(n_genes_df)
+
 # Combine all the count tables
 bulk_table <- total_table |>
   dplyr::left_join(excluded_table) |>
@@ -145,11 +177,14 @@ bulk_table <- total_table |>
   # create n_samples_used column
   dplyr::rowwise() |>
   dplyr::mutate(n_samples_used = n_samples_total - n_samples_low_quality) |>
-  dplyr::ungroup() 
+  dplyr::ungroup() |> 
+  dplyr::left_join(n_genesets_df)
+
+
 
 # Finally, add a row with totals for manuscript writing convenience
 bulk_table <- bulk_table |>
-  tibble::add_row(
+  tibble::add_row( # adds NAs where no value given, which we want
     scpca_project_id      = "total", 
     n_samples_total       = sum(bulk_table$n_samples_total), 
     n_samples_low_quality = sum(bulk_table$n_samples_low_quality), 
