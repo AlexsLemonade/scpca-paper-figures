@@ -4,7 +4,15 @@ renv::load()
 
 # load any libraries 
 library(ggplot2)
-theme_set(theme_bw())
+theme_set(
+  theme_bw() + 
+    theme(      
+      legend.text = element_text(size = 8), 
+      legend.title = element_text(size = 9), 
+      axis.text = element_text(size = 9),
+      legend.position = "bottom"
+    )
+)
 
 
 
@@ -27,16 +35,6 @@ sample_metadata_file <- here::here("s3_files", "scpca-library-metadata.tsv")
 # This file contains all samples which were _initially_ considered before 
 # low-quality samples were removed
 map_file <- file.path(analysis_dir, "data", "bulk-library-sample-ids.tsv")
-
-# The TSV files that contain the geneset lists, needed for manuscript numbers
-geneset_files <- list.files(
-  path = file.path(analysis_dir, "data"), 
-  pattern = "_panglao-genesets\\.tsv$", 
-  full.names = TRUE
-) |>
-  purrr::set_names(
-    \(x) {stringr::str_split_i(basename(x), pattern = "_", i = 1)}
-  )
 
 # The TSV files containing odds ratio results from overrepresentation analysis
 odds_files <- list.files(
@@ -75,39 +73,33 @@ plot_scatterplot <- function(df) {
     geom_bin_2d(binwidth = 0.25) + 
     scale_fill_viridis_c(limits = c(0, 800), oob = scales::squish, option = "inferno") +
     geom_smooth(method = "lm", color = "cyan2", linewidth = 0.75) + 
-    facet_wrap(vars(project_facet)) +
+    facet_wrap(vars(project_facet), ncol = 1) +
     labs(
       x = "Pseudobulk expression", 
       y = "Bulk expression", 
       fill = "Point density"
-    )
+    ) + 
+    theme()
 }
 
 # Function to plot the odds ratio barplot panels
 plot_odds_ratios <- function(df) {
   ggplot(df) +
     aes(
-      x = tidytext::reorder_within(geneset_cell_type, odds_ratio, within = project_facet),
-      y = odds_ratio, 
+      x = odds_ratio, 
+      y = tidytext::reorder_within(geneset_cell_type, odds_ratio, within = project_facet),
       fill = -log10(p_adj_bh)
     ) +
     geom_col() +
-    geom_text(
-      aes(
-        label = round(odds_ratio, 2), 
-        y = odds_ratio + 0.75
-      ), 
-      size = 3
-    ) +
     scale_fill_viridis_c() +
-    tidytext::scale_x_reordered() + # gets the labels back to only geneset_cell_type
-    facet_wrap(vars(project_facet), scales = "free_x", nrow = 1) +
+    tidytext::scale_y_reordered() + # gets the labels back to only geneset_cell_type
+    facet_wrap(vars(project_facet), scales = "free_y", ncol = 1) +
     labs(
-      x = "Consensus cell type", 
-      y = "Odds ratio", 
+      x = "Odds ratio", 
+      y = "Cell type", 
       fill = "-Log10(adj. p-value)"
     ) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7))
+    theme(axis.text.y = element_text(size = 7))
 }
 
 
@@ -146,14 +138,6 @@ excluded_table <- bulk_ids_df |>
   dplyr::filter(low_quality) |>
   dplyr::count(scpca_project_id, name = "n_samples_low_quality")
 
-# Count the number of genesets used for ORA for each project
-geneset_count_df <- geneset_files |>
-  purrr::map(readr::read_tsv) |>
-  purrr::list_rbind(names_to = "scpca_project_id") |>
-  dplyr::select(scpca_project_id, cell_type_name) |>
-  dplyr::distinct() |>
-  dplyr::count(scpca_project_id, name = "n_ora_genesets")
-
 # Combine all the count tables
 bulk_table <- total_table |>
   dplyr::left_join(excluded_table) |>
@@ -162,9 +146,7 @@ bulk_table <- total_table |>
   # create n_samples_used column
   dplyr::rowwise() |>
   dplyr::mutate(n_samples_used = n_samples_total - n_samples_low_quality) |>
-  dplyr::ungroup() |>
-  # final join
-  dplyr::left_join(geneset_count_df)
+  dplyr::ungroup() 
 
 # Finally, add a row with totals for manuscript writing convenience
 bulk_table <- bulk_table |>
@@ -172,28 +154,27 @@ bulk_table <- bulk_table |>
     scpca_project_id      = "total", 
     n_samples_total       = sum(bulk_table$n_samples_total), 
     n_samples_low_quality = sum(bulk_table$n_samples_low_quality), 
-    n_samples_used        = sum(bulk_table$n_samples_used), 
-    n_ora_genesets        = NA_integer_ # the sum of this quantity isn't relevant
+    n_samples_used        = sum(bulk_table$n_samples_used)
   )
 
 # Scatterplot panels -----------------------------------------------------------
 
 # Read in data
 model_data_df <- data_files |>
-  purrr::map(readr::read_tsv) |>
-  purrr::list_rbind(names_to = "scpca_project_id") |>
-  dplyr::select(scpca_project_id, bulk, pseudobulk)
+ purrr::map(readr::read_tsv) |>
+ purrr::list_rbind(names_to = "scpca_project_id") |>
+ dplyr::select(scpca_project_id, bulk, pseudobulk)
 
 # Prepare data frame for plotting
 model_data_df <- model_data_df |>
-  # join with the number of samples in each project
-  dplyr::inner_join(
-    dplyr::select(bulk_table, scpca_project_id, n_samples_used)
-  ) |>
-  # create faceting columns with the sample count info
-  dplyr::mutate(
-    project_facet = glue::glue("{scpca_project_id} (N={n_samples_used})")
-  )
+ # join with the number of samples in each project
+ dplyr::inner_join(
+   dplyr::select(bulk_table, scpca_project_id, n_samples_used)
+ ) |>
+ # create faceting columns with the sample count info
+ dplyr::mutate(
+   project_facet = glue::glue("{scpca_project_id} (N={n_samples_used})")
+ )
 
 
 # Main text panel:
@@ -230,7 +211,7 @@ odds_df <- odds_df |>
     # faceting with the sample count info
     project_facet = glue::glue("{scpca_project_id} (N={n_samples_used})"), 
     # wrapped gene set names for space
-    geneset_cell_type = stringr::str_wrap(geneset_cell_type, 20)
+    geneset_cell_type = stringr::str_wrap(geneset_cell_type, 25)
   )
 
 # Main text panel:
@@ -251,18 +232,18 @@ odds_panel_si <- odds_df |>
 main_figure <- patchwork::wrap_plots(
   scatter_panel_main, 
   odds_panel_main, 
-  ncol = 1
+  ncol = 2
 ) 
 
 si_figure <- patchwork::wrap_plots(
   scatter_panel_si, 
   odds_panel_si, 
-  ncol = 1
+  ncol = 2
 ) 
 
 
 # Export -----------------------------------------------------------------------
-ggsave(main_pdf, main_figure, width = 13, height = 7)
-ggsave(si_pdf, si_figure, width = 10, height = 7)
+ggsave(main_pdf, main_figure, width = 8, height = 8.5)
+ggsave(si_pdf, si_figure, width = 7, height = 6)
 
 readr::write_tsv(bulk_table, bulk_numbers_tsv)
