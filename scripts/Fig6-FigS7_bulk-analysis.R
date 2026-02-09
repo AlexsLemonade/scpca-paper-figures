@@ -78,8 +78,7 @@ plot_scatterplot <- function(df) {
       x = "Pseudobulk expression", 
       y = "Bulk expression", 
       fill = "Point density"
-    ) + 
-    theme()
+    )
 }
 
 # Function to plot the odds ratio barplot panels
@@ -161,20 +160,20 @@ bulk_table <- bulk_table |>
 
 # Read in data
 model_data_df <- data_files |>
- purrr::map(readr::read_tsv) |>
- purrr::list_rbind(names_to = "scpca_project_id") |>
- dplyr::select(scpca_project_id, bulk, pseudobulk)
+  purrr::map(readr::read_tsv) |>
+  purrr::list_rbind(names_to = "scpca_project_id") |>
+  dplyr::select(scpca_project_id, bulk, pseudobulk)
 
 # Prepare data frame for plotting
 model_data_df <- model_data_df |>
- # join with the number of samples in each project
- dplyr::inner_join(
-   dplyr::select(bulk_table, scpca_project_id, n_samples_used)
- ) |>
- # create faceting columns with the sample count info
- dplyr::mutate(
-   project_facet = glue::glue("{scpca_project_id} (N={n_samples_used})")
- )
+  # join with the number of samples in each project
+  dplyr::inner_join(
+    dplyr::select(bulk_table, scpca_project_id, n_samples_used)
+  ) |>
+  # create faceting columns with the sample count info
+  dplyr::mutate(
+    project_facet = glue::glue("{scpca_project_id} (N={n_samples_used})")
+  )
 
 
 # Main text panel:
