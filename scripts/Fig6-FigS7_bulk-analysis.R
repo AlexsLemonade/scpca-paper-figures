@@ -10,7 +10,8 @@ theme_set(
       legend.text = element_text(size = 8), 
       legend.title = element_text(size = 9), 
       axis.text = element_text(size = 9),
-      legend.position = "bottom"
+      legend.position = "bottom", 
+      legend.title.position = "top"
     )
 )
 
