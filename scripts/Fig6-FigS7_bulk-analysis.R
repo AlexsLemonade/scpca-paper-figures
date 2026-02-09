@@ -93,7 +93,8 @@ plot_scatterplot <- function(df) {
 }
 
 # Function to plot the odds ratio barplot panels
-plot_odds_ratios <- function(df) {
+# default or_nudge and or_text_size values are used for main text version
+plot_odds_ratios <- function(df, or_nudge = 2, or_text_size = 2.65) {
   ggplot(df) +
     aes(
       x = odds_ratio, 
@@ -101,6 +102,11 @@ plot_odds_ratios <- function(df) {
       fill = -log10(p_adj_bh)
     ) +
     geom_col() +
+    geom_text(
+      aes(label = round(odds_ratio, 2)), 
+      size = or_text_size, 
+      nudge_x = or_nudge
+    ) +
     scale_fill_viridis_c() +
     tidytext::scale_y_reordered() + # gets the labels back to only geneset_cell_type
     facet_wrap(vars(project_facet), scales = "free_y", ncol = 1) +
@@ -258,7 +264,7 @@ odds_panel_main <- odds_df |>
 # SI panel:
 odds_panel_si <- odds_df |>
   dplyr::filter(scpca_project_id %in% si_projects) |>
-  plot_odds_ratios()
+  plot_odds_ratios(or_nudge = 1.5, or_text_size = 2)
 
 
 
