@@ -4,8 +4,8 @@
 # for all samples included in Fig5B and 5C 
 # The output is a table with diagnosis and subdiagnosis_group saved to `sample-info/brain-classifications-no-multiplexed.tsv`
 
-# SCPCP000001 samples will be labeled as HGG
-# SCPCP000002 samples will be labeled as LGG
+# SCPCP000001 samples will be labeled as HGG, with the exception of PXA
+# SCPCP000002 samples will be labeled as LGG, with the exception of EPN
 # multiplexed samples are not included
 # all other samples are assigned based on the category in https://pmc.ncbi.nlm.nih.gov/articles/PMC8328013/#T1
 
@@ -34,7 +34,6 @@ hgg_types <- c(
   "Glioblastoma", # part of SCPCP000001
   "High-grade glioma", # part of SCPCP000001
   "Diffuse midline glioma",# part of SCPCP000001
-  "Pleomorphic xanthoastrocytoma", # part of SCPCP000001
   "Anaplastic astrocytoma", # part of SCPCP000001
   "Infant-type hemispheric glioma"
 )
@@ -44,7 +43,7 @@ lgg_types <- c(
   "Ganglioglioma", # part of SCPCP000002
   "Low-grade glioma", # part of SCPCP000002
   "Ganglioglioma/ATRT", # part of SCPCP000002
-  "Ependymoma", # part of SCPCP000002
+  "Pleomorphic xanthoastrocytoma", # part of SCPCP000001 but typically grade 2
   "Dysplastic gangliocytoma", 
   "Dysembryoplastic neuroepithelial tumor", 
   "Glial-neuronal tumor"
